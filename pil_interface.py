@@ -5,13 +5,10 @@
 # File:
 #	pil_interface.py -- a PIL interface for Grail
 #
-# Notes:
-#	You may wish to remove the print statements in here.  They
-#	are included only to show you that PIL is pretty fast compared
-#	to everything else...
-#
 # History:
 #	96-04-18 fl	Created
+#	98-06-04 fld	Made minimal changes to look better with current
+#			Grail implementation; removed timimg display.
 #
 
 import Image, ImageTk
@@ -35,13 +32,11 @@ class pil_interface:
 	self.broken = 0
 	self.viewer = viewer
 	self.viewer.new_font((AS_IS, AS_IS, AS_IS, 1))
-	self.label = Tkinter.Label(self.viewer.text, text = "<decoding>")
+	self.label = Tkinter.Label(self.viewer.text, text="<decoding>",
+                                   background=viewer.text.cget("background"),
+                                   highlightthickness=0)
 	self.viewer.add_subwindow(self.label)
 	self.buf = []
-
-	global t
-	t = time.time()
-	print "** GRAIL", time.time() - t
 
     def feed(self, data):
 	try:
@@ -56,16 +51,13 @@ class pil_interface:
     def close(self):
 	if self.buf:
 	    try:
-		print "** PIL", time.time() - t
 		self.buf = string.joinfields(self.buf, "")
 		im = Image.open(StringIO.StringIO(self.buf))
 		im.load() # benchmark decoding
 		tkim = ImageTk.PhotoImage(im.mode, im.size)
 		tkim.paste(im)
 		self.label.image = tkim.image
-		print "** TK", time.time() - t
 		self.label.config(image = self.label.image)
-		print "** OK", time.time() - t
 	    except:
 		self.broken = 1
 	if self.broken:
