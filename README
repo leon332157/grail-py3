@@ -1,0 +1,20 @@
+
+Grail interface
+---------------
+
+This is an extremely rudimentary interface between Grail 0.3b1 and PIL
+0.1.  Among other things, it doesn't work for inline images.
+
+Put the pil_interface.py module somewhere where Grail finds it, and
+copy the image_tiff.py module into the filetypes subdirectory.
+
+To handle other file formats, just copy the image_tiff.py file to,
+say, image_jpeg, image_gif, image_bmp, image_ppm, image_sgi,
+image_sun, image_pcx, image_xbm, etc... (and make sure to change the
+class name within the file as well).
+
+Hopefully, future versions of Grail will let me register multiple
+formats with a single module, and use the same code for inline images
+as well.
+
+	/F
