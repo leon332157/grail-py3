@@ -116,7 +116,11 @@ def protocol_access(url, mode, params, data=None):
 ##          print "     to", scheme, "proxy", proxy_host
     modname = sanitized + "API"
     app = grailutil.get_grailapp()
-    access = app.find_extension('protocols', sanitized).access
+    ext = app.find_extension('protocols', sanitized)
+    if ext:
+        access = ext.access
+    else:
+        access = None
     if not access:
         raise IOError, ("protocol error", "no class for %s" % scheme)
     try:

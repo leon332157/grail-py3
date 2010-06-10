@@ -81,14 +81,14 @@ class MyHTTP(httplib.HTTP):
     def close(self):
         if self.file:
             self.file.close()
-        if self.sock:
+        if self._conn.sock:
             try:
-                self.sock.close()
+                self._conn.sock.close()
             except socket.error:
                 # What can you do? :-)
                 pass
         self.file = None
-        self.sock = None
+        self._conn.sock = None
 
 
 class http_access:
@@ -168,7 +168,7 @@ class http_access:
     def pollmeta(self, timeout=0):
         Assert(self.state == META)
 
-        sock = self.h.sock
+        sock = self.h._conn.sock
         try:
             if not select.select([sock], [], [], timeout)[0]:
                 return "waiting for server response", 0
@@ -222,7 +222,7 @@ class http_access:
             self.readahead = self.readahead[maxbytes:]
             return data
         try:
-            data = self.h.sock.recv(maxbytes)
+            data = self.h._conn.sock.recv(maxbytes)
         except socket.error, msg:
             raise IOError, msg, sys.exc_traceback
         if not data:
@@ -231,7 +231,7 @@ class http_access:
         return data
 
     def fileno(self):
-        return self.h.sock.fileno()
+        return self.h._conn.sock.fileno()
 
 
 # To test this, use ProtocolAPI.test()

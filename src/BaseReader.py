@@ -78,7 +78,7 @@ class BaseReader:
             if self.fno >= 20: self.fno = -1 # XXX for SGI Tk OPEN_MAX bug
 
         if self.fno >= 0:
-            tkinter.createfilehandler(
+            self.context.app.root.createfilehandler(
                 self.fno, tkinter.READABLE, self.checkapi)
         else:
             # No fileno() -- check every 100 ms
@@ -137,7 +137,7 @@ class BaseReader:
         if self.fno >= 0:
             fno = self.fno
             self.fno = -1
-            tkinter.deletefilehandler(fno)
+            self.context.app.root.deletefilehandler(fno)
 
         self.callback = None
         self.poller = None
