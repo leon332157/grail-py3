@@ -2,7 +2,7 @@
 
 # Turn on remote control.  Ignore error that gets raised if some
 # other Grail is being remote controlled.
-import RemoteControl
+from grail import RemoteControl
 RemoteControl.register_loads()
 try:
     RemoteControl.start()

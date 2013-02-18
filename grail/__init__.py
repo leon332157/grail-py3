@@ -12,21 +12,10 @@ import os
 import sys
 
 # Path munging
-if __name__ == '__main__':
-    script_name = sys.argv[0]
-    while 1:
-        script_dir = os.path.dirname(script_name)
-        if not os.path.islink(script_name):
-            break
-        script_name = os.path.join(script_dir, os.readlink(script_name))
-    script_dir = os.path.join(os.getcwd(), script_dir)
-    script_dir = os.path.normpath(script_dir)
-    grail_root = script_dir
-else:
-    script_dir = os.path.dirname(__file__)
-    grail_root = script_dir
-for path in 'utils', 'pythonlib', 'ancillary', 'applets', script_dir:
-    sys.path.insert(0, os.path.join(grail_root, path))
+script_dir = os.path.dirname(__file__)
+grail_root = script_dir
+for path in 'applets', 'ancillary', 'utils', 'pythonlib':
+    __path__.append(os.path.join(grail_root, path))
 
 import getopt
 import urllib
@@ -419,20 +408,3 @@ class Application(BaseApplication.BaseApplication):
             return img
         self.dingbatimages[entname] = None
         return None
-
-
-if __name__ == "__main__":
-    if sys.argv[1:] and sys.argv[1][:2] == '-p':
-        p = sys.argv.pop(1)
-        if p[2:]: n = eval(p[2:])
-        else: n = 20
-        KEEPALIVE_TIMER = 50000
-        import profile
-        profile.run('main()', '@grail.prof')
-        import pstats
-        p = pstats.Stats('@grail.prof')
-        p.strip_dirs().sort_stats('time').print_stats(n)
-        p.print_callers(n)
-        p.strip_dirs().sort_stats('cum').print_stats(n)
-    else:
-        main()

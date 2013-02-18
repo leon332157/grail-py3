@@ -117,10 +117,6 @@ class Stylesheet:
 
 
 def test():
-    global grail_root
-    grail_root = '.'
-    import sys
-    sys.path = ['./utils', './ancillary'] + sys.path
     import GrailPrefs
     prefs = GrailPrefs.AllPreferences()
     sheet = Stylesheet(prefs)

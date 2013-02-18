@@ -1,9 +1,3 @@
-if __name__ == '__main__':
-    # Testing
-    import sys
-    sys.path.insert(0, "../pythonlib")
-
-
 from tktools import *
 
 

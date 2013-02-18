@@ -4,11 +4,6 @@ See the HTML 2.0 specification:
 http://www.w3.org/hypertext/WWW/MarkUp/html-spec/html-spec_toc.html
 """
 
-import sys
-
-if __name__ == '__main__':
-    sys.path.insert(0, '../pythonlib')
-
 import htmlentitydefs
 from . import SGMLHandler
 from . import SGMLLexer

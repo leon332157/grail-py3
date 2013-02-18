@@ -2,7 +2,7 @@
 
 See the Grail htdocs/info/extending/preferences.html for documentation."""
 
-# To test, "(cd <scriptdir>; python GrailPrefs.py)".
+# To test, "(python -m grail.grailbase.GrailPrefs)".
 
 __version__ = "$Revision: 2.33 $"
 

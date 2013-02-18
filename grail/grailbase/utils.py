@@ -6,9 +6,9 @@ __version__ = '$Revision: 1.3 $'
 import os
 from os import getenv
 
-# TBD: hack!  grail.py calculates grail_root, which would be
-# convenient to export to extensions, but you can't `import grail' or
-# `import __main__'.  grail.py isn't designed for that.  You could
+# TBD: hack!  The top-level grail package calculates grail_root, which would
+# be convenient to export to extensions, but you can't `import grail' or
+# `import __main__'.  The package isn't designed for that.  You could
 # `from grail import grail_root' but that's kind of gross.  This
 # global holds the value of grail_root which can be had with
 # grailutil.get_grailroot()
@@ -49,12 +49,11 @@ def gethome():
 
 def which(filename, searchlist=None):
     if searchlist is None:
-        import sys
-        searchlist = sys.path
+        from .. import __path__ as searchlist
     for dir in searchlist:
         found = os.path.join(dir, filename)
         if os.path.exists(found):
-            return found
+            return os.path.abspath(found)
     return None
 
 

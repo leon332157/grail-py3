@@ -8,11 +8,6 @@ __version__ = "$Revision: 2.37 $"
 import sys, os
 from functools import reduce
 
-if __name__ == "__main__":
-    # For operation outside of Grail:
-    grail_root = '..'
-    sys.path = [grail_root, '../utils', '../pythonlib'] + sys.path
-
 import grailbase.GrailPrefs
 typify = grailbase.GrailPrefs.typify
 

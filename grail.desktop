@@ -1,7 +1,7 @@
 [Desktop Entry]
 Comment=
 Encoding=UTF-8
-Exec=cd /usr/share/grail/src; python2 grail.py
+Exec=python3 -m grail
 GenericName=Python web browser
 Icon=grail_logo.png
 MimeType=
