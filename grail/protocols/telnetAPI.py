@@ -4,16 +4,16 @@ For Unix only; requires xterm in your $PATH.
 
 """
 
-import os, urllib
+import os, urllib.parse
 from .nullAPI import null_access
 
 class telnet_access(null_access):
 
     def __init__(self, url, method, params):
         null_access.__init__(self, url, method, params)
-        host, junk = urllib.splithost(url)
-        userpasswd, host = urllib.splituser(host)
-        host, port = urllib.splitport(host)
+        host, junk = urllib.parse.splithost(url)
+        userpasswd, host = urllib.parse.splituser(host)
+        host, port = urllib.parse.splitport(host)
         
         # XXX I tried doing this using os.system(), but the file
         # descriptors that Grail has open seemed to be confusing

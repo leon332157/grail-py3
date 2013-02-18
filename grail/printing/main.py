@@ -15,8 +15,8 @@ import os
 import sys
 import posixpath
 import traceback
-import urllib
-import urlparse
+import urllib.request
+import urllib.parse
 import pkgutil
 import subprocess
 from io import TextIOWrapper
@@ -342,13 +342,13 @@ def open_source(infile):
         infp = open(infile, 'r')
     except IOError:
         # derive file object via URL; still needs to be HTML.
-        infp = urllib.urlopen(infile)
+        infp = urllib.request.urlopen(infile)
         infile = getattr(infp, "url", infile)
         infp = TextIOWrapper(infp, 'latin-1')
         # use posixpath since URLs are expected to be POSIX-like; don't risk
         # that we're running on NT and os.path.basename() doesn't "do the
         # right thing."
-        fn = posixpath.basename(urlparse.urlparse(infile).path)
+        fn = posixpath.basename(urllib.parse.urlparse(infile).path)
     else:
         fn = posixpath.basename(infile)
     return infp, infile, fn
@@ -358,7 +358,8 @@ class multi_transform:
     def __init__(self, context, levels=None):
         self.__app = context.app
         baseurl = context.get_baseurl()
-        scheme, netloc, path, params, query, frag = urlparse.urlparse(baseurl)
+        scheme, netloc, path, params, query, frag = urllib.parse.urlparse(
+            baseurl)
         self.__scheme = scheme
         self.__netloc = netloc.lower()
         self.__path = os.path.dirname(path)
@@ -368,14 +369,16 @@ class multi_transform:
         self.__docs = {baseurl: 0}
 
     def __call__(self, url, attrs):
-        scheme, netloc, path, params, query, frag = urlparse.urlparse(url)
+        scheme, netloc, path, params, query, frag = urllib.parse.urlparse(
+            url)
         if params or query:             # safety restraint
             return url
         netloc = netloc.lower()
         if scheme != self.__scheme or netloc != self.__netloc:
             return url
         # check the paths:
-        stored_url = urlparse.urlunparse((scheme, netloc, path, '', '', ''))
+        stored_url = urllib.parse.urlunparse(
+            (scheme, netloc, path, '', '', ''))
         if stored_url in self.__docs:
             return url
         if not path.startswith(self.__path):
@@ -402,10 +405,10 @@ class multi_transform:
     def insert(self, url):
         if self.__base_index is not None:
             i = self.__base_index + 1
-            scheme, netloc, path, x, y, z = urlparse.urlparse(url)
+            scheme, netloc, path, x, y, z = urllib.parse.urlparse(url)
             basepath = os.path.dirname(path)
             while i < len(self.__subdocs):
-                scheme, netloc, path, x, y, z = urlparse.urlparse(
+                scheme, netloc, path, x, y, z = urllib.parse.urlparse(
                     self.__subdocs[i])
                 path = os.path.dirname(path)
                 i = i + 1

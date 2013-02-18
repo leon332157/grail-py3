@@ -7,7 +7,7 @@
 
 from Tkinter import *
 import os
-import urllib
+import urllib.parse
 from . import tktools
 import formatter
 from . import Viewer
@@ -342,9 +342,9 @@ class GrailHTMLParser(HTMLParser):
         name = title = ''
         #
         href = attrs.get("urn", "").strip()
-        scheme, resturl = urllib.splittype(href)
+        scheme, resturl = urllib.parse.splittype(href)
         if scheme == "urn":
-            scheme, resturl = urllib.splittype(resturl)
+            scheme, resturl = urllib.parse.splittype(resturl)
         if scheme not in ("doi", "hdl", "ietf"):
             # this is an unknown URN scheme or there wasn't a URN
             href = attrs.get("href", "").strip()

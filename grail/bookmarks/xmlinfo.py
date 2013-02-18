@@ -112,8 +112,8 @@ def main():
         if os.path.exists(args[0]):
             fp = open(args[0], "rb")
         else:
-            import urllib
-            fp = urllib.urlopen(args[0])
+            import urllib.request
+            fp = urllib.request.urlopen(args[0])
     else:
         fp = sys.stdin.detach()
     #

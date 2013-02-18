@@ -16,7 +16,7 @@ XXX Main deficiencies:
 
 
 import httplib
-from urllib import splithost
+from urllib.parse import splithost
 import mimetools
 from .. import grailutil
 import select

@@ -14,14 +14,13 @@ from .printing.utils import conv_fontsize
 
 
 def complete_url(url):
-    import urlparse
-    scheme, netloc = urlparse.urlparse(url)[:2]
+    import urllib.parse
+    scheme, netloc = urllib.parse.urlparse(url)[:2]
     if not scheme:
         if not netloc:
             # XXX url2pathname/pathname2url???
             if os.path.exists(url):
-                import urllib
-                url = "file:" + urllib.quote(url)
+                url = "file:" + urllib.parse.quote(url)
             else:
                 url = "http://" + url
         else:

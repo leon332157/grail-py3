@@ -16,7 +16,7 @@ dialog:
 The last state (print command, check box, filename, options) is saved in
 a global settings variable managed by the printing.settings module.
 
-When OK is activated, the HTML or text file is read using urllib.urlopen()
+When OK is activated, the HTML or text file is read using urlopen()
 and the PSWriter class is used to generate the PostScript.
 
 When Cancel is actiavted, the dialog state is still saved.

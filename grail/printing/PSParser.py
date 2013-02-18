@@ -3,7 +3,7 @@
 __version__ = '$Revision: 1.13 $'
 
 import os
-import urlparse
+import urllib.parse
 
 from formatter import AbstractFormatter
 from formatter import AS_IS
@@ -92,9 +92,9 @@ class PrintingHTMLParser(HTMLParser):
     def register_id(self, name):
         """Add page number of element start to internal database."""
         (scheme, netloc, path, params, query, fragment) = \
-                 urlparse.urlparse(self.context.get_url())
+                 urllib.parse.urlparse(self.context.get_url())
         netloc = netloc.lower()
-        url = urlparse.urlunparse(
+        url = urllib.parse.urlunparse(
             (scheme, netloc, path, params, query, name))
         pageno = self.formatter.writer.ps.get_pageno()
         self._set_docinfo(url, pageno, '')
@@ -597,7 +597,7 @@ class PrintingHTMLParser(HTMLParser):
 
 def disallow_data_scheme(href, attrs):
     """Cancel data: URLs."""
-    if urlparse.urlparse(href).scheme == 'data':
+    if urllib.parse.urlparse(href).scheme == 'data':
         href = None
     return href
 
@@ -610,10 +610,10 @@ def disallow_anchor_footnotes(href, attrs):
 class disallow_self_reference:
     """Cancel all anchor footnotes which refer to the current document."""
     def __init__(self, baseurl):
-        self.__baseref = urlparse.urlparse(baseurl)[:-1] + ('',)
+        self.__baseref = urllib.parse.urlparse(baseurl)[:-1] + ('',)
 
     def __call__(self, href, attrs):
-        ref = urlparse.urlparse(href)[:-1] + ('',)
+        ref = urllib.parse.urlparse(href)[:-1] + ('',)
         if ref == self.__baseref:
             href = None
         return href

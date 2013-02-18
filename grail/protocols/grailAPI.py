@@ -1,7 +1,7 @@
 """grail: URI scheme handler."""
 
 from .. import grailutil
-import urllib
+import urllib.request
 from .nullAPI import null_access
 
 class grail_access(null_access):
@@ -10,7 +10,7 @@ class grail_access(null_access):
         null_access.__init__(self, url, method, params)
         file = grailutil.which(url)
         if not file: raise IOError("Grail file {!r} not found".format(url))
-        self.url = "file:" + urllib.pathname2url(file)
+        self.url = "file:" + urllib.request.pathname2url(file)
 
     def getmeta(self):
         null_access.getmeta(self)       # assert, state change

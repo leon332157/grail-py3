@@ -24,7 +24,7 @@ LISTING_PATTERN = r"""
 class file_access:
 
     def __init__(self, url, method, params):
-        from urllib import url2pathname, pathname2url
+        from urllib.request import url2pathname, pathname2url
         self.url = url
         self.redirect = False
         pathname = url2pathname(url)
@@ -115,8 +115,8 @@ class file_access:
             lines = fp.readlines()
         import StringIO
         import re
-        from urllib import quote
-        from urlparse import urljoin
+        from urllib.parse import quote
+        from urllib.parse import urljoin
         from html import escape
         from xml.sax import saxutils
         prog = re.compile(self.listing_pattern, re.VERBOSE)

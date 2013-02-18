@@ -13,7 +13,7 @@ __version__ = '$Revision: 1.6 $'
 import copy
 from . import nodes                            # sibling
 from . import search                           # sibling sub-package
-import urlparse
+import urllib.parse
 from . import walker                           # sibling
 from collections import defaultdict
 
@@ -25,7 +25,7 @@ class NodeIDError(Exception):
 
 def _parse_uri(uri):
     """Normalize a URI in parsed form (similar to urlparse() result)."""
-    uri = list(urlparse.urlparse(uri))
+    uri = list(urllib.parse.urlparse(uri))
     if uri[0] == "http":
         host = uri[1]
         if host[-3:] == ":80":
@@ -140,7 +140,8 @@ class Collection:
                     if id in need_ids:
                         need_ids.remove(id)
                 uri = node.uri()
-                key = urlparse.urlunparse(_parse_uri(uri)[:3] + ('', '', ''))
+                key = urllib.parse.urlunparse(
+                    _parse_uri(uri)[:3] + ('', '', ''))
                 node_map[key].append(node)
             elif nodetype == "Folder":
                 id = node.id()
@@ -187,12 +188,12 @@ class Collection:
 
     def get_bookmarks_by_uri(self, uri):
         parsed = _parse_uri(uri)
-        uri = urlparse.urlunparse(parsed[:3] + ('', '', ''))
+        uri = urllib.parse.urlunparse(parsed[:3] + ('', '', ''))
         return tuple(self.__node_map[uri])
 
     def __make_node_key(self, node):
         parsed = _parse_uri(node.uri())[:3] + ('', '', '')
-        return urlparse.urlunparse(parsed)
+        return urllib.parse.urlunparse(parsed)
 
 
 class CopyWalker(walker.TreeWalker):
@@ -258,7 +259,7 @@ class CopyWalker(walker.TreeWalker):
         new_node.set_uri(uri)
         new_node.set_last_modified(node.last_modified())
         new_node.set_last_visited(node.last_visited())
-        key = urlparse.urlunparse(_parse_uri(uri)[:3] + ('', '', ''))
+        key = urllib.parse.urlunparse(_parse_uri(uri)[:3] + ('', '', ''))
         self.__node_map[key].append(new_node)
 
     def start_Folder(self, node):

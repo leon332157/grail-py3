@@ -6,7 +6,7 @@ import formatter
 from .Context import Context, SimpleContext
 from .Cursors import *
 from collections import Iterable
-from urlparse import urljoin, urlparse
+from urllib.parse import urljoin, urlparse
 from .Stylesheet import UndefinedStyle
 
 

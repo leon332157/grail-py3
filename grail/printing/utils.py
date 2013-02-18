@@ -77,7 +77,7 @@ def image_loader(url):
     # which returns HTTP 406 errors when html2ps is used as a script
     # (406 = "No acceptable objects were found").
     #
-    from urllib import urlopen
+    from urllib.request import urlopen
     try:
         imgfp = urlopen(url)
     except IOError:

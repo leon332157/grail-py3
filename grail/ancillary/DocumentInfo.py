@@ -5,7 +5,7 @@ __version__ = '$Revision: 2.16 $'
 import re
 import Tkinter
 from . import tktools
-import urlparse
+import urllib.parse
 from . import CacheMgr
 
 FIELD_BREAKER = str.maketrans("&", "\n")
@@ -30,8 +30,9 @@ class DocumentInfoDialog:
         # Info display
         #
         url = context.page.url()
-        scheme, netloc, path, params, query, fragment = urlparse.urlparse(url)
-        url = urlparse.urlunparse((scheme, netloc, path, '', '', ''))
+        scheme, netloc, path, params, query, fragment = \
+            urllib.parse.urlparse(url)
+        url = urllib.parse.urlunparse((scheme, netloc, path, '', '', ''))
         self.add_label_field("Title", page_title or "(unknown)", "title")
         self.add_label_field("URI", url, "uri")
         if fragment:

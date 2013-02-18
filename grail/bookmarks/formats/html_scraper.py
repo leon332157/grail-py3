@@ -4,7 +4,7 @@ __version__ = '$Revision: 1.5 $'
 
 
 from .. import nodes
-import urlparse
+import urllib.parse
 
 from ...sgml import SGMLHandler
 from ...sgml import SGMLParser
@@ -65,7 +65,7 @@ class Parser(SGMLHandler.BaseSGMLHandler):
             self.__node = nodes.Bookmark()
             self.__root.append_child(self.__node)
             if self.__baseurl:
-                uri = urlparse.urljoin(self.__baseurl, uri)
+                uri = urllib.parse.urljoin(self.__baseurl, uri)
             self.__node.set_uri(uri)
             title = " ".join(attrs.get("title", "").split())
             if title:

@@ -11,7 +11,7 @@ from functools import reduce
 from .grailbase import GrailPrefs
 typify = GrailPrefs.typify
 
-import urlparse
+import urllib.parse
 from Tkinter import *
 from . import tktools
 import re
@@ -399,7 +399,7 @@ class Framework:
             browser = Browser.Browser(self.app.root, self.app)
             self.helpbrowser = browser
         helproot = self.app.prefs.Get('landmarks', 'grail-help-root')
-        browser.context.load(urlparse.urljoin(helproot, self.HELP_URL))
+        browser.context.load(urllib.parse.urljoin(helproot, self.HELP_URL))
         browser.root.tkraise()
 
     def apply_cmd(self, event=None, close=False):

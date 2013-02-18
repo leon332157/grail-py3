@@ -1,7 +1,7 @@
 """HTML <FORM> tag support (and <INPUT>, etc.)."""
 
 from Tkinter import *
-import urllib
+import urllib.parse
 from .. import tktools
 from .. import ImageWindow
 from collections import MutableSequence

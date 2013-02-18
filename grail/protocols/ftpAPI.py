@@ -16,9 +16,9 @@ XXX Main deficiencies:
 import re
 
 import ftplib
-from urllib import unquote, splithost, splitport, splituser, \
+from urllib.parse import unquote, splithost, splitport, splituser, \
      splitpasswd, splitattr, splitvalue, quote
-from urlparse import urljoin
+from urllib.parse import urljoin
 from .. import grailutil
 import socket
 import html

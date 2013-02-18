@@ -18,7 +18,7 @@ for path in 'applets', 'ancillary', 'utils', 'pythonlib':
     __path__.append(os.path.join(grail_root, path))
 
 import getopt
-import urllib
+import urllib.request
 import posixpath
 
 # More imports
@@ -106,8 +106,8 @@ def main(args=None):
 
     tktools.install_keybindings(app.root)
 
-    # Make everybody who's still using urllib.urlopen go through the cache
-    urllib.urlopen = app.open_url_simple
+    # Make everybody who's still using urlopen() go through the cache
+    urllib.request.urlopen = app.open_url_simple
 
     # Add $GRAILDIR/user/ to sys.path
     subdir = os.path.join(app.graildir, 'user')

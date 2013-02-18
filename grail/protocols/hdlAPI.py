@@ -26,7 +26,7 @@ XXX Remaining problems:
 
 """
 
-import urllib
+import urllib.parse
 from .. import hdllib
 from . import nullAPI
 from .. import grailutil
@@ -75,7 +75,7 @@ def parse_handle(hdl):
     This also interprets % quoting in the non-option part.
 
     """
-    hdl, attrs = urllib.splitattr(hdl)
+    hdl, attrs = urllib.parse.splitattr(hdl)
     d = {}
     if attrs:
         for attr in attrs:
@@ -83,9 +83,9 @@ def parse_handle(hdl):
             if not sep:
                 value = None
             else:
-                value = urllib.unquote(value)
+                value = urllib.parse.unquote(value)
             d[key.lower()] = value
-    return urllib.unquote(hdl), d
+    return urllib.parse.unquote(hdl), d
 
 class hdl_access(nullAPI.null_access):
 

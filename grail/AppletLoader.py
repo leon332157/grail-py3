@@ -1,8 +1,7 @@
 """Implement applet loading, possibly asynchronous."""
 
 import re
-import urllib
-import urlparse
+import urllib.parse
 from Tkinter import *
 from .BaseReader import BaseReader
 
@@ -392,12 +391,13 @@ def _get_key(context):
     groups = []
     for length, group in list:
         groups.append(group)
-    scheme, netloc, path, params, query, fragment = urlparse.urlparse(url)
-    if scheme and netloc and scheme in urlparse.uses_netloc:
+    scheme, netloc, path, params, query, fragment = urllib.parse.urlparse(
+        url)
+    if scheme and netloc and scheme in urllib.parse.uses_netloc:
         netloc = netloc.lower()
-        user, host = urllib.splituser(netloc)
+        user, host = urllib.parse.splituser(netloc)
         if user: return netloc          # User:passwd present -- don't mess
-        netloc, port = urllib.splitport(netloc) # Port is ignored
+        netloc, port = urllib.parse.splitport(netloc) # Port is ignored
         if netloc in groups:
             return netloc               # Exact match
         for group in groups:            # Look for longest match

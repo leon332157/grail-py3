@@ -1,5 +1,5 @@
 from .Cache import SharedItem, SharedAPI
-import urlparse
+import urllib.parse
 import os
 import time
 from . import ht_time
@@ -289,7 +289,7 @@ class CacheManager:
             return False
 
         (scheme, netloc, path, parm, query, frag) = \
-                 urlparse.urlparse(item.url)
+                 urllib.parse.urlparse(item.url)
 
         if query or scheme not in self.cache_protocols:
             return False
@@ -349,7 +349,7 @@ class CacheManager:
         - get rid of the fragment identifier
 
         """
-        parsed = urlparse.urlparse(url)
+        parsed = urllib.parse.urlparse(url)
         try:
             port = parsed.port
         except ValueError:
@@ -358,7 +358,7 @@ class CacheManager:
             netloc = parsed.hostname
         else:
             netloc = parsed.hostname + ":{}".format(port)
-        return urlparse.urlunparse((parsed.scheme, netloc, parsed.path,
+        return urllib.parse.urlunparse((parsed.scheme, netloc, parsed.path,
             parsed.params, parsed.query, ""))
 
 

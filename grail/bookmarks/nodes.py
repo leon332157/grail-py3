@@ -4,7 +4,7 @@ import copy
 import os
 import sys
 import time
-import urlparse
+import urllib.parse
 
 
 
@@ -20,7 +20,7 @@ class AliasReferenceError(Error):
 
 def norm_uri(uri):
     scheme, netloc, path, params, query, fragment \
-            = urlparse.urlparse(uri)
+            = urllib.parse.urlparse(uri)
     if scheme == "http" and ':' in netloc:
         loc = netloc.split(':')
         try:
@@ -31,7 +31,7 @@ def norm_uri(uri):
             if port == 80:
                 del loc[-1]
                 netloc = ':'.join(loc)
-    return urlparse.urlunparse((scheme, netloc.lower(), path,
+    return urllib.parse.urlunparse((scheme, netloc.lower(), path,
                                 params, query, fragment))
 
 

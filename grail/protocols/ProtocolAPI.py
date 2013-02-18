@@ -21,7 +21,7 @@ non-proxy usage, the url parameter is a string.)
 
 import re
 import socket
-from urllib import splittype, splithost, splitport
+from urllib.parse import splittype, splithost, splitport
 from .. import grailutil
 
 #
@@ -150,8 +150,7 @@ class ProtocolLoader(extloader.ExtensionLoader):
             if hasattr(mod, joinername):
                 join = getattr(mod, joinername)
             else:
-                import urlparse
-                join = urlparse.urljoin
+                from urllib.parse import urljoin as join
             ext = self.ProtocolInfo(name, access, join)
         return ext
 
@@ -190,8 +189,9 @@ def proxy_exception(host, list):
 def valid_proxy(proxy):
     """Return True if the proxy string looks like a valid proxy URL, else
     return False."""
-    import urlparse
-    scheme, netloc, url, params, query, fragment = urlparse.urlparse(proxy)
+    import urllib.parse
+    scheme, netloc, url, params, query, fragment = urllib.parse.urlparse(
+        proxy)
     if scheme != 'http' or params or query or fragment:
         return False
     return True

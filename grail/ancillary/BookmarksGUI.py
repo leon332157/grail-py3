@@ -203,13 +203,13 @@ class BookmarksIO:
             raise bookmarks.BookmarkFormatError(filename, error)
 
     def __open_url_for_reading(self, url):
-        import urllib
+        import urllib.request
         try:
             from cStringIO import StringIO
         except ImportError:
             from StringIO import StringIO
         try:
-            with urllib.urlopen(url) as fp:
+            with urllib.request.urlopen(url) as fp:
                 sio = StringIO(fp.read())
             return sio, self.__choose_reader(sio)
         except IOError as error:

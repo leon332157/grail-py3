@@ -7,7 +7,7 @@ import re
 from . import settings
 import sys
 import time
-import urlparse
+import urllib.parse
 from numbers import Real
 from io import StringIO
 from collections import Iterable
@@ -133,8 +133,8 @@ class PSStream:
         del self.__titles[:-1]
 
     def set_url(self, url):
-        parsed = urlparse.urlparse(url)[:3] + ('', '', '')
-        self._url_cooked = cook(urlparse.urlunparse(parsed))
+        parsed = urllib.parse.urlparse(url)[:3] + ('', '', '')
+        self._url_cooked = cook(urllib.parse.urlunparse(parsed))
 
     def start(self):
         # print document preamble

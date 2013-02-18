@@ -4,7 +4,7 @@ from . import grailutil
 from . import ht_time
 import os
 import sys
-import urlparse
+import urllib.parse
 from Tkinter import *
 from . import tktools
 from .BaseReader import BaseReader
@@ -451,14 +451,14 @@ class Reader(BaseReader):
 
         self.parser = None
 
-        tuple = urlparse.urlparse(url)
+        tuple = urllib.parse.urlparse(url)
         # it's possible that the url send in a 301 or 302 error is a
         # relative URL.  if there's no scheme or netloc in the
         # returned tuple, try joining the URL with the previous URL
         # and retry parsing it.
         if not (tuple.scheme and tuple.netloc):
-            url = urlparse.urljoin(self.url, url)
-            tuple = urlparse.urlparse(url)
+            url = urllib.parse.urljoin(self.url, url)
+            tuple = urllib.parse.urlparse(url)
         self.url = url
 
         self.fragment = tuple.fragment
@@ -468,7 +468,7 @@ class Reader(BaseReader):
             netloc = netloc.split('@', 1)[-1]
             netloc = self.user_passwd + '@' + netloc
             tuple = (tuple[0], netloc) + tuple[2:]
-        realurl = urlparse.urlunparse(tuple)
+        realurl = urllib.parse.urlunparse(tuple)
 
         # Check first to see if the previous Context has any protocol handlers
         api = self.last_context.get_local_api(realurl, self.method,

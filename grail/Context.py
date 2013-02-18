@@ -5,12 +5,12 @@ from . import Reader
 from . import grailutil
 import time
 import math
-import urllib
+import urllib.parse
 import re
 
 from .Cursors import *
 from .grailbase.uricontext import URIContext
-from urlparse import urldefrag
+from urllib.parse import urldefrag
 
 
 # TBD: horrible hack.  search down for reason. -bwarsaw
@@ -387,7 +387,7 @@ class Context(URIContext):
 
     def get_local_api(self, url, method, params):
         """get a local handler instance"""
-        scheme, resturl = urllib.splittype(url)
+        scheme, resturl = urllib.parse.splittype(url)
         if not scheme:
             raise IOError("protocol error",
                             "no scheme identifier in URL", url)
@@ -422,8 +422,7 @@ class Context(URIContext):
         fd = FileDialog.SaveFileDialog(self.root)
         # give it a default filename on which save within the
         # current directory
-        import urllib
-        if urllib.splittype(url)[0] == "data":
+        if urllib.parse.splittype(url)[0] == "data":
             default = ""
         else:
             urlasfile = url.split('/')

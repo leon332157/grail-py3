@@ -357,8 +357,9 @@ class Browser:
         dialog = FileDialog.LoadFileDialog(self.master)
         filename = dialog.go(key="load")
         if filename:
-            import urllib
-            self.context.load('file:' + urllib.pathname2url(filename))
+            import urllib.request
+            self.context.load(
+                'file:' + urllib.request.pathname2url(filename))
 
     def open_selection_command(self, event=None):
         try:

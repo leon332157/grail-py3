@@ -128,8 +128,8 @@ def main():
         except IOError as err:
             if options.scrape_links:
                 # try to open as URL
-                import urllib
-                infile = urllib.urlopen(ifn)
+                import urllib.request
+                infile = urllib.request.urlopen(ifn)
                 baseurl = infile.url
             else:
                 error(1, "could not open {}: {}".format(ifn, err.strerror))
