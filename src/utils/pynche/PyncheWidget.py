@@ -207,7 +207,8 @@ class Helpwin:
         root.bind('<Alt-W>', self.__withdraw)
 
         # more elaborate help is available in the README file
-        readmefile = os.path.join(sys.path[0], 'README')
+        from . import __path__
+        readmefile = os.path.join(__path__[0], 'README')
         try:
             fp = None
             try:

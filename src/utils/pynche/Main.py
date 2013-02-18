@@ -67,11 +67,12 @@ from .TypeinViewer import TypeinViewer
 PROGRAM = sys.argv[0]
 
 # Default locations of rgb.txt or other textual color database
+from . import __path__
 RGB_TXT = [
     # Solaris OpenWindows
     '/usr/openwin/lib/rgb.txt',
     # The X11R6.4 rgb.txt file
-    os.path.join(sys.path[0], 'X/rgb.txt'),
+    os.path.join(__path__[0], 'X/rgb.txt'),
     # add more here
     ]
 
