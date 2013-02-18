@@ -140,7 +140,7 @@ class CacheManager:
 
         key = self.url2key(url, mode, params)
         if mode == 'GET':
-            if self.active.has_key(key):
+            if key in self.active:
                 # XXX This appeared to be a bad idea!
 ##              if reload:
 ##                  self.active[key].reset()
@@ -220,7 +220,7 @@ class CacheManager:
         CE object is found, call its method get() to create a protocol
         API for the item.
         """
-        if self.items.has_key(key):
+        if key in self.items:
             return self.items[key].get()
         else:
             return None
@@ -229,13 +229,13 @@ class CacheManager:
         """Calls touch() method of CacheEntry object."""
         if url:
             key = self.url2key(url,'GET',{})
-        if key and self.items.has_key(key):
+        if key and key in self.items:
             self.items[key].touch(refresh)
 
     def expire(self,key):
         """Should not be used."""
         assert 'night' == 'day'
-        assert self.items.has_key(key)
+        assert key in self.items
         self.items[key].evict()
 
     def delete(self, keys, evict=1):
@@ -256,7 +256,7 @@ class CacheManager:
         """If item is not in the cache and is allowed to be cached, add it. 
         """
         try:
-            if not self.items.has_key(item.key) and self.okay_to_cache_p(item):
+            if item.key not in self.items and self.okay_to_cache_p(item):
                 self.caches[0].add(item)
             elif reload == 1:
                 self.caches[0].update(item)
@@ -309,7 +309,7 @@ class CacheManager:
             return 0
 
         # respond to http/1.1 cache control directives
-        if params.has_key('cache-control'):
+        if 'cache-control' in params:
             for k, v in parse_cache_control(params['cache-control']):
                 if k in  ('no-cache', 'no-store'):
                     return 0
@@ -580,7 +580,7 @@ class DiskCache:
                         self.use_order.append(key)
                     elif kind == '1':           # delete
                         key = line[2:-1]
-                        if self.items.has_key(key):
+                        if key in self.items:
                             self.size = self.size - self.items.pop(key).size
                             del self.manager.items[key]
                             self.use_order.remove(key)
@@ -588,7 +588,7 @@ class DiskCache:
                     elif kind == '0': # add
                         newentry = DiskCacheEntry(self)
                         newentry.parse(line[2:-1])
-                        if not self.items.has_key(newentry.key):
+                        if newentry.key not in self.items:
                             self.use_order.append(newentry.key)
                         newentry.cache = self
                         self.items[newentry.key] = newentry
@@ -657,7 +657,7 @@ class DiskCache:
 
     def log_use_order(self,key):
         """Write to the log changes in use_order."""
-        if self.items.has_key(key):
+        if key in self.items:
             self.log.write('2 ' + key + '\n')
             # should we flush() here? probably...
             self.log.flush()
@@ -701,7 +701,7 @@ class DiskCache:
 
     def get(self,key):
         """Update and log use_order."""
-        assert self.items.has_key(key)
+        assert key in self.items
         self.use_order.remove(key)
         self.use_order.append(key)
         self.log_use_order(key)
@@ -744,7 +744,7 @@ class DiskCache:
         return newitem
 
     def read_headers(self,headers):
-        if headers.has_key('date'):
+        if 'date' in headers:
             date = headers['date']
         else:
             date = time.time()
@@ -777,7 +777,7 @@ class DiskCache:
         return path
 
     def get_suffix(self,type):
-        if self.types.has_key(type):
+        if type in self.types:
             return self.types[type]
         else:
             return guess_extension(type) or ''

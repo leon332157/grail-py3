@@ -231,7 +231,7 @@ class Controller:
         exceptions raised in the callback are passed straight up
         through to Grail.
         """
-        if self._cbdict.has_key(cmdstr):
+        if cmdstr in self._cbdict:
             cblist = self._cbdict[cmdstr]
             cblist.append(callback)
         else:
@@ -243,7 +243,7 @@ class Controller:
         If callback is None (the default), this unregisters all
         callbacks associated with a command.
         """
-        if self._cbdict.has_key(cmdstr):
+        if cmdstr in self._cbdict:
             cblist = self._cbdict[cmdstr]
             if callback and callback in cblist:
                 cblist.remove(callback)
@@ -271,7 +271,7 @@ class Controller:
         command = match.group(1).strip()
         argstr = match.group(2).strip()
         # look up the command string
-        if not self._cbdict.has_key(command):
+        if command not in self._cbdict:
             print 'Remote Control: Ignoring unrecognized command:', command
             return
         cblist = self._cbdict[command]

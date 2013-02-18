@@ -150,9 +150,9 @@ class http_access:
         self.h.putheader('User-agent', GRAILVERSION)
         if auth:
             self.h.putheader('Authorization', 'Basic %s' % auth)
-        if not params.has_key('host'):
+        if 'host' not in params:
             self.h.putheader('Host', host)
-        if not params.has_key('accept-encoding'):
+        if 'accept-encoding' not in params:
             encodings = Reader.get_content_encodings()
             if encodings:
                 encodings.sort()

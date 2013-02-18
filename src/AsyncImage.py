@@ -20,7 +20,7 @@ class ImageTempFileReader(TempFileReader):
                 ctype = headers['content-type']
             except KeyError:
                 return # Hope for the best
-            if self.image_filters.has_key(ctype) and not isPILAllowed():
+            if ctype in self.image_filters and not isPILAllowed():
                 self.set_pipeline(self.image_filters[ctype])
 
     # List of image type filters
@@ -44,7 +44,7 @@ class ImageTempFileReader(TempFileReader):
 
     def handle_error(self, errcode, errmsg, headers):
         if errcode == 401:
-            if headers.has_key('www-authenticate'):
+            if 'www-authenticate' in headers:
                 cred_headers = {}
                 for k,v in headers.items():
                     cred_headers[k.lower()] = v
@@ -52,7 +52,7 @@ class ImageTempFileReader(TempFileReader):
                 self.stop()
                 credentials = self.image.context.app.auth.request_credentials(
                     cred_headers)
-                if credentials.has_key('Authorization'):
+                if 'Authorization' in credentials:
                     for k,v in credentials.items():
                         self.image.headers[k] = v
                     # self.image.restart(self.image.url)
@@ -141,7 +141,7 @@ class BaseAsyncImage:
 
     def set_error(self, errcode, errmsg, headers):
         self.loaded = 0
-        if errcode in (301, 302) and headers.has_key('location'):
+        if errcode in (301, 302) and 'location' in headers:
             self.url = headers['location']
             self.start_loading()
 
@@ -246,7 +246,7 @@ class PILAsyncImageSupport(BaseAsyncImage):
             self.__height = self.__height or im.size[1]
         # transparency stuff
         if im.mode == "RGBA" \
-           or (im.mode == "P" and im.info.has_key("transparency")):
+           or (im.mode == "P" and "transparency" in im.info):
             r, g, b = self.context.viewer.text.winfo_rgb(
                 self.context.viewer.text["background"])
             r = r / 256                 # convert these to 8-bit versions

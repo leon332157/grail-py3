@@ -114,7 +114,7 @@ class BaseReader:
 
     def update_maxbytes(self, headers):
         self.maxbytes = 0
-        if headers.has_key('content-length'):
+        if 'content-length' in headers:
             try:
                 self.maxbytes = int(headers['content-length'])
             except ValueError:

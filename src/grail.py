@@ -419,7 +419,7 @@ class Application(BaseApplication.BaseApplication):
         self.dingbatimages[entname] = entity
 
     def load_dingbat(self, entname):
-        if self.dingbatimages.has_key(entname):
+        if entname in self.dingbatimages:
             return self.dingbatimages[entname]
         gifname = grailutil.which(entname + '.gif', self.iconpath)
         if gifname:

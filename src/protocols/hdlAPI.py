@@ -107,7 +107,7 @@ class hdl_access(nullAPI.null_access):
 
     def get_local_hash_table(self, hdl):
         key = hdllib.get_authority(hdl)
-        if not self._local_hashtables.has_key(key):
+        if key not in self._local_hashtables:
             #print "Fetching local hash table for", key
             self._local_hashtables[key] = hdllib.fetch_local_hash_table(
                 key, self._global_hashtable)
@@ -120,7 +120,7 @@ class hdl_access(nullAPI.null_access):
         self._hdl, self._attrs = parse_handle(hdl)
         self.app = grailutil.get_grailapp()
 
-        if self._attrs.has_key('type'):
+        if 'type' in self._attrs:
             t = self._attrs['type'].lower()
             mname = "hdl_type_" + t
             tname = mname.upper()
@@ -133,7 +133,7 @@ class hdl_access(nullAPI.null_access):
                 types = m.handle_types
                 formatter = m.data_formatter
             except (ImportError, AttributeError), msg:
-                if hdllib.data_map.has_key(tname):
+                if tname in hdllib.data_map:
                     self._types = [hdllib.data_map[tname]]
                 else:
                     try:
@@ -147,7 +147,7 @@ class hdl_access(nullAPI.null_access):
                 if formatter:
                     self._formatter = formatter
 
-        if self._attrs.has_key('server'):
+        if 'server' in self._attrs:
             self._hashtable = hdllib.HashTable(server=self._attrs['server'])
 
     def pollmeta(self):
@@ -189,7 +189,7 @@ class hdl_access(nullAPI.null_access):
                     uri = hdllib.hexstr(uri)
                 else:
                     uri = escape(repr(uri))
-                if hdllib.data_map.has_key(type):
+                if type in hdllib.data_map:
                     type = hdllib.data_map[type][9:]
                 else:
                     type = str(type)

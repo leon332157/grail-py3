@@ -104,8 +104,8 @@ class PSFont:
         self.points_per_pixel = 72.0 / 72.0
 
         # calculate document fonts
-        if not fontdefs.has_key(self.vfamily): self.vfamily = 'Helvetica'
-        if not fontdefs.has_key(self.ffamily): self.ffamily = 'Courier'
+        if self.vfamily not in fontdefs: self.vfamily = 'Helvetica'
+        if self.ffamily not in fontdefs: self.ffamily = 'Courier'
         vrealname, vreg, vbold, vitalic = fontdefs[self.vfamily]
         frealname, freg, fbold, fitalic = fontdefs[self.ffamily]
         # fonts may be mapped to other fonts
@@ -176,7 +176,7 @@ class PSFont:
         fontnickname, new_sz = self.get_font()
 
         # make sure the font object is instantiated
-        if not self.fontobjs.has_key(fontnickname):
+        if fontnickname not in self.fontobjs:
             psfontname = self.docfonts[fontnickname]
             self.fontobjs[fontnickname] = fonts.font_from_name(psfontname)
 ##      print fontnickname, "==>", self.fontobjs[fontnickname]

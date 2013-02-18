@@ -538,7 +538,7 @@ class PrefsPanelsMenu:
             self.panels = {}
             self.app.prefs_panels = self
             for (nm, modnm, moddir) in self.discover_panel_modules():
-                if not self.panels.has_key(nm):
+                if nm not in self.panels:
                     # [module name, directory, instance]
                     self.panels[nm] = [modnm, moddir, None]
         raworder = self.app.prefs.Get('preferences', 'panel-order')

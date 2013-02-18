@@ -49,11 +49,11 @@ def embed_image(parser, attrs):
     # Make sure allowed_types has been initialized.
     if allowed_types is None:
         init_types()
-    if not allowed_types.has_key(datatype):
+    if datatype not in allowed_types:
         return None
 
     # Image type is supported; get parameters and load it.
-    shapes = attrs.has_key('shapes')
+    shapes = 'shapes' in attrs
     border = extract_keyword('border', attrs, shapes and 2 or 0, conv=int)
     width = extract_keyword('width', attrs, 0, conv=int)
     height = extract_keyword('height', attrs, 0, conv=int)

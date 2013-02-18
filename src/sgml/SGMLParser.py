@@ -145,7 +145,7 @@ class SGMLParser(SGMLLexer.SGMLLexer):
                 if not tag:
                     raise SGMLError, \
                           'Cannot start the document with an empty tag.'
-        if self.__taginfo.has_key(tag):
+        if tag in self.__taginfo:
             taginfo = self.__taginfo[tag]
         else:
             taginfo = self.__handler.get_taginfo(tag)
@@ -196,7 +196,7 @@ class SGMLParser(SGMLLexer.SGMLLexer):
                         'space' : ' '}
 
     def lex_namedcharref(self, name, terminator):
-        if self.named_characters.has_key(name):
+        if name in self.named_characters:
             self.__handler.handle_data(self.named_characters[name])
         else:
             self.__handler.unknown_namedcharref(name, terminator)

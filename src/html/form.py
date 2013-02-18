@@ -31,7 +31,7 @@ def start_select(parser, attrs):
         size = int(attrs['size'])
     except (KeyError, ValueError):
         size = 0
-    multiple = attrs.has_key('multiple')
+    multiple = 'multiple' in attrs
     select_bgn(parser, name, size, multiple)
 
 def end_select(parser):
@@ -39,7 +39,7 @@ def end_select(parser):
 
 def do_option(parser, attrs):
     value = attrs.get('value', '')
-    selected = attrs.has_key('selected')
+    selected = 'selected' in attrs
     handle_option(parser, value, selected)
 
 def start_textarea(parser, attrs):
@@ -339,11 +339,11 @@ class FormInfo:
             pass
 
         def getopt(self, key):
-            if self.options.has_key(key):
+            if key in self.options:
                 setattr(self, key, self.options[key])
 
         def getflagopt(self, key):
-            if self.options.has_key(key):
+            if key in self.options:
                 setattr(self, key, 1)
 
         def getstate(self):
@@ -427,7 +427,7 @@ class FormInfo:
     class InputRadio(InputCheckbox):
 
         def setup(self):
-            if not self.fi.radios.has_key(self.name):
+            if self.name not in self.fi.radios:
                 self.fi.radios[self.name] = StringVar(self.viewer.text)
                 self.first = 1
             else:

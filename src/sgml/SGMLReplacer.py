@@ -31,7 +31,7 @@ def replace(data, entities = None):
         while pos >= 0 and pos + 1 < len(data):
             pos = match.start()
             ref, term = match.group(1, 3)
-            if entities.has_key(ref):
+            if ref in entities:
                 value = entities[ref]
             else:
                 value = _named_chars.get(ref.lower())

@@ -72,7 +72,7 @@ class GrailHTMLParser(HTMLParser):
         if self.reload1:
             self.reload1.detach(self)
         self.reload1 = None
-        if self._metadata.has_key("refresh"):
+        if "refresh" in self._metadata:
             name, http_equiv, refresh = self._metadata["refresh"][0]
         else:
             refresh = self.context.get_headers().get("refresh")
@@ -107,7 +107,7 @@ class GrailHTMLParser(HTMLParser):
         return ('viewer', 'writer')
 
     def register_id(self, id):
-        if self._ids.has_key(id):
+        if id in self._ids:
             self.badhtml = 1
             return 0
         self._ids[id] = id
@@ -140,7 +140,7 @@ class GrailHTMLParser(HTMLParser):
         self.anchor = self.target = None
 
     def do_hr(self, attrs):
-        if attrs.has_key('src') and self.app.load_images:
+        if 'src' in attrs and self.app.load_images:
             align = extract_keyword('align', attrs, default='center',
                     conv=lambda s,gu=grailutil: gu.conv_enumeration(
                         gu.conv_normstring(s), ['left', 'center', 'right']))
@@ -153,7 +153,7 @@ class GrailHTMLParser(HTMLParser):
         HTMLParser.do_hr(self, attrs)
         color = extract_keyword('color', attrs)
         rule = self.viewer.rules[-1]
-        if attrs.has_key('noshade') and self.viewer.rules:
+        if 'noshade' in attrs and self.viewer.rules:
             if color:
                 if not self.configcolor('background', color, widget=rule):
                     self.configcolor('background',
@@ -180,7 +180,7 @@ class GrailHTMLParser(HTMLParser):
         alt = extract('alt', attrs, '(image)')
         border = extract('border', attrs, self.anchor and 2 or None,
                          conv=int)
-        ismap = attrs.has_key('ismap')
+        ismap = 'ismap' in attrs
         if ismap and border is None: border = 2
         src = extract('src', attrs, '')
         width = extract('width', attrs, 0, conv=int)
@@ -286,7 +286,7 @@ class GrailHTMLParser(HTMLParser):
         c = try_configcolor(option, color, tag, widget)
         if color[0] != '#' and not c:
             c = try_configcolor(option, '#' + color, tag, widget)
-        if not c and self._std_colors.has_key(color):
+        if not c and color in self._std_colors:
             color = self._std_colors[color]
             c = try_configcolor(option, color, tag, widget)
         return c
@@ -303,8 +303,8 @@ class GrailHTMLParser(HTMLParser):
     def do_meta(self, attrs):
         # CONTENT='...' is required;
         # at least one of HTTP-EQUIV=xyz or NAME=xyz is required.
-        if not attrs.has_key("content") \
-           or not (attrs.has_key("http-equiv") or attrs.has_key("name")):
+        if "content" not in attrs \
+           or "http-equiv" not in attrs and "name" not in attrs:
             self.badhtml = 1
             return
         name = extract_keyword("name", attrs, conv=grailutil.conv_normstring)
@@ -316,7 +316,7 @@ class GrailHTMLParser(HTMLParser):
             return
         content = extract_keyword("content", attrs, conv=str.strip)
         item = (name, http_equiv, content)
-        if self._metadata.has_key(key):
+        if key in self._metadata:
             self._metadata[key].append(item)
         else:
             entries = self._metadata[key] = [item]
@@ -338,7 +338,6 @@ class GrailHTMLParser(HTMLParser):
             self.get_object().anchor(attrs)
             return
         name = title = ''
-        has_key = attrs.has_key
         #
         href = attrs.get("urn", "").strip()
         scheme, resturl = urllib.splittype(href)
@@ -356,7 +355,7 @@ class GrailHTMLParser(HTMLParser):
         # Delay this at least a little, since we don't want to add the title
         # to the history until the last possible moment.  We need a non-history
         # way to do this; a resources database would be much better.
-        if has_key('title'):
+        if 'title' in attrs:
             title = " ".join((attrs['title'] or '').split())
             if title:
                 url = self.context.get_baseurl(''.join(href.split()))
@@ -371,7 +370,7 @@ class GrailHTMLParser(HTMLParser):
 
     def start_map(self, attrs):
         # ignore maps without names
-        if attrs.has_key('name'):
+        if 'name' in attrs:
             from ImageMap import MapInfo
             self.current_map = MapInfo(attrs['name'])
         else:
@@ -452,10 +451,10 @@ class GrailHTMLParser(HTMLParser):
         # re-write the attributes to use the <OBJECT> support:
         import copy
         nattrs = copy.copy(attrs)
-        if attrs.has_key('name'):
+        if 'name' in attrs:
             nattrs['classid'] = attrs['name']
             del nattrs['name']
-        if attrs.has_key('code') and not attrs.has_key('codebase'):
+        if 'code' in attrs and 'codebase' not in attrs:
             nattrs['codebase'] = attrs['code']
             del nattrs['code']
         self.start_object(nattrs, 'applet')
@@ -505,27 +504,27 @@ class GrailHTMLParser(HTMLParser):
         if dingbat:
             self.unknown_entityref(dingbat, '')
             self.formatter.add_flowing_data(' ')
-        elif attrs.has_key('src'):
+        elif 'src' in attrs:
             self.do_img(attrs)
             self.formatter.add_flowing_data(' ')
 
     # List attribute extensions:
 
     def start_ul(self, attrs, tag='ul'):
-        if attrs.has_key('dingbat'):
+        if 'dingbat' in attrs:
             self.list_handle_dingbat(attrs)
-        elif attrs.has_key('src'):
+        elif 'src' in attrs:
             self.list_handle_src(attrs)
         HTMLParser.start_ul(self, attrs, tag=tag)
 
     def do_li(self, attrs):
-        if attrs.has_key('dingbat'):
+        if 'dingbat' in attrs:
             if self.list_stack:
                 if self.list_stack[-1][0] == 'ul':
                     self.list_handle_dingbat(attrs)
             else:
                 self.list_handle_dingbat(attrs)
-        elif attrs.has_key('src'):
+        elif 'src' in attrs:
             if self.list_stack:
                 if self.list_stack[-1][0] == 'ul':
                     self.list_handle_src(attrs)

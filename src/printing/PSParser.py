@@ -160,9 +160,9 @@ class PrintingHTMLParser(HTMLParser):
             if self.settings.underflag:
                 self.formatter.push_style('underline')
                 self._inanchor = 1
-            if not self._anchors.has_key(href):
+            if href not in self._anchors:
                 href = self.anchor = self.__footnote_anchor(href, attrs)
-                if self._anchors.has_key(href): return
+                if href in self._anchors: return
                 self._anchors[href] = len(self._anchor_sequence) + 1
                 title = extract_keyword('title', attrs, '')
                 title = ' '.join(title.split())
@@ -211,7 +211,7 @@ class PrintingHTMLParser(HTMLParser):
         self.formatter.writer.suppress_indentation(0)
 
     def do_basefont(self, attrs):
-        if attrs.has_key("size"):
+        if "size" in attrs:
             self.start_font({"size": attrs["size"]})
 
     def start_font(self, attrs):
@@ -323,7 +323,7 @@ class PrintingHTMLParser(HTMLParser):
         self.__docinfo[url] = (pageno, title)
 
     def get_docinfo(self, url):
-        if self.__docinfo and self.__docinfo.has_key(url):
+        if self.__docinfo and url in self.__docinfo:
             return self.__docinfo[url]
         return None, None
 
@@ -361,7 +361,7 @@ class PrintingHTMLParser(HTMLParser):
         if self.settings.imageflag:
             utils.debug("handle_image('%s', ...)" % src)
             imageurl = self.context.get_baseurl(src)
-            if self._image_cache.has_key(imageurl):
+            if imageurl in self._image_cache:
                 image = self._image_cache[imageurl]
             else:
                 try:
@@ -396,7 +396,7 @@ class PrintingHTMLParser(HTMLParser):
         if dingbat:
             self.unknown_entityref(dingbat, '')
             self.formatter.add_flowing_data(' ')
-        elif attrs.has_key('src'):
+        elif 'src' in attrs:
             self.do_img(attrs)
             self.formatter.add_flowing_data(' ')
 
@@ -536,7 +536,7 @@ class PrintingHTMLParser(HTMLParser):
         image is not available or convertible, returns None.
         """
         key = (entname, cog)
-        if self.dingbats.has_key(key):
+        if key in self.dingbats:
             return self.dingbats[key]
         gifname = entname + '.gif'
         epsname = os.path.join('eps.' + cog, entname + '.eps')

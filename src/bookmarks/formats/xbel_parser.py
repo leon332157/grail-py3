@@ -244,7 +244,7 @@ class DocumentHandler:
     def handle_idref(self, node, attrs, attrname="ref", required=1):
         idref = attrs.get(attrname)
         if idref:
-            if self.__idmap.has_key(idref):
+            if idref in self.__idmap:
                 node.set_refnode(self.__idmap[idref])
             else:
                 self.__missing_ids[idref].append(node)

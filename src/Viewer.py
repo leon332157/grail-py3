@@ -515,7 +515,7 @@ class Viewer(formatter.AbstractWriter):
         if b: tag = tag + '_b'
         if i: tag = tag + '_i'
         if tag:
-            if self.__fonttags_built and self.__fonttags_built.has_key(tag):
+            if self.__fonttags_built and tag in self.__fonttags_built:
                 return tag
             self.configure_fonttag(tag)
         return tag or None

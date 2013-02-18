@@ -57,7 +57,7 @@ class Writer(walker.TreeWalker):
         if refnode is None or refnode.get_nodetype() == "Folder":
             return
         idref = node.idref()
-        if not self.__id_map.has_key(idref):
+        if idref not in self.__id_map:
             self.__id_map[idref] = self.__id_next
             self.__id_next = self.__id_next + 1
         self.__alias_id = ' ALIASOF="%d"' % self.__id_map[idref]
@@ -93,7 +93,7 @@ class Writer(walker.TreeWalker):
         if not alias:
             id = node.id()
             if id:
-                if not self.__id_map.has_key(id):
+                if id not in self.__id_map:
                     self.__id_map[id] = self.__id_next
                     self.__id_next = self.__id_next + 1
                 alias = ' ALIASID="%d"' % self.__id_map[id]

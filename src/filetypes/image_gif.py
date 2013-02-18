@@ -75,9 +75,9 @@ class PILGifParser(pil_interface):
                     sys.stdout = stdout
             else:
                 self.label.config(image=tkim)
-                if im.info.has_key("duration"):
+                if "duration" in im.info:
                     self.duration = im.info["duration"]
-                if im.info.has_key("loop"):
+                if "loop" in im.info:
                     self.duration = self.duration or 100
                     self.loop = im.info["loop"]
                     self.data = data

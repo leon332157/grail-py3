@@ -1008,7 +1008,7 @@ class BookmarksController(OutlinerController):
                     # with the Grail cache machinery, and probably isn't worth
                     # fixing. ;-(
                     bookmark.set_last_modified(last_modified)
-                if self._details.has_key(id(bookmark)):
+                if id(bookmark) in self._details:
                     self._details[id(bookmark)].update_timestamp_fields()
             self.set_modflag(1, quiet=1)
 
@@ -1185,7 +1185,7 @@ class BookmarksController(OutlinerController):
             if node is None:
                 # need error dialog here
                 return
-        if self._details.has_key(id(node)):
+        if id(node) in self._details:
             details = self._details[id(node)]
             details.show()
         else:
@@ -1273,7 +1273,7 @@ class BookmarksController(OutlinerController):
         self.viewer().select_node(self.viewer().node(selection))
         self.set_modflag(1)
         # destroy the details dialog for the node, if it has one
-        if self._details.has_key(id(node)):
+        if id(node) in self._details:
             self._details.pop(id(node)).destroy()
         # remove it from the URI and ID maps
         self._collection.del_node(node)

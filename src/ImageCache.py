@@ -36,20 +36,20 @@ class ImageCache:
     def get_image(self, key):
         key = self.form_key(key)
         if key:
-            if self.image_objects.has_key(key):
+            if key in self.image_objects:
                 self.url_cache.touch(key=key)
                 return self.image_objects[key]
         return None
 
     def set_image(self, key, image, owner):
         key = self.form_key(key)
-        if self.image_objects.has_key(key):
+        if key in self.image_objects:
             if owner not in self.current_owners[key] \
                or len(self.current_owners[key]) > 1:
                 for other_owner in self.current_owners[key]:
                     if other_owner != owner:
                         self.keep_old_copy(other_owner, image, key)
-            if self.old_objects.has_key(owner):
+            if owner in self.old_objects:
                 for pair in self.old_objects[owner]:
                     if pair[0] == key:
                         self.old_objects[owner].remove(pair)

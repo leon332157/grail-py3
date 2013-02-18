@@ -33,11 +33,11 @@ class Parser(html_scraper.Parser):
         self.__folder = nodes.Folder()
         if self.__context:
             self.__context[-1].append_child(self.__folder)
-        if attrs.has_key("folded"):
+        if "folded" in attrs:
             self.__folder.collapse()
         else:
             self.__folder.expand()
-        if attrs.has_key('add_date'):
+        if 'add_date' in attrs:
             self.__folder.set_add_date(int(attrs['add_date']))
         return self.__folder
 
@@ -89,7 +89,7 @@ class Parser(html_scraper.Parser):
         self.ddpop()
 
     def start_a(self, attrs):
-        if attrs.has_key("aliasof"):
+        if "aliasof" in attrs:
             idref = attrs["aliasof"]
             try:
                 bookmark = self.__idmap[idref]
@@ -103,15 +103,15 @@ class Parser(html_scraper.Parser):
         else:
             self.new_bookmark()
             node = self.__node          # convenience
-            if attrs.has_key('href'):
+            if 'href' in attrs:
                 node.set_uri(attrs['href'])
-            if attrs.has_key('add_date'):
+            if 'add_date' in attrs:
                 node.set_add_date(int(attrs['add_date']))
-            if attrs.has_key('last_modified'):
+            if 'last_modified' in attrs:
                 node.set_last_modified(int(attrs['last_modified']))
-            if attrs.has_key('last_visit'):
+            if 'last_visit' in attrs:
                 node.set_last_visited(int(attrs['last_visit']))
-            if attrs.has_key('aliasid'):
+            if 'aliasid' in attrs:
                 id = attrs["aliasid"].strip()
                 self.__idmap[id] = node
                 node.set_id(id)

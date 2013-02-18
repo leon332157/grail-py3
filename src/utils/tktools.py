@@ -21,9 +21,9 @@ def make_toplevel(master, title=None, class_=None, name=None):
     """
 
     name = name or (class_ or "").lower() or None
-    if name and master.children.has_key(name):
+    if name and name in master.children:
         i = 0
-        while master.children.has_key(name + format(i)):
+        while name + format(i) in master.children:
             i = i + 1
         name = name + format(i)
     if class_:

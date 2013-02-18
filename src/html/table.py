@@ -464,7 +464,7 @@ class Table(AttrElem):
                         # column, then it could only be an OCCUPIED
                         # entry.  Keep looking rightward until we find
                         # an unoccupied cell.
-                        if not rawtable.has_key(index):
+                        if index not in rawtable:
                             break
                         col = col + 1
                     # we've found an unoccupied cell for this one to
@@ -526,7 +526,7 @@ class Table(AttrElem):
                 rowflag = 1
                 rawindex = (rawrow, rawcol)
                 index = (row, col)
-                if not rawtable.has_key(rawindex):
+                if rawindex not in rawtable:
                     table[index] = EMPTY
                 else:
                     cell = rawtable[rawindex]

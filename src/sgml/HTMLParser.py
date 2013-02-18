@@ -214,7 +214,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
                     s = ''.join(s.split())
                 attrs[k] = s
         method(self, attrs)
-        if attrs.has_key('id'):
+        if 'id' in attrs:
             self.register_id(attrs['id'])
 
     def handle_endtag(self, tag, method):
@@ -241,16 +241,16 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             return None                 # this method in each subclass!
         #
         codetype = extract_keyword('codetype', attrs, conv=str.strip)
-        if not codetype and attrs.has_key('classid'):
+        if not codetype and 'classid' in attrs:
             codeurl = attrs['classid']
             codetype, opts = self.context.app.guess_type(codeurl)
-        if not codetype and attrs.has_key('codebase'):
+        if not codetype and 'codebase' in attrs:
             codeurl = attrs['codebase']
             codetype, encoding = self.context.app.guess_type(codeurl)
         embedtype = codetype
         if not embedtype:
             datatype = extract_keyword('type', attrs, conv=str.strip)
-            if not datatype and attrs.has_key('data'):
+            if not datatype and 'data' in attrs:
                 dataurl = attrs['data']
                 datatype, encoding = self.context.app.guess_type(dataurl)
             embedtype = datatype
@@ -320,7 +320,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         self.title = self.save_end()
 
     def do_base(self, attrs):
-        if attrs.has_key('href'):
+        if 'href' in attrs:
             self.base = attrs['href']
 
     def do_isindex(self, attrs):
@@ -334,7 +334,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
 
     def do_nextid(self, attrs):         # Deprecated, but maintain the state.
         self.element_close_maybe('style', 'title')
-        if attrs.has_key('n'):
+        if 'n' in attrs:
             self.nextid = attrs['n']
             self.badhtml = self.badhtml or not self.inhead
         else:
@@ -428,7 +428,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
     __dedented_numbers = 0
     def header_number(self, tag, level, attrs):
         if self.autonumber is None:
-            if attrs.has_key('seqnum') or attrs.has_key('skip'):
+            if 'seqnum' in attrs or 'skip' in attrs:
                 self.autonumber = 1
         self.headernumber.incr(level, attrs)
         if self.autonumber:
@@ -608,17 +608,17 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             self.formatter.end_paragraph(1)
             compact = 0
         self.formatter.push_margin('ul')
-        if attrs.has_key('plain'):
+        if 'plain' in attrs:
             label = ''
         else:
-            if attrs.has_key('type'):
+            if 'type' in attrs:
                 format = attrs['type']
             else:
                 format = ('disc', 'circle', 'square')[len(self.list_stack) % 3]
             label = self.make_format(format, listtype='ul')
         self.list_stack.append([tag, label, 0,
                                 #  Propogate COMPACT once set:
-                                compact or attrs.has_key('compact'),
+                                compact or 'compact' in attrs,
                                 self.sgml_parser.get_depth() + 1])
 
     def end_ul(self):
@@ -644,22 +644,22 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             self.implied_end_p()        # even though list_trim_stack() will
         self.list_trim_stack()          # close it.
         [listtype, label, counter, compact, depth] = top = self.list_stack[-1]
-        if attrs.has_key('type'):
+        if 'type' in attrs:
             s = attrs['type']
             if isinstance(s, str):
                 label = top[1] = self.make_format(s, label, listtype=listtype)
             elif s:
                 label = s
         if listtype == 'ol':
-            if attrs.has_key('seqnum'):
+            if 'seqnum' in attrs:
                 try: top[2] = counter = int(attrs['seqnum'])
                 except: top[2] = counter = counter+1
-            elif attrs.has_key('value'):
+            elif 'value' in attrs:
                 try: top[2] = counter = int(attrs['value'])
                 except: top[2] = counter = counter+1
             else:
                 top[2] = counter = counter+1
-            if attrs.has_key('skip'):
+            if 'skip' in attrs:
                 try: top[2] = counter = counter + int(attrs['skip'])
                 except: pass
         self.formatter.add_label_data(label, counter)
@@ -700,19 +700,19 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             self.formatter.end_paragraph(1)
             compact = 0
         self.formatter.push_margin('ol')
-        if attrs.has_key('type'):
+        if 'type' in attrs:
             label = self.make_format(attrs['type'], '1', listtype='ol')
         else:
             label = '1.'
         start = 0
-        if attrs.has_key('seqnum'):
+        if 'seqnum' in attrs:
             try: start = int(attrs['seqnum']) - 1
             except: pass
-        elif attrs.has_key('start'):
+        elif 'start' in attrs:
             try: start = int(attrs['start']) - 1
             except: pass
         self.list_stack.append(['ol', label, start,
-                                compact or attrs.has_key('compact'),
+                                compact or 'compact' in attrs,
                                 self.sgml_parser.get_depth() + 1])
 
     def end_ol(self):
@@ -747,7 +747,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             self.close_paragraph()
             self.formatter.end_paragraph(1)
         self.formatter.push_margin(margin)
-        self.list_stack.append(['dl', '', 0, attrs.has_key('compact'),
+        self.list_stack.append(['dl', '', 0, 'compact' in attrs,
                                 self.sgml_parser.get_depth() + 1])
 
     def end_dl(self):
@@ -895,12 +895,12 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
 
     def do_hr(self, attrs):
         self.implied_end_p()
-        if attrs.has_key('width'):
+        if 'width' in attrs:
             abswidth, percentwidth = self.parse_width(attrs['width'])
         else:
             abswidth, percentwidth = None, 1.0
         height = None
-        if attrs.has_key('size'):
+        if 'size' in attrs:
             try: height = int(attrs['size'])
             except: pass
             else: height = max(1, height)
@@ -931,18 +931,16 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
     # --- Image
 
     def do_img(self, attrs):
-        ismap = ''
         width = 0
         height = 0
         align = attrs.get('align', '').lower()
         alt = attrs.get('alt', '(image)')
-        if attrs.has_key('ismap'):
-            ismap = 1
+        ismap = 'ismap' in attrs
         src = attrs.get('src', '').strip()
-        if attrs.has_key('width'):
+        if 'width' in attrs:
             try: width = int(attrs['width'])
             except: pass
-        if attrs.has_key('height'):
+        if 'height' in attrs:
             try: height = int(attrs['height'])
             except: pass
         self.handle_image(src, alt, ismap, align, width, height)
@@ -1063,7 +1061,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             return self.do_br({})
         if ordinal == 0x2029:           # paragraph separator
             return self.start_p({})
-        if self.__charrefs.has_key(ordinal):
+        if ordinal in self.__charrefs:
             data = self.__charrefs[ordinal]
         else:
             data = "%s%d%s" % (SGMLLexer.CRO, ordinal, terminator)
@@ -1192,12 +1190,12 @@ class HeaderNumber:
         while i < 5:
             i = i + 1
             numbers[i] = 0
-        if attrs.has_key('skip'):
+        if 'skip' in attrs:
             try: skip = int(attrs['skip'])
             except: skip = 0
         else:
             skip = 0
-        if attrs.has_key('seqnum'):
+        if 'seqnum' in attrs:
             try: numbers[level] = int(attrs['seqnum'])
             except: pass
             else: return

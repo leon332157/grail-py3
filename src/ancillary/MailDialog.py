@@ -121,7 +121,7 @@ class MailDialog:
         variables['date'] = time.ctime(time.time())
         hseq = _make_dict_sequence(hinfo)
         for x, header in hseq:
-            if variables.has_key(header):
+            if header in variables:
                 s = "%s: %s\n" \
                     % (string.capwords(header, '-'), variables[header])
                 self.text.insert(END, s)
@@ -130,7 +130,7 @@ class MailDialog:
         # insert data
         if data:
             self.text.insert(END, data)
-        elif headers.has_key('body'):
+        elif 'body' in headers:
             self.text.insert(END, headers['body'][0] + '\n')
         else:
             self.add_user_signature()

@@ -144,7 +144,7 @@ class GlobalHistory:
             self._history.append(url)
 
     def remember_url(self, url, title=''):
-        if not self._urlmap.has_key(url):
+        if url not in self._urlmap:
             self._history.append(url)
         elif not title:
             title, oldts = self._urlmap[url]
@@ -153,7 +153,7 @@ class GlobalHistory:
 #       print 'remember_url:', url, self._urlmap[url]
 
     def set_title(self, url, title):
-        if self._urlmap.has_key(url):
+        if url in self._urlmap:
             old_title, when = self._urlmap[url]
         else:
             when = now()
@@ -163,7 +163,7 @@ class GlobalHistory:
         return self._urlmap.get(url, (None, None))
 
     def inhistory_p(self, url):
-        return self._urlmap.has_key(url)
+        return url in self._urlmap
 
     def urls(self):
         return self._history[:]

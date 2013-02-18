@@ -713,7 +713,7 @@ class HashTable:
         else:
             index = 0
 
-        if self.bucket_cache.has_key(index):
+        if index in self.bucket_cache:
             if self.debug: print "return cached bucket for index", index
             return self.bucket_cache[index]
 
@@ -791,7 +791,7 @@ class HashTable:
                 print "Sequence#:     ", sequence
                 print "#Datagrams:    ", total
                 print "Error code:    ", err,
-                if error_map.has_key(err):
+                if err in error_map:
                     print "(%s)" % error_map[err],
                 print
                 print '-'*20
@@ -833,7 +833,7 @@ class HashTable:
         allflags = None
         allitems = []
         for i in range(1, expected+1):
-            if responses.has_key(i):
+            if i in responses:
                 (flags, items) = responses[i]
                 item = items[0]
                 #
@@ -1131,7 +1131,7 @@ def test(defargs = testsets[0]):
                 stuffvalue = hexstr(stuffvalue)
             else:
                 stuffvalue = repr(stuffvalue)
-            if data_map.has_key(stufftype):
+            if stufftype in data_map:
                 s = data_map[stufftype][9:]
             else:
                 s = "UNKNOWN(%d)" % stufftype

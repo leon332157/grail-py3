@@ -39,9 +39,9 @@ class Preferences:
 
     def Get(self, group, cmpnt):
         """Get preference or raise KeyError if not found."""
-        if self.mods.has_key(group) and self.mods[group].has_key(cmpnt):
+        if group in self.mods and cmpnt in self.mods[group]:
             return self.mods[group][cmpnt]
-        elif self.saved.has_key(group) and self.saved[group].has_key(cmpnt):
+        elif group in self.saved and cmpnt in self.saved[group]:
             return self.saved[group][cmpnt]
         else:
             raise KeyError, "Preference %s not found" % ((group, cmpnt),)
@@ -102,7 +102,7 @@ class Preferences:
             for c, v in comps.items():
                 if c not in deleted.get(g, ()):
                     self.saved[g][c] = v
-                elif self.saved.has_key(g):
+                elif g in self.saved:
                     # Deleted - remove from saved version:
                     self.saved[g].pop(c, None)
         # ... and reinit mods and deleted records:
@@ -128,7 +128,7 @@ class AllPreferences:
         Each callback will be invoked only once per concerned group per
         save (even if multiply registered for that group), and callbacks
         within a group will be invoked in the order they were registered."""
-        if self.callbacks.has_key(group):
+        if group in self.callbacks:
             if callback not in self.callbacks[group]:
                 self.callbacks[group].append(callback)
         else:

@@ -20,7 +20,7 @@ def extract_attribute(key, dict, default=None, conv=None, delete=1):
     dictionary upon successful extraction.
 
     """
-    if dict.has_key(key):
+    if key in dict:
         val = dict[key]
         if delete:
             del dict[key]
@@ -40,7 +40,7 @@ def extract_keyword(key, dict, default=None, conv=None):
     or cannot be converted, then DEFAULT is returned, otherwise the
     converted value is returned.  CONV is the conversion function.
     """
-    if dict.has_key(key):
+    if key in dict:
         if conv:
             try:
                 return conv(dict[key])

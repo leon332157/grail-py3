@@ -111,9 +111,9 @@ def load_image_internal(img_fn, greyscale, eps_fn):
         os.unlink(img_fn)
         raise EPSError('Could not identify image type.')
     cnv_key = (imgtype, (greyscale and 'grey') or 'color')
-    if not image_converters.has_key(cnv_key):
+    if cnv_key not in image_converters:
         cnv_key = (imgtype, 'grey')
-    if not image_converters.has_key(cnv_key):
+    if cnv_key not in image_converters:
         os.unlink(img_fn)
         raise EPSError('No converter defined for %s images.' % imgtype)
     img_command = image_converters[cnv_key]
@@ -193,7 +193,7 @@ def convert_gif_to_eps(cog, giffile, epsfile):
     The EPS image is stored in `epsfile' if possible, otherwise a temporary
     file is created.  The name of the file created is returned.
     """
-    if not image_converters.has_key(('gif', cog)):
+    if ('gif', cog) not in image_converters:
         raise EPSError("No conversion defined for %s GIFs." % cog)
     try:
         fp = open(epsfile, 'w')

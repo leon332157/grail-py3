@@ -364,7 +364,7 @@ class multi_transform:
             return url
         # check the paths:
         stored_url = urlparse.urlunparse((scheme, netloc, path, '', '', ''))
-        if self.__docs.has_key(stored_url):
+        if stored_url in self.__docs:
             return url
         if len(path) < len(self.__path):
             return url

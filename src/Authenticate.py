@@ -33,7 +33,7 @@ class AuthenticationManager:
         # response isa {}
 
         # first guess the scheme
-        if headers.has_key('www-authenticate'):
+        if 'www-authenticate' in headers:
             # assume it's basic
             headers['realm'] = \
                              self.basic_get_realm(headers['www-authenticate'])
@@ -45,7 +45,7 @@ class AuthenticationManager:
         return response
 
     def invalidate_credentials(self, headers, credentials):
-        if headers.has_key('www-authenticate'):
+        if 'www-authenticate' in headers:
             # assume it's basic
             headers['realm'] = \
                              self.basic_get_realm(headers['www-authenticate'])
@@ -69,11 +69,11 @@ class AuthenticationManager:
     def basic_credentials(self, data):
         response = {}
 
-        if data.has_key('realm') and data.has_key('request-uri'):
+        if 'realm' in data and 'request-uri' in data:
             scheme, netloc, path, nil, nil, nil = \
                     urlparse.urlparse(data['request-uri'])
             key = (netloc, data['realm'])
-            if self.basic_realms.has_key(key):
+            if key in self.basic_realms:
                 cookie = self.basic_cookie(self.basic_realms[key])
             else:
                 passwd = self.basic_user_dialog(data)
@@ -87,11 +87,11 @@ class AuthenticationManager:
         return response
 
     def basic_invalidate_credentials(self, headers, credentials):
-        if headers.has_key('realm') and headers.has_key('request-uri'):
+        if 'realm' in headers and 'request-uri' in headers:
             scheme, netloc, path, nil, nil, nil = \
                     urlparse.urlparse(headers['request-uri'])
             key = (netloc, headers['realm'])
-            if self.basic_realms.has_key(key):
+            if key in self.basic_realms:
                 test = self.basic_cookie(self.basic_realms[key])
                 if test == credentials:
                     del self.basic_realms[key]

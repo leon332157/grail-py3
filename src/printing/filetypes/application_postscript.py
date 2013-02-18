@@ -15,7 +15,7 @@ def embed_application_postscript(parser, attrs):
         return None
     type, typeopts = conv_mimetype(
         extract_keyword('type', attrs, conv=conv_normstring))
-    if typeopts.has_key("level"):
+    if "level" in typeopts:
         try:
             level = int(typeopts["level"])
         except ValueError:
@@ -25,7 +25,7 @@ def embed_application_postscript(parser, attrs):
     # this is Encapsulated PostScript; use it.
     image = None
     imageurl = parser.context.get_baseurl(data)
-    if parser._image_cache.has_key(imageurl):
+    if imageurl in parser._image_cache:
         image = parser._image_cache[imageurl]
     else:
         try:

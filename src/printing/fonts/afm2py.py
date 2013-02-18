@@ -128,7 +128,7 @@ def parse(filename, outdir):
             charnum = int(info[0])
             charname = info[6]
             width = int(info[3])
-            if charset.has_key(charname):
+            if charname in charset:
                 cwidths[charset[charname]] = width
             elif 0 <= charnum < 256:
                 cwidths[charnum] = width

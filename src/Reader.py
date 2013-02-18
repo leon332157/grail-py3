@@ -371,9 +371,9 @@ else:
 
 def get_encodings(headers):
     content_encoding = transfer_encoding = None
-    if headers.has_key("content-encoding"):
+    if "content-encoding" in headers:
         content_encoding = headers["content-encoding"].lower()
-    if headers.has_key("content-transfer-encoding"):
+    if "content-transfer-encoding" in headers:
         transfer_encoding = headers["content-transfer-encoding"].lower()
     return content_encoding, transfer_encoding
 
@@ -404,10 +404,10 @@ def support_encodings(content_encoding, transfer_encoding):
     """Return true iff both content and content-transfer encodings are
     supported."""
     if content_encoding \
-       and not content_decoding_wrappers.has_key(content_encoding):
+       and content_encoding not in content_decoding_wrappers:
         return 0
     if transfer_encoding \
-       and not transfer_decoding_wrappers.has_key(transfer_encoding):
+       and transfer_encoding not in transfer_decoding_wrappers:
         return 0
     return 1
 
@@ -519,7 +519,7 @@ class Reader(BaseReader):
             self.stop()
             return
 
-        if errcode in (301, 302) and headers.has_key('location'):
+        if errcode in (301, 302) and 'location' in headers:
             url = headers['location']
             if self.maxrestarts > 0:
                 # remember the original click location
@@ -548,13 +548,13 @@ class Reader(BaseReader):
             pass
         else:
             last_modified = None
-            if headers.has_key("last-modified"):
+            if "last-modified" in headers:
                 try: last_modified = ht_time.parse(headers["last-modified"])
                 except ValueError: pass
             bkmks.record_visit(self.url, last_modified)
 
         content_encoding, transfer_encoding = get_encodings(headers)
-        if headers.has_key('content-type'):
+        if 'content-type' in headers:
             content_type = headers['content-type']
             content_type, sep, _ = content_type.partition(';')
             if sep:
@@ -670,7 +670,7 @@ class Reader(BaseReader):
 
     def handle_auth_error(self, errcode, errmsg, headers):
         # Return nonzero if handle_error() should return now
-        if not headers.has_key('www-authenticate') \
+        if 'www-authenticate' not in headers \
            or self.maxrestarts <= 0:
             return
 
@@ -679,14 +679,14 @@ class Reader(BaseReader):
             cred_headers[k.lower()] = v
         cred_headers['request-uri'] = self.url
 
-        if self.params.has_key('Authorization'):
+        if 'Authorization' in self.params:
             self.app.auth.invalidate_credentials(cred_headers,
                                                  self.params['Authorization'])
             return
 
         self.stop()
         credentials = self.app.auth.request_credentials(cred_headers)
-        if credentials.has_key('Authorization'):
+        if 'Authorization' in credentials:
             for k,v in credentials.items():
                 self.params[k] = v
             self.restart(self.url)
@@ -810,7 +810,7 @@ class TransferDisplay:
         self.root.iconname("Download")
         #
         self.content_length = None
-        if headers.has_key('content-length'):
+        if 'content-length' in headers:
             self.content_length = int(headers['content-length'])
         self.create_widgets(url, filename, self.content_length)
         #

@@ -270,7 +270,7 @@ class PSStream:
             return
         if self._linestr:
             self.close_string()
-        if not self._font.fontobjs.has_key(font):
+        if font not in self._font.fontobjs:
             self._font.fontobjs[font] = fonts.font_from_name(font)
         fontobj = self._font.fontobjs[font]
         size = self.get_fontsize()

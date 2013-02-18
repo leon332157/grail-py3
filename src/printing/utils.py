@@ -44,7 +44,7 @@ def set_debugging(flag, subsystem=None):
 
 
 def get_debugging(subsystem=None):
-    if _subsystems.has_key(subsystem):
+    if subsystem in _subsystems:
         return _subsystems[subsystem]
     if subsystem:
         return get_debugging()

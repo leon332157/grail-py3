@@ -78,7 +78,7 @@ class parse_text_x_python:
             return
         self.setup_tags()
         ISTERMINAL = token.ISTERMINAL
-        wanted = self.__wanted_terminals.has_key
+        wanted = self.__wanted_terminals.__contains__
         tag_add = self.tag_add = self.__viewer.text.tag_add
         colorize = self.colorize
         prevline, prevcol = 0, 0
@@ -194,7 +194,7 @@ class parse_text_x_python:
         if self.__next_tag:
             self.tag_add(self.__next_tag, start, end)
             self.__next_tag = None
-        elif self.__keywords.has_key(nstr):
+        elif nstr in self.__keywords:
             tag, self.__next_tag = self.__keywords[nstr]
             self.tag_add(tag, start, end)
         elif ntype == token.STRING:

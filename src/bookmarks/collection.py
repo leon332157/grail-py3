@@ -96,15 +96,15 @@ class Collection:
             nodetype = node.get_nodetype()
             if hasattr(node, "id"):
                 id = node.id()
-                if self.__id_map.has_key(id):
+                if id in self.__id_map:
                     # this node must be relabeled:
                     new_id = self.new_id()
-                    while id_map.has_key(new_id):
+                    while new_id in id_map:
                         new_id = self.new_id()
                     node.set_id(new_id)
                     del id_map[id]
                     id_map[new_id] = node
-                    if ref_map.has_key(id):
+                    if id in ref_map:
                         ref_map[new_id] = ref_map.pop(id)
             if hasattr(node, "children"):
                 queue[len(queue):] = node.children()
@@ -117,7 +117,7 @@ class Collection:
         while 1:
             id = self.__id_format % i
             i = i + 1
-            if not self.__id_map.has_key(id):
+            if id not in self.__id_map:
                 break
         self.__next_id = i
         return id
@@ -133,7 +133,7 @@ class Collection:
             nodetype = node.get_nodetype()
             if nodetype == "Bookmark":
                 id = node.id()
-                if id_map.has_key(id):
+                if id in id_map:
                     raise NodeIDError("duplicate ID found: " + repr(id))
                 if id:
                     id_map[id] = node
@@ -144,7 +144,7 @@ class Collection:
                 node_map[key].append(node)
             elif nodetype == "Folder":
                 id = node.id()
-                if id_map.has_key(id):
+                if id in id_map:
                     raise NodeIDError("duplicate ID found: " + repr(id))
                 if id:
                     id_map[id] = node
@@ -154,7 +154,7 @@ class Collection:
                 queue[len(queue):] = node.children()
             elif nodetype == "Alias":
                 idref = node.idref()
-                if not id_map.has_key(idref):
+                if idref not in id_map:
                     need_ids.append(idref)
                 ref_map[idref].append(node)
         if need_ids:
@@ -168,7 +168,7 @@ class Collection:
 
     def add_Folder(self, node):
         id = node.id()
-        if self.__id_map.has_key(id):
+        if id in self.__id_map:
             raise NodeIDError("node ID already in ID map")
         if id is not None:
             self.__id_map[id] = node
@@ -241,7 +241,7 @@ class CopyWalker(walker.TreeWalker):
 
     def start_Alias(self, node):
         idref = node.idref()
-        if self.__id_map.has_key(idref):
+        if idref in self.__id_map:
             new_node = nodes.Alias(self.__id_map[idref])
         else:
             new_node = nodes.Alias()
