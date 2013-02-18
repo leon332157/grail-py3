@@ -24,7 +24,7 @@ class TracebackDialog:
         self.close_button.pack(side=BOTTOM, pady='1m', padx='1m',
                                anchor=anchor)
         self.close_button.focus_set()
-        self.label = Label(self.root, text="%s: %s" % (exc, str(val)))
+        self.label = Label(self.root, text="%s: %s" % (exc, val))
         self.label.pack(fill=X)
         self.text, self.text_frame = tktools.make_text_box(self.root, width=90)
         lines = traceback.format_exception(exc, val, tb)

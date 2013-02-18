@@ -515,7 +515,7 @@ class HashTable:
                     self._read_hash_table(fn)
                 except IOError, msg:
                     if self.debug:
-                        print "Error for %r: %s" % (fn, str(msg))
+                        print "Error for %r: %s" % (fn, msg)
                 else:
                     break
             else:

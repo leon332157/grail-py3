@@ -173,7 +173,7 @@ class AllPreferences:
             return typify(val, type_name)
         except TypeError:
             raise TypeError, ('%s should be %s: %r'
-                               % (str((group, cmpnt)), type_name, val))
+                               % ((group, cmpnt), type_name, val))
 
     def GetInt(self, group, cmpnt, factory=False):
         return self.GetTyped(group, cmpnt, "int", factory)

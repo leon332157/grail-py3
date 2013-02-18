@@ -492,8 +492,7 @@ class Browser:
         textwidget = self.viewer.text
         try:
             index = textwidget.index(SEL_FIRST)
-            index = '%s + %s chars' % (str(index),
-                                       '0' if backwards_flag else '1')
+            index = '%s + %d chars' % (index, 0 if backwards_flag else 1)
         except TclError:
             index = '1.0'
         length = IntVar(textwidget)
