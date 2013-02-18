@@ -14,7 +14,7 @@ XXX Main deficiencies:
 
 
 import string
-import sre
+import re
 
 import ftplib
 from urllib import unquote, splithost, splitport, splituser, \
@@ -203,7 +203,7 @@ class ftp_access:
             return ""
         lines, self.lines = self.lines[:-1], self.lines[-1:]
         data = ""
-        prog = sre.compile(self.listing_pattern)
+        prog = re.compile(self.listing_pattern)
         for line in lines:
             if self.debuglevel > 2:
                 print "*getl*", `line`
@@ -336,9 +336,7 @@ class GrailFTP(ftplib.FTP):
     #  Hackish subclass of ftplib.FTP to allow the transfer size to be
     #  available for the creation of a content-length header.
     #
-    import sre
-    _size_re = sre.compile("\\(([0-9][0-9]*) bytes\\)", sre.IGNORECASE)
-
+    _size_re = re.compile("\\(([0-9][0-9]*) bytes\\)", re.IGNORECASE)
     _xfer_size = None
 
     def getresp(self):

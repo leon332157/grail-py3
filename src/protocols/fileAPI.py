@@ -117,7 +117,7 @@ class file_access:
         lines = fp.readlines()
         fp.close()
         import StringIO
-        import sre
+        import re
         from urllib import quote
         from urlparse import urljoin
         def escape(s):
@@ -126,7 +126,7 @@ class file_access:
             s = s.replace('<', '&lt;')
             s = s.replace('>', '&gt;')
             return s
-        prog = sre.compile(self.listing_pattern)
+        prog = re.compile(self.listing_pattern)
         data = self.listing_header % {'url': self.url,
                                       'pathname': escape(self.pathname)}
         for line in lines:

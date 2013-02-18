@@ -55,7 +55,7 @@ I think yes, but this means repacking the request.
 # I didn't see a caching of authority handles and/or service handles,
 # this would be a tremendous increase for handle resolution.
 
-import whrandom
+import random
 import md5
 import os
 import select
@@ -464,7 +464,7 @@ class SessionTag:
     """
     def session_tag(self):
         """Implemented as in create_session_tag()."""
-        return whrandom.randint(0, 32767)
+        return random.randint(0, 32767)
 
 
 

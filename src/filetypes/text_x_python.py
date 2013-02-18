@@ -72,7 +72,7 @@ class parse_text_x_python:
         self.show("Colorizing Python source text - parsing...")
 	import parser
 	try:
-	    nodes = parser.ast2list(parser.suite(self.__source), 1)
+	    nodes = parser.st2list(parser.suite(self.__source), 1)
 	except parser.ParserError, err:
 	    self.__viewer.context.message(
 		"Syntax error in Python source: %s" % err)
