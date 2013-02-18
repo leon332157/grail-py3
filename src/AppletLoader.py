@@ -116,7 +116,7 @@ class AppletLoader:
             value = int(value, 0)
         except ValueError:
             try:
-                value = long(value, 0)
+                value = int(value, 0)
             except ValueError:
                 try:
                     value = float(value)

@@ -36,7 +36,7 @@ EXPIRATION_SECS = GLOBAL_HISTORY_EXPIRATION_DAYS * 60 * 60 * 24
 
 
 def now():
-    return int(time.time() % (1L<<31))
+    return int(time.time() % (1<<31))
 
 
 

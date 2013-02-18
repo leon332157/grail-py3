@@ -94,7 +94,7 @@ class CookieDB:
             if len(parts) != 7:
                 raise FormatError("wrong number of fields", lineno)
             domain, isdomain, path, secure, expires, name, value = parts
-            expires = long(expires)
+            expires = int(expires)
             # This doesn't perform the same test for true, but perform the
             # same test Mozilla makes.
             secure = secure != 'FALSE'
@@ -186,7 +186,7 @@ class CookieDB:
         database size is adjusted, so only call this on lists which are
         part of the database.  The resulting list is limited to the number
         of cookies allowed for a single domain."""
-        now = long(time.time())
+        now = int(time.time())
         old_len = len(cookies)
         indexes = range(old_len)
         indexes.reverse()
@@ -284,7 +284,7 @@ class Cookie:
         self.isdomain = domain and domain[0] == '.'
         self.path = path
         self.secure = secure
-        self.expires = expires and long(expires) or None
+        self.expires = expires and int(expires) or None
         self.name = name
         self.value = value
         if others:
@@ -357,7 +357,7 @@ def parse_cookie(s):
         elif k == 'domain':
             domain = v.lower()
         elif k == 'max-age':
-            max_age = long(v)
+            max_age = int(v)
         elif k == 'expires':
             # don't fall into 'others'
             pass
@@ -380,7 +380,7 @@ def parse_cookie(s):
             raise ValueError, "too few components in domain specification"
     # prefer max-age over expires
     if max_age:
-        expires = long(time.time()) + max_age
+        expires = int(time.time()) + max_age
     others["max_age"] = max_age
     return Cookie(domain, path, secure, expires, name, value, others), s
 

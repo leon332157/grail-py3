@@ -708,8 +708,7 @@ class HashTable:
             digest = md5.new(hdl).digest()
             u = xdrlib.Unpacker(digest)
             index = u.unpack_uint()
-            index = (index&0xFFFFFFFFL) >> (32 - self.num_of_bits)
-            index = int(index)
+            index = (index&0xFFFFFFFF) >> (32 - self.num_of_bits)
         else:
             index = 0
 
@@ -1110,20 +1109,20 @@ def test(defargs = testsets[0]):
 
         if debug: print replyflags, items
 
-        bits = 0L
+        bits = 0
         i = 0
         for c in replyflags:
-            bits = bits | (long(ord(c)) << i)
+            bits = bits | (ord(c) << i)
             i = i + 8
 
         print "flags:", hex(bits),
         for i in range(8 * len(replyflags)):
-            if bits & (1L<<i):
+            if bits & (1<<i):
                 print flags_map.get(i, i),
         print
 
-        if bits & (1L<<HDL_NONMUTABLE): print "\tSTATIC"
-        if bits & (1L<<HDL_DISABLED): print "\tDISABLED"
+        if bits & (1<<HDL_NONMUTABLE): print "\tSTATIC"
+        if bits & (1<<HDL_DISABLED): print "\tDISABLED"
 
         for stufftype, stuffvalue in items:
             if stufftype in (HDL_TYPE_SERVICE_POINTER,
