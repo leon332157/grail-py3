@@ -1,18 +1,18 @@
-import bookmarks
-import bookmarks.collection
-import bookmarks.nodes
+from . import bookmarks
+from .bookmarks import collection
+from .bookmarks import nodes
 
 import FileDialog
 import os
 import string
 import sys
 import time
-import tktools
+from . import tktools
 import re
 
 from Tkinter import *
-from grailutil import *
-from Outliner import OutlinerViewer, OutlinerController
+from .grailutil import *
+from .Outliner import OutlinerViewer, OutlinerController
 
 
 DEFAULT_NETSCAPE_BM_FILE = os.path.join(gethome(), '.netscape-bookmarks.html')
@@ -307,10 +307,10 @@ class BookmarksIO:
             self.set_format(saver.get_filetype())
             if saver.export():
                 # remove the added/modified/visited information:
-                import bookmarks.exporter
+                from .bookmarks import exporter
                 collection = self.__controller._collection.copytree(root)
                 root = collection.get_root()
-                exporter = bookmarks.exporter.ExportWalker(root)
+                exporter = exporter.ExportWalker(root)
                 exporter.walk()
             self.__save_to_file(root, savefile)
             if not export:
@@ -464,7 +464,7 @@ class BookmarksDialog:
         itembtn = Menubutton(self._menubar, name='item')
         itembtn.pack(side=LEFT)
         itemmenu = Menu(itembtn, name="menu")
-        import SearchMenu
+        from . import SearchMenu
         SearchMenu.SearchMenu(itemmenu, self._frame, self._controller)
         itemmenu.add_separator()
         itemmenu.add_command(label="Add Current",
@@ -796,7 +796,7 @@ class BookmarksController(OutlinerController):
     _listbox = None
 
     def __init__(self, app):
-        default_root = bookmarks.nodes.Folder()
+        default_root = nodes.Folder()
         default_root.set_title(username() + " Bookmarks")
         OutlinerController.__init__(self, default_root)
         self._master = master = app.root
@@ -896,11 +896,11 @@ class BookmarksController(OutlinerController):
             except bookmarks.BookmarkFormatError:
                 pass
         if not root:
-            root = bookmarks.nodes.Folder()
+            root = nodes.Folder()
             root.set_title(username() + " Bookmarks")
             self._iomgr.set_filename(DEFAULT_GRAIL_BM_FILE)
         self.set_root(root)
-        self._collection = bookmarks.collection.Collection(root)
+        self._collection = collection.Collection(root)
         self._initialized_p = True
 
     def _on_new_root(self):
@@ -912,7 +912,7 @@ class BookmarksController(OutlinerController):
         node = self.viewer().node(0)
         self.set_modflag(False)
         if node: self.viewer().select_node(node)
-        self._collection = bookmarks.collection.Collection(self.root())
+        self._collection = collection.Collection(self.root())
 
     def load(self, usedefault=False):
         root, reader = self._iomgr.load(usedefault=usedefault)
@@ -953,7 +953,7 @@ class BookmarksController(OutlinerController):
 
     def importBookmarks(self, event=None):
         # need to get URL or filename here...
-        import OpenURIDialog
+        from . import OpenURIDialog
         dialog = OpenURIDialog.OpenURIDialog(
             self._master, title="Import Bookmarks Dialog", new=False)
         filename, new = dialog.go()
@@ -1040,7 +1040,7 @@ class BookmarksController(OutlinerController):
         node, selection = self._get_selected_node()
         if not node: return
         if node.leaf_p():
-            from Browser import Browser
+            from .Browser import Browser
             self.goto_node(node, Browser(self._app.root, self._app))
         else:
             self.toggle_node_expansion(node)
@@ -1131,7 +1131,7 @@ class BookmarksController(OutlinerController):
             id = node.id()
             if not id:
                 node.set_id(self._collection.new_id())
-            self.insert_node(bookmarks.nodes.Alias(node))
+            self.insert_node(nodes.Alias(node))
 
     def add_current(self, event=None):
         # create a new node for the page in the current browser
@@ -1144,7 +1144,7 @@ class BookmarksController(OutlinerController):
         headers = browser.context.get_headers()
         modified = headers.get("last-modified")
         if isinstance(modified, str):
-            import ht_time
+            from . import ht_time
             try:
                 modified = ht_time.parse(modified)
             except:
@@ -1157,7 +1157,7 @@ class BookmarksController(OutlinerController):
         # into the tree, updating the listbox
         now = int(time.time())
         title = title or self._app.global_history.lookup_url(url)[0] or url
-        node = bookmarks.nodes.Bookmark()
+        node = nodes.Bookmark()
         node.set_title(title)
         node.set_uri(url)
         node.set_add_date(now)
@@ -1228,13 +1228,13 @@ class BookmarksController(OutlinerController):
     def insert_separator(self, event=None):
         node, selection = self._get_selected_node()
         if not node: return
-        newnode = bookmarks.nodes.Separator()
+        newnode = nodes.Separator()
         self._insert_at_node(node, newnode)
 
     def insert_header(self, event=None):
         node, selection = self._get_selected_node()
         if not node: return
-        newnode = bookmarks.nodes.Folder()
+        newnode = nodes.Folder()
         newnode.set_title('<Category>')
         newnode.set_add_date(int(time.time()))
         self._collection.add_Folder(newnode)
@@ -1245,7 +1245,7 @@ class BookmarksController(OutlinerController):
     def insert_entry(self, event=None):
         node, selection = self._get_selected_node()
         if not node: return
-        newnode = bookmarks.nodes.Bookmark()
+        newnode = nodes.Bookmark()
         newnode.set_title('<Entry>')
         newnode.set_add_date(int(time.time()))
         self._insert_at_node(node, newnode)

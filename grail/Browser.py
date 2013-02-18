@@ -3,12 +3,12 @@
 
 import os
 import sys
-import grailutil
+from . import grailutil
 
 from Tkinter import *
-import tktools
+from . import tktools
 
-from Viewer import Viewer
+from .Viewer import Viewer
 
 
 LOGO_IMAGES = "logo:"
@@ -157,7 +157,7 @@ class Browser:
         menu.add_separator()
         self._menucmd(menu, "Save As...", "S", self.save_as_command)
         self._menucmd(menu, "Print...", "P", self.print_command)
-        import DocumentInfo
+        from . import DocumentInfo
         self._menucmd(menu, "Document Info...", "D",
                       DocumentInfo.DocumentInfoCommand(self))
         menu.add_separator()
@@ -177,16 +177,16 @@ class Browser:
 
     def create_menu_search(self, menu):
         menu.grail_browser = self       # Applet compatibility
-        import SearchMenu
+        from . import SearchMenu
         SearchMenu.SearchMenu(menu, self.root, self)
 
     def create_menu_bookmarks(self, menu):
         menu.grail_browser = self # Applet compatibility
-        import BookmarksGUI
+        from . import BookmarksGUI
         self.bookmarksmenu_menu = BookmarksGUI.BookmarksMenu(menu)
 
     def create_menu_preferences(self, menu):
-        from PrefsPanels import PrefsPanelsMenu
+        from .PrefsPanels import PrefsPanelsMenu
         PrefsPanelsMenu(menu, self)
 
     def create_menu_help(self, menu):
@@ -342,7 +342,7 @@ class Browser:
         return b
 
     def open_uri_command(self, event=None):
-        import OpenURIDialog
+        from . import OpenURIDialog
         dialog = OpenURIDialog.OpenURIDialog(self.root)
         uri, new = dialog.go()
         if uri:

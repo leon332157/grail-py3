@@ -1,15 +1,15 @@
 """Context class."""
 
-import History
-import Reader
-import grailutil
+from . import History
+from . import Reader
+from . import grailutil
 import time
 import math
 import urllib
 import re
 
-from Cursors import *
-from grailbase.uricontext import URIContext
+from .Cursors import *
+from .grailbase.uricontext import URIContext
 from urlparse import urldefrag
 
 
@@ -292,7 +292,7 @@ class Context(URIContext):
             return image
 
         # it's not in the cache.
-        from AsyncImage import AsyncImage
+        from .AsyncImage import AsyncImage
         try:
             image = AsyncImage(self, url, reload, width=width, height=height,
                                master=self.root)
@@ -371,7 +371,7 @@ class Context(URIContext):
         self.set_postdata(data)
         global LAST_CONTEXT
         LAST_CONTEXT = self
-        from Reader import Reader
+        from .Reader import Reader
         Reader(self, url, method, params, show_source, reload, data, scrollpos)
 
     # Applet Protocol Handler interface
@@ -441,13 +441,13 @@ class Context(URIContext):
     def print_document(self):
         # File/Print...
         if self.busycheck(): return
-        import PrintDialog
+        from . import PrintDialog
         PrintDialog.PrintDialog(self,
                                 self.get_url(),
                                 self.get_title())
 
     def view_source(self):
-        from Browser import Browser
+        from .Browser import Browser
         browser = Browser(self.app.root, self.app, height=24)
         browser.context.load(self.get_url(), show_source=True)
 

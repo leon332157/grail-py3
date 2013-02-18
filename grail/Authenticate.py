@@ -4,7 +4,7 @@ To start, this is used by the HTTP api to perform basic access authorization.
 """
 
 from Tkinter import *
-import tktools
+from . import tktools
 import urlparse
 import base64
 import re

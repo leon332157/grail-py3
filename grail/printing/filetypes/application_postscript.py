@@ -1,11 +1,11 @@
 __version__ = '$Revision: 1.7 $'
 
-import sgml.HTMLParser
+from ...sgml import HTMLParser
 import sys
 
-from grailbase.utils import conv_mimetype
+from ...grailbase.utils import conv_mimetype
 from .. import epstools
-from sgml.utils import *
+from ...sgml.utils import *
 
 
 def embed_application_postscript(parser, attrs):
@@ -40,7 +40,7 @@ def embed_application_postscript(parser, attrs):
         width = extract_keyword('width', attrs, conv=conv_integer)
         height = extract_keyword('height', attrs, conv=conv_integer)
         parser.print_image(image, width, height)
-        return sgml.HTMLParser.Embedding()
+        return HTMLParser.Embedding()
 
 
 def load_eps_object(parser, imageurl):

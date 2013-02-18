@@ -29,15 +29,15 @@ be assumed, giving the option to cancel.
 
 """
 
-from Cursors import CURSOR_WAIT
+from .Cursors import CURSOR_WAIT
 from Tkinter import *
-import grailutil
+from . import grailutil
 import os
-import printing.paper
-import printing.settings
-import Reader
+from .printing import paper
+from .printing import settings as printing_settings
+from . import Reader
 import sys
-import tktools
+from . import tktools
 from functools import reduce
 
 
@@ -141,14 +141,14 @@ plain text if you elect to continue."""
 class RealPrintDialog:
 
     def __init__(self, context, url, title, infp, ctype):
-        import tktools
+        from . import tktools
         #
         self.infp = infp
         self.ctype = ctype
         self.context = context
         self.baseurl = context.get_baseurl()
         self.prefs = context.app.prefs
-        self.settings = printing.settings.get_settings(context.app.prefs)
+        self.settings = printing_settings.get_settings(context.app.prefs)
         if USER_DATA_DIR not in self.settings.user_data_dirs:
             self.settings.user_data_dirs.append(USER_DATA_DIR)
         settings = self.settings
@@ -194,7 +194,7 @@ class RealPrintDialog:
             fr.pack(fill=X)
             self.orientation = StringVar(top)
             self.orientation.set(settings.orientation.capitalize())
-            opts = printing.paper.paper_rotations.keys()
+            opts = paper.paper_rotations.keys()
             opts.sort()
             opts = tuple(map(str.capitalize, opts))
             Label(fr, text="Orientation: ", width=13, anchor=E).pack(side=LEFT)
@@ -320,8 +320,8 @@ class RealPrintDialog:
 
     def print_to_fp(self, fp):
         # do the printing
-        from printing import paper
-        from printing import PSWriter
+        from .printing import paper
+        from .printing import PSWriter
         #
         self.update_settings()
         if self.ctype == "application/postscript":

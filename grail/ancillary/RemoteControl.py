@@ -126,7 +126,7 @@ import os
 import socket
 import re
 from Tkinter import tkinter
-from grailutil import *
+from .grailutil import *
 from os import getenv
 
 # The file structure.  Modeled after X11
@@ -285,7 +285,7 @@ class Controller:
     def _do_load(self, uri, in_new_window=False):
         target = ""
         def _new_browser(b):
-            from Browser import Browser
+            from .Browser import Browser
             return Browser(b.master)
 
         if " " in uri:

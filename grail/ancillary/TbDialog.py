@@ -1,6 +1,6 @@
 """Modeless dialog displaying exception and traceback."""
 
-import tktools
+from . import tktools
 import traceback
 
 from Tkinter import *

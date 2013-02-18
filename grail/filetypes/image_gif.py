@@ -12,8 +12,8 @@ need a way for the user to STOP the animation!
 The files Grail/*.py from the PIL distribution should be installed in the
 same directory as this file.
 """
-import AsyncImage
-import grailutil
+from .. import AsyncImage
+from .. import grailutil
 import os
 import sys
 import tempfile

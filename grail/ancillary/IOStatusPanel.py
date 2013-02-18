@@ -1,5 +1,5 @@
 from Tkinter import *
-import tktools
+from . import tktools
 
 class IOStatusPanel:
 

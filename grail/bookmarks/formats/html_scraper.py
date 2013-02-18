@@ -6,11 +6,11 @@ __version__ = '$Revision: 1.5 $'
 from .. import nodes
 import urlparse
 
-import sgml.SGMLHandler
-import sgml.SGMLParser
+from ...sgml import SGMLHandler
+from ...sgml import SGMLParser
 
 
-class Parser(sgml.SGMLHandler.BaseSGMLHandler):
+class Parser(SGMLHandler.BaseSGMLHandler):
     __buffer = ''
     __baseurl = None
 
@@ -18,7 +18,7 @@ class Parser(sgml.SGMLHandler.BaseSGMLHandler):
 
     def __init__(self, filename=None):
         self._filename = filename
-        self.sgml_parser = sgml.SGMLParser.SGMLParser(gatherer=self)
+        self.sgml_parser = SGMLParser.SGMLParser(gatherer=self)
         self.__root = nodes.Folder()
         self.__root.expand()
 

@@ -4,7 +4,7 @@ __version__ = '$Revision: 2.16 $'
 
 import re
 import Tkinter
-import tktools
+from . import tktools
 import urlparse
 from . import CacheMgr
 
@@ -44,7 +44,7 @@ class DocumentInfoDialog:
         s = ""
         for k, v in items:
             if k == 'date' and isinstance(v, CacheMgr.HTTime):
-                import ht_time
+                from . import ht_time
                 v = ht_time.unparse(v.get_secs())
             s = "%s%s:\t%s\n" % (s, k, v)
         stretch = self.add_text_field("Response headers", s, "headers")

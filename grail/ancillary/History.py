@@ -1,11 +1,11 @@
 """Data structures for History manipulation"""
 
 from Tkinter import *
-import tktools
+from . import tktools
 import os
 import sys
 import time
-from grailutil import *
+from .grailutil import *
 from urlparse import urldefrag
 
 
@@ -254,7 +254,7 @@ class HistoryDialog:
     def _goto_new(self, event=None):
         list = self._listbox.curselection()
         if len(list) > 0:
-            from Browser import Browser
+            from .Browser import Browser
             browser = Browser(self._context.app.root, self._context.app)
             self._load_url(list[0], browser.context)
 

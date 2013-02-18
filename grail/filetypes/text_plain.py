@@ -2,8 +2,8 @@
 __version__ = '$Revision: 2.8 $'
 
 import formatter
-import grailutil
-import Reader
+from .. import grailutil
+from .. import Reader
 
 
 def parse_text_plain(*args, **kw):

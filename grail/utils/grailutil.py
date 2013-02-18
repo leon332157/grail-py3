@@ -8,9 +8,9 @@ import os
 # now get them from sgml.utils since Grail expects them to be here.  One is
 # in the printing package.
 
-from grailbase.utils import *
-from sgml.utils import *
-from printing.utils import conv_fontsize
+from .grailbase.utils import *
+from .sgml.utils import *
+from .printing.utils import conv_fontsize
 
 
 def complete_url(url):

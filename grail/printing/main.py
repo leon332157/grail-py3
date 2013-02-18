@@ -28,7 +28,7 @@ from . import PSWriter
 
 from . import paper as printing_paper  # 'paper' used as a local
 
-from grailbase.uricontext import URIContext
+from ..grailbase.uricontext import URIContext
 
 
 MULTI_DO_PAGE_BREAK = True                 # changing this breaks stuff
@@ -310,7 +310,7 @@ def get_ctype(app, url, infp):
 
 def load_rcscript():
     try:
-        import grailutil
+        from .. import grailutil
     except ImportError:
         return
     graildir = grailutil.getgraildir()
@@ -458,13 +458,13 @@ def _onoff(bool):
 #  main() & relations....
 
 
-import BaseApplication
+from .. import BaseApplication
 
 
 class Application(BaseApplication.BaseApplication):
     def __init__(self, prefs=None):
         BaseApplication.BaseApplication.__init__(self, prefs)
-        import GlobalHistory
+        from .. import GlobalHistory
         self.global_history = GlobalHistory.GlobalHistory(
             self, readonly=True)
 

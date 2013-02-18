@@ -1,6 +1,6 @@
 __version__ = '$Revision: 1.5 $'
 
-import Reader
+from ... import Reader
 
 
 class PrintingTextParser(Reader.TextParser):
@@ -58,7 +58,7 @@ def parse_text(writer, settings, context):
 
 def add_options(dialog, settings, top):
     import Tkinter
-    import tktools
+    from ... import tktools
     textfr = tktools.make_group_frame(top, "textoptions",
                                       "Text options:", fill=Tkinter.X)
     #  The titleentry widget is used to set the title for text/plain

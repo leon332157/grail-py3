@@ -23,7 +23,7 @@ def _urljoin(a, b):
     sa = __splittype(a)
     sb = __splittype(b)
     if sa and (sa == sb or not sb):
-        import protocols
+        from .. import protocols
         joiner = protocols.protocol_joiner(sa)
         if joiner: return joiner(a, b)
     return __default_joiner(a, b)

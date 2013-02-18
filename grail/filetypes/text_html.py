@@ -3,6 +3,6 @@
 __version__ = '$Revision: 2.6 $'
 
 
-import GrailHTMLParser
+from .. import GrailHTMLParser
 
 parse_text_html = GrailHTMLParser.GrailHTMLParser

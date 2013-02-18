@@ -19,7 +19,7 @@ import ftplib
 from urllib import unquote, splithost, splitport, splituser, \
      splitpasswd, splitattr, splitvalue, quote
 from urlparse import urljoin
-import grailutil
+from .. import grailutil
 import socket
 import html
 from xml.sax import saxutils

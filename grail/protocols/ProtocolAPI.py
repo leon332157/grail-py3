@@ -22,7 +22,7 @@ non-proxy usage, the url parameter is a string.)
 import re
 import socket
 from urllib import splittype, splithost, splitport
-import grailutil
+from .. import grailutil
 
 #
 # list of valid scheme environment variables for proxies
@@ -131,9 +131,9 @@ def protocol_access(url, mode, params, data=None):
         raise IOError, ("socket error", msg)
 
 
-import grailbase.extloader
+from ..grailbase import extloader
 
-class ProtocolLoader(grailbase.extloader.ExtensionLoader):
+class ProtocolLoader(extloader.ExtensionLoader):
     class ProtocolInfo:
         def __init__(self, scheme, access, join):
             self.scheme = scheme

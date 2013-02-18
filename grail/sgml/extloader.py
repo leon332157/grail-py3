@@ -3,11 +3,11 @@ of HTML/SGML element start/end events.
 """
 __version__ = '$Revision: 1.4 $'
 
-import grailbase.extloader
+from ..grailbase import extloader as grailbase_extloader
 from . import SGMLHandler
 
 
-class TagExtensionLoader(grailbase.extloader.ExtensionLoader):
+class TagExtensionLoader(grailbase_extloader.ExtensionLoader):
     def find(self, name):
         mod = self.find_module(name)
         taginfo = None

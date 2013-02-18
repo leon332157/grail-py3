@@ -2,13 +2,13 @@
 
 import sys
 from Tkinter import *
-import tktools
+from . import tktools
 import formatter
-from Context import Context, SimpleContext
-from Cursors import *
+from .Context import Context, SimpleContext
+from .Cursors import *
 from collections import Iterable
 from urlparse import urljoin, urlparse
-from Stylesheet import UndefinedStyle
+from .Stylesheet import UndefinedStyle
 
 
 MIN_IMAGE_LEADER = "\240"               # Non-spacing space
@@ -196,7 +196,7 @@ class Viewer(formatter.AbstractWriter):
         self.smoothscroll = bars and self.context.app.prefs.GetBoolean(
             "browser", "smooth-scroll-hack")
         if self.smoothscroll:
-            from supertextbox import make_super_text_box
+            from .supertextbox import make_super_text_box
             self.text, self.frame = make_super_text_box(self.master,
                                                       width=width,
                                                       height=height,
@@ -458,7 +458,7 @@ class Viewer(formatter.AbstractWriter):
             self.text.insert(END, self.pendingdata, self.flowingtags)
             self.pendingdata = ''
         if self.smoothscroll:
-            from supertextbox import resize_super_text_box
+            from .supertextbox import resize_super_text_box
             resize_super_text_box(frame=self.frame)
         self.text['state'] = DISABLED
         if update:
@@ -699,7 +699,7 @@ class Viewer(formatter.AbstractWriter):
         if url:
             url, target = self.split_target(url)
             self.master.update_idletasks()
-            from Browser import Browser
+            from .Browser import Browser
             app = self.context.app
             b = Browser(app.root, app)
             b.context.load(self.context.get_baseurl(url))
@@ -887,7 +887,7 @@ class ViewerMenu:
         menu.add_separator()
         menu.add_command(label="View Frame Source",
                          command=context.view_source)
-        import DocumentInfo
+        from . import DocumentInfo
         menu.add_command(label="Document Info...",
                          command=DocumentInfo.DocumentInfoCommand(viewer))
         self.__source_item = menu.index(END)
@@ -990,7 +990,7 @@ class ViewerMenu:
         try:
             bmarks = self.__context.browser.app.bookmarks_controller
         except AttributeError:
-            import BookmarksGUI
+            from . import BookmarksGUI
             bmarks = BookmarksGUI.BookmarksController(
                 self.__context.browser.app)
             self.__context.browser.app.bookmarks_controller = bmarks
@@ -1041,7 +1041,7 @@ class ViewerMenu:
             self.__viewer.remove_temp_tag()
 
     def __open_in_new(self, event=None):
-        from Browser import Browser
+        from .Browser import Browser
         url = self.__context.get_url()
         b = Browser(self.__context.browser.master, self.__context.app)
         b.context.load(url)

@@ -8,13 +8,13 @@
 from Tkinter import *
 import os
 import urllib
-import tktools
+from . import tktools
 import formatter
-import Viewer
-import grailutil
+from . import Viewer
+from . import grailutil
 
-from grailutil import extract_attribute, extract_keyword
-from sgml.HTMLParser import HTMLParser, HeaderNumber
+from .grailutil import extract_attribute, extract_keyword
+from .sgml.HTMLParser import HTMLParser, HeaderNumber
 
 
 AS_IS = formatter.AS_IS
@@ -56,7 +56,7 @@ class GrailHTMLParser(HTMLParser):
             init_module(self.app.prefs)
         self._ids = {}
         # Hackery so reload status can be reset when all applets are loaded
-        import AppletLoader
+        from . import AppletLoader
         self.reload1 = self.reload and AppletLoader.set_reload(self.context)
         if self.reload1:
             self.reload1.attach(self)
@@ -191,7 +191,7 @@ class GrailHTMLParser(HTMLParser):
         usemap = extract('usemap', attrs, conv=str.strip)
         if usemap:
             if usemap[0] == '#': value = usemap[1:].strip()
-            from ImageMap import MapThunk
+            from .ImageMap import MapThunk
             usemap = MapThunk(self.context, usemap)
             if border is None: border = 2
         self.handle_image(src, alt, usemap, ismap,
@@ -203,7 +203,7 @@ class GrailHTMLParser(HTMLParser):
         if not self.app.prefs.GetBoolean("browser", "load-images"):
             self.handle_data(alt)
             return
-        from ImageWindow import ImageWindow
+        from .ImageWindow import ImageWindow
         window = ImageWindow(self.viewer, self.anchor, src, alt or "(Image)",
                              usemap, ismap, align, width, height,
                              border, self.target, reload)
@@ -234,7 +234,7 @@ class GrailHTMLParser(HTMLParser):
         HTMLParser.start_body(self, attrs)
         if not self.app.prefs.GetBoolean('parsing-html', 'honor-colors'):
             return
-        from grailutil import conv_normstring
+        from .grailutil import conv_normstring
         bgcolor = extract_keyword('bgcolor', attrs, conv=conv_normstring)
         if bgcolor:
             clr = self.configcolor('background', bgcolor)
@@ -371,7 +371,7 @@ class GrailHTMLParser(HTMLParser):
     def start_map(self, attrs):
         # ignore maps without names
         if 'name' in attrs:
-            from ImageMap import MapInfo
+            from .ImageMap import MapInfo
             self.current_map = MapInfo(attrs['name'])
         else:
             self.badhtml = True
@@ -699,7 +699,7 @@ class IconicEntityLinker:
         viewer = self.__viewer
         url = viewer.context.get_baseurl(self.__url)
         viewer.master.update_idletasks()
-        import Browser
+        from . import Browser
         app = viewer.context.app
         b = Browser.Browser(app.root, app)
         b.context.load(url)

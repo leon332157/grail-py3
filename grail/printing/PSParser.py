@@ -7,8 +7,8 @@ import urlparse
 
 from formatter import AbstractFormatter
 from formatter import AS_IS
-from sgml.HTMLParser import HTMLParser
-from sgml.utils import *
+from ..sgml.HTMLParser import HTMLParser
+from ..sgml.utils import *
 
 from . import epstools                         # in package
 from . import utils
@@ -47,7 +47,7 @@ class PrintingHTMLParser(HTMLParser):
             for k, v in self.fontdingbats.items():
                 self.dingbats[(k, 'grey')] = v
                 self.dingbats[(k, 'color')] = v
-            import Greek
+            from .. import Greek
             for k, v in Greek.entitydefs.items():
                 tup = (v, 'Symbol')
                 self.dingbats[(k, 'grey')] = tup

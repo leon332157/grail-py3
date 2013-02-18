@@ -1,6 +1,6 @@
 """File reader class -- read from a URL to a file in the background."""
 
-from BaseReader import BaseReader
+from .BaseReader import BaseReader
 
 class FileReader(BaseReader):
 

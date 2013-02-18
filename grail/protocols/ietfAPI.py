@@ -3,7 +3,7 @@ draft-ietf-urn-ietf-07.txt (work in progress).
 """
 __version__ = '$Revision: 2.5 $'
 
-import grailutil
+from .. import grailutil
 from . import nullAPI
 import os
 from . import ProtocolAPI

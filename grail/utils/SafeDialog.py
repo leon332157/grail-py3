@@ -4,7 +4,7 @@
 # - Resizing behavior is ugly
 
 from Tkinter import *
-import tktools
+from . import tktools
 
 class Dialog:
 

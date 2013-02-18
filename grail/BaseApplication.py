@@ -11,33 +11,33 @@ __version__ = '$Revision: 2.17 $'
 import keyword
 import os
 
-import grailbase.app
-import grailbase.mtloader
-import grailbase.utils
+from .grailbase import app
+from .grailbase import mtloader
+from .grailbase import utils
 
-import sgml.extloader
+from .sgml import extloader
 
 # make extension packages from these:
-import filetypes
-import html
-import printing.filetypes
-import printing.htmltags
-import protocols
-import protocols.ProtocolAPI
+from . import filetypes
+from . import html
+from .printing import filetypes as printing_filetypes
+from .printing import htmltags as printing_htmltags
+from . import protocols
+from .protocols import ProtocolAPI
 
 
-class BaseApplication(grailbase.app.Application):
+class BaseApplication(app.Application):
     def __init__(self, prefs=None):
-        grailbase.app.Application.__init__(self, prefs)
-        loader = sgml.extloader.TagExtensionLoader(html)
+        app.Application.__init__(self, prefs)
+        loader = extloader.TagExtensionLoader(html)
         self.add_loader("html.viewer", loader)
-        loader = sgml.extloader.TagExtensionLoader(printing.htmltags)
+        loader = extloader.TagExtensionLoader(printing_htmltags)
         self.add_loader("html.postscript", loader)
-        loader = grailbase.mtloader.MIMEExtensionLoader(filetypes)
+        loader = mtloader.MIMEExtensionLoader(filetypes)
         self.add_loader("filetypes", loader)
-        loader = grailbase.mtloader.MIMEExtensionLoader(printing.filetypes)
+        loader = mtloader.MIMEExtensionLoader(printing_filetypes)
         self.add_loader("printing.filetypes", loader)
-        loader = protocols.ProtocolAPI.ProtocolLoader(protocols)
+        loader = ProtocolAPI.ProtocolLoader(protocols)
         self.add_loader("protocols", loader)
 
         # cache of available extensions
@@ -51,7 +51,7 @@ class BaseApplication(grailbase.app.Application):
             pass
         else:
             try:
-                content_type, opts = grailbase.utils.conv_mimetype(mimetype)
+                content_type, opts = utils.conv_mimetype(mimetype)
             except:
                 pass
             else:

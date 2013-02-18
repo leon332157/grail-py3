@@ -1,5 +1,5 @@
-import grailutil
-import ht_time
+from .. import grailutil
+from .. import ht_time
 import os
 
 

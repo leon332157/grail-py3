@@ -1,13 +1,13 @@
 """Printing interface for HTML documents."""
 
-import printing.PSParser
+from .. import PSParser
 
 parse_text_html = PSParser.PrintingHTMLParser
 
 
 def add_options(dialog, settings, top):
     from Tkinter import X
-    import tktools
+    from ... import tktools
     htmlfr = tktools.make_group_frame(top, "html", "HTML options:", fill=X)
     #  Image printing controls:
     dialog.__imgchecked = dialog.new_checkbox(

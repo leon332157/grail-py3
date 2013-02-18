@@ -1,13 +1,13 @@
 """Reader class -- helper to read documents asynchronously."""
 
-import grailutil
-import ht_time
+from . import grailutil
+from . import ht_time
 import os
 import sys
 import urlparse
 from Tkinter import *
-import tktools
-from BaseReader import BaseReader
+from . import tktools
+from .BaseReader import BaseReader
 import copy
 import re
 import time
@@ -480,7 +480,7 @@ class Reader(BaseReader):
                                         self.method, self.params, self.reload,
                                         data=self.data)
             else:
-                import protocols
+                from . import protocols
                 api = protocols.protocol_access(realurl,
                                                 self.method, self.params,
                                                 data=self.data)
@@ -794,7 +794,7 @@ class TransferDisplay:
         self.root = tktools.make_toplevel(
             old_context.browser.master, class_="GrailTransfer")
         self.root.protocol("WM_DELETE_WINDOW", self.stop)
-        import Context
+        from . import Context
         self.context = Context.SimpleContext(self, self)
         self.context._url = self.context._baseurl = url
         reader.last_context = self.context

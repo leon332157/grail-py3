@@ -11,12 +11,12 @@ command-line options.
 import os
 import sys
 
-import printing.main
+from .printing import main
 
 
 if __name__ == '__main__':
     if sys.argv[1:] and sys.argv[1] == "--profile":
         del sys.argv[1]
-        printing.main.profile_main()
+        main.profile_main()
     else:
-        printing.main.main()
+        main.main()

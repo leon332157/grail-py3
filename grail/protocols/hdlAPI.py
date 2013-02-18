@@ -27,9 +27,9 @@ XXX Remaining problems:
 """
 
 import urllib
-import hdllib
+from .. import hdllib
 from . import nullAPI
-import grailutil
+from .. import grailutil
 from xml.sax import saxutils
 
 

@@ -8,7 +8,7 @@ from .. import nodes
 from . import html_scraper
 from collections import defaultdict
 
-import sgml.SGMLParser
+from ...sgml import SGMLParser
 
 
 class Parser(html_scraper.Parser):
@@ -17,7 +17,7 @@ class Parser(html_scraper.Parser):
 
     def __init__(self, filename):
         html_scraper.Parser.__init__(self, filename)
-        self.sgml_parser = sgml.SGMLParser.SGMLParser(gatherer=self)
+        self.sgml_parser = SGMLParser.SGMLParser(gatherer=self)
         self.__idmap = {}
         self.__missing_ids = defaultdict(list)
         self.__folder = self.get_root()

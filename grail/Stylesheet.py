@@ -117,7 +117,7 @@ class Stylesheet:
 
 
 def test():
-    import GrailPrefs
+    from .grailbase import GrailPrefs
     prefs = GrailPrefs.AllPreferences()
     sheet = Stylesheet(prefs)
     print sheet.styles['h5_b']['font']

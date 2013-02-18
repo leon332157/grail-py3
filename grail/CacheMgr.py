@@ -1,9 +1,9 @@
-from Cache import SharedItem, SharedAPI
+from .Cache import SharedItem, SharedAPI
 import urlparse
 import os
 import time
-import ht_time
-import grailutil
+from . import ht_time
+from . import grailutil
 import re
 from numbers import Real
 

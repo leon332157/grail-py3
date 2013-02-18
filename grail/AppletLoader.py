@@ -4,7 +4,7 @@ import re
 import urllib
 import urlparse
 from Tkinter import *
-from BaseReader import BaseReader
+from .BaseReader import BaseReader
 
 
 # Pattern for valid CODE attribute; group(2) extracts module name
@@ -273,7 +273,7 @@ class AppletLoader:
         file, filename, info = stuff
         (suff, mode, type) = info
         import imp
-        import ihooks
+        from . import ihooks
         if type == imp.PKG_DIRECTORY:
             loader = self.get_rexec().loader
             return ihooks.FancyModuleLoader.load_module(loader, mod, stuff)

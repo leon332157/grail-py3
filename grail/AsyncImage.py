@@ -1,6 +1,6 @@
-from FileReader import TempFileReader
+from .FileReader import TempFileReader
 from Tkinter import *
-import grailutil
+from . import grailutil
 import os
 
 TkPhotoImage = PhotoImage

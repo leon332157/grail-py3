@@ -7,6 +7,6 @@ import os
 import sys
 
 
-import bookmarks.main
+from .bookmarks import main
 
-bookmarks.main.main()
+main.main()

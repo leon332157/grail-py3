@@ -2,13 +2,13 @@
 
 __version__ = '$Revision: 1.5 $'
 
-import grailutil
+from .. import grailutil
 import re
 import Tkinter
 import token
 
-import AppletLoader
-import sgml.HTMLParser
+from .. import AppletLoader
+from ..sgml import HTMLParser
 
 whitespace = '\\t\\n\x0b\x0c\\r '
 
@@ -35,7 +35,7 @@ def embed_text_x_python(parser, attrs):
         return None
 
 
-class AppletEmbedding(sgml.HTMLParser.Embedding):
+class AppletEmbedding(HTMLParser.Embedding):
     """Applet interface for use with <OBJECT> / <PARAM> elements."""
 
     def __init__(self, apploader):

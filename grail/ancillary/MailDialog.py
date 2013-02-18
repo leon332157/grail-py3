@@ -11,17 +11,17 @@ user-defined handling of the mailto: scheme to subclass this dialog.
 __version__ = '$Revision: 2.5 $'
 
 import cgi
-import grailutil
+from . import grailutil
 import os
 import rfc822
 import string
 import time
-import tktools
+from . import tktools
 
 from Tkinter import *
 from urlparse import urlparse, urlunparse
 from __main__ import GRAILVERSION
-from Context import LAST_CONTEXT
+from .Context import LAST_CONTEXT
 
 
 COMMON_HEADERS = (

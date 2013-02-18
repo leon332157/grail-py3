@@ -52,7 +52,7 @@ class SearchDialog:
 
     def __init__(self, rootwin, searchable):
         self._searchable = searchable
-        import tktools
+        from . import tktools
         self._root = tktools.make_toplevel(rootwin, title="Search Dialog",
                                            class_="Search")
         self.create_widgets()
@@ -60,7 +60,7 @@ class SearchDialog:
         self.__rootwin = rootwin
 
     def create_widgets(self):
-        import tktools
+        from . import tktools
         x, f, self.bot_frame = tktools.make_double_frame(self._root)
         self.pat_entry, self.pat_frame = \
                         tktools.make_form_entry(f, None, name="entry")

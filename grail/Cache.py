@@ -10,7 +10,7 @@ XXX To do
 META, DATA, DONE = 'META', 'DATA', 'DONE' # Three stages
 
 import os
-import protocols
+from . import protocols
 import time
 import copy
 

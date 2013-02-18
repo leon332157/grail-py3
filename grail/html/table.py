@@ -2,10 +2,10 @@
 __version__ = '$Id: table.py,v 2.62 1999/03/05 21:55:36 fdrake Exp $'
 
 import re
-import grailutil
+from .. import grailutil
 from Tkinter import *
 from formatter import AbstractWriter, AbstractFormatter
-from Viewer import Viewer
+from ..Viewer import Viewer
 from numbers import Real
 from functools import reduce
 

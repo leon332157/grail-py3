@@ -18,9 +18,9 @@ XXX Main deficiencies:
 import httplib
 from urllib import splithost
 import mimetools
-import grailutil
+from .. import grailutil
 import select
-import Reader
+from .. import Reader
 import re
 import StringIO
 import socket

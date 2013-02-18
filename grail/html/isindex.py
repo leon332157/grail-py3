@@ -1,5 +1,5 @@
 from Tkinter import Entry
-from grailutil import extract_keyword
+from ..grailutil import extract_keyword
 import urllib
 
 def do_isindex(parser, attrs):

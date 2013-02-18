@@ -2,8 +2,8 @@
 
 from Tkinter import *
 import urllib
-import tktools
-import ImageWindow
+from .. import tktools
+from .. import ImageWindow
 from collections import MutableSequence
 
 # ------ Forms

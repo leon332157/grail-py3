@@ -3,7 +3,7 @@
 import sys
 from Tkinter import *
 import urlparse
-import grailutil
+from . import grailutil
 
 
 # Default tuning parameters

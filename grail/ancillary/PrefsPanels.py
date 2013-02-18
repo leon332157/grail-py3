@@ -8,13 +8,13 @@ __version__ = "$Revision: 2.37 $"
 import sys, os
 from functools import reduce
 
-import grailbase.GrailPrefs
-typify = grailbase.GrailPrefs.typify
+from .grailbase import GrailPrefs
+typify = GrailPrefs.typify
 
 import urlparse
 from Tkinter import *
-import tktools
-import grailutil
+from . import tktools
+from . import grailutil
 import re
 
 
@@ -403,7 +403,7 @@ class Framework:
             return
         browser = self.helpbrowser
         if not browser or not browser.valid():
-            import Browser
+            from . import Browser
             browser = Browser.Browser(self.app.root, self.app)
             self.helpbrowser = browser
         helproot = self.app.prefs.Get('landmarks', 'grail-help-root')
@@ -624,7 +624,7 @@ def standalone():
         def __init__(self, root):
             self.app = self
             self.app.browsers = []
-            self.prefs = grailbase.GrailPrefs.AllPreferences()
+            self.prefs = GrailPrefs.AllPreferences()
             self.root = root
             root.report_callback_exception = self.report_callback_exception
         def report_callback_exception(self, e, v, tb):

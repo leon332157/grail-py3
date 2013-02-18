@@ -22,20 +22,20 @@ import urllib
 import posixpath
 
 # More imports
-import filetypes
-import grailbase.utils
+from . import filetypes
+from .grailbase import utils
 # TBD: hack!
-grailbase.utils._grail_root = grail_root
-import grailutil
+utils._grail_root = grail_root
+from . import grailutil
 from Tkinter import *
-import tktools
-import BaseApplication
-import grailbase.GrailPrefs
-import Stylesheet
-from CacheMgr import CacheManager
-from ImageCache import ImageCache
-from Authenticate import AuthenticationManager
-import GlobalHistory
+from . import tktools
+from . import BaseApplication
+from .grailbase import GrailPrefs
+from . import Stylesheet
+from .CacheMgr import CacheManager
+from .ImageCache import ImageCache
+from .Authenticate import AuthenticationManager
+from . import GlobalHistory
 
 # Milliseconds between interrupt checks
 KEEPALIVE_TIMER = 500
@@ -49,7 +49,7 @@ Options:
     -q : ignore user's grailrc module""" % sys.argv[0]
 
 def main(args=None):
-    prefs = grailbase.GrailPrefs.AllPreferences()
+    prefs = GrailPrefs.AllPreferences()
     # XXX Disable cache for NT
     if sys.platform == 'win32':
         prefs.Set('disk-cache', 'size', '0')
@@ -105,7 +105,7 @@ def main(args=None):
         load_images_vis_prefs()
     prefs.AddGroupCallback('browser', load_images_vis_prefs)
 
-    import SafeTkinter
+    from . import SafeTkinter
     SafeTkinter._castrate(app.root.tk)
 
     tktools.install_keybindings(app.root)
@@ -132,7 +132,7 @@ def main(args=None):
 
     # Load the initial page (command line argument or from preferences)
     if not embedded:
-        from Browser import Browser
+        from .Browser import Browser
         browser = Browser(app.root, app, geometry=geometry)
         if url:
             browser.context.load(url)
@@ -252,7 +252,7 @@ class Application(BaseApplication.BaseApplication):
         self.browsers = []
         self.iostatuspanel = None
         self.in_exception_dialog = False
-        import Greek
+        from . import Greek
         for k, v in Greek.entitydefs.items():
             Application.dingbatimages[k] = (v, '_sym')
         self.root.bind_class("Text", "<Alt-Left>", self.dummy_event)
@@ -283,7 +283,7 @@ class Application(BaseApplication.BaseApplication):
 
     def open_io_status_panel(self):
         if not self.iostatuspanel:
-            import IOStatusPanel
+            from . import IOStatusPanel
             self.iostatuspanel = IOStatusPanel.IOStatusPanel(self)
         else:
             self.iostatuspanel.reopen()
@@ -348,7 +348,7 @@ class Application(BaseApplication.BaseApplication):
     def _exc_dialog(self, message, exc, val, tb, root=None):
         # XXX This needn't be a modal dialog --
         # XXX should SafeDialog be changed to support callbacks?
-        import SafeDialog
+        from . import SafeDialog
         msg = "An exception occurred " + str(message) + " :\n"
         msg = msg + str(exc) + " : " + str(val)
         dlg = SafeDialog.Dialog(root or self.root,
@@ -364,14 +364,14 @@ class Application(BaseApplication.BaseApplication):
 
     def traceback_dialog(self, exc, val, tb):
         # XXX This could actually just create a new Browser window...
-        import TbDialog
+        from . import TbDialog
         TbDialog.TracebackDialog(self.root, exc, val, tb)
 
     def error_dialog(self, exc, msg, root=None):
         # Display an error dialog.
         # Return when the user clicks OK
         # XXX This needn't be a modal dialog
-        import SafeDialog
+        from . import SafeDialog
         msg = str(msg)
         SafeDialog.Dialog(root or self.root,
                       text=msg,

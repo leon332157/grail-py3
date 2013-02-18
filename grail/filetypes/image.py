@@ -1,11 +1,11 @@
 """Handler for inline images expressed using <OBJECT>."""
 __version__ = "$Revision: 1.6 $"
 
-import AsyncImage
-from sgml import HTMLParser
+from .. import AsyncImage
+from ..sgml import HTMLParser
 import Tkinter
 
-from grailutil import *
+from ..grailutil import *
 
 allowed_types = None
 
@@ -84,7 +84,7 @@ class ImageObject(HTMLParser.Embedding):
         except NameError:
             __map_count = 0
         name = '<OBJECT-MAP-%d>' % __map_count
-        import ImageMap
+        from .. import ImageMap
         map = ImageMap.MapInfo(name)
         context.image_maps[name] = map
         return map, ImageMap.MapThunk(context, name)

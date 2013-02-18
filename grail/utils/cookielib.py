@@ -6,7 +6,7 @@ __author__ = "Fred L. Drake, Jr. <fdrake@acm.org>"
 __version__ = '$Revision: 2.1 $'
 
 import time
-import ht_time
+from . import ht_time
 
 
 class Error(Exception):

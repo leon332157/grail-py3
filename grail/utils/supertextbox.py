@@ -1,4 +1,4 @@
-from tktools import *
+from .tktools import *
 
 
 def make_super_text_box(parent, width=0, height=0, hbar=0, vbar=1,
