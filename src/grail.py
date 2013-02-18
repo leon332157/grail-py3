@@ -384,13 +384,7 @@ class Application(BaseApplication.BaseApplication):
         # Return when the user clicks OK
         # XXX This needn't be a modal dialog
         import SafeDialog
-        if type(msg) in (ListType, TupleType):
-            s = ''
-            for item in msg:
-                s = s + ':\n' + str(item)
-            msg = s[2:]
-        else:
-            msg = str(msg)
+        msg = str(msg)
         SafeDialog.Dialog(root or self.root,
                       text=msg,
                       title="Error: " + str(exc),

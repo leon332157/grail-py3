@@ -704,9 +704,9 @@ class Reader(BaseReader):
             self.parser.feed(data)
         except IOError, msg:
             self.stop()
-            try:
-                errno, errmsg = msg
-            except:
+            if msg.errno is not None:
+                errno, errmsg = msg.errno, msg.strerror
+            else:
                 errno, errmsg = 0, str(msg)
             self.handle_error(errno, errmsg, [])
 

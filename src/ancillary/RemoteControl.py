@@ -194,7 +194,7 @@ class Controller:
                     s.send('PING NOACK')
                     s.close()
                     raise ClashError
-                except socket.error, (errno, msg):
+                except socket.error:
                     os.unlink(self._filename)
                     s.close()
             # create the FIFO object

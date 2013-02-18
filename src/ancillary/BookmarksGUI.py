@@ -198,7 +198,7 @@ class BookmarksIO:
             fp = open(filename, 'r')
             return fp, self.__choose_reader(fp)
         except IOError, error:
-            if error[0] == errno.ENOENT:
+            if error.errno == errno.ENOENT:
                 # 'No such file or directory'
                 raise
             raise bookmarks.BookmarkFormatError(filename, error)

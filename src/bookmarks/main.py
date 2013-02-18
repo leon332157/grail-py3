@@ -125,14 +125,14 @@ def main():
     else:
         try:
             infile = open(ifn, 'rb')    # binary in case it's a binary pickle
-        except IOError, (err, message):
+        except IOError, err:
             if options.scrape_links:
                 # try to open as URL
                 import urllib
                 infile = urllib.urlopen(ifn)
                 baseurl = infile.url
             else:
-                error(1, "could not open %s: %s" % (ifn, message))
+                error(1, "could not open %s: %s" % (ifn, err.strerror))
         else:
             baseurl = "file:" + os.path.join(os.getcwd(), ifn)
     #
@@ -179,9 +179,9 @@ def main():
     else:
         try:
             writer.write_tree(get_outfile(ofn))
-        except IOError, (err, msg):
+        except IOError, err:
             # Ignore the error if we lost a pipe into another process.
-            if err != errno.EPIPE:
+            if err.errno != errno.EPIPE:
                 raise
 
 
@@ -216,8 +216,8 @@ def get_outfile(ofn):
     else:
         try:
             outfile = open(ofn, 'w')
-        except IOError, (errno, message):
-            error(1, "could not open %s: %s" % (ofn, message))
+        except IOError, err:
+            error(1, "could not open %s: %s" % (ofn, err.strerror))
         print "Writing output to", ofn
     return outfile
 
