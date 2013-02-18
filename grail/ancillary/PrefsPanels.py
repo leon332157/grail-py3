@@ -531,14 +531,13 @@ class PrefsPanelsMenu:
                     self.panels[nm] = [modnm, finder, None]
         raworder = self.app.prefs.Get('preferences', 'panel-order')
         order = raworder.split()
-        keys = self.panels.keys()
+        keys = set(self.panels.keys())
         ordered = []
         for name in order:
             if name in keys:
                 ordered.append(name)
                 keys.remove(name)
-        keys.sort()
-        for name in ordered + keys:
+        for name in ordered + sorted(keys):
             # Enclose self and the name in a teeny leetle func:
             def poster(self=self, name=name):
                 self.do_post(name)
@@ -548,7 +547,7 @@ class PrefsPanelsMenu:
     def discover_panel_modules(self):
         """Identify candidate panels.
 
-        Return list of tuples describing found panel modules: (name,
+        Return view of tuples describing found panel modules: (name,
         modname, finder).
 
         Candidate module names must end in 'Panel'.  The name is formed by

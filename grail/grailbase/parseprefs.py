@@ -84,18 +84,12 @@ def test():
         groups = parseprefs(fp)
         t1 = time.time()
     print "Parsing time", round(t1-t0, 3)
-    groupnames = groups.keys()
-    groupnames.sort()
-    for groupname in groupnames:
+    for groupname, group in sorted(groups.items()):
         print
         print groupname
         print '=' * len(groupname)
         print
-        group = groups[groupname]
-        componentnames = group.keys()
-        componentnames.sort()
-        for cn in componentnames:
-            value = group[cn]
+        for cn, value in sorted(group.items()):
             print cn + ":", repr(value)
 
 

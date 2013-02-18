@@ -409,13 +409,13 @@ class multi_transform:
 
 class explicit_multi_transform:
     def __init__(self, subdocs):
-        self.__subdocs = map(None, subdocs)
+        self.__subdocs = list(subdocs)
 
     def __call__(self, url, attrs):
         return url
 
     def get_subdocs(self):
-        return map(None, self.__subdocs)
+        return list(self.__subdocs)
 
     def set_basedoc(self, url):
         pass

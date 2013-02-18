@@ -39,10 +39,8 @@ class DocumentInfoDialog:
         headers = context.get_headers()
         if isinstance(headers.get("date"), CacheMgr.HTTime):
             self.add_label_field("", "(Loaded from local cache.)", "cached")
-        items = headers.items()
-        items.sort()
         s = ""
-        for k, v in items:
+        for k, v in sorted(headers.items()):
             if k == 'date' and isinstance(v, CacheMgr.HTTime):
                 from . import ht_time
                 v = ht_time.unparse(v.get_secs())
@@ -116,7 +114,7 @@ class DocumentInfoDialog:
         fr = self.add_field(label, name)
         if value and value[-1] != "\n":
             value = value + "\n"
-        maxlines = 1 + map(None, value).count("\n")
+        maxlines = 1 + value.count("\n")
         text, frame = tktools.make_text_box(
             fr, takefocus=0, width=60, vbar=1,
             height=min(MAX_TEXT_FIELD_LINES, maxlines))

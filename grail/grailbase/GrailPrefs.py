@@ -62,11 +62,11 @@ class Preferences:
         self.deleted[group].add(cmpnt)
 
     def items(self):
-        """Return a list of ((group, cmpnt), value) tuples."""
+        """Return a view of ((group, cmpnt), value) tuples."""
         got = {}
         deleted = self.deleted
         # Consolidate established and changed, with changed having precedence:
-        for g, comps in self.saved.items() + self.mods.items():
+        for g, comps in list(self.saved.items()) + list(self.mods.items()):
             for c, v in comps.items():
                 if c not in deleted.get(g, ()):
                     got[(g,c)] = v
@@ -92,10 +92,8 @@ class Preferences:
         except os.error: pass           # No file to backup.
 
         with open(self.filename, 'w') as fp:
-            items = self.items()
-            items.sort()
             prevgroup = None
-            for (g, c), v in items:
+            for (g, c), v in sorted(self.items()):
                 if prevgroup and g != prevgroup:
                     fp.write('\n')
                 fp.write(make_key(g, c) + ': ' + v + '\n')
@@ -215,11 +213,11 @@ class AllPreferences:
         # Callbacks are processed after the save.
 
         # Identify the pending callbacks before user-prefs culling:
-        pending_groups = self.user.mods.keys()
+        pending_groups = list(self.user.mods.keys())
 
         # Cull the user items to remove any settings that are identical to
         # the ones in the system defaults:
-        for (g, c), v in self.user.items():
+        for (g, c), v in list(self.user.items()):
             try:
                 if self.sys.Get(g, c) == v:
                     del self.user[(g, c)]

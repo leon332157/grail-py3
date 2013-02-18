@@ -59,32 +59,32 @@ def constant(numchips):
 # red variations, green+blue = cyan constant
 def constant_red_generator(numchips, red, green, blue):
     seq = constant(numchips)
-    return map(None, [red] * numchips, seq, seq)
+    return zip([red] * numchips, seq, seq)
 
 # green variations, red+blue = magenta constant
 def constant_green_generator(numchips, red, green, blue):
     seq = constant(numchips)
-    return map(None, seq, [green] * numchips, seq)
+    return zip(seq, [green] * numchips, seq)
 
 # blue variations, red+green = yellow constant
 def constant_blue_generator(numchips, red, green, blue):
     seq = constant(numchips)
-    return map(None, seq, seq, [blue] * numchips)
+    return zip(seq, seq, [blue] * numchips)
 
 # red variations, green+blue = cyan constant
 def constant_cyan_generator(numchips, red, green, blue):
     seq = constant(numchips)
-    return map(None, seq, [green] * numchips, [blue] * numchips)
+    return zip(seq, [green] * numchips, [blue] * numchips)
 
 # green variations, red+blue = magenta constant
 def constant_magenta_generator(numchips, red, green, blue):
     seq = constant(numchips)
-    return map(None, [red] * numchips, seq, [blue] * numchips)
+    return zip([red] * numchips, seq, [blue] * numchips)
 
 # blue variations, red+green = yellow constant
 def constant_yellow_generator(numchips, red, green, blue):
     seq = constant(numchips)
-    return map(None, [red] * numchips, [green] * numchips, seq)
+    return zip([red] * numchips, [green] * numchips, seq)
 
 
 

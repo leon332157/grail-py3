@@ -391,12 +391,12 @@ def wrap_parser(parser, ctype, content_encoding=None, transfer_encoding=None):
 
 def get_content_encodings():
     """Return a list of supported content-encoding values."""
-    return content_decoding_wrappers.keys()
+    return list(content_decoding_wrappers.keys())
 
 
 def get_transfer_encodings():
     """Return a list of supported content-transfer-encoding values."""
-    return transfer_decoding_wrappers.keys()
+    return list(transfer_decoding_wrappers.keys())
 
 
 def support_encodings(content_encoding, transfer_encoding):

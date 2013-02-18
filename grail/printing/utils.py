@@ -18,8 +18,7 @@ def find_word_breaks(data):
         if data[i] == ' ':
             prevbrk = i
     #
-    indexes.reverse()
-    for i in indexes:
+    for i in reversed(indexes):
         nextbreaks[i] = nextbrk
         if data[i] == ' ':
             nextbrk = i

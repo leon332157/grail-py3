@@ -58,17 +58,15 @@ class PrintingPanel(PrefsPanels.Framework):
         # paper size:
         var = StringSetVar()
         from ..printing import paper
-        sizes = paper.paper_sizes.keys()
-        sizes.sort()
-        sizes = map(str.capitalize, sizes)
+        sizes = sorted(paper.paper_sizes.keys())
+        sizes = list(map(str.capitalize, sizes))
         self.PrefsOptionMenu(frame, "Paper size: ", GROUP, 'paper-size',
                              sizes, label_width=LABEL_WIDTH,
                              variable=StringSetVar())
         # page orientation:
         var = StringSetVar()
-        opts = paper.paper_rotations.keys()
-        opts.sort()
-        opts = map(str.capitalize, opts)
+        opts = sorted(paper.paper_rotations.keys())
+        opts = list(map(str.capitalize, opts))
         self.PrefsOptionMenu(frame, "Orientation: ", GROUP, 'orientation',
                              opts, label_width=LABEL_WIDTH,
                              variable=StringSetVar())

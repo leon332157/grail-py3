@@ -173,7 +173,7 @@ class CookieDB:
             key = '.'.join([''] + hostparts)
             results.extend(self.__match_path(key, path))
         if not secure:
-            results = filter(lambda c: not c.secure, results)
+            results = list(c for c in results if not c.secure)
         return results
 
     def __expire_cookies(self, cookies):
@@ -183,9 +183,7 @@ class CookieDB:
         of cookies allowed for a single domain."""
         now = int(time.time())
         old_len = len(cookies)
-        indexes = range(old_len)
-        indexes.reverse()
-        for i in indexes:
+        for i in reversed(range(old_len)):
             cookie = cookies[i]
             if cookie.expires is not None \
                and cookie.expires < now:
@@ -241,7 +239,7 @@ class CookieDB:
         return results
 
     def all_domains(self):
-        return self.__cookies.keys()
+        return list(self.__cookies.keys())
 
     def all_cookies(self):
         results = []

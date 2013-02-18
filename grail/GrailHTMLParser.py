@@ -425,7 +425,7 @@ class GrailHTMLParser(HTMLParser):
 
         coords = []
 
-        terms = map(int, re.split(r'[, ]+', text.strip()))
+        terms = list(map(int, re.split(r'[, ]+', text.strip())))
 
         if shape == 'poly':
             # list of (x,y) tuples

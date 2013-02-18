@@ -38,7 +38,7 @@ if os.sys.platform.startswith('sco'):
     # Use MMDF instead of sendmail
     SENDMAIL = "/usr/mmdf/bin/submit -mtlrxto,cc'*'s"
     # submit needs a Date: field or it will not include it
-    COMMON_HEADERS = tuple(map(None, COMMON_HEADERS) + [(2, "date")])
+    COMMON_HEADERS = COMMON_HEADERS + ((2, "date"),)
     TEMPLATE ="""\
 To: %(to)s
 Date: %(date)s
@@ -106,7 +106,7 @@ class MailDialog:
             variables["content-type"] = "text/plain; charset=us-ascii"
             variables["content-transfer-encoding"] = "7bit"
         # move default set of query'd headers into variables
-        for header, vlist in headers.items():
+        for header, vlist in list(headers.items()):
             header = header.lower()
             if header != 'body':
                 if header not in DISALLOWED_HEADERS:

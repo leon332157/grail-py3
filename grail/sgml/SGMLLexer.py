@@ -470,7 +470,8 @@ class SGMLLexer(SGMLLexerBase):
                     pos = pos + 1
                 else:
                     return -1
-            map(self.lex_comment, comments)
+            for comment in comments:
+                self.lex_comment(comment)
             return pos + len(MDC) - i
         # not strict
         match = commentclose.search(rawdata, i+4)

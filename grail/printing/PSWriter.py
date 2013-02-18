@@ -81,7 +81,7 @@ class PSWriter(formatter.AbstractWriter):
     def new_styles(self, styles):
 ##      utils.debug('new_styles: %s' % styles)
         self.ps.push_underline('underline' in styles)
-        self.ps.push_rightmargin(map(None, styles).count('blockquote'))
+        self.ps.push_rightmargin(styles.count('blockquote'))
 
     def send_paragraph(self, blankline):
 ##      utils.debug('send_paragraph: %s' % blankline)

@@ -90,7 +90,7 @@ class Options:
                     if not fname in self.export_fields:
                         self.export_fields.append(fname)
             elif opt == "--search":
-                map(self.keywords.append, arg.split(","))
+                self.keywords.extend(arg.split(","))
                 self.search = True
 
 
@@ -189,10 +189,8 @@ def main():
 def report_info(root):
     from . import collection
     coll = collection.Collection(root)
-    items = coll.get_type_counts().items()
-    items.sort()
     total = 0
-    for type, count in items:
+    for type, count in sorted(coll.get_type_counts().items()):
         total = total + count
         print "%12s: %5d" % (type, count)
     print "%12s  -----" % ''

@@ -85,9 +85,7 @@ def normalize_capture(data, preserve=False):
                    and content[0].strip() == ""):
                 del content[0]
             # remove trailing blanks
-            cindexes = range(len(content))
-            cindexes.reverse()
-            for ci in cindexes:
+            for ci in reversed(range(len(content))):
                 citem = content[ci]
                 if isinstance(citem, str) and not citem.strip():
                     del content[ci]
@@ -101,9 +99,7 @@ def normalize_capture(data, preserve=False):
                         preserve = 1
         if not preserve:
             # All internal strings are blank; remove them.
-            cindexes = range(len(content))
-            cindexes.reverse()
-            for ci in cindexes:
+            for ci in reversed(range(len(content))):
                 if isinstance(content[ci], str):
                     del content[ci]
         for citem in content:

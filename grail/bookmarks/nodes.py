@@ -183,7 +183,7 @@ class Folder(DescribableNode):
         return self.__children[:]
 
     def set_children(self, children):
-        self.__children = map(None, children)
+        self.__children = list(children)
         for child in self.__children:
             child.set_parent(self)
 

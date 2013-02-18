@@ -140,7 +140,7 @@ data_map = dict(
 # Put data_map mappings into the module's dictionary.  Also create an
 # inverted mapping.
 globals().update(data_map)
-for key, value in data_map.items():
+for key, value in list(data_map.items()):
     data_map[value] = key
 
 
@@ -163,7 +163,7 @@ error_map = dict(
 
 # See data_map comment above
 globals().update(error_map)
-for key, value in error_map.items():
+for key, value in list(error_map.items()):
     error_map[value] = key
 
 # Error code set by the parser

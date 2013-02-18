@@ -279,7 +279,7 @@ class Viewer(formatter.AbstractWriter):
             use_font_dingbats = True
             # Build tags that we might be using or have special semantics;
             # other font tags will be configured dynamically.
-            for tag in ['_ding'] + self.__fonttags_built.keys():
+            for tag in ['_ding'] + list(self.__fonttags_built.keys()):
                 try:
                     self.configure_fonttag(tag)
                 except TclError, err:
@@ -304,7 +304,8 @@ class Viewer(formatter.AbstractWriter):
                 for name, value in font_dingbats.items():
                     self.context.app.set_dingbat(name, value)
             else:
-                map(self.context.app.clear_dingbat, font_dingbats.keys())
+                for name in font_dingbats.keys():
+                    self.context.app.clear_dingbat(name)
             #
             for tag, cnf in stylesheet.history.items():
                 self.text.tag_configure(tag, cnf)
@@ -485,10 +486,10 @@ class Viewer(formatter.AbstractWriter):
         if self.pendingdata and self.pendingdata.strip():
             self.text.insert(END, self.pendingdata, self.flowingtags)
             self.pendingdata = ''
-        self.flowingtags = filter(
+        self.flowingtags = tuple(filter(
             None,
             (self.align, self.fonttag, self.margintag, self.rightmargintag,
-             self.spacingtag) + self.addtags)
+             self.spacingtag) + self.addtags))
 
     # AbstractWriter methods
 
@@ -547,12 +548,12 @@ class Viewer(formatter.AbstractWriter):
         if self.pendingdata:
             self.text.insert(END, self.pendingdata, self.flowingtags)
             self.pendingdata = ''
-        self.rightmarginlevel = rl = map(None, styles).count('blockquote')
+        self.rightmarginlevel = rl = styles.count('blockquote')
         self.rightmargintag = ('rightmargin_%d' % rl) if rl else None
-        self.flowingtags = filter(
+        self.flowingtags = tuple(filter(
             None,
             (self.align, self.fonttag, self.margintag, self.rightmargintag,
-             self.spacingtag) + styles)
+             self.spacingtag) + styles))
 
     def send_paragraph(self, blankline):
         self.pendingdata = self.pendingdata + ('\n' * blankline)
@@ -634,10 +635,10 @@ class Viewer(formatter.AbstractWriter):
                     message = ' '.join(title.split())
             self.text.tag_remove('hover', '0.1', END)
             ranges = self.find_tag_ranges()
-            point = map(int, self.text.index(CURRENT).split('.'))
+            point = tuple(map(int, self.text.index(CURRENT).split('.')))
             for start, end in ranges:
-                startv = map(int, start.split('.'))
-                endv = map(int, end.split('.'))
+                startv = tuple(map(int, start.split('.')))
+                endv = tuple(map(int, end.split('.')))
                 if startv <= point < endv:
                     self.text.tag_add('hover', start, end)
                     break

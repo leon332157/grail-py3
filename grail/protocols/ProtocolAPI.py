@@ -96,14 +96,14 @@ def protocol_access(url, mode, params, data=None):
             
         do_proxy = True
         if no_proxy:
-            list = map(str.strip, no_proxy.split(","))
+            no_proxy = list(map(str.strip, no_proxy.split(",")))
             url_host, url_remains = splithost(resturl)
             url_host = (url_host or '').lower()
-            if proxy_exception(url_host, list):
+            if proxy_exception(url_host, no_proxy):
                 do_proxy = False
             else:
                 url_host, url_port = splitport(url_host)
-                if proxy_exception(url_host, list):
+                if proxy_exception(url_host, no_proxy):
                     do_proxy = False
         if do_proxy:
             proxy_scheme, proxy_resturl = splittype(proxy)

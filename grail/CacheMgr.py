@@ -243,7 +243,7 @@ class CacheManager:
         self.items[key].evict()
 
     def delete(self, keys, evict=True):
-        if not isinstance(keys, list):
+        if isinstance(keys, str):
             keys = [keys]
 
         if evict:

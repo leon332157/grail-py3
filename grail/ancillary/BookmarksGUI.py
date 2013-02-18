@@ -1414,7 +1414,8 @@ class BookmarksFormatter:
             self.formatter.end_paragraph(1)
         self.formatter.add_hor_rule()
         self.formatter.end_paragraph(1)
-        map(self.fmt_any, root.children())
+        for child in root.children():
+            self.fmt_any(child)
 
     def fmt_any(self, node):
         try:
@@ -1480,7 +1481,8 @@ class BookmarksFormatter:
             children = node.children()
             if children:
                 self.formatter.push_margin('folder')
-                map(self.fmt_any, children)
+                for child in children:
+                    self.fmt_any(child)
                 self.formatter.pop_margin()
                 self.formatter.end_paragraph(1)
 

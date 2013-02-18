@@ -42,7 +42,7 @@ class PrintingTextParser(Reader.TextParser):
         self.viewer.send_literal_data(data)
 
     def strip_blank_lines(self, data):
-        lines = map(str.rstrip, data.split("\n"))
+        lines = list(map(str.rstrip, data.split("\n")))
         while lines:
             if lines[0].strip() == "":
                 del lines[0]

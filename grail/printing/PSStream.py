@@ -172,7 +172,7 @@ class PSStream:
             t = time.time()
             local = time.localtime(t)
             utc = time.gmtime(t)
-            for name, local, utc in map(None, names, local, utc):
+            for name, local, utc in zip(names, local, utc):
                 print "/Gr%s %s D /GrUTC%s %s D" % (name, local, name, utc)
             # add per-user customization:
             user_template = get_userheader()
@@ -482,7 +482,8 @@ class PSStream:
         words = data.split(' ')
         wordcnt = len(words) - 1
         space_width = self._space_width
-        for word, width in map(None, words, map(text_width, words)):
+        for word in words:
+            width = text_width(word)
             # Does the word fit on the current line?
             if xpos + width < allowed_width:
                 append(word)

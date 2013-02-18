@@ -1176,9 +1176,9 @@ class HeaderNumber:
     def __init__(self, formats=None):
         self.numbers = [0, 0, 0, 0, 0, 0]
         if formats and len(formats) >= 6:
-            self.formats = map(None, formats)
+            self.formats = list(formats)
         else:
-            self.formats = map(None, self.formats)
+            self.formats = list(self.formats)
 
     def incr(self, level, attrs):
         numbers = self.numbers
