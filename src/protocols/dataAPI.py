@@ -13,7 +13,7 @@ class data_access(nullAPI.null_access):
         assert self.state == nullAPI.META
         self.state = nullAPI.DATA
         headers = {"content-type": self.__ctype,
-                   "content-length": `len(self.__data)`,
+                   "content-length": format(len(self.__data)),
                    }
         if self.__data:
             return 200, "Ready", headers

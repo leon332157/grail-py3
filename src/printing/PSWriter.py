@@ -59,12 +59,12 @@ class PSWriter(formatter.AbstractWriter):
         self.ps.push_end()
 
     def new_alignment(self, align):
-##      utils.debug('new_alignment: %s' % `align`)
+##      utils.debug('new_alignment: %r' % align)
         self.__alignment = align
         self.ps.push_alignment(align)
 
     def new_font(self, font):
-##      utils.debug('new_font: %s' % `font`)
+##      utils.debug('new_font: %r' % font)
         self.ps.push_font_change(font)
 
     def new_margin(self, margin, level):
@@ -149,7 +149,7 @@ class PSWriter(formatter.AbstractWriter):
         self.ps.push_string(self.__detab_data(data))
 
     def send_eps_data(self, image, align):
-##      utils.debug('send_eps_data: <epsdata>, ' + `bbox`)
+##      utils.debug('send_eps_data: <epsdata>, ' + repr(bbox))
         if self.__pending_indentation:
             self.ps.push_horiz_space(self.__pending_indentation)
             self.__pending_indentation = None

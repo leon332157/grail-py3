@@ -466,7 +466,7 @@ class SGMLLexer(SGMLLexerBase):
                 elif rawdata[pos] != "-":
                     self.lex_error("illegal character in"
                                    " markup declaration: "
-                                   + `rawdata[pos]`)
+                                   + repr(rawdata[pos]))
                     pos = pos + 1
                 else:
                     return -1

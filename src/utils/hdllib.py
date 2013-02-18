@@ -185,11 +185,11 @@ class Error(IOError):
             IOError.__init__(self, errno, strerror)
         self.info = info
     def __repr__(self):
-        msg = "Error(%s" % `self.strerror`
+        msg = "Error(%r" % self.strerror
         if self.errno is not None:
-            msg = msg + ", %s" % `self.errno`
+            msg = msg + ", %r" % self.errno
         if self.info is not None:
-            msg = msg + ", %s" % `self.info`
+            msg = msg + ", %r" % self.info
         msg = msg + ")"
         return msg
     def __str__(self):
@@ -359,7 +359,7 @@ class PacketUnpacker:
                 if self.debug: print 'Getting data segment of ' \
                    + str(self.value_length) + ' bytes'
             value = self.u.unpack_fstring(self.value_length)
-            if self.debug: print "Got", len(value), "bytes:", `value`
+            if self.debug: print "Got", len(value), "bytes:", repr(value)
             opts.append((opt, value))
         return opts
 
@@ -515,7 +515,7 @@ class HashTable:
                     self._read_hash_table(fn)
                 except IOError, msg:
                     if self.debug:
-                        print "Error for %s: %s" % (`fn`, str(msg))
+                        print "Error for %r: %s" % (fn, str(msg))
                 else:
                     break
             else:
@@ -557,7 +557,7 @@ class HashTable:
         its data is read and self._parse_hash_table() called.
 
         """
-        if self.debug: print "Opening hash table:", `filename`
+        if self.debug: print "Opening hash table:", repr(filename)
         fp = open(filename, 'rb')
         data = fp.read()
         fp.close()
@@ -815,13 +815,13 @@ class HashTable:
                     print 'err: ', err
                 err_info = u.unpack_error_body(err)
                 if self.debug:
-                    print 'err_info:', `err_info`
+                    print 'err_info:', repr(err_info)
                 try:
                     err_name = error_map[err]
                 except KeyError:
                     err_name = str(err)
                 if self.debug:
-                    print 'err_name:', `err`
+                    print 'err_name:', repr(err)
                 raise Error(err_name, err, err_info)
 
             flags, items = u.unpack_reply_body()
@@ -895,12 +895,12 @@ def fetch_local_hash_table(hdl, ht=None, debug=DEBUG):
     # In fetch_local_hash_table function, does not query Global Handle
     # System for the service handle.
 
-    if debug: print "Fetching local hash table for", `hdl`
+    if debug: print "Fetching local hash table for", repr(hdl)
     # 1. Get the authority name
     hdl = get_authority(hdl)
     # 2. Prefix the "ha.auth/" authority
     hdl = "ha.auth/" + hdl
-    if debug: print "Requesting handle", `hdl`
+    if debug: print "Requesting handle", repr(hdl)
     # 3. Create a HashTable object if none is provided
     if not ht: ht = HashTable(debug=debug)
     # 4. Send the query and get the reply
@@ -917,7 +917,7 @@ def fetch_local_hash_table(hdl, ht=None, debug=DEBUG):
         elif type == HDL_TYPE_SERVICE_POINTER:
             urnscheme = data[:16]
             urndata = data[16:]
-            if debug: print "URN scheme =", `urnscheme`
+            if debug: print "URN scheme =", repr(urnscheme)
             if urnscheme == HANDLE_SERVICE_ID:
                 hashtable = urndata
                 if debug: print "hash table data =", hexstr(hashtable)
@@ -934,7 +934,7 @@ def fetch_local_hash_table(hdl, ht=None, debug=DEBUG):
             if type == HDL_TYPE_SERVICE_POINTER:
                 urnscheme = data[:16]
                 urndata = data[16:]
-                if debug: print "URN scheme =", `urnscheme`
+                if debug: print "URN scheme =", repr(urnscheme)
                 if urnscheme == HANDLE_SERVICE_ID:
                     hashtable = urndata
                     if debug: print "hash table data =", hexstr(hashtable)
@@ -1087,7 +1087,7 @@ def test(defargs = testsets[0]):
         ht = HashTable(filename, debug, server)
 
     for hdl in args:
-        print "Handle:", `hdl`
+        print "Handle:", repr(hdl)
 
         try:
             replyflags, items = ht.get_data(

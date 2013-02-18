@@ -31,11 +31,11 @@ def exercise(stmt, env, purpose, expected_exception=None, verbose=0):
     import sys
 
     try:
-        if verbose: note("Exercise: exec %s in env", `stmt`)
+        if verbose: note("Exercise: exec %r in env", stmt)
         exec stmt in env
         if expected_exception:
-            raise TestFailure, ("Unanticipated success, %s (%s)"
-                                % (`stmt`, purpose))
+            raise TestFailure, ("Unanticipated success, %r (%s)"
+                                % (stmt, purpose))
         return
     except:
         if sys.exc_type == expected_exception:

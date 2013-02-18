@@ -577,7 +577,7 @@ class Viewer(formatter.AbstractWriter):
     RULE_WIDTH_MAGIC = 10
 
     def send_label_data(self, data):
-##      print "Label data:", `data`
+##      print "Label data:", repr(data)
         tags = self.flowingtags + ('label_%d' % self.marginlevel,)
         data_type = type(data)
         if data_type is StringType:
@@ -609,11 +609,11 @@ class Viewer(formatter.AbstractWriter):
             self.pendingdata = '\t'
 
     def send_flowing_data(self, data):
-##      print "Flowing data:", `data`, self.flowingtags
+##      print "Flowing data:", repr(data), self.flowingtags
         self.pendingdata = self.pendingdata + data
 
     def send_literal_data(self, data):
-##      print "Literal data:", `data`, self.flowingtags + ('pre',)
+##      print "Literal data:", repr(data), self.flowingtags + ('pre',)
         self.text.insert(END, self.pendingdata, self.flowingtags,
                          data, self.flowingtags + ('pre',))
         self.pendingdata = ''
@@ -781,7 +781,7 @@ class Viewer(formatter.AbstractWriter):
                 except TclError:
                     return              # unknown mark
                 #  Highlight the entire line:
-                r = (first, `1 + int(first.split('.')[0])` + '.0')
+                r = (first, '{}.0'.format(1 + int(first.split('.')[0])))
         else:
             r = self.parse_range(fragment)
             if not r:

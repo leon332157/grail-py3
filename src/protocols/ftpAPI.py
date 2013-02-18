@@ -155,7 +155,7 @@ class ftp_access:
         if self.content_encoding:
             headers['content-encoding'] = self.content_encoding
         if self.content_length:
-            headers['content-length'] = `self.content_length`
+            headers['content-length'] = format(self.content_length)
         self.lines = []                 # Only used if self.isdir
         return 200, "OK", headers
 
@@ -169,7 +169,7 @@ class ftp_access:
             return ""
         assert self.state == DATA
         data = self.sock.recv(maxbytes)
-        if self.debuglevel > 4: print "*data*", `data`
+        if self.debuglevel > 4: print "*data*", repr(data)
         if not data:
             self.state = DONE
         if self.isdir:
@@ -188,7 +188,7 @@ class ftp_access:
         else:
             lines = data.split('\n')
             if self.debuglevel > 3:
-                for line in lines: print "*addl*", `line`
+                for line in lines: print "*addl*", repr(line)
             if self.lines:
                 lines[0] = self.lines[-1] + lines[0]
                 self.lines[-1:] = lines
@@ -204,7 +204,7 @@ class ftp_access:
         prog = re.compile(self.listing_pattern)
         for line in lines:
             if self.debuglevel > 2:
-                print "*getl*", `line`
+                print "*getl*", repr(line)
             if line is None:
                 data = data + self.listing_header % {'url':
                                                      self.escape(self.url)}

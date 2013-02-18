@@ -136,7 +136,7 @@ class Collection:
             if nodetype == "Bookmark":
                 id = node.id()
                 if id_map.has_key(id):
-                    raise NodeIDError("duplicate ID found: " + `id`)
+                    raise NodeIDError("duplicate ID found: " + repr(id))
                 if id:
                     id_map[id] = node
                     if id in need_ids:
@@ -150,7 +150,7 @@ class Collection:
             elif nodetype == "Folder":
                 id = node.id()
                 if id_map.has_key(id):
-                    raise NodeIDError("duplicate ID found: " + `id`)
+                    raise NodeIDError("duplicate ID found: " + repr(id))
                 if id:
                     id_map[id] = node
                     if id in need_ids:

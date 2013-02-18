@@ -188,7 +188,7 @@ class hdl_access(nullAPI.null_access):
                             hdllib.HDL_TYPE_SERVICE_HANDLE):
                     uri = hdllib.hexstr(uri)
                 else:
-                    uri = escape(`uri`)
+                    uri = escape(repr(uri))
                 if hdllib.data_map.has_key(type):
                     type = hdllib.data_map[type][9:]
                 else:

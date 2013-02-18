@@ -413,7 +413,7 @@ class GrailHTMLParser(HTMLParser):
                 # wrong number of coordinates
                 # how should this get reported to the user?
                 self.badhtml = 1
-                print "imagemap specifies bad coordinates:", `coords`
+                print "imagemap specifies bad coordinates:", repr(coords)
                 pass
         else:
             self.badhtml = 1

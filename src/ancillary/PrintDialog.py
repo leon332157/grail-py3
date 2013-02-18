@@ -308,7 +308,7 @@ class RealPrintDialog:
                 pass
         if sts:
             self.context.error_dialog("Exit",
-                                      "Print command exit status %s" % `sts`)
+                                      "Print command exit status %r" % sts)
         self.root.destroy()
 
     def cancel_event(self, event):

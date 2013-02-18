@@ -65,7 +65,7 @@ def parseprefs(fp):
             elif line.strip() != "":
                 # It's a bad line.  Ignore it.
                 if debug:
-                    print "Error at", lineno, ":", `line`
+                    print "Error at", lineno, ":", repr(line)
 
     return groups
 
@@ -104,7 +104,7 @@ def test():
         componentnames.sort()
         for cn in componentnames:
             value = group[cn]
-            print cn + ":", `value`
+            print cn + ":", repr(value)
 
 
 if __name__ == '__main__':

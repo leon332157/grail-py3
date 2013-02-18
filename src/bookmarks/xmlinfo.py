@@ -220,7 +220,7 @@ class Extractor:
         for c in verno:
             if not c.isalpha() and not c.isdecimal() and c not in "_.:-":
                 raise ParseError(
-                    "illegal character in XML version declaration: " + `c`)
+                    "illegal character in XML version declaration: " + repr(c))
         self.values.xml_version = verno
 
     def get_pseudo_attr(self):
@@ -399,7 +399,7 @@ class Extractor:
     def parse_Name(self, where):
         s, u = self.get_char_and_unicode()
         if not self.is_name_char(u):
-            raise ParseError("illegal character in name: %s (%d)" % (`s`, u))
+            raise ParseError("illegal character in name: %r (%d)" % (s, u))
         i = 1
         while 1:
             c, u = self.get_char_and_unicode(i)
@@ -724,7 +724,7 @@ class EBCDICExtractor(Extractor):
         _m[_e] = chr(_i)
     for i in range(len(_m)):
         if _m[_i] is None:
-            print "No EBCDIC character for ASCII", `chr(i)`
+            print "No EBCDIC character for ASCII", repr(chr(i))
 
     __EBCDIC_TO_ASCII = tuple(_m)
 
@@ -802,8 +802,8 @@ class UCS2Extractor(Extractor):
         try:
             for i in range(0, count*2, 2):
                 if data[i+zero_offset] != '\0':
-                    raise ConversionError("cannot convert %s to ASCII"
-                                          % `data[i:i+2]`)
+                    raise ConversionError("cannot convert %r to ASCII"
+                                          % data[i:i+2))
                 s = s + data[i+char_offset]
         except IndexError:
             # just didn't have enough; somebody else's problem

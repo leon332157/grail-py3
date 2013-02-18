@@ -296,7 +296,7 @@ class AppletLoader:
         elif type == ihooks.C_EXTENSION:
             m = rexec.load_dynamic(mod, filename, file)
         else:
-            raise ImportError, "Unsupported module type: %s" % `filename`
+            raise ImportError, "Unsupported module type: %r" % filename
         return m
 
     def show_tb(self):

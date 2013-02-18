@@ -840,7 +840,7 @@ class TransferDisplay:
         frame.pack(fill=X)
         self.__bytes = self.make_labeled_field(frame, "Bytes:", "0", LEFT)
         if content_length:
-            self.__bytes['width'] = len(`content_length`) + 2
+            self.__bytes['width'] = len(format(content_length)) + 2
             self.__percent = self.make_labeled_field(
                 frame, "Complete:", self.__bytespat % 0.0, LEFT)
         else:

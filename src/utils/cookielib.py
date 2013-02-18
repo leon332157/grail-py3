@@ -109,7 +109,7 @@ class CookieDB:
             if cookie.expires is not None:
                 isdomain = cookie.isdomain and 'TRUE' or 'FALSE'
                 secure = cookie.secure and 'TRUE' or 'FALSE'
-                expires = `cookie.expires`[:-1]
+                expires = format(cookie.expires)
                 l = [cookie.domain, isdomain, cookie.path, secure,
                      expires, cookie.name, cookie.value]
                 s = '\t'.join(l)

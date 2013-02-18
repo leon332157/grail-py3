@@ -75,7 +75,7 @@ class MyHTTP(httplib.HTTP):
     def getreply(self, file):
         self.file = file
         line = self.file.readline()
-        if self.debuglevel > 0: print 'reply:', `line`
+        if self.debuglevel > 0: print 'reply:', repr(line)
         m = replyprog.match(line)
         if m is None:
             # Not an HTTP/1.0 response.  Fall back to HTTP/0.9.

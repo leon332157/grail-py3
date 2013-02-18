@@ -174,8 +174,8 @@ class AllPreferences:
         try:
             return typify(val, type_name)
         except TypeError:
-            raise TypeError, ('%s should be %s: %s'
-                               % (str((group, cmpnt)), type_name, `val`))
+            raise TypeError, ('%s should be %s: %r'
+                               % (str((group, cmpnt)), type_name, val))
 
     def GetInt(self, group, cmpnt, factory=0):
         return self.GetTyped(group, cmpnt, "int", factory)
@@ -264,13 +264,13 @@ def typify(val, type_name):
         elif type_name == 'Boolean':
             i = int(val)
             if i not in (0, 1):
-                raise TypeError, '%s should be Boolean' % `val`
+                raise TypeError, '%r should be Boolean' % val
             return i
     except ValueError:
-            raise TypeError, '%s should be %s' % (`val`, type_name)
+            raise TypeError, '%r should be %s' % (val, type_name)
     
-    raise ValueError, ('%s not supported - must be one of %s'
-                       % (`type_name`, ['string', 'int', 'float', 'Boolean']))
+    raise ValueError, ('%r not supported - must be one of %s'
+                       % (type_name, ['string', 'int', 'float', 'Boolean']))
     
 
 def test():

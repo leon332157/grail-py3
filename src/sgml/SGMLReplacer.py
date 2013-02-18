@@ -13,7 +13,7 @@ _named_chars = {'#re' : '\r',
                 '#space' : ' '}
 
 for i in range(256):
-    _named_chars["#" + `i`] = chr(i)
+    _named_chars["#{}".format(i)] = chr(i)
 
 _chartable = str.maketrans(string.whitespace, " " * len(string.whitespace))
 

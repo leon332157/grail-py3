@@ -27,7 +27,7 @@ class Writer(bookmarks.BookmarkWriter):
         try:
             fp.write(self.HEADER_STRING)
             fp.write(self.__filename + "\n")
-            fp.write(`self.__mtime` + "\n")
+            fp.write("{}\n".format(self.__mtime))
             pickle.dump(self.__root, fp, 1)
         finally:
             fp.close()

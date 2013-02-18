@@ -188,7 +188,7 @@ class PSFont:
 
     def text_width(self, text):
 ##      width = self.tw_func(self._fontsize, text)
-##      utils.debug("%s @ %spt ==> %s" % (`text`, self._fontsize, width),
+##      utils.debug("%r @ %spt ==> %s" % (text, self._fontsize, width),
 ##                  'charsizing')
 ##      return width
         return self.tw_func(self._fontsize, text)

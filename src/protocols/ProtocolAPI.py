@@ -168,14 +168,14 @@ def test(url = "http://www.python.org/"):
         print message
         if ready:
             meta = api.getmeta()
-            print `meta`
+            print repr(meta)
             break
     while 1:
         message, ready = api.polldata()
         print message
         if ready:
             data = api.getdata(512)
-            print `data`
+            print repr(data)
             if not data:
                 break
     api.close()

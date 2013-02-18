@@ -24,9 +24,9 @@ def make_toplevel(master, title=None, class_=None, name=None):
     name = name or (class_ or "").lower() or None
     if name and master.children.has_key(name):
         i = 0
-        while master.children.has_key(name + `i`):
+        while master.children.has_key(name + format(i)):
             i = i + 1
-        name = name + `i`
+        name = name + format(i)
     if class_:
         widget = Toplevel(master, class_=class_, name=name)
     else:

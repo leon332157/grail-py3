@@ -67,7 +67,7 @@ class Parser(html_scraper.Parser):
         if not self.__context:
             lineno = self.sgml_parser.line()
             if lineno is not None:
-                extra = " at line " + `lineno`
+                extra = " at line {}".format(lineno)
             else:
                 extra = ""
             raise bookmarks.PoppedRootError(self._filename + extra)
