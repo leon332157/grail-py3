@@ -27,7 +27,7 @@ from .grailbase import utils
 # TBD: hack!
 utils._grail_root = grail_root
 from . import grailutil
-from Tkinter import *
+from tkinter import *
 from . import tktools
 from . import BaseApplication
 from .grailbase import GrailPrefs

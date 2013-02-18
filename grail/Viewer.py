@@ -1,6 +1,6 @@
 """Viewer class."""
 
-from Tkinter import *
+from tkinter import *
 from . import tktools
 import formatter
 from .Context import Context, SimpleContext

@@ -17,7 +17,7 @@ from .. import grailutil
 import os
 import sys
 import tempfile
-import Tkinter
+import tkinter
 
 from formatter import AS_IS
 
@@ -85,10 +85,10 @@ class PILGifParser(pil_interface):
                     self.after_id = self.label.after(self.duration,
                                                      self.next_image)
         if self.broken:
-            self.label.image = Tkinter.PhotoImage(
+            self.label.image = tkinter.PhotoImage(
                 file=grailutil.which(ERROR_FILE))
             self.label.config(image = self.label.image)
-            self.viewer.text.insert(Tkinter.END, '\nBroken Image!')
+            self.viewer.text.insert(tkinter.END, '\nBroken Image!')
 
     def next_image(self):
         newpos = self.currentpos + 1
@@ -131,7 +131,7 @@ class TkGifParser:
         self.viewer = viewer
         self.viewer.new_font((AS_IS, AS_IS, AS_IS, True))
         self.tf = tempfile.NamedTemporaryFile("wb", delete=False)
-        self.label = Tkinter.Label(self.viewer.text, text=self.tf.name,
+        self.label = tkinter.Label(self.viewer.text, text=self.tf.name,
                                    highlightthickness=0, borderwidth=0)
         self.viewer.add_subwindow(self.label)
 
@@ -141,7 +141,7 @@ class TkGifParser:
     def close(self):
         if self.tf:
             self.tf.close()
-            self.label.image = Tkinter.PhotoImage(file=self.tf.name)
+            self.label.image = tkinter.PhotoImage(file=self.tf.name)
             self.label.config(image=self.label.image)
             try:
                 os.unlink(self.tf.name)

@@ -2,7 +2,7 @@
 
 import re
 import urllib.parse
-from Tkinter import *
+from tkinter import *
 from .BaseReader import BaseReader
 
 

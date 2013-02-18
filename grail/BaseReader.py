@@ -1,7 +1,7 @@
 """Base reader class -- read from a URL in the background."""
 
 import sys
-from Tkinter import *
+from tkinter import *
 import urllib.parse
 from . import grailutil
 
@@ -74,7 +74,7 @@ class BaseReader:
 
         if self.fno >= 0:
             self.context.app.root.createfilehandler(
-                self.fno, tkinter.READABLE, self.checkapi)
+                self.fno, READABLE, self.checkapi)
         else:
             # No fileno() -- check every 100 ms
             self.checkapi_regularly()
@@ -161,7 +161,7 @@ class BaseReader:
             if self.fno >= 0:
                 fno = self.fno
                 self.fno = -1
-                tkinter.deletefilehandler(fno)
+                self.context.app.root.deletefilehandler(fno)
             return
         try:
             self.callback()                     # Call via function pointer

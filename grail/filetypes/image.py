@@ -3,7 +3,7 @@ __version__ = "$Revision: 1.6 $"
 
 from .. import AsyncImage
 from ..sgml import HTMLParser
-import Tkinter
+import tkinter
 
 from ..grailutil import *
 
@@ -74,7 +74,7 @@ class ImageObject(HTMLParser.Embedding):
             thunk = None
 ##      print("Creating ImageObject handler", self, "data=" + src)
         parser.handle_image(src, '', thunk, 0,
-                            Tkinter.BASELINE, width, height, border,
+                            tkinter.BASELINE, width, height, border,
                             parser.reload1, hspace=hspace, vspace=vspace)
 
     def __make_map(self, context):

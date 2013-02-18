@@ -24,7 +24,7 @@ select the color under the cursor while you drag it, but be forewarned that
 this can be slow.
 """
 
-from Tkinter import *
+from tkinter import *
 from . import ColorDB
 
 # Load this script into the Tcl interpreter and call it in

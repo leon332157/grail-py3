@@ -125,7 +125,7 @@ import tempfile
 import os
 import socket
 import re
-from Tkinter import tkinter
+import tkinter
 from .grailutil import *
 from os import getenv
 
@@ -209,7 +209,7 @@ class Controller:
                 raise InitError
         if not self._enabled:
             self._enabled = True
-            tkinter.createfilehandler(
+            self._app.root.createfilehandler(
                 self._fileno, tkinter.READABLE, self._dispatch)
             self.register('PING', self.ping_cmd)
 
@@ -217,7 +217,7 @@ class Controller:
         """Stop listening for remote control commands."""
         if self._enabled:
             self._enabled = False
-            tkinter.deletefilehandler(self._fileno)
+            self._app.root.deletefilehandler(self._fileno)
 
     def register(self, cmdstr, callback):
         """Register command string, callback function pairs.

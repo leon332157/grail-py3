@@ -6,7 +6,7 @@ parse_text_html = PSParser.PrintingHTMLParser
 
 
 def add_options(dialog, settings, top):
-    from Tkinter import X
+    from tkinter import X
     from ... import tktools
     htmlfr = tktools.make_group_frame(top, "html", "HTML options:", fill=X)
     #  Image printing controls:

@@ -5,7 +5,7 @@ __version__ = "$Revision: 1.13 $"
 # Base class for the dialog:
 from .. import PrefsPanels
 
-from Tkinter import *
+from tkinter import *
 from .. import grailutil
 
 class ProxiesPanel(PrefsPanels.Framework):

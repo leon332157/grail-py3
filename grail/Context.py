@@ -418,8 +418,8 @@ class Context(URIContext):
         # File/Save As...
         url = self.get_baseurl(*relurls)
         if url == self.get_url() and self.busycheck(): return False
-        import FileDialog
-        fd = FileDialog.SaveFileDialog(self.root)
+        from tkinter import filedialog
+        fd = filedialog.SaveFileDialog(self.root)
         # give it a default filename on which save within the
         # current directory
         if urllib.parse.splittype(url)[0] == "data":

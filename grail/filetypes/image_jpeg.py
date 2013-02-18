@@ -1,6 +1,6 @@
 import tempfile
 import os
-from Tkinter import *
+from tkinter import *
 from formatter import AS_IS
 import subprocess
 from ..grailutil import close_subprocess

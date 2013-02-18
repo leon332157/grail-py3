@@ -30,7 +30,7 @@ be assumed, giving the option to cancel.
 """
 
 from .Cursors import CURSOR_WAIT
-from Tkinter import *
+from tkinter import *
 from . import grailutil
 import os
 from .printing import paper

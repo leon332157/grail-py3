@@ -1,6 +1,6 @@
 """HTML <FORM> tag support (and <INPUT>, etc.)."""
 
-from Tkinter import *
+from tkinter import *
 import urllib.parse
 from .. import tktools
 from .. import ImageWindow
@@ -560,8 +560,8 @@ class FormInfo:
             self.entry.delete(0, END)
 
         def browse_command(self):
-            import FileDialog
-            fd = FileDialog.LoadFileDialog(self.browse)
+            from tkinter import filedialog
+            fd = filedialog.LoadFileDialog(self.browse)
             filename = fd.go(self.entry.get(), key="load")
             if filename:
                 self.set(filename)

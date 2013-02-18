@@ -12,7 +12,7 @@ from .grailbase import GrailPrefs
 typify = GrailPrefs.typify
 
 import urllib.parse
-from Tkinter import *
+from tkinter import *
 from . import tktools
 import re
 import pkgutil

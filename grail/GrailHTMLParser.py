@@ -5,7 +5,7 @@
 # XXX supports embedded applets.
 
 
-from Tkinter import *
+from tkinter import *
 import os
 import urllib.parse
 from . import tktools

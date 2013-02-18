@@ -4,31 +4,31 @@ __version__ = "$Revision: 1.12 $"
 
 from .. import grailutil
 from .. import PrefsPanels
-import Tkinter
+import tkinter
 
 
 GROUP = "printing"
 LABEL_WIDTH = 16
 
 
-class FontSizeVar(Tkinter.StringVar):
+class FontSizeVar(tkinter.StringVar):
     _default = "10.0 / 10.7"
     def get(self):
-        sizes = grailutil.conv_fontsize(Tkinter.StringVar.get(self))
+        sizes = grailutil.conv_fontsize(tkinter.StringVar.get(self))
         return "{} / {}".format(*sizes)
 
     def set(self, value):
         sizes = grailutil.conv_fontsize(value)
-        return Tkinter.StringVar.set(self, "{} / {}".format(*sizes))
+        return tkinter.StringVar.set(self, "{} / {}".format(*sizes))
 
 
-class StringSetVar(Tkinter.StringVar):
+class StringSetVar(tkinter.StringVar):
     def get(self):
-        return Tkinter.StringVar.get(self).lower()
+        return tkinter.StringVar.get(self).lower()
 
     def set(self, value):
         value = value.capitalize()
-        return Tkinter.StringVar.set(self, value)
+        return tkinter.StringVar.set(self, value)
 
 
 class PrintingPanel(PrefsPanels.Framework):
@@ -77,15 +77,15 @@ class PrintingPanel(PrefsPanels.Framework):
                         label_width=LABEL_WIDTH, variable=FontSizeVar())
 
         # paragraph treatment:
-        f = Tkinter.Frame(frame)
+        f = tkinter.Frame(frame)
         self.PrefsWidgetLabel(f, "Paragraphs:", label_width=LABEL_WIDTH)
         # Pack some preferences entries together in a frame - we use the
         # PrefsEntry 'composite' feature here, to put them together on the
         # right-hand side of the label:
-        tempfr = Tkinter.Frame(f, borderwidth=1)
-        tempfr.pack(side=Tkinter.LEFT)
-        entries_frame = Tkinter.Frame(
-            tempfr, relief=Tkinter.SUNKEN, borderwidth=1)
+        tempfr = tkinter.Frame(f, borderwidth=1)
+        tempfr.pack(side=tkinter.LEFT)
+        entries_frame = tkinter.Frame(
+            tempfr, relief=tkinter.SUNKEN, borderwidth=1)
         self.PrefsEntry(entries_frame,
                         "Indentation:",
                         GROUP, 'paragraph-indent', 'float',
@@ -94,4 +94,4 @@ class PrintingPanel(PrefsPanels.Framework):
                         "Vertical separation:",
                         GROUP, 'paragraph-skip', 'float',
                         label_width=16, entry_width=5, composite=True)
-        f.pack(fill=Tkinter.X, side=Tkinter.TOP, pady='1m')
+        f.pack(fill=tkinter.X, side=tkinter.TOP, pady='1m')

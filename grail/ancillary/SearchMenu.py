@@ -1,6 +1,6 @@
 """Search menu extension for Grail."""
 
-from Tkinter import *
+from tkinter import *
 
 
 class SearchMenu:

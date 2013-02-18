@@ -3,7 +3,7 @@
 To start, this is used by the HTTP api to perform basic access authorization.
 """
 
-from Tkinter import *
+from tkinter import *
 from . import tktools
 import urllib.parse
 import base64

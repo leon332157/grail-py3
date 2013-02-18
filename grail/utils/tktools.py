@@ -1,7 +1,7 @@
 """Assorted Tk-related subroutines."""
 
 
-from Tkinter import *
+from tkinter import *
 
 def _clear_entry_widget(event):
     try:

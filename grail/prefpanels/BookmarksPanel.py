@@ -3,7 +3,7 @@
 __version__ = '$Revision: 1.11 $'
 
 from .. import PrefsPanels
-from Tkinter import *
+from tkinter import *
 
 from ..BookmarksGUI import \
      NEW_AT_BEG, \

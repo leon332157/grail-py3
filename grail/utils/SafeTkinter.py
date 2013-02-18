@@ -1,4 +1,4 @@
-from Tkinter import TclError
+from tkinter import TclError
 
 def _castrate(tk):
     """Remove all Tcl commands that can affect the file system.

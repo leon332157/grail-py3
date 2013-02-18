@@ -4,7 +4,7 @@ __version__ = '$Revision: 1.5 $'
 
 from .. import grailutil
 import re
-import Tkinter
+import tkinter
 import token
 
 from .. import AppletLoader
@@ -122,7 +122,7 @@ class parse_text_x_python:
                     nodes = node[1:] + nodes
         # end of last token to EOF is a comment...
         start = "{}.{}".format(prevline or 1, prevcol)
-        tag_add('python:comment', start, Tkinter.END)
+        tag_add('python:comment', start, tkinter.END)
         self.__viewer.context.message_clear()
         self.tag_add = None
 

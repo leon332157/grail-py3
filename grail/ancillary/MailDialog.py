@@ -18,7 +18,7 @@ import string
 import time
 from . import tktools
 
-from Tkinter import *
+from tkinter import *
 from urllib.parse import urlparse, urlunparse
 from . import GRAILVERSION
 from .Context import LAST_CONTEXT

@@ -1,6 +1,6 @@
 """Preference panel to control applet privileges."""
 
-from Tkinter import *
+from tkinter import *
 
 from .. import tktools
 

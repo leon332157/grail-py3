@@ -1,6 +1,6 @@
 """Modal dialog to prompt for a URI to open."""
 
-from Tkinter import *
+from tkinter import *
 from . import tktools
 
 

@@ -2,7 +2,7 @@ from . import bookmarks
 from .bookmarks import collection
 from .bookmarks import nodes
 
-import FileDialog
+from tkinter import filedialog
 import os
 import string
 import sys
@@ -10,7 +10,7 @@ import time
 from . import tktools
 import re
 
-from Tkinter import *
+from tkinter import *
 from .grailutil import *
 from .Outliner import OutlinerViewer, OutlinerController
 
@@ -101,17 +101,17 @@ class FileDialogExtras:
     def set_for_netscape(self): self._set_to_file(DEFAULT_NETSCAPE_BM_FILE)
 
 
-class BMLoadDialog(FileDialog.LoadFileDialog, FileDialogExtras):
+class BMLoadDialog(filedialog.LoadFileDialog, FileDialogExtras):
     def __init__(self, master, controller):
         self._controller = controller
-        FileDialog.LoadFileDialog.__init__(self, master, 'Load Bookmarks File')
+        filedialog.LoadFileDialog.__init__(self, master, 'Load Bookmarks File')
         FileDialogExtras.__init__(self, self.top)
 
 
-class BMSaveDialog(FileDialog.SaveFileDialog, FileDialogExtras):
+class BMSaveDialog(filedialog.SaveFileDialog, FileDialogExtras):
     def __init__(self, master, controller):
         self._controller = controller
-        FileDialog.SaveFileDialog.__init__(self, master, 'Save Bookmarks File')
+        filedialog.SaveFileDialog.__init__(self, master, 'Save Bookmarks File')
         FileDialogExtras.__init__(self, self.top)
         self.__create_widgets(master)
         self.set_filetype(

@@ -3,7 +3,7 @@
 # XXX Bugs:
 # - Resizing behavior is ugly
 
-from Tkinter import *
+from tkinter import *
 from . import tktools
 
 class Dialog:
@@ -56,7 +56,6 @@ def _test():
         print(d.num)
 
 if __name__ == '__main__':
-    from Tkinter import Tk
     root = Tk()
     t = Button(root, text='Test', command=_test)
     t.pack()

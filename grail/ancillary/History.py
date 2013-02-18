@@ -1,6 +1,6 @@
 """Data structures for History manipulation"""
 
-from Tkinter import *
+from tkinter import *
 from . import tktools
 import os
 import sys

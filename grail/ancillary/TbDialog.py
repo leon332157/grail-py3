@@ -3,7 +3,7 @@
 from . import tktools
 import traceback
 
-from Tkinter import *
+from tkinter import *
 
 
 class TracebackDialog:

@@ -5,7 +5,7 @@ import os
 import sys
 from . import grailutil
 
-from Tkinter import *
+from tkinter import *
 from . import tktools
 
 from .Viewer import Viewer
@@ -353,8 +353,8 @@ class Browser:
             browser.context.load(grailutil.complete_url(uri))
 
     def open_file_command(self, event=None):
-        import FileDialog
-        dialog = FileDialog.LoadFileDialog(self.master)
+        from tkinter import filedialog
+        dialog = filedialog.LoadFileDialog(self.master)
         filename = dialog.go(key="load")
         if filename:
             import urllib.request

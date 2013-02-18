@@ -6,8 +6,8 @@ It is used to bring up other windows.
 
 import sys
 import os
-from Tkinter import *
-import tkMessageBox
+from tkinter import *
+import tkinter.messagebox
 
 # Milliseconds between interrupt checks
 KEEPALIVE_TIMER = 500
@@ -37,7 +37,7 @@ class PyncheWidget:
             # import fails or _default_root is None.
             tkroot = None
             try:
-                from Tkinter import _default_root
+                from tkinter import _default_root
                 tkroot = self.__tkroot = _default_root
             except ImportError:
                 pass
@@ -149,7 +149,7 @@ class PyncheWidget:
 
     def __popup_about(self, event=None):
         from .Main import __version__
-        tkMessageBox.showinfo('About Pynche ' + __version__,
+        tkinter.messagebox.showinfo('About Pynche ' + __version__,
                               '''\
 Pynche {}
 The PYthonically Natural
