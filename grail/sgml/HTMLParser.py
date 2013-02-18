@@ -4,7 +4,7 @@ See the HTML 2.0 specification:
 http://www.w3.org/hypertext/WWW/MarkUp/html-spec/html-spec_toc.html
 """
 
-import htmlentitydefs
+import html.entities
 from . import SGMLHandler
 from . import SGMLLexer
 from . import SGMLParser
@@ -18,7 +18,7 @@ URL_VALUED_ATTRIBUTES = ['href', 'src', 'codebase', 'data']
 
 class HTMLParser(SGMLHandler.BaseSGMLHandler):
 
-    entitydefs = htmlentitydefs.entitydefs.copy()
+    entitydefs = html.entities.entitydefs.copy()
     new_entities = {
         "Dstrok": entitydefs["ETH"],
         "apos": "'",

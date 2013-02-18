@@ -14,7 +14,7 @@ class Parser(SGMLHandler.BaseSGMLHandler):
     __buffer = ''
     __baseurl = None
 
-    from htmlentitydefs import entitydefs
+    from html.entities import entitydefs
 
     def __init__(self, filename=None):
         self._filename = filename

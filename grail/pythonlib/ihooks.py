@@ -51,7 +51,7 @@ would also be wise to install a different version of reload().
 """
 
 
-import __builtin__
+import builtins
 import imp
 import os
 import sys
@@ -341,21 +341,21 @@ class BasicModuleImporter():
         # XXX Should this try to clear the module's namespace?
 
     def install(self):
-        self.save_import_module = __builtin__.__import__
-        self.save_reload = __builtin__.reload
-        if not hasattr(__builtin__, 'unload'):
-            __builtin__.unload = None
-        self.save_unload = __builtin__.unload
-        __builtin__.__import__ = self.import_module
-        __builtin__.reload = self.reload
-        __builtin__.unload = self.unload
+        self.save_import_module = builtins.__import__
+        self.save_reload = getattr(builtins, 'reload', None)
+        self.save_unload = getattr(builtins, 'unload', None)
+        builtins.__import__ = self.import_module
+        builtins.reload = self.reload
+        builtins.unload = self.unload
 
     def uninstall(self):
-        __builtin__.__import__ = self.save_import_module
-        __builtin__.reload = self.save_reload
-        __builtin__.unload = self.save_unload
-        if not __builtin__.unload:
-            del __builtin__.unload
+        builtins.__import__ = self.save_import_module
+        builtins.reload = self.save_reload
+        builtins.unload = self.save_unload
+        if not builtins.reload:
+            del builtins.reload
+        if not builtins.unload:
+            del builtins.unload
 
 
 class ModuleImporter(BasicModuleImporter):
