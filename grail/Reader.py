@@ -240,7 +240,7 @@ class GzipWrapper:
         if not self.__header:
             if len(data) >= self.BASE_HEADER_LENGTH:
                 if data[:3] != '\037\213\010':
-                    raise RuntimeError, "invalid gzip header"
+                    raise RuntimeError("invalid gzip header")
                 self.__flag = ord(data[3])
                 self.__header = True
                 data = data[10:]
@@ -359,7 +359,7 @@ else:
 try:
     import zlib
     import gzip
-except ImportError, error:
+except ImportError:
     pass
 else:
     content_decoding_wrappers["gzip"] = GzipWrapper
@@ -643,7 +643,7 @@ class Reader(BaseReader):
             # Always save in binary mode.
             try:
                 self.save_file = open(fn, "wb")
-            except IOError, msg:
+            except IOError as msg:
                 context.error_dialog(IOError, msg)
                 return
             TransferDisplay(context, fn, self)
@@ -702,7 +702,7 @@ class Reader(BaseReader):
             return
         try:
             self.parser.feed(data)
-        except IOError, msg:
+        except IOError as msg:
             self.stop()
             if msg.errno is not None:
                 errno, errmsg = msg.errno, msg.strerror
@@ -888,7 +888,7 @@ class TransferDisplay:
         self.close()
         if os.path.isfile(self.__filename):
             try: os.unlink(self.__filename)
-            except IOError, msg: self.context.error_dialog(IOError, msg)
+            except IOError as msg: self.context.error_dialog(IOError, msg)
 
     # file-like methods; these allow us to intercept the close() method
     # on the reader's save file object

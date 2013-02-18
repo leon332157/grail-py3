@@ -1,6 +1,5 @@
 """Viewer class."""
 
-import sys
 from Tkinter import *
 from . import tktools
 import formatter
@@ -282,14 +281,14 @@ class Viewer(formatter.AbstractWriter):
             for tag in ['_ding'] + list(self.__fonttags_built.keys()):
                 try:
                     self.configure_fonttag(tag)
-                except TclError, err:
+                except TclError:
                     # This extra logic is needed to switch to gif-based
                     # dingbats if the font is not available in the current
                     # size.
                     if tag == '_ding':
                         use_font_dingbats = False
                     else:
-                        raise TclError, err, sys.exc_traceback
+                        raise
                 else:
                     if tag == '_ding':
                         fontname = self.stylesheet.styles[tag]['font']

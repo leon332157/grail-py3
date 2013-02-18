@@ -244,8 +244,8 @@ class ModuleLoader(BasicModuleLoader):
             elif type == PKG_DIRECTORY:
                 m = self.hooks.load_package(name, filename, file)
             else:
-                raise ImportError, "Unrecognized module type (%r) for %s" % \
-                      (type, name)
+                raise ImportError("Unrecognized module type (%r) for %s" %
+                      (type, name))
         finally:
             if file: file.close()
         m.__file__ = filename
@@ -264,14 +264,14 @@ class FancyModuleLoader(ModuleLoader):
         if type == PKG_DIRECTORY:
             initstuff = self.find_module_in_dir("__init__", filename, False)
             if not initstuff:
-                raise ImportError, "No __init__ module in package %s" % name
+                raise ImportError("No __init__ module in package %s" % name)
             initfile, initfilename, initinfo = initstuff
             initsuff, initmode, inittype = initinfo
             if inittype not in (PY_COMPILED, PY_SOURCE):
                 if initfile: initfile.close()
-                raise ImportError, \
+                raise ImportError(
                     "Bad type (%r) for __init__ module in package %s" % (
-                    inittype, name)
+                    inittype, name))
             path = [filename]
             file = initfile
             realfilename = initfilename
@@ -326,14 +326,14 @@ class BasicModuleImporter():
             return self.modules[name] # Fast path
         stuff = self.loader.find_module(name)
         if not stuff:
-            raise ImportError, "No module named %s" % name
+            raise ImportError("No module named %s" % name)
         return self.loader.load_module(name, stuff)
 
     def reload(self, module, path = None):
         name = module.__name__
         stuff = self.loader.find_module(name, path)
         if not stuff:
-            raise ImportError, "Module %s not found for reload" % name
+            raise ImportError("Module %s not found for reload" % name)
         return self.loader.load_module(name, stuff)
 
     def unload(self, module):
@@ -400,7 +400,7 @@ class ModuleImporter(BasicModuleImporter):
             parent = None
             q = self.import_it(head, qname, parent)
             if q: return q, tail
-        raise ImportError, "No module named " + qname
+        raise ImportError("No module named " + qname)
 
     def load_tail(self, q, tail):
         m = q
@@ -409,7 +409,7 @@ class ModuleImporter(BasicModuleImporter):
             mname = "%s.%s" % (m.__name__, head)
             m = self.import_it(head, mname, m)
             if not m:
-                raise ImportError, "No module named " + mname
+                raise ImportError("No module named " + mname)
         return m
 
     def ensure_fromlist(self, m, fromlist, recursive=False):
@@ -427,11 +427,11 @@ class ModuleImporter(BasicModuleImporter):
                 subname = "%s.%s" % (m.__name__, sub)
                 submod = self.import_it(sub, subname, m)
                 if not submod:
-                    raise ImportError, "No module named " + subname
+                    raise ImportError("No module named " + subname)
 
     def import_it(self, partname, fqname, parent):
         if not partname:
-            raise ValueError, "Empty module name"
+            raise ValueError("Empty module name")
         try:
             return self.modules[fqname]
         except KeyError:

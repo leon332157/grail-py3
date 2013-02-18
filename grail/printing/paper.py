@@ -30,7 +30,7 @@ class PaperInfo:
         if isinstance(angle, str):
             angle = paper_rotations[angle]
         if angle % 90.0 != 0:
-            raise ValueError, "Illegal page rotation: "  + repr(angle)
+            raise ValueError("Illegal page rotation: "  + repr(angle))
         self.Rotation = angle = angle % 360.0
         if angle % 180.0:
             pw, ph = self.PaperWidth, self.PaperHeight

@@ -72,7 +72,7 @@ class parse_text_x_python:
         import parser
         try:
             nodes = parser.st2list(parser.suite(self.__source), True)
-        except parser.ParserError, err:
+        except parser.ParserError as err:
             self.__viewer.context.message(
                 "Syntax error in Python source: %s" % err)
             return

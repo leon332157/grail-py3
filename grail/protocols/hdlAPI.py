@@ -122,10 +122,10 @@ class hdl_access(nullAPI.null_access):
                 if not m:
                     self._msgattrs["title"] = (
                         "hdlAPI: Could not load %s data type handler" % mname)
-                    raise ImportError, mname
+                    raise ImportError(mname)
                 types = m.handle_types
                 formatter = m.data_formatter
-            except (ImportError, AttributeError), msg:
+            except (ImportError, AttributeError):
                 if tname in hdllib.data_map:
                     self._types = [hdllib.data_map[tname]]
                 else:
@@ -148,7 +148,7 @@ class hdl_access(nullAPI.null_access):
         try:
             replyflags, self._items = self._hashtable.get_data(
                 self._hdl, self._types)
-        except hdllib.Error, inst:
+        except hdllib.Error as inst:
             if inst.errno == hdllib.HP_HANDLE_NOT_FOUND:
                 #print("Retry using a local handle server")
                 self._hashtable = self.get_local_hash_table(self._hdl)

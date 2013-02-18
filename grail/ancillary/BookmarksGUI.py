@@ -196,7 +196,7 @@ class BookmarksIO:
         try:
             fp = open(filename, 'r')
             return fp, self.__choose_reader(fp)
-        except IOError, error:
+        except IOError as error:
             if error.errno == errno.ENOENT:
                 # 'No such file or directory'
                 raise
@@ -212,7 +212,7 @@ class BookmarksIO:
             with urllib.urlopen(url) as fp:
                 sio = StringIO(fp.read())
             return sio, self.__choose_reader(sio)
-        except IOError, error:
+        except IOError as error:
             raise bookmarks.BookmarkFormatError(url, error, what="URL")
 
     def load(self, usedefault=False, filename=None):
@@ -260,7 +260,7 @@ class BookmarksIO:
         if filename:
             try:
                 fp, reader = self.__open_file_for_reading(filename)
-            except IOError, error:
+            except IOError:
                 # only ENOENT is passed through like this
                 fp, reader = self.__open_url_for_reading(filename)
             with fp:
@@ -630,9 +630,9 @@ class BookmarksDialog:
     def load(self, event=None):
         try:
             self._controller.load()
-        except IOError, errmsg:
+        except IOError as errmsg:
             IOErrorDialog(self._frame, 'during loading', errmsg)
-        except bookmarks.BookmarkFormatError, e:
+        except bookmarks.BookmarkFormatError as e:
             IOErrorDialog(self._frame, 'during loading', e.problem)
 
     def show(self):

@@ -66,8 +66,8 @@ def main(args=None):
         opts, args = getopt.getopt(args, 'd:g:iq',
                                    ['display=', 'geometry=', 'noimages'])
         if len(args) > 1:
-            raise getopt.error, "too many arguments"
-    except getopt.error, msg:
+            raise getopt.error("too many arguments")
+    except getopt.error as msg:
         print("Command line error:", msg, file=sys.stderr)
         print(USAGE, file=sys.stderr)
         sys.exit(2)
@@ -118,7 +118,7 @@ def main(args=None):
     # $GRAILDIR/user/grailrc.py if it exists.
     if user_init:
         try: import grailrc
-        except ImportError, e:
+        except ImportError as e:
             # Only catch this if grailrc itself doesn't import,
             # otherwise propagate.
             if e.args[0].split()[-1] != "grailrc":
@@ -320,11 +320,11 @@ class Application(BaseApplication.BaseApplication):
         api = self.open_url(url, 'GET', {})
         errcode, errmsg, meta = api.getmeta()
         if errcode != 200:
-            raise IOError, ('url open error', errcode, errmsg, meta)
+            raise IOError('url open error', errcode, errmsg, meta)
         return URLReadWrapper(api, meta)
 
     def exception_dialog(self, message="", root=None):
-        exc, val, tb = sys.exc_type, sys.exc_value, sys.exc_traceback
+        exc, val, tb = sys.exc_info()
         self.exc_dialog(message, exc, val, tb, root)
 
     def report_callback_exception(self, exc, val, tb, root=None):

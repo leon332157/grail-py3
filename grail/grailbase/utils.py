@@ -87,7 +87,7 @@ def conv_mimetype(type):
     type = type.lower()
     fields = type.split('/')
     if len(fields) != 2:
-        raise ValueError, "Illegal media type specification."
+        raise ValueError("Illegal media type specification.")
     return type, opts
 
 

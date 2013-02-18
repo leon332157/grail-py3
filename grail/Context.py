@@ -296,7 +296,7 @@ class Context(URIContext):
         try:
             image = AsyncImage(self, url, reload, width=width, height=height,
                                master=self.root)
-        except IOError, msg:
+        except IOError:
             image = None
         if image:
             self.app.set_cached_image(
@@ -380,14 +380,14 @@ class Context(URIContext):
     def set_local_api(self, name, klass):
         """Install a local protocol handler"""
         if not name.endswith("API"):
-            raise IOError, "Invalid name (%s) for protocol handler" % name
+            raise IOError("Invalid name (%s) for protocol handler" % name)
         self.local_api_handlers[name] = klass
 
     def get_local_api(self, url, method, params):
         """get a local handler instance"""
         scheme, resturl = urllib.splittype(url)
         if not scheme:
-            raise IOError, ("protocol error",
+            raise IOError("protocol error",
                             "no scheme identifier in URL", url)
         scheme = scheme.lower()
         sanitized = re.sub(r"[^a-zA-Z0-9]", "_", scheme)
@@ -482,7 +482,7 @@ class Context(URIContext):
                            show_source=show_source, reload=reload,
                            scrollpos=scrollpos)
             self.show_source = show_source
-        except IOError, msg:
+        except IOError as msg:
             self.error_dialog(IOError, msg)
             self.message_clear()
             if self.source:
@@ -549,7 +549,7 @@ class Context(URIContext):
         self.message("Posting to %s" % url)
         try:
             self.read_page(url, method, params, reload=True, data=data)
-        except IOError, msg:
+        except IOError as msg:
             self.error_dialog(IOError, msg)
             self.message_clear()
 
@@ -621,7 +621,7 @@ class SavingReader(Reader.Reader):
         self.stop()
         try:
             self.save_file = open(self.__filename, "wb")
-        except IOError, msg:
+        except IOError as msg:
             self.context.error_dialog(IOError, msg)
             return
         #

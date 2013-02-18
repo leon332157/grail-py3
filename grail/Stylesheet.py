@@ -47,7 +47,7 @@ class Stylesheet:
         try:
             return self.attrs[attr]
         except KeyError:
-            raise AttributeError, attr
+            raise AttributeError(attr)
 
     def get_sizes(self):
         """Get the size name and a dictionary of size name/values.
@@ -58,8 +58,8 @@ class Stylesheet:
         if sname not in allsizes:
             sname = self.prefs.Get('styles', 'default-size')
             if sname not in allsizes:
-                raise UndefinedStyle, ("Bad preferences file,"
-                                       + " can't get valid size.")
+                raise UndefinedStyle("Bad preferences file,"
+                                       " can't get valid size.")
         sdict = {}
         slist = self.prefs.Get('styles', sname + '-sizes').split()
         for k in self.prefs.Get('styles', 'size-names').split():
@@ -83,8 +83,8 @@ class Stylesheet:
         if tname not in allfams:
             tname = self.prefs.Get('styles', 'default-family')
             if tname not in allfams:
-                raise UndefinedStyle, ("Bad preferences file,"
-                                       + " can't get valid family.")
+                raise UndefinedStyle("Bad preferences file,"
+                                       " can't get valid family.")
         return tname
 
     def dictify_list(self, fields):

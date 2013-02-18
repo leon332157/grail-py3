@@ -264,10 +264,10 @@ class CacheManager:
                 self.caches[0].add(item)
             elif reload:
                 self.caches[0].update(item)
-        except CacheFileError, err_tuple:
-            (file, err) = err_tuple
-            print("error adding item %s (file %s): %s" % (item.url,
-                                                          file, err))
+        except CacheFileError as err:
+            (file,) = err.args
+            print("error adding item %s (file %s): %s"
+                % (item.url, file, err.__cause__))
 
     # list of protocols that we can cache
     cache_protocols = ['http', 'ftp', 'hdl']
@@ -470,14 +470,14 @@ class DiskCacheEntry:
         if self.expires:
             if self.expires and self.expires.get_secs() < time.time():
                 # we need to refresh the page; can we just reload?
-                raise CacheReadFailed, self.cache
+                raise CacheReadFailed(self.cache)
         self.cache.get(self.key) 
         try:
             api = disk_cache_access(self.cache.get_file_path(self.file),
                                     self.type, self.date, self.size,
                                     self.encoding, self.transfer_encoding)
         except IOError:
-            raise CacheReadFailed, self.cache
+            raise CacheReadFailed(self.cache)
         return api
 
     def touch(self,refresh=False):
@@ -781,8 +781,8 @@ class DiskCache:
         try:
             with open(path, 'wb') as f:
                 f.writelines(object.data)
-        except IOError, err:
-            raise CacheFileError, (path, err)
+        except IOError as err:
+            raise CacheFileError(path) from err
 
     def make_space(self,amount):
         """Ensures that there are amount bytes free in the disk cache.
@@ -864,10 +864,9 @@ class disk_cache_access:
         self.filename = filename
         try:
             self.fp = open(filename, 'rb')
-        except IOError, err:
+        except IOError as err:
             print("io error opening %s: %s" % (filename, err))
-            # propogate error through
-            raise IOError, err
+            raise
         self.state = DATA
 
     def pollmeta(self):

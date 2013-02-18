@@ -513,7 +513,7 @@ class HashTable:
             for fn in (DEFAULT_HASH_FILE, HASH_TABLE_FILE_FALLBACK):
                 try:
                     self._read_hash_table(fn)
-                except IOError, msg:
+                except IOError as msg:
                     if self.debug:
                         print("Error for %r: %s" % (fn, msg))
                 else:
@@ -842,9 +842,9 @@ class HashTable:
                     try:
                         previtem = allitems[-1]
                     except IndexError:
-                        raise IOError, error
+                        raise IOError(error)
                     if abs(item[0]) != previtem[0]:
-                        raise IOError, error
+                        raise IOError(error)
                     newdata = previtem[1] + item[1]
                     previtem = (previtem[0], newdata)
                     allitems[-1] = previtem
@@ -1041,7 +1041,7 @@ def test(defargs = testsets[0]):
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], '01234abd:f:i:lqs:t:v')
-    except getopt.error, msg:
+    except getopt.error as msg:
         print(msg)
         print(usage_msg)
         sys.exit(2)
@@ -1090,7 +1090,7 @@ def test(defargs = testsets[0]):
         try:
             replyflags, items = ht.get_data(
                     hdl, types, flags, timeout, interval)
-        except Error, msg:
+        except Error as msg:
             if not local or msg.err != HP_HANDLE_NOT_FOUND:
                 print("Error:", msg)
                 print()
@@ -1101,7 +1101,7 @@ def test(defargs = testsets[0]):
                     htl = fetch_local_hash_table(hdl, ht=ht, debug=debug)
                     replyflags, items = htl.get_data(
                         hdl, types, flags, timeout, interval)
-                except Error, msg:
+                except Error as msg:
                     print("Error:", msg)
                     print()
                     continue

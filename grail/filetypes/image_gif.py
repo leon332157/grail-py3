@@ -66,13 +66,12 @@ class PILGifParser(pil_interface):
                 im.load()
                 self.tkim = tkim = ImageTk.PhotoImage(im.mode, im.size)
                 tkim.paste(im)
-            except:
+            except BaseException as err:
                 # XXX What was I trying to catch here?
                 # I think (EOFError, IOError).
                 self.broken = True
                 print("Error decoding image:", file=sys.stderr)
-                print(str(sys.exc_type) + ":", sys.exc_value,
-                    file=sys.stderr)
+                print(type(err) + ":", err, file=sys.stderr)
             else:
                 self.label.config(image=tkim)
                 if "duration" in im.info:

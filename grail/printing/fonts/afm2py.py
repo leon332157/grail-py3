@@ -144,7 +144,7 @@ def main():
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'hd:m:',
                                    ['dir', 'help', 'map'])
-    except getopt.error, msg:
+    except getopt.error as msg:
         print(msg)
         usage(1)
 

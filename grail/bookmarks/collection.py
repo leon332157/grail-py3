@@ -210,12 +210,12 @@ class CopyWalker(walker.TreeWalker):
 
     def get_new_root(self):
         if self.__parents:
-            raise RuntimeError, \
-                  "cannot retrieve new root before walk is complete"
+            raise RuntimeError(
+                  "cannot retrieve new root before walk is complete")
         if self.__needed_ids:
-            raise RuntimeError, \
-                  "copied tree cannot resolve all referenced IDs: " \
-                  + " ".join(self.__needed_ids)
+            raise RuntimeError(
+                  "copied tree cannot resolve all referenced IDs: "
+                  + " ".join(self.__needed_ids))
         return self.__new_root
 
     def add_node(self, node):

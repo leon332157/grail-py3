@@ -24,7 +24,6 @@ from .. import Reader
 import re
 import StringIO
 import socket
-import sys
 from .. import GRAILVERSION
 
 
@@ -137,7 +136,7 @@ class http_access:
         else:
             host, selector = splithost(resturl)
         if not host:
-            raise IOError, "no host specified in URL"
+            raise IOError("no host specified in URL")
         user_passwd, sep, host = host.partition('@')
         if sep:
             import base64
@@ -186,8 +185,8 @@ class http_access:
         try:
             if not select.select([sock], [], [], timeout)[0]:
                 return "waiting for server response", False
-        except select.error, msg:
-            raise IOError, msg, sys.exc_traceback
+        except select.error as msg:
+            raise IOError(msg) from msg
         new = sock.recv(1024)
         if not new:
             return "EOF in server response", True

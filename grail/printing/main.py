@@ -87,7 +87,7 @@ def run(app):
                                        'url=',
                                        'verbose',
                                        ])
-    except getopt.error, err:
+    except getopt.error as err:
         error = 1
         help = True
         options = ()
@@ -227,7 +227,7 @@ def run(app):
                     p.sgml_parser.lex_endtag(p.sgml_parser.get_stack()[0])
                 try:
                     infp, fn = open_source(url)
-                except IOError, err:
+                except IOError as err:
                     if verbose and outfp is not sys.stdout:
                         print("Error opening subdocument", url)
                         print("   ", err)

@@ -102,7 +102,7 @@ class BaseAsyncImage:
         try:
             api = self.context.app.open_url(self.url, 'GET', self.headers,
                                             self.reload or reload) 
-        except IOError, msg:
+        except IOError:
             self.show_bad()
             return
         cached_file, content_type = api.tk_img_access()

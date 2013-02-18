@@ -41,7 +41,7 @@ def protocol_joiner(scheme):
 def protocol_access(url, mode, params, data=None):
     scheme, resturl = splittype(url)
     if not scheme:
-        raise IOError, ("protocol error", "no scheme identifier in URL", url)
+        raise IOError("protocol error", "no scheme identifier in URL", url)
     scheme = scheme.lower()
     sanitized = re.sub(r"[^a-zA-Z0-9]", "_", scheme)
     #
@@ -86,7 +86,7 @@ def protocol_access(url, mode, params, data=None):
     if proxy:
         if not valid_proxy(proxy):
             error = 'Invalid proxy: ' + proxy
-            raise IOError, error
+            raise IOError(error)
         no_proxy_enabled = grailutil.pref_or_getenv('no_proxy_enabled',
                                                     type_name='int')
         if no_proxy_enabled:
@@ -121,14 +121,14 @@ def protocol_access(url, mode, params, data=None):
     else:
         access = None
     if not access:
-        raise IOError, ("protocol error", "no class for %s" % scheme)
+        raise IOError("protocol error", "no class for %s" % scheme)
     try:
         if data:
             return access(resturl, mode, params, data)
         else:
             return access(resturl, mode, params)
-    except socket.error, msg:
-        raise IOError, ("socket error", msg)
+    except socket.error as msg:
+        raise IOError("socket error", msg)
 
 
 from ..grailbase import extloader

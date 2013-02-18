@@ -106,7 +106,7 @@ def valid_output_format(format):
 def main():
     try:
         options = Options(sys.argv[1:])
-    except getopt.error, message:
+    except getopt.error as message:
         usage(2, message)
     args = options.args
     if options.guess_type:
@@ -125,7 +125,7 @@ def main():
     else:
         try:
             infile = open(ifn, 'rb')    # binary in case it's a binary pickle
-        except IOError, err:
+        except IOError as err:
             if options.scrape_links:
                 # try to open as URL
                 import urllib
@@ -180,7 +180,7 @@ def main():
     else:
         try:
             writer.write_tree(get_outfile(ofn))
-        except IOError, err:
+        except IOError as err:
             # Ignore the error if we lost a pipe into another process.
             if err.errno != errno.EPIPE:
                 raise
@@ -215,7 +215,7 @@ def get_outfile(ofn):
     else:
         try:
             outfile = open(ofn, 'w')
-        except IOError, err:
+        except IOError as err:
             error(1, "could not open %s: %s" % (ofn, err.strerror))
         print("Writing output to", ofn)
     return outfile

@@ -423,7 +423,7 @@ class SGMLLexer(SGMLLexerBase):
                     i = k
                     continue
             else:
-                raise RuntimeError, 'neither < nor & ??'
+                raise RuntimeError('neither < nor & ??')
             # We get here only if incomplete matches but
             # nothing else
             match = incomplete.match(rawdata, i)
@@ -448,7 +448,7 @@ class SGMLLexer(SGMLLexerBase):
         #print("parse comment")
         rawdata = self.rawdata
         if not rawdata.startswith(MDO + COM, i):
-            raise RuntimeError, 'unexpected call to parse_comment'
+            raise RuntimeError('unexpected call to parse_comment')
         if self._strict:
             # stricter parsing; this requires legal SGML:
             pos = i + len(MDO)
@@ -527,7 +527,7 @@ class SGMLLexer(SGMLLexerBase):
         #print("tagfind start", i+1)
         match = tagfind.match(rawdata, i+1)     # matches just the GI
         if not match:
-            raise RuntimeError, 'unexpected call to parse_starttag'
+            raise RuntimeError('unexpected call to parse_starttag')
         k = match.end(0)
         #print("tagfind end", k)
         tag = self._normfunc(rawdata[i+1:k])

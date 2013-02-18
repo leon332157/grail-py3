@@ -143,8 +143,8 @@ class SGMLParser(SGMLLexer.SGMLLexer):
             elif not self.stack:
                 tag = self.doctype
                 if not tag:
-                    raise SGMLError, \
-                          'Cannot start the document with an empty tag.'
+                    raise SGMLError(
+                          'Cannot start the document with an empty tag.')
         if tag in self.__taginfo:
             taginfo = self.__taginfo[tag]
         else:

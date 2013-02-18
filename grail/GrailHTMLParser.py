@@ -629,7 +629,7 @@ def try_configcolor(option, color, tag, widget):
             widget.tag_config(tag, **{option: color})
         else:
             widget[option] = color
-    except TclError, msg:
+    except TclError:
         return None
     else:
         return color

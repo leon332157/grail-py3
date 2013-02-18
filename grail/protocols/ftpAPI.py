@@ -77,7 +77,7 @@ class ftp_access:
     def __init__(self, url, method, params):
         assert method == 'GET'
         netloc, path = splithost(url)
-        if not netloc: raise IOError, ('ftp error', 'no host given')
+        if not netloc: raise IOError('ftp error', 'no host given')
         host, port = splitport(netloc)
         user, host = splituser(host)
         if user: user, passwd = splitpasswd(user)
@@ -87,7 +87,7 @@ class ftp_access:
             try:
                 port = int(port)
             except ValueError:
-                raise IOError, ('ftp error', 'bad port')
+                raise IOError('ftp error', 'bad port')
         else:
             port = ftplib.FTP_PORT
         path, attrs = splitattr(path)
@@ -134,8 +134,8 @@ class ftp_access:
             self.cand = cand
             self.sock, self.isdir = cand.retrfile(file, type)
             self.content_length = cand.content_length
-        except ftplib.all_errors, msg:
-            raise IOError, ('ftp error', msg)
+        except ftplib.all_errors as msg:
+            raise IOError('ftp error', msg)
         self.state = META
 
     def pollmeta(self):
@@ -309,9 +309,9 @@ class ftpwrapper:
             try:
                 cmd = 'RETR ' + unquote(file)
                 conn, self.content_length = self.ftp.ntransfercmd(cmd)
-            except ftplib.error_perm, reason:
+            except ftplib.error_perm as reason:
                 if not str(reason).startswith('550'):
-                    raise IOError, ('ftp error', reason)
+                    raise IOError('ftp error', reason)
         if not conn:
             # Try a directory listing
             isdir = True

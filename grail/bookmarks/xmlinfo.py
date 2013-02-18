@@ -121,7 +121,7 @@ def main():
         buffer = fp.read(10240)
     try:
         values = get_xml_info(buffer)
-    except Error, e:
+    except Error as e:
         sys.stderr.write("parse failed: %s\n" % e)
         if debugging:
             raise

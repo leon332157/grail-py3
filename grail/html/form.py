@@ -251,7 +251,7 @@ class FormInfo:
                 try:
                     with open(v) as f:
                         data = f.read()
-                except IOError, msg:
+                except IOError as msg:
                     print("IOError:", msg)
                 else:
                     disp = disp + '; filename="%s"' % v

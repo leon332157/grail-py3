@@ -36,7 +36,6 @@ import os
 from .printing import paper
 from .printing import settings as printing_settings
 from . import Reader
-import sys
 from . import tktools
 from functools import reduce
 
@@ -60,7 +59,7 @@ def get_scaling_adjustments(w):
 def PrintDialog(context, url, title):
     try:
         infp = context.app.open_url_simple(url)
-    except IOError, msg:
+    except IOError as msg:
         context.error_dialog(IOError, msg)
         return
     content_encoding, transfer_encoding = Reader.get_encodings(infp.info())
@@ -267,7 +266,7 @@ class RealPrintDialog:
                 return
             try:
                 fp = open(filename, "w")
-            except IOError, msg:
+            except IOError as msg:
                 self.context.error_dialog(IOError, str(msg))
                 return
             use_temp = False
@@ -284,7 +283,7 @@ class RealPrintDialog:
                     fp = tempfile.NamedTemporaryFile("wt", delete=False)
                 else:
                     fp = os.popen(cmd, "w")
-            except IOError, msg:
+            except IOError as msg:
                 self.context.error_dialog(IOError, str(msg))
                 return
         for e in self.cursor_widgets:
@@ -296,7 +295,7 @@ class RealPrintDialog:
             # don't want a try/finally since we don't need this to
             # execute unless we received an error
             for e in self.cursor_widgets: e['cursor'] = ''
-            raise sys.exc_type, sys.exc_value, sys.exc_traceback
+            raise
         sts = fp.close()
         if use_temp:
             cmd_parts = cmd.split('%s')

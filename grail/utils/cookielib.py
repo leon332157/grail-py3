@@ -306,7 +306,7 @@ def parse_cookies(s):
             if s[0] == ",":
                 s = s[1:].strip()
             else:
-                raise ValueError, "illegal cookie separator"
+                raise ValueError("illegal cookie separator")
     return results
 
 
@@ -324,7 +324,7 @@ def parse_cookie(s):
     name, pos = _get_name(s)
     value, pos = _get_value(s, pos)
     if value is None:
-        raise ValueError, "no value for cookie"
+        raise ValueError("no value for cookie")
     s = s[pos:].strip()
     pos = 0
     if s and s[0] == ';':
@@ -336,7 +336,7 @@ def parse_cookie(s):
         if k == "expires":
             expires, pos = _get_value(s, pos, _date_rx)
             if expires is None:
-                raise ValueError, "missing or unrecognized expiration date"
+                raise ValueError("missing or unrecognized expiration date")
             expires = ht_time.parse(expires)
         else:
             v, pos = _get_value(s, pos)
@@ -368,7 +368,7 @@ def parse_cookie(s):
         if hostparts[-1] in SPECIAL_DOMAINS:
             minparts = 2
         if len(hostparts) < minparts:
-            raise ValueError, "too few components in domain specification"
+            raise ValueError("too few components in domain specification")
     # prefer max-age over expires
     if max_age:
         expires = int(time.time()) + max_age
@@ -379,7 +379,7 @@ def parse_cookie(s):
 def _get_name(s, start=0):
     m = _name_rx.match(s, start)
     if not m:
-        raise ValueError, "could not extract name"
+        raise ValueError("could not extract name")
     return m.group(1), m.end()
 
 

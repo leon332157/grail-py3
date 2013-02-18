@@ -30,9 +30,9 @@ def embed_application_postscript(parser, attrs):
     else:
         try:
             image = load_eps_object(parser, imageurl)
-        except:
+        except BaseException as err:
             sys.stderr.write("Exception loading EPS object: %s\n"
-                             % sys.exc_type)
+                             % type(err).__name__)
             image = None
         if image:
             parser._image_cache[imageurl] = image

@@ -76,7 +76,7 @@ class Framework:
     # Mandatory preferences-specific layout method.
     def CreateLayout(self, name, frame):
         """Override this method with specific layout."""
-        raise SystemError, "Derived class should override .CreateLayout()"
+        raise SystemError("Derived class should override .CreateLayout()")
 
     # Optional preferences-specific layout method.
     def UpdateLayout(self):
@@ -162,8 +162,8 @@ class Framework:
                 getter, setter = variable.get, variable.set
         else:
             if variable:
-                raise ValueError, \
-                      "multi-line entry fields may not specify a variable"
+                raise ValueError(
+                      "multi-line entry fields may not specify a variable")
             entry, garbage = tktools.make_text_box(frame,
                                                    width=entry_width,
                                                    height=entry_height,
@@ -381,8 +381,7 @@ class Framework:
             try:
                 uiset(prefsgetter(g, c, type_nm, factory))
             except (TypeError, ValueError):
-                e, v, tb = sys.exc_type, sys.exc_value, sys.exc_traceback
-                self.app.root.report_callback_exception(e, v, tb)
+                self.app.root.report_callback_exception(*sys.exc_info())
         self.poll_modified()
 
     def done_cmd(self, event=None):
@@ -417,8 +416,7 @@ class Framework:
                 prefsset(g, c, val)
         except (TypeError, ValueError):
             # Reject the value registered in the UI, notify, and fail save:
-            e, v, tb = sys.exc_type, sys.exc_value, sys.exc_traceback
-            self.app.root.report_callback_exception(e, v, tb)
+            self.app.root.report_callback_exception(*sys.exc_info())
             return 0
         if close:
             self.hide()
@@ -591,8 +589,7 @@ class PrefsPanelsMenu:
             return True
         except:
             # Whatever may go wrong in import or panel post
-            e, v, tb = sys.exc_type, sys.exc_value, sys.exc_traceback
-            self.app.root.report_callback_exception(e, v, tb)
+            self.app.root.report_callback_exception(*sys.exc_info())
             return False
         finally:
             try:

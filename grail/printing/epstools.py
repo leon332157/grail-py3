@@ -147,11 +147,10 @@ def load_image_pil(img_fn, greyscale, eps_fn):
             im = im.convert("RGB")
         im.save(eps_fn, "EPS")
     except:
-        e, v, tb = sys.exc_type, sys.exc_value, sys.exc_traceback
         traceback.print_exc()
         print("Exception printed from printing.epstools.load_image_pil()",
             file=sys.stderr)
-        raise e, v, tb
+        raise
 
 
 def load_eps(eps_fn):
@@ -205,9 +204,9 @@ def convert_gif_to_eps(cog, giffile, epsfile):
             if os.path.exists(filename):
                 os.unlink(filename)
             raise EPSError('Error converting image to EPS.')
-    except:
+    except BaseException as err:
         if os.path.exists(filename):
             os.unlink(filename)
         raise EPSError('Could not run conversion process: %s.'
-                       % sys.exc_type)
+                       % type(err).__name__)
     return filename

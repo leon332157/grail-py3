@@ -80,7 +80,7 @@ def image_loader(url):
     from urllib import urlopen
     try:
         imgfp = urlopen(url)
-    except IOError, msg:
+    except IOError:
         return None
     with imgfp:
         return imgfp.read()
@@ -109,7 +109,7 @@ def conv_fontsize(spec):
     if '/' in spec:
         spec = spec.split('/')
         if len(spec) != 2:
-            raise ValueError, "illegal font size specification"
+            raise ValueError("illegal font size specification")
     else:
         spec = [spec, spec]
     spec = map(float, spec)
