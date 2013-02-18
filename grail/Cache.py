@@ -344,17 +344,17 @@ def test():
         api = c.open(url, 'GET', {})
         while True:
             message, ready = api.pollmeta()
-            print message
+            print(message)
             if ready:
                 meta = api.getmeta()
-                print repr(meta)
+                print(repr(meta))
                 break
         while True:
             message, ready = api.polldata()
-            print message
+            print(message)
             if ready:
                 data = api.getdata(512)
-                print repr(data)
+                print(repr(data))
                 if not data:
                     break
         api.close()

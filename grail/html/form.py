@@ -168,22 +168,22 @@ class FormInfo:
             klass = getattr(self, classname)
             instance = klass(self, options, bgcolor)
         else:
-            print "*** Form with <INPUT TYPE=%s> not supported ***" % type
+            print("*** Form with <INPUT TYPE=%s> not supported ***" % type)
 
     def submit_command(self):
         enctype = self.enctype.lower()
         method = self.method.lower()
         if method not in ('get', 'post'):
-            print "*** Form with unknown method:", repr(method)
-            print "Default to method=GET"
+            print("*** Form with unknown method:", repr(method))
+            print("Default to method=GET")
             method = 'get'
         if method == 'get' and enctype == FORM_DATA:
-            print "*** Form with method=GET, enctype=form-data not supported"
-            print "Default to enctype=urlencoded"
+            print("*** Form with method=GET, enctype=form-data not supported")
+            print("Default to enctype=urlencoded")
             enctype = URLENCODED
         if enctype not in (URLENCODED, FORM_DATA):
-            print "*** Form with unknown enctype:", repr(enctype)
-            print "Default to urlencoded"
+            print("*** Form with unknown enctype:", repr(enctype))
+            print("Default to urlencoded")
             enctype = URLENCODED
         data = ''
         if enctype == URLENCODED:
@@ -252,7 +252,7 @@ class FormInfo:
                     with open(v) as f:
                         data = f.read()
                 except IOError, msg:
-                    print "IOError:", msg
+                    print("IOError:", msg)
                 else:
                     disp = disp + '; filename="%s"' % v
             sw = mw.nextpart()
@@ -793,4 +793,4 @@ class InputImageWindow(Frame):
                 else:
                     self.image.start_loading(reload=True)
         else:
-            print "[no image]"
+            print("[no image]")

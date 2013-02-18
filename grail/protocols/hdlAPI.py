@@ -91,7 +91,7 @@ class hdl_access(nullAPI.null_access):
 
     _types = HANDLE_TYPES
 
-    #print "Fetching global hash table"
+    #print("Fetching global hash table")
     _global_hashtable = hdllib.fetch_global_hash_table()
 
     _hashtable = _global_hashtable
@@ -101,7 +101,7 @@ class hdl_access(nullAPI.null_access):
     def get_local_hash_table(self, hdl):
         key = hdllib.get_authority(hdl)
         if key not in self._local_hashtables:
-            #print "Fetching local hash table for", key
+            #print("Fetching local hash table for", key)
             self._local_hashtables[key] = hdllib.fetch_local_hash_table(
                 key, self._global_hashtable)
         return self._local_hashtables[key]
@@ -150,7 +150,7 @@ class hdl_access(nullAPI.null_access):
                 self._hdl, self._types)
         except hdllib.Error, inst:
             if inst.errno == hdllib.HP_HANDLE_NOT_FOUND:
-                #print "Retry using a local handle server"
+                #print("Retry using a local handle server")
                 self._hashtable = self.get_local_hash_table(self._hdl)
                 replyflags, self._items = self._hashtable.get_data(
                     self._hdl, self._types)

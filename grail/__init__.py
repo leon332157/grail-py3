@@ -69,8 +69,8 @@ def main(args=None):
             raise getopt.error, "too many arguments"
     except getopt.error, msg:
         sys.stdout = sys.stderr
-        print "Command line error:", msg
-        print USAGE
+        print("Command line error:", msg)
+        print(USAGE)
         sys.exit(2)
 
     geometry = prefs.Get('browser', 'initial-geometry')
@@ -333,8 +333,8 @@ class Application(BaseApplication.BaseApplication):
 
     def exc_dialog(self, message, exc, val, tb, root=None):
         if self.in_exception_dialog:
-            print
-            print "*** Recursive exception", message
+            print()
+            print("*** Recursive exception", message)
             import traceback
             traceback.print_exception(exc, val, tb)
             return

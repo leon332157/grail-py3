@@ -128,7 +128,7 @@ class QuotedPrintableWrapper:
                 except KeyError:
                     s = s + '='
                     data = data[1:]
-                    print "invalid quoted-printable encoding -- skipping '='"
+                    print("invalid quoted-printable encoding -- skipping '='")
                 else:
                     s = s + chr(v)
                     data = data[3:]
@@ -744,7 +744,7 @@ class Reader(BaseReader):
         command = "(%s; rm -f %s)&" % (command, self.save_filename)
         sts = os.system(command)
         if sts:
-            print "Exit status", sts, "from command", command
+            print("Exit status", sts, "from command", command)
 
     def find_parser_extension(self, content_type):
         app = self.context.app

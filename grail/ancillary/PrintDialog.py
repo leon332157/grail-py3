@@ -53,7 +53,7 @@ def get_scaling_adjustments(w):
     vert_pixels_per_in = scheight / (scheight_mm / 25)
     horiz_pixels_per_in = scwidth / (scwidth_mm / 25)
     result = (72.0 / horiz_pixels_per_in), (72.0 / vert_pixels_per_in)
-##     print "scaling adjustments:", result
+##     print("scaling adjustments:", result)
     return result
 
 

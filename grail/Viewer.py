@@ -370,7 +370,7 @@ class Viewer(formatter.AbstractWriter):
             if v == func:
                 found = i
         if found < 0:
-            print "resize interest", func, "not registered"
+            print("resize interest", func, "not registered")
             return
         del interests[found]
 
@@ -494,13 +494,13 @@ class Viewer(formatter.AbstractWriter):
     # AbstractWriter methods
 
     def new_alignment(self, align):
-##      print "New alignment:", align
+##      print("New alignment:", align)
         if align == 'left': align = None
         self.align = align
         self.new_tags()
 
     def new_font(self, font):
-##      print "New font:", font
+##      print("New font:", font)
         if font:
             tag = self.make_fonttag(font)
         else:
@@ -533,7 +533,7 @@ class Viewer(formatter.AbstractWriter):
         return font
 
     def new_margin(self, margin, level):
-##      print "New margin:", margin, level
+##      print("New margin:", margin, level)
         self.marginlevel = level
         self.margintag = level and ('margin_%d' % level)
         self.new_tags()
@@ -543,7 +543,7 @@ class Viewer(formatter.AbstractWriter):
         self.new_tags()
 
     def new_styles(self, styles):
-##      print 'New styles:', styles
+##      print('New styles:', styles)
         self.addtags = styles
         if self.pendingdata:
             self.text.insert(END, self.pendingdata, self.flowingtags)
@@ -579,7 +579,7 @@ class Viewer(formatter.AbstractWriter):
     RULE_WIDTH_MAGIC = 10
 
     def send_label_data(self, data):
-##      print "Label data:", repr(data)
+##      print("Label data:", repr(data))
         tags = self.flowingtags + ('label_%d' % self.marginlevel,)
         if isinstance(data, str):
             self.text.insert(END, self.pendingdata, self.flowingtags,
@@ -610,11 +610,11 @@ class Viewer(formatter.AbstractWriter):
             self.pendingdata = '\t'
 
     def send_flowing_data(self, data):
-##      print "Flowing data:", repr(data), self.flowingtags
+##      print("Flowing data:", repr(data), self.flowingtags)
         self.pendingdata = self.pendingdata + data
 
     def send_literal_data(self, data):
-##      print "Literal data:", repr(data), self.flowingtags + ('pre',)
+##      print("Literal data:", repr(data), self.flowingtags + ('pre',))
         self.text.insert(END, self.pendingdata, self.flowingtags,
                          data, self.flowingtags + ('pre',))
         self.pendingdata = ''

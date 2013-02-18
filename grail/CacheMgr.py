@@ -266,8 +266,8 @@ class CacheManager:
                 self.caches[0].update(item)
         except CacheFileError, err_tuple:
             (file, err) = err_tuple
-            print "error adding item %s (file %s): %s" % (item.url,
-                                                          file, err)
+            print("error adding item %s (file %s): %s" % (item.url,
+                                                          file, err))
 
     # list of protocols that we can cache
     cache_protocols = ['http', 'ftp', 'hdl']
@@ -631,7 +631,7 @@ class DiskCache:
             os.unlink(logpath)
             os.rename(newpath, logpath)
         except:
-            print "exception during checkpoint"
+            print("exception during checkpoint")
             traceback.print_exc()
 
     def _reinit_log(self):
@@ -804,7 +804,7 @@ class DiskCache:
             while self.size + amount > self.max_size:
                 self.evict_any_page()
         except CacheEmpty:
-            print "Can't make more room in the cache"
+            print("Can't make more room in the cache")
             pass
             # this is not the right thing to do, probably
             # but I don't think this should ever happen
@@ -843,7 +843,7 @@ class DiskCache:
         try:
             os.unlink(self.get_file_path(evictee.file))
         except EnvironmentError as err:
-            # print "error deleting %s from cache: %s" % (key, err)
+            # print("error deleting %s from cache: %s" % (key, err))
             pass
         self.log_entry(evictee,delete=True)
         evictee.delete()
@@ -865,7 +865,7 @@ class disk_cache_access:
         try:
             self.fp = open(filename, 'rb')
         except IOError, err:
-            print "io error opening %s: %s" % (filename, err)
+            print("io error opening %s: %s" % (filename, err))
             # propogate error through
             raise IOError, err
         self.state = DATA

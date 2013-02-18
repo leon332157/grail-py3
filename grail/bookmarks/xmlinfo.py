@@ -68,7 +68,7 @@ def dump_info(values):
         value = getattr(values, field_name)
         label = FieldLabels[field_name]
         if value is not None:
-            print "%*s: %s" % (width, label, value)
+            print("%*s: %s" % (width, label, value))
 
 
 def main():
@@ -136,9 +136,9 @@ def main():
             if field_name in reqs:
                 value = getattr(values, field_name)
                 if value is None:
-                    print
+                    print()
                 else:
-                    print value
+                    print(value)
 
 
 if __name__ == "__main__":

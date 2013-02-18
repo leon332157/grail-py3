@@ -17,14 +17,14 @@ class ImageCache:
         self.url_cache = url_cache
 
     def debug_show_state(self):
-        print "debugging ouput\ncurrent state of image cache"
+        print("debugging ouput\ncurrent state of image cache")
         for image in self.image_objects.keys():
-            print "Image: %s.\n  Owners=%s" % (image,
-                                            self.current_owners[image])
+            print("Image: %s.\n  Owners=%s" % (image,
+                                            self.current_owners[image]))
         for owner, images in self.old_objects.items():
-            print "Old images owned by ", owner
+            print("Old images owned by ", owner)
             for image in images:
-                print image
+                print(image)
 
     def form_key(self, key):
         url, width, height = key

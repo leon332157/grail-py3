@@ -72,7 +72,7 @@ class ImageObject(HTMLParser.Embedding):
             self.__map, thunk = self.__make_map(parser.context)
         else:
             thunk = None
-##      print "Creating ImageObject handler", self, "data=" + src
+##      print("Creating ImageObject handler", self, "data=" + src)
         parser.handle_image(src, '', thunk, 0,
                             Tkinter.BASELINE, width, height, border,
                             parser.reload1, hspace=hspace, vspace=vspace)

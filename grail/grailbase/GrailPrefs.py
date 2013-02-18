@@ -229,7 +229,7 @@ class AllPreferences:
         try:
             self.user.Save()
         except IOError:
-            print "Failed save of user prefs."
+            print("Failed save of user prefs.")
 
         # Process the callbacks:
         callbacks, did_callbacks = self.callbacks, set()

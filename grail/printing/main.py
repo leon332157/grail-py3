@@ -181,7 +181,7 @@ def run(app):
         outfp = open(outfile, 'w')
     with outfp:
         if outfile != '-':
-            print 'Outputting PostScript to', outfile
+            print('Outputting PostScript to', outfile)
 
         if infile:
             context = URIContext(infile)
@@ -229,17 +229,17 @@ def run(app):
                     infp, fn = open_source(url)
                 except IOError, err:
                     if verbose and outfp is not sys.stdout:
-                        print "Error opening subdocument", url
-                        print "   ", err
+                        print("Error opening subdocument", url)
+                        print("   ", err)
                 else:
                     new_ctype = get_ctype(app, url, infp)
                     if new_ctype != ctype:
                         if verbose:
-                            print "skipping", url
-                            print "  wrong content type:", new_ctype
+                            print("skipping", url)
+                            print("  wrong content type:", new_ctype)
                         continue
                     if verbose and outfp is not sys.stdout:
-                        print "Subdocument", url
+                        print("Subdocument", url)
                     w.ps.close_line()
                     # must be true for now, not sure why
                     if MULTI_DO_PAGE_BREAK:
@@ -277,9 +277,9 @@ def load_tag_handler(app, arg):
         basename, ext = os.path.splitext(narg)
         if ext != ".py":
             sys.stdout = sys.stderr
-            print ("Extra tags must be defined in a"
+            print("Extra tags must be defined in a"
                    " Python source file with '.py' extension.")
-            print
+            print()
             return False
         dirname, modname = os.path.split(basename)
         mloader = pkgutil.get_importer(dirname).find_module(modname)
@@ -289,13 +289,13 @@ def load_tag_handler(app, arg):
         loader.load_tag_handlers(mod)
     else:
         sys.stdout = sys.stderr
-        print "Could not locate tag handler", arg
-        print
-        print "Argument to --tags must be a directory to be added to the html"
-        print "package or a file containing tag handler functions.  The tag"
-        print "handlers defined in the directory or file will take precedence"
-        print "over any defined in other extensions."
-        print
+        print("Could not locate tag handler", arg)
+        print()
+        print("Argument to --tags must be a directory to be added to the html")
+        print("package or a file containing tag handler functions.  The tag")
+        print("handlers defined in the directory or file will take precedence")
+        print("over any defined in other extensions.")
+        print()
         return False
     return True
 
@@ -426,29 +426,29 @@ class explicit_multi_transform:
 
 def usage(settings):
     progname = os.path.basename(sys.argv[0])
-    print 'Usage:', progname, '[options] [file-or-url]'
-    print '    -u: URL for footer'
-    print '    -t: title for header'
-    print '    -a: toggle anchor footnotes (default is %s)' \
-          % _onoff(settings.footnoteflag)
-    print '    -U: toggle anchor underlining (default is %s)' \
-          % _onoff(settings.underflag)
-    print '    -o: orientation; portrait, landscape, or seascape'
-    print '    -p: paper size; letter, legal, a4, etc.',
-    print '(default is %s)' % settings.papersize
-    print '    -f: font size, in points (default is %s/%s)' \
-          % settings.get_fontsize()
-    print '    -d: turn on debugging'
-    print '    -l: logfile for debugging, otherwise stderr'
-    print '    -s: toggle "advanced" SGML recognition (default is %s)'\
-          % _onoff(settings.strict_parsing)
-    print '    -T: size of tab stop in points (default is %s)' \
-          % printing_paper.PaperInfo.TabStop
-    print '    -P: specify output printer'
-    print '    -m: descend tree starting from specified document,'
-    print '        printing all HTML documents found'
-    print '    -h: this help message'
-    print '[file]: file to convert, otherwise from stdin'
+    print('Usage:', progname, '[options] [file-or-url]')
+    print('    -u: URL for footer')
+    print('    -t: title for header')
+    print('    -a: toggle anchor footnotes (default is %s)'
+          % _onoff(settings.footnoteflag))
+    print('    -U: toggle anchor underlining (default is %s)'
+          % _onoff(settings.underflag))
+    print('    -o: orientation; portrait, landscape, or seascape')
+    print('    -p: paper size; letter, legal, a4, etc.', end=' ')
+    print('(default is %s)' % settings.papersize)
+    print('    -f: font size, in points (default is %s/%s)'
+          % settings.get_fontsize())
+    print('    -d: turn on debugging')
+    print('    -l: logfile for debugging, otherwise stderr')
+    print('    -s: toggle "advanced" SGML recognition (default is %s)'
+          % _onoff(settings.strict_parsing))
+    print('    -T: size of tab stop in points (default is %s)'
+          % printing_paper.PaperInfo.TabStop)
+    print('    -P: specify output printer')
+    print('    -m: descend tree starting from specified document,')
+    print('        printing all HTML documents found')
+    print('    -h: this help message')
+    print('[file]: file to convert, otherwise from stdin')
 
 
 def _onoff(bool):
@@ -486,7 +486,7 @@ def main():
 
 def profile_main(n=18):
     import profile, pstats
-    print "Running under profiler...."
+    print("Running under profiler....")
     profiler = profile.Profile()
     try:
         profiler.runctx('main()', globals(), locals())

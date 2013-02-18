@@ -30,7 +30,7 @@ class Dialog:
         try:
             self.root.grab_set()
         except TclError:
-            print "*** Grab failed ***"
+            print("*** Grab failed ***")
         self.root.mainloop()
         self.root.destroy()
 
@@ -53,7 +53,7 @@ def _test():
                           strings=('Save File', 
                                       'Discard Changes', 
                                       'Return to Editor'))
-        print d.num
+        print(d.num)
 
 if __name__ == '__main__':
     from Tkinter import Tk

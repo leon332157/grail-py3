@@ -984,8 +984,8 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
     # --- Unhandled elements:
 
     def unknown_pi(self, fields):
-##      print "Could not locate processing instruction handler:"
-##      print "   ", fields
+##      print("Could not locate processing instruction handler:")
+##      print("   ", fields)
         pass
 
     # We don't implement these, but we want to know that they go in pairs,

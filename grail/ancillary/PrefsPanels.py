@@ -392,7 +392,7 @@ class Framework:
     def help_cmd(self, event=None):
         """Dispatch browser on self.help_url."""
         if not self.app.browsers:
-            print "No browser left to dislay help."
+            print("No browser left to dislay help.")
             return
         browser = self.helpbrowser
         if not browser or not browser.valid():
@@ -612,7 +612,7 @@ def standalone():
             self.root = root
             root.report_callback_exception = self.report_callback_exception
         def report_callback_exception(self, e, v, tb):
-            print "Callback error: %s, %s" % (e, v)
+            print("Callback error: %s, %s" % (e, v))
             import traceback
             traceback.print_exception(e, v, tb)
         def register_on_exit(self, func): pass

@@ -68,7 +68,7 @@ class BaseReader:
         # to get busy
         self.message = "awaiting server response"
         if self.killed:
-            print "start() called after a kill"
+            print("start() called after a kill")
             return
         self.fno = self.api.fileno()
 
@@ -147,7 +147,7 @@ class BaseReader:
 
     def checkapi_regularly(self):
         if not self.callback:
-##          print "*** checkapi_regularly -- too late ***"
+##          print("*** checkapi_regularly -- too late ***")
             return
         self.callback()
         if self.callback:
@@ -157,7 +157,7 @@ class BaseReader:
 
     def checkapi(self, *args):
         if not self.callback:
-            print "*** checkapi -- too late ***"
+            print("*** checkapi -- too late ***")
             if self.fno >= 0:
                 fno = self.fno
                 self.fno = -1

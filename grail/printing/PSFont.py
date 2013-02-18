@@ -179,7 +179,7 @@ class PSFont:
         if fontnickname not in self.fontobjs:
             psfontname = self.docfonts[fontnickname]
             self.fontobjs[fontnickname] = fonts.font_from_name(psfontname)
-##      print fontnickname, "==>", self.fontobjs[fontnickname]
+##      print(fontnickname, "==>", self.fontobjs[fontnickname])
         self.tw_func = self.fontobjs[fontnickname].text_width
 
         self._fontsize = new_sz

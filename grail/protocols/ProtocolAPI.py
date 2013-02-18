@@ -111,8 +111,8 @@ def protocol_access(url, mode, params, data=None):
             resturl = (proxy_host, url)
             scheme = proxy_scheme.lower()
             sanitized = re.sub(r"[^a-zA-Z0-9]", "_", scheme)
-##          print "Sending", url
-##          print "     to", scheme, "proxy", proxy_host
+##          print("Sending", url)
+##          print("     to", scheme, "proxy", proxy_host)
     modname = sanitized + "API"
     app = grailutil.get_grailapp()
     ext = app.find_extension('protocols', sanitized)
@@ -162,17 +162,17 @@ def test(url = "http://www.python.org/"):
     api = protocol_access(url, 'GET', {})
     while True:
         message, ready = api.pollmeta()
-        print message
+        print(message)
         if ready:
             meta = api.getmeta()
-            print repr(meta)
+            print(repr(meta))
             break
     while True:
         message, ready = api.polldata()
-        print message
+        print(message)
         if ready:
             data = api.getdata(512)
-            print repr(data)
+            print(repr(data))
             if not data:
                 break
     api.close()

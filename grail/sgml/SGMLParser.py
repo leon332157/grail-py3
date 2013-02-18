@@ -133,7 +133,7 @@ class SGMLParser(SGMLLexer.SGMLLexer):
         self.lex_data = handler
 
     def lex_starttag(self, tag, attrs):
-        #print 'received start tag', repr(tag)
+        #print('received start tag', repr(tag))
         if not tag:
             if self.omittag and self.stack:
                 tag = self.lasttag

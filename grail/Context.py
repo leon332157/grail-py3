@@ -255,7 +255,7 @@ class Context(URIContext):
         if self.app:
             self.app.error_dialog(exception, msg, root=self.root)
         else:
-            print "ERROR:", msg
+            print("ERROR:", msg)
 
     def set_title(self, title):
         if not title:

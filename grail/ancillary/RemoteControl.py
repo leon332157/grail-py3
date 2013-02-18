@@ -266,14 +266,14 @@ class Controller:
         rawdata = conn.recv(1024)
         match = self._cmdre.match(rawdata)
         if not match:
-            print 'Remote Control: Ignoring badly formatted command:', rawdata
+            print('Remote Control: Ignoring badly formatted command:', rawdata)
             return
         # extract the command and args strings
         command = match.group(1).strip()
         argstr = match.group(2).strip()
         # look up the command string
         if command not in self._cbdict:
-            print 'Remote Control: Ignoring unrecognized command:', command
+            print('Remote Control: Ignoring unrecognized command:', command)
             return
         cblist = self._cbdict[command]
         # call all callbacks in list
@@ -320,4 +320,4 @@ class Controller:
             if argstr != 'NOACK':
                 conn.send('ACK')
         except socket.error:
-            print 'RemoteControl: unable to acknowledge PING'
+            print('RemoteControl: unable to acknowledge PING')

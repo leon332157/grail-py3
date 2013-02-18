@@ -397,12 +397,12 @@ def testcgi():
     """CGI program that can be used to test a browser's cookie support.
     Call this as the main program of a CGI script."""
     import cgi
-    print "Set-Cookie: key=value"
-    print "Set-Cookie: another=thing"
+    print("Set-Cookie: key=value")
+    print("Set-Cookie: another=thing")
     cgi.test()
-    print
-    print "<p> This is the <code>cookielib</code> module's"
-    print "<code>testcgi()</code> function."
+    print()
+    print("<p> This is the <code>cookielib</code> module's")
+    print("<code>testcgi()</code> function.")
 
 
 # Testing stuff.  The following things really need testing:

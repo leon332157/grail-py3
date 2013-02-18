@@ -40,14 +40,14 @@ def resize_super_text_box(event=None, frame=None):
     canvas.update_idletasks()
     width = canvas.winfo_width()
     height = canvas.winfo_height()
-##    print "canvas:", width, "x", height
+##    print("canvas:", width, "x", height)
     fakeheight = 1000000
     canvas.itemconfig('theText', width=width, height=fakeheight)
     text = canvas.text
     text.yview("1.0")
     canvas.update_idletasks()
     info = text.dlineinfo("end-1char")
-##    print "info:", info
+##    print("info:", info)
     if info:
         x, y, w, h, bl = info
         totheight = y + h

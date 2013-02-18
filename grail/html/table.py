@@ -260,11 +260,11 @@ def _safe_mojo_height(cell):
             return cell.height()
         except BadMojoError as err:
             (mojoheight,) = err.args
-##          print 'Mojo sez:', mojoheight
+##          print('Mojo sez:', mojoheight)
             cell.situate(height=2*mojoheight)
             mojocnt = mojocnt + 1
     else:
-        print 'Not even Mojo knows!  Mojo using:', mojoheight
+        print('Not even Mojo knows!  Mojo using:', mojoheight)
         return mojoheight
 
 
@@ -302,8 +302,8 @@ class Table(AttrElem):
         self.Acols = self.attribute('cols', conv=grailutil.conv_integer)
         if self.Acols:
 ##          self.layout = FIXEDLAYOUT
-            print 'Fixed layout tables not yet supported!', \
-                  '(Using auto-layout)'
+            print('Fixed layout tables not yet supported!',
+                  '(Using auto-layout)')
             self.layout = AUTOLAYOUT
         else:
             self.layout = AUTOLAYOUT
@@ -543,21 +543,21 @@ class Table(AttrElem):
         colcount = lastcol
 
         # debugging
-##      print '# of rows=', rowcount, '# of cols=', colcount
+##      print('# of rows=', rowcount, '# of cols=', colcount)
 
-##      print '==========', id(self)
+##      print('==========', id(self))
 ##      for row in range(rowcount):
-##          print '[',
+##          print('[', end=' ')
 ##          for col in range(colcount):
 ##              element = table[(row, col)]
 ##              if element == EMPTY:
-##                  print 'EMPTY',
+##                  print('EMPTY', end=' ')
 ##              elif element == OCCUPIED:
-##                  print 'OCCUPIED',
+##                  print('OCCUPIED', end=' ')
 ##              else:
-##                  print element,
-##          print ']'
-##      print '==========', id(self)
+##                  print(element, end=' ')
+##          print(']')
+##      print('==========', id(self))
 
         # save these for the next phase of autolayout
         self._colcount = colcount
@@ -620,19 +620,19 @@ class Table(AttrElem):
         self._maxwidth = maxcanvaswidth
 
         # debugging
-##      print '==========', id(self)
+##      print('==========', id(self))
 ##      for row in range(rowcount):
-##          print '[',
+##          print('[', end=' ')
 ##          for col in range(colcount):
 ##              element = table[(row, col)]
 ##              if element == EMPTY:
-##                  print 'EMPTY',
+##                  print('EMPTY', end=' ')
 ##              elif element == OCCUPIED:
-##                  print 'OCCUPIED',
+##                  print('OCCUPIED', end=' ')
 ##              else:
-##                  print element,
-##          print ']'
-##      print '==========', id(self)
+##                  print(element, end=' ')
+##          print(']')
+##      print('==========', id(self))
 
         if self.Awidth is None:
             suggestedwidth = availablewidth
@@ -647,8 +647,8 @@ class Table(AttrElem):
             else:
                 suggestedwidth = veiwerwidth
         else:
-            print 'Tables internal inconsistency.  Awidth=', \
-                  self.Awidth, type(self.Awidth)
+            print('Tables internal inconsistency.  Awidth=',
+                  self.Awidth, type(self.Awidth))
             suggestedwidth = availablewidth
 
         # now we need to adjust for the available space (i.e. parent
@@ -748,7 +748,7 @@ class Table(AttrElem):
     def _reset(self, viewer):
         # called when the viewer is cleared
         self._cleared = True
-##      print '_reset:', self, viewer, self._cleared
+##      print('_reset:', self, viewer, self._cleared)
         self.parentviewer.context.unregister_notification(self._notify)
         self.parentviewer.unregister_reset_interest(self._reset)
         self.parentviewer.unregister_resize_interest(self._resize)
@@ -759,7 +759,7 @@ class Table(AttrElem):
 
     def _resize(self, viewer):
         # called when the outer browser is resized (typically by the user)
-##      print '_resize:', viewer
+##      print('_resize:', viewer)
         self._autolayout_3()
 
     def _force_resize(self):
@@ -971,8 +971,8 @@ class ContainedText(AttrElem):
                 embedheight = max(embedheight, height)
             else:
                 # this is the best we can do
-##              print 'non-conformant embedded window:', type(sub)
-##              print 'using generic method, which may be incorrect'
+##              print('non-conformant embedded window:', type(sub))
+##              print('using generic method, which may be incorrect')
                 geom = sub.winfo_geometry()
                 match = CELLGEOM_RE.search(geom)
                 if match:

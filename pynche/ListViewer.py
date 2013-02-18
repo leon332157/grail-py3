@@ -101,14 +101,14 @@ class ListViewer:
             if boxid in self.__bboxes:
                 break
         else:
-##            print 'No box found!'
+##            print('No box found!')
             return
         tags = self.__canvas.gettags(boxid)
         for t in tags:
             if t[0] == '#':
                 break
         else:
-##            print 'No color tag found!'
+##            print('No color tag found!')
             return
         red, green, blue = ColorDB.rrggbb_to_triplet(t)
         self.__dontcenter = True

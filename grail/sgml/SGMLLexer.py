@@ -284,7 +284,7 @@ class SGMLLexer(SGMLLexerBase):
     # and data to be processed by a subsequent call.  If 'end' is
     # true, force handling all data as if followed by EOF marker.
     def goahead(self, end):
-        #print "goahead", self.rawdata
+        #print("goahead", self.rawdata)
         i = 0
         n = len(self.rawdata)
         while i < n:
@@ -317,16 +317,16 @@ class SGMLLexer(SGMLLexerBase):
             if i < j: self.lex_data(rawdata[i:j])
             i = j
             if i == n: break
-            #print "interesting", j, i
+            #print("interesting", j, i)
             if rawdata[i] == '<':
-                #print "<", self.literal, rawdata[i:20]
+                #print("<", self.literal, rawdata[i:20])
                 if starttagopen.match(rawdata, i):
-                    #print "open"
+                    #print("open")
                     if self.literal:
                         self.lex_data(rawdata[i])
                         i = i+1
                         continue
-                    #print "parse_starttag", self.parse_starttag
+                    #print("parse_starttag", self.parse_starttag)
                     k = self.parse_starttag(i)
                     if k < 0: break
                     i = k
@@ -445,7 +445,7 @@ class SGMLLexer(SGMLLexerBase):
 
     # Internal -- parse comment, return length or -1 if not terminated
     def parse_comment(self, i, end):
-        #print "parse comment"
+        #print("parse comment")
         rawdata = self.rawdata
         if not rawdata.startswith(MDO + COM, i):
             raise RuntimeError, 'unexpected call to parse_comment'
@@ -491,7 +491,7 @@ class SGMLLexer(SGMLLexerBase):
     # Internal -- handle starttag, return length or -1 if not terminated
     def parse_starttag(self, i):
         rawdata = self.rawdata
-        #print "parse_starttag", rawdata
+        #print("parse_starttag", rawdata)
         if self._strict and shorttagopen.match(rawdata, i):
             # SGML shorthand: <tag/data/ == <tag>data</tag>
             # XXX Can data contain &... (entity or char refs)? ... yes
@@ -514,7 +514,7 @@ class SGMLLexer(SGMLLexerBase):
         if not match:
             return -1
         j = match.start(0)
-        #print "parse_starttag endbracket", j
+        #print("parse_starttag endbracket", j)
         # Now parse the data between i+1 and j into a tag and attrs
         if rawdata[i:i+2] == '<>':
             #  Semantics of the empty tag are handled by lex_starttag():
@@ -524,14 +524,14 @@ class SGMLLexer(SGMLLexerBase):
                 self.lex_data('<>')
             return i + 2
 
-        #print "tagfind start", i+1
+        #print("tagfind start", i+1)
         match = tagfind.match(rawdata, i+1)     # matches just the GI
         if not match:
             raise RuntimeError, 'unexpected call to parse_starttag'
         k = match.end(0)
-        #print "tagfind end", k
+        #print("tagfind end", k)
         tag = self._normfunc(rawdata[i+1:k])
-        #print "tag", tag
+        #print("tag", tag)
         # pull recognizable attributes
         attrs = {}
         while k < j:

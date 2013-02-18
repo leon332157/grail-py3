@@ -1355,9 +1355,9 @@ class BookmarksController(OutlinerController):
                 if nodei == sv.count():
                     nodei = 0
             node = sv.node(nodei)
-##          print 'checking nodei(%d): %s' % (nodei, node)
+##          print('checking nodei(%d): %s' % (nodei, node))
             if not node:
-                print 'no node for', nodei
+                print('no node for', nodei)
                 return False
             # match can occur in the title, uri string, or
             # description string. get this as one big ol' string

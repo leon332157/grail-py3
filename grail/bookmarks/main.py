@@ -84,7 +84,7 @@ class Options:
             elif opt == "--export":
                 self.export = True
                 fields = arg.split(",")
-                print fields
+                print(fields)
                 for f in fields:
                     fname = self.__export_field_map[f]
                     if not fname in self.export_fields:
@@ -192,9 +192,9 @@ def report_info(root):
     total = 0
     for type, count in sorted(coll.get_type_counts().items()):
         total = total + count
-        print "%12s: %5d" % (type, count)
-    print "%12s  -----" % ''
-    print "%12s: %5d" % ("Total", total)
+        print("%12s: %5d" % (type, count))
+    print("%12s  -----" % '')
+    print("%12s: %5d" % ("Total", total))
 
 
 def guess_bookmarks_type(filename, verbose=False):
@@ -204,9 +204,9 @@ def guess_bookmarks_type(filename, verbose=False):
         with open(filename) as fp:
             type = get_format(fp)
     if verbose:
-        print "%s: %s" % (filename, type)
+        print("%s: %s" % (filename, type))
     else:
-        print type
+        print(type)
 
 
 def get_outfile(ofn):
@@ -217,7 +217,7 @@ def get_outfile(ofn):
             outfile = open(ofn, 'w')
         except IOError, err:
             error(1, "could not open %s: %s" % (ofn, err.strerror))
-        print "Writing output to", ofn
+        print("Writing output to", ofn)
     return outfile
 
 
@@ -226,9 +226,9 @@ def usage(err=0, message=''):
         sys.stdout = sys.stderr
     program = os.path.basename(sys.argv[0])
     if message:
-        print "%s: %s" % (program, message)
-        print
-    print __doc__ % {"program": program}
+        print("%s: %s" % (program, message))
+        print()
+    print(__doc__ % {"program": program})
     sys.exit(err)
 
 

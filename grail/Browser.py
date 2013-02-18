@@ -278,7 +278,7 @@ class Browser:
         if self.app:
             self.app.error_dialog(exception, msg, root=self.root)
         else:
-            print "ERROR:", msg
+            print("ERROR:", msg)
 
     def load(self, *args, **kw):
         """Interface for applets."""

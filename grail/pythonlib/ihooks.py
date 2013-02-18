@@ -293,7 +293,7 @@ class FancyModuleLoader(ModuleLoader):
         if path:
             m.__path__ = path
         m.__file__ = filename
-        exec code in m.__dict__
+        exec(code, m.__dict__)
         return m
 
 

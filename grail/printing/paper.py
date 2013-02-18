@@ -58,21 +58,21 @@ class PaperInfo:
                            + self.BottomMargin / 2.0)
 
     def dump(self):
-        print "Paper information:"
-        print "------------------"
-        print "PaperName    =", self.PaperName
-        print "Rotation     =", self.Rotation
-        print "PaperHeight  =", self.PaperHeight
-        print "PaperWidth   =", self.PaperWidth
-        print "ImageHeight  =", self.ImageHeight
-        print "ImageWidth   =", self.ImageWidth
-        print "TopMargin    =", self.TopMargin
-        print "BottomMargin =", self.BottomMargin
-        print "LeftMargin   =", self.LeftMargin
-        print "RightMargin  =", self.RightMargin
-        print "HeaderPos    =", self.HeaderPos
-        print "FooterPos    =", self.FooterPos
-        print "TabStop      =", self.TabStop
+        print("Paper information:")
+        print("------------------")
+        print("PaperName    =", self.PaperName)
+        print("Rotation     =", self.Rotation)
+        print("PaperHeight  =", self.PaperHeight)
+        print("PaperWidth   =", self.PaperWidth)
+        print("ImageHeight  =", self.ImageHeight)
+        print("ImageWidth   =", self.ImageWidth)
+        print("TopMargin    =", self.TopMargin)
+        print("BottomMargin =", self.BottomMargin)
+        print("LeftMargin   =", self.LeftMargin)
+        print("RightMargin  =", self.RightMargin)
+        print("HeaderPos    =", self.HeaderPos)
+        print("FooterPos    =", self.FooterPos)
+        print("TabStop      =", self.TabStop)
 
 
 paper_sizes = {

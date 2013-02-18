@@ -31,7 +31,7 @@ import getopt
 program = sys.argv[0]
 
 def usage(status):
-    print __doc__ % globals()
+    print(__doc__ % globals())
     sys.exit(status)
 
 
@@ -103,7 +103,7 @@ def parse(filename, outdir):
             if keyword == 'startcharmetrics':
                 break
         else:
-            print 'No character metrics found in file:', filename
+            print('No character metrics found in file:', filename)
             sys.exit(1)
 
         outfile = os.path.join(
@@ -130,13 +130,13 @@ def parse(filename, outdir):
         oldstdout = sys.stdout
         sys.stdout = outfp
         try:
-            print TEMPLATE % tdict,
-            print '[',
+            print(TEMPLATE % tdict, end='')
+            print('[', end=' ')
             for i in range(0, 256, 8):
                 if i != 0:
-                    print ' ',
-                print FORMAT % tuple(cwidths[i:i+8])
-            print '])'
+                    print(' ', end=' ')
+                print(FORMAT % tuple(cwidths[i:i+8]))
+            print('])')
         finally:
             sys.stdout = oldstdout
 
@@ -150,7 +150,7 @@ def main():
         opts, args = getopt.getopt(sys.argv[1:], 'hd:m:',
                                    ['dir', 'help', 'map'])
     except getopt.error, msg:
-        print msg
+        print(msg)
         usage(1)
 
     if len(args) != 1:

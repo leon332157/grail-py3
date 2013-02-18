@@ -120,9 +120,9 @@ def test():
     from .grailbase import GrailPrefs
     prefs = GrailPrefs.AllPreferences()
     sheet = Stylesheet(prefs)
-    print sheet.styles['h5_b']['font']
-    print sheet.styles['pre']['wrap']
-    print sheet.styles['center']['justify']
+    print(sheet.styles['h5_b']['font'])
+    print(sheet.styles['pre']['wrap'])
+    print(sheet.styles['center']['justify'])
 
 if __name__ == "__main__":
     test()
