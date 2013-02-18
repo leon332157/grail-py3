@@ -35,7 +35,7 @@ if sys.argv[1:]:
         for i in range(len(args)):
             try: args[i] = int(args[i])
             except: pass
-        restrictions = tuple(filter(None, args))
+        restrictions = filter(None, args)
 
 
 if not os.path.exists(fileName):
@@ -46,5 +46,5 @@ if not os.path.exists(fileName):
 
 
 p = pstats.Stats(fileName).strip_dirs()
-apply(p.sort_stats, sorts)
-apply(getattr(p, 'print_'+report), restrictions)
+p.sort_stats(*sorts)
+getattr(p, 'print_'+report)(*restrictions)

@@ -56,7 +56,7 @@ class HRule(Canvas):
         kw["highlightbackground"] = bgcolor
         kw["highlightthickness"] = 0
         kw["width"] = self.get_width()
-        apply(Canvas.__init__, (self, viewer.text), kw)
+        Canvas.__init__(self, viewer.text, **kw)
 
     def get_width(self):
         maxwid = self.__magic.get_available_width()
@@ -352,7 +352,7 @@ class Viewer(formatter.AbstractWriter):
         if self.__fonttags_built is None:
             self.__fonttags_built = {}
         self.__fonttags_built[tag] = tag
-        apply(self.text.tag_configure, (tag,), self.stylesheet.styles[tag])
+        self.text.tag_configure(tag, **self.stylesheet.styles[tag])
 
     def bind_anchors(self, tag):
         # Each URL must have a separate binding so moving between
@@ -758,7 +758,7 @@ class Viewer(formatter.AbstractWriter):
 
     def clear_targets(self):
         if self.targets:
-            apply(self.text.mark_unset, tuple(self.targets))
+            self.text.mark_unset(*self.targets)
 
     def add_target(self, fragment):
         if self.pendingdata:

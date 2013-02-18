@@ -625,7 +625,7 @@ class GrailHTMLParser(HTMLParser):
 def try_configcolor(option, color, tag, widget):
     try:
         if tag:
-            apply(widget.tag_config, (tag,), {option: color})
+            widget.tag_config(tag, **{option: color})
         else:
             widget[option] = color
     except TclError, msg:

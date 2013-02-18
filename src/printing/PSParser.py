@@ -436,7 +436,7 @@ class PrintingHTMLParser(HTMLParser):
 
     def start_ul(self, attrs, *args, **kw):
         self.list_check_dingbat(attrs)
-        apply(HTMLParser.start_ul, (self, attrs) + args, kw)
+        HTMLParser.start_ul(self, attrs, *args, **kw)
         self.formatter.writer.suppress_indentation()
 
     def end_ul(self):
@@ -492,7 +492,7 @@ class PrintingHTMLParser(HTMLParser):
     def unknown_entityref(self, entname, terminator):
         dingbat = self.load_dingbat(entname)
         if isinstance(dingbat, tuple):
-            apply(self.formatter.writer.ps.push_font_string, dingbat)
+            self.formatter.writer.ps.push_font_string(*dingbat)
             self.formatter.assert_line_data()
         elif dingbat:
             dingbat.restrict(0.9 * self.formatter.writer.ps.get_fontsize(),

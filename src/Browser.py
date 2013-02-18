@@ -31,7 +31,7 @@ if _iconxbm_file:
     if not os.path.isfile(_iconmask_file):
         _iconmask_file = None
     def make_toplevel(*args, **kw):
-        w = apply(tktools_make_toplevel, args, kw)
+        w = tktools_make_toplevel(*args, **kw)
         # icon set up
         try: w.iconbitmap('@' + _iconxbm_file)
         except TclError: pass
@@ -282,7 +282,7 @@ class Browser:
 
     def load(self, *args, **kw):
         """Interface for applets."""
-        return apply(self.context.load, args, kw)
+        return self.context.load(*args, **kw)
 
     def valid(self):
         return self.app and self in self.app.browsers

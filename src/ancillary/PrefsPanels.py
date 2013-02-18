@@ -266,7 +266,7 @@ class Framework:
         self.PrefsWidgetLabel(fr, label, label_width=label_width)
         if not variable:
             variable = StringVar(fr)
-        menu = apply(OptionMenu, (fr, variable) + tuple(options))
+        menu = OptionMenu(fr, variable, *options)
         width = reduce(max, map(len, options), menu_width)
         menu.config(width=width, anchor=W)
         menu.pack(expand=1, fill=NONE, anchor=W)

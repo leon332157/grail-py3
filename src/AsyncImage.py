@@ -174,7 +174,7 @@ class BaseAsyncImage:
 class TkAsyncImage(BaseAsyncImage, TkPhotoImage):
 
     def __init__(self, context, url, reload=0, **kw):
-        apply(TkPhotoImage.__init__, (self,), kw)
+        TkPhotoImage.__init__(self, **kw)
         self.setup(context, url, reload)
 
     def get_cache_key(self):
@@ -375,4 +375,4 @@ def AsyncImage(context, url, reload=0, **kw):
         AsyncImage = PILAsyncImage
     else:
         AsyncImage = TkAsyncImage
-    return apply(AsyncImage, (context, url, reload), kw)
+    return AsyncImage(context, url, reload, **kw)

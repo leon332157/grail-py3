@@ -146,8 +146,7 @@ class AppletLoader:
             # Synchronous loading
             self.klass = getattr(self.module, self.classname)
             self.parent = self.make_parent()
-            self.instance = apply(self.klass, (self.parent,),
-                                  self.params)
+            self.instance = self.klass(self.parent, **self.params)
             try: cleanup = getattr(self.instance, CLEANUP_HANDLER_NAME)
             except AttributeError: pass
             else: CleanupHandler(self.parser.viewer, cleanup)
@@ -200,7 +199,7 @@ class AppletLoader:
             del rexec.loader.load_module
         self.parser.loaded.append(mod)
         self.klass = getattr(self.module, self.classname)
-        self.instance = apply(self.klass, (self.parent,), self.params)
+        self.instance = self.klass(self.parent, **self.params)
         try: cleanup = getattr(self.instance, CLEANUP_HANDLER_NAME)
         except AttributeError: pass
         else: CleanupHandler(self.parser.viewer, cleanup)
@@ -348,7 +347,7 @@ class AppletMagic:
 class AppletFrame(Frame, AppletMagic):
 
     def __init__(self, master, loader=None, cnf={}, **kw):
-        apply(Frame.__init__, (self, master, cnf), kw)
+        Frame.__init__(self, master, cnf, **kw)
         AppletMagic.__init__(self, loader)
 
     def table_geometry(self):
@@ -360,7 +359,7 @@ class AppletFrame(Frame, AppletMagic):
 class AppletMenu(Menu, AppletMagic):
 
     def __init__(self, master, loader=None, cnf={}, **kw):
-        apply(Menu.__init__, (self, master, cnf), kw)
+        Menu.__init__(self, master, cnf, **kw)
         AppletMagic.__init__(self, loader)
 
 

@@ -199,7 +199,7 @@ class RealPrintDialog:
             opts = tuple(map(str.capitalize, opts))
             Label(fr, text="Orientation: ", width=13, anchor=E).pack(side=LEFT)
             Frame(fr, width=3).pack(side=LEFT)
-            menu = apply(OptionMenu, (fr, self.orientation) + opts)
+            menu = OptionMenu(fr, self.orientation, *opts)
             width = reduce(max, map(len, opts), 6)
             menu.config(anchor=W, highlightthickness=0, width=width)
             menu.pack(expand=1, fill=NONE, anchor=W, side=LEFT)
@@ -330,7 +330,7 @@ class RealPrintDialog:
             parser.close()
             self.infp.close()
             return
-        apply(self.settings.set_scaling, get_scaling_adjustments(self.root))
+        self.settings.set_scaling(*get_scaling_adjustments(self.root))
         paper = paper.PaperInfo(self.settings.papersize,
                                 margins=self.settings.margins,
                                 rotation=self.settings.orientation)

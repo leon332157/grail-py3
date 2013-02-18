@@ -33,7 +33,7 @@ class Error(Exception):
     """Base class for xmlinfo exceptions."""
     def __init__(self, *args, **kw):
         self.message = args[0]
-        apply(Exception.__init__, (self,) + args, kw)
+        Exception.__init__(self, *args, **kw)
 
 class ConversionError(Error):
     """Raised when an encoding conversion fails."""

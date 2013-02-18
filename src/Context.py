@@ -413,7 +413,7 @@ class Context(URIContext):
         Returns true if the x-fer was initiated; allows histification.
         """
         # File/Save As...
-        url = apply(self.get_baseurl, relurls)
+        url = self.get_baseurl(*relurls)
         if url == self.get_url() and self.busycheck(): return 0
         import FileDialog
         fd = FileDialog.SaveFileDialog(self.root)
@@ -608,7 +608,7 @@ class SimpleContext(Context):
 class SavingReader(Reader.Reader):
     def __init__(self, context, url, *args, **kw):
         self.__filename = kw.pop('filename')
-        apply(Reader.Reader.__init__, (self, context, '') + args, kw)
+        Reader.Reader.__init__(self, context, '', *args, **kw)
         context.rmreader(self)
         self.url = url
         self.restart(url)

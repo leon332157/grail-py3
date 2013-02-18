@@ -17,7 +17,7 @@ class ColorButton(Button):
         kw["command"] = self.__ask_color
         kw["cnf"] = cnf
         self.__master = master
-        apply(Button.__init__, (self, master), kw)
+        Button.__init__(self, master, **kw)
 
     def get(self):
         return self.cget("foreground")

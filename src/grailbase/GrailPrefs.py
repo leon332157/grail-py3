@@ -237,7 +237,7 @@ class AllPreferences:
                 # in order:
                 if callback not in did_callbacks:
                     did_callbacks.add(callback)
-                    apply(callback, ())
+                    callback()
 
 def make_key(group, cmpnt):
     """Produce a key from preference GROUP, COMPONENT strings."""

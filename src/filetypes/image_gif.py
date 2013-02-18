@@ -161,4 +161,4 @@ def parse_image_gif(*args, **kw):
         parse_image_gif = PILGifParser
     else:
         parse_image_gif = TkGifParser
-    return apply(parse_image_gif, args, kw)
+    return parse_image_gif(*args, **kw)

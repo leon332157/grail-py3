@@ -609,9 +609,8 @@ class Select:
     def make_menu(self, width):
         self.v = StringVar(self.viewer.text)
         self.v.set(self.name)
-        values = tuple(map(lambda (v,s,t): t, self.options))
-        self.w = apply(OptionMenu,
-                       (self.viewer.text, self.v) + values)
+        values = (t for v,s,t in self.options)
+        self.w = OptionMenu(self.viewer.text, self.v, *values)
         self.w["width"] = width
         self.w["highlightbackground"] = self.bgcolor
         self.reset_menu()
