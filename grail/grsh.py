@@ -6,7 +6,7 @@
 import os
 import sys
 
-import grail
+from . import GRAILVERSION
 
 # Standard Grail imports
 from . import grailutil
@@ -22,4 +22,4 @@ del d
 # print the banner
 print sys.version
 print sys.copyright
-print grail.GRAILVERSION, "debugging shell"
+print GRAILVERSION, "debugging shell"

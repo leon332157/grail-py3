@@ -31,7 +31,7 @@ omitted, the appropriate standard stream is used.
 
 __version__ = '$Revision: 1.5 $'
 
-import bookmarks
+from . import get_writer_class, get_format, get_parser_class
 import errno
 import getopt
 import os
@@ -96,7 +96,7 @@ class Options:
 
 def valid_output_format(format):
     try:
-        bookmarks.get_writer_class(format)
+        get_writer_class(format)
     except ImportError:
         return False
     else:
@@ -145,15 +145,15 @@ def main():
             parser = html_scraper.Parser(ifn)
             parser.set_baseurl(baseurl)
         else:
-            format = bookmarks.get_format(infile)
+            format = get_format(infile)
             if not format:
                 error(1, "could not identify input file format")
-            parser_class = bookmarks.get_parser_class(format)
+            parser_class = get_parser_class(format)
             parser = parser_class(ifn)
         #
         # do the real work
         #
-        writer_class = bookmarks.get_writer_class(options.output_format)
+        writer_class = get_writer_class(options.output_format)
         parser.feed(infile.read())
         parser.close()
     root = parser.get_root()
@@ -201,10 +201,10 @@ def report_info(root):
 
 def guess_bookmarks_type(filename, verbose=False):
     if filename == "-":
-        type = bookmarks.get_format(sys.stdin)
+        type = get_format(sys.stdin)
     else:
         with open(filename) as fp:
-            type = bookmarks.get_format(fp)
+            type = get_format(fp)
     if verbose:
         print "%s: %s" % (filename, type)
     else:

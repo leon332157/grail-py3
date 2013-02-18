@@ -2,7 +2,7 @@
 
 __version__ = '$Revision: 1.12 $'
 
-import bookmarks
+from .. import XBEL_1_0_PUBLIC_ID, XBEL_1_0_SYSTEM_ID
 from xml.sax import saxutils
 from .. import iso8601
 from .. import walker
@@ -18,8 +18,8 @@ class Writer(walker.TreeWalker):
          "%s">
 '''
 
-    PUBLIC_ID = bookmarks.XBEL_1_0_PUBLIC_ID
-    SYSTEM_ID = bookmarks.XBEL_1_0_SYSTEM_ID
+    PUBLIC_ID = XBEL_1_0_PUBLIC_ID
+    SYSTEM_ID = XBEL_1_0_SYSTEM_ID
 
     def __init__(self, root=None):
         walker.TreeWalker.__init__(self, root)

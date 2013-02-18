@@ -3,7 +3,7 @@ automatically converted to the current type."""
 
 __version__ = '$Revision: 1.3 $'
 
-import bookmarks
+from .. import BookmarkFormatError
 from .. import nodes
 from .. import walker
 import re
@@ -53,7 +53,7 @@ class Parser:
     def __split_line(self, data):
         header, newline, data = data.partition('\n')
         if not newline:
-            raise bookmarks.BookmarkFormatError(self._filename,
+            raise BookmarkFormatError(self._filename,
                                                 "incomplete file header")
         header += newline
         return header, data

@@ -3,7 +3,7 @@
 __version__ = '$Revision: 1.3 $'
 
 
-import bookmarks
+from .. import PoppedRootError
 from .. import nodes
 from . import html_scraper
 from collections import defaultdict
@@ -71,7 +71,7 @@ class Parser(html_scraper.Parser):
                 extra = " at line {}".format(lineno)
             else:
                 extra = ""
-            raise bookmarks.PoppedRootError(self._filename + extra)
+            raise PoppedRootError(self._filename + extra)
         self.__folder = self.__context.pop()
 
     def ddpop(self):

@@ -3,11 +3,11 @@
 __version__ = '$Revision: 1.4 $'
 
 
-import bookmarks                        # parent
+from .. import BookmarkWriter                        # from parent
 import pickle
 
 
-class Writer(bookmarks.BookmarkWriter):
+class Writer(BookmarkWriter):
     HEADER_STRING = "# GRAIL-Bookmark-file-4 (cache pickle format)\n"
     _filetype = "pickle"
 
