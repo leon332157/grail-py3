@@ -3,7 +3,7 @@
 __version__ = '$Revision: 1.5 $'
 
 
-import bookmarks.nodes
+from .. import nodes
 import string
 import urlparse
 
@@ -21,7 +21,7 @@ class Parser(sgml.SGMLHandler.BaseSGMLHandler):
     def __init__(self, filename=None):
         self._filename = filename
         self.sgml_parser = sgml.SGMLParser.SGMLParser(gatherer=self)
-        self.__root = bookmarks.nodes.Folder()
+        self.__root = nodes.Folder()
         self.__root.expand()
 
     def feed(self, data):
@@ -64,7 +64,7 @@ class Parser(sgml.SGMLHandler.BaseSGMLHandler):
     def start_a(self, attrs):
         uri = string.strip(attrs.get("href", ""))
         if uri:
-            self.__node = bookmarks.nodes.Bookmark()
+            self.__node = nodes.Bookmark()
             self.__root.append_child(self.__node)
             if self.__baseurl:
                 uri = urlparse.urljoin(self.__baseurl, uri)

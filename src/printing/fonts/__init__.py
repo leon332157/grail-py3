@@ -19,7 +19,7 @@ def font_from_name(psfontname):
     modulename = 'PSFont_' + re.sub('-', '_', psfontname)
     # no need to do any caching since the import mechanism does that
     # for us!
-    module = __import__(modulename, globals(), locals())
+    module = __import__(modulename, globals(), locals(), level=1)
     return module.font
 
 # Need different code here for ni than for 1.5 packages

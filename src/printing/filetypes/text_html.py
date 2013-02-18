@@ -2,7 +2,7 @@
 
 import printing.PSParser
 
-parse_text_html = printing.PSParser.PrintingHTMLParser
+parse_text_html = PSParser.PrintingHTMLParser
 
 
 def add_options(dialog, settings, top):

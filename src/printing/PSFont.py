@@ -4,8 +4,8 @@ All access is through the PSFont class.
 """
 __version__ = '$Revision: 1.4 $'
 
-import fonts                            # package
-import utils
+from . import fonts                            # package
+from . import utils
 
 
 # This dictionary maps PostScript font names to the normal, bold and

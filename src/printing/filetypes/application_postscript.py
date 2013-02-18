@@ -6,7 +6,7 @@ import sys
 import urlparse
 
 from grailbase.utils import conv_mimetype
-from printing import epstools
+from .. import epstools
 from sgml.utils import *
 
 

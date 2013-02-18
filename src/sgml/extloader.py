@@ -6,7 +6,7 @@ __version__ = '$Revision: 1.4 $'
 import string
 
 import grailbase.extloader
-import SGMLHandler
+from . import SGMLHandler
 
 
 class TagExtensionLoader(grailbase.extloader.ExtensionLoader):

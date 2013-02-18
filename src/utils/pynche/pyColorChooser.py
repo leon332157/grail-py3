@@ -2,8 +2,8 @@
 """
 
 import os
-import Main
-import ColorDB
+from . import Main
+from . import ColorDB
 
 class Chooser:
     """Ask for a color"""

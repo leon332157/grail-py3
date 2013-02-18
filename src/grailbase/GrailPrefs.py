@@ -11,9 +11,9 @@ import sys
 import string
 if __name__ == "__main__":
     sys.path.insert(0, '../utils')
-import utils
+from . import utils
 
-import parseprefs
+from . import parseprefs
 
 USERPREFSFILENAME = 'grail-preferences'
 SYSPREFSFILENAME = os.path.join('data', 'grail-defaults')

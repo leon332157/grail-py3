@@ -6,7 +6,7 @@ import os
 import string
 import sys
 
-import utils
+from . import utils
 
 
 #  Exception which should not propagate outside printing support.

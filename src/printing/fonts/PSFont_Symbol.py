@@ -4,7 +4,7 @@
 #
 # Copyright (c) 1985, 1987, 1989, 1990 Adobe Systems Incorporated.  All rights reserved.
 #
-import PSFont
+from . import PSFont
 font = PSFont.PSFont('Symbol', 'Symbol',
 [    0,    0,    0,    0,    0,    0,    0,    0,
      0,    0,    0,    0,    0,    0,    0,    0,

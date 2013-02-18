@@ -22,13 +22,13 @@ import urlparse
 from types import TupleType
 
 # local modules:
-import epstools
-import fonts                            # nested package
-import utils
-import PSParser
-import PSWriter
+from . import epstools
+from . import fonts                            # nested package
+from . import utils
+from . import PSParser
+from . import PSWriter
 
-import printing.paper                   # 'paper' used as a local
+from . import paper as printing_paper  # 'paper' used as a local
 
 from grailbase.uricontext import URIContext
 
@@ -44,7 +44,7 @@ MULTI_DO_PAGE_BREAK = 1                 # changing this breaks stuff
 def run(app):
     global logfile
     import getopt
-    import settings
+    from . import settings
     settings = settings.get_settings(app.prefs)
     # do this after loading the settings so the user can just call
     # get_settings() w/out an arg to get a usable object.
@@ -195,7 +195,7 @@ def run(app):
         # BOGOSITY: reading from stdin
         context = URIContext("file:/index.html")
     context.app = app
-    paper = printing.paper.PaperInfo(settings.papersize,
+    paper = printing_paper.PaperInfo(settings.papersize,
                                      margins=settings.margins,
                                      rotation=settings.orientation)
     if tabstop and tabstop > 0:
@@ -455,7 +455,7 @@ def usage(settings):
     print '    -s: toggle "advanced" SGML recognition (default is %s)'\
           % _onoff(settings.strict_parsing)
     print '    -T: size of tab stop in points (default is %s)' \
-          % printing.paper.PaperInfo.TabStop
+          % printing_paper.PaperInfo.TabStop
     print '    -P: specify output printer'
     print '    -m: descend tree starting from specified document,'
     print '        printing all HTML documents found'

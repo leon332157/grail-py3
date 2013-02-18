@@ -4,7 +4,7 @@
 #
 # Copyright (c) 1985, 1987, 1988, 1989 Adobe Systems Incorporated.  All rights reserved.ITC Zapf Dingbats is a registered trademark of International Typeface Corporation.
 #
-import PSFont
+from . import PSFont
 font = PSFont.PSFont('ZapfDingbats', 'ITC Zapf Dingbats',
 [    0,    0,    0,    0,    0,    0,    0,    0,
      0,    0,    0,    0,    0,    0,    0,    0,

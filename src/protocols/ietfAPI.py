@@ -4,9 +4,9 @@ draft-ietf-urn-ietf-07.txt (work in progress).
 __version__ = '$Revision: 2.5 $'
 
 import grailutil
-import nullAPI
+from . import nullAPI
 import os
-import ProtocolAPI
+from . import ProtocolAPI
 import string
 
 

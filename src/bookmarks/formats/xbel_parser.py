@@ -3,9 +3,8 @@
 __version__ = '$Revision: 1.10 $'
 
 
-import bookmarks
-import bookmarks.iso8601
-import bookmarks.nodes
+from .. import iso8601
+from .. import nodes
 import string
 
 
@@ -170,14 +169,14 @@ class DocumentHandler:
                 self.__folder.set_description(desc)
 
     def start_alias(self, attrs):
-        alias = bookmarks.nodes.Alias()
+        alias = nodes.Alias()
         self.handle_idref(alias, attrs)
         self.__folder.append_child(alias)
     def end_alias(self):
         pass
 
     def start_separator(self, attrs):
-        self.__folder.append_child(bookmarks.nodes.Separator())
+        self.__folder.append_child(nodes.Separator())
     def end_separator(self):
         pass
 
@@ -203,7 +202,7 @@ class DocumentHandler:
     # support methods:
 
     def new_bookmark(self, attrs):
-        self.__node = bookmarks.nodes.Bookmark()
+        self.__node = nodes.Bookmark()
         self.__store_node = self.__node
         self.__folder.append_child(self.__node)
         return self.__node
@@ -212,7 +211,7 @@ class DocumentHandler:
         if self.__folder is not None:
             self.__context.append(self.__folder)
         folded = string.lower(attrs.get("folded", "no")) == "yes"
-        self.__folder = bookmarks.nodes.Folder()
+        self.__folder = nodes.Folder()
         self.__store_node = self.__folder
         if self.__context:
             self.__context[-1].append_child(self.__folder)
@@ -223,7 +222,7 @@ class DocumentHandler:
         added = attrs.get("added")
         if added:
             try:
-                added = bookmarks.iso8601.parse(added)
+                added = iso8601.parse(added)
             except ValueError:
                 pass
             else:
@@ -263,7 +262,7 @@ class DocumentHandler:
         if date:
             func = getattr(node, nodefuncname)
             try:
-                date = bookmarks.iso8601.parse(date)
+                date = iso8601.parse(date)
             except ValueError:
                 return
             func(date)

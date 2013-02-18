@@ -26,7 +26,7 @@ this can be slow.
 
 import string
 from Tkinter import *
-import ColorDB
+from . import ColorDB
 
 # Load this script into the Tcl interpreter and call it in
 # StripWidget.set_color().  This is about as fast as it can be with the

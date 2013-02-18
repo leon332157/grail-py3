@@ -4,7 +4,7 @@
 #
 # Copyright (c) 1985, 1987, 1989, 1990 Adobe Systems Incorporated.  All Rights Reserved.Times is a trademark of Linotype AG and/or its subsidiaries.
 #
-import PSFont
+from . import PSFont
 font = PSFont.PSFont('Times-BoldItalic', 'Times Bold Italic',
 [    0,    0,    0,    0,    0,    0,    0,    0,
      0,    0,    0,    0,    0,    0,    0,    0,

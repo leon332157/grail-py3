@@ -5,14 +5,14 @@ import os
 import mimetypes
 import re
 import string
-import utils
+from . import utils
 
 
 class Application:
     def __init__(self, prefs=None):
         utils._grail_app = self
         if prefs is None:
-            import GrailPrefs
+            from . import GrailPrefs
             self.prefs = GrailPrefs.AllPreferences()
         else:
             self.prefs = prefs

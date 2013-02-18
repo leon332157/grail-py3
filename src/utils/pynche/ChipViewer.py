@@ -15,7 +15,7 @@ selected and nearest ChipWidgets.
 
 from types import StringType
 from Tkinter import *
-import ColorDB
+from . import ColorDB
 
 
 class ChipWidget:

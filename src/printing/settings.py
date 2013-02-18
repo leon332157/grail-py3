@@ -13,7 +13,7 @@ def get_settings(prefs=None):
 
 
 import string
-import utils                            # || module
+from . import utils                            # || module
 
 
 class PrintSettings:

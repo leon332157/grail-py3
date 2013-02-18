@@ -38,7 +38,7 @@ class PSFont:
 
 
 if __name__ == '__main__':
-    import PSFont_Times_Roman
+    from . import PSFont_Times_Roman
     font = PSFont_Times_Roman.font
 
     print 'Font Name:', font.fontname()

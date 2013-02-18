@@ -2,7 +2,7 @@
 
 __version__ = '$Revision: 1.3 $'
 
-import bookmarks.nodes
+from .. import nodes
 import copy
 
 
@@ -44,7 +44,7 @@ def find_nodes(folder, matcher, copynodes=1):
                         children.append(copy.copy(child))
                     else:
                         # This approach is probably broken....
-                        children.append(bookmarks.nodes.Alias(child))
+                        children.append(nodes.Alias(child))
     if match or children:
         folder = copy.copy(folder)
         folder.set_children(children)

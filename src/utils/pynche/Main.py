@@ -55,12 +55,12 @@ import sys
 import os
 import string
 import getopt
-import ColorDB
-from PyncheWidget import PyncheWidget
-from Switchboard import Switchboard
-from StripViewer import StripViewer
-from ChipViewer import ChipViewer
-from TypeinViewer import TypeinViewer
+from . import ColorDB
+from .PyncheWidget import PyncheWidget
+from .Switchboard import Switchboard
+from .StripViewer import StripViewer
+from .ChipViewer import ChipViewer
+from .TypeinViewer import TypeinViewer
 
 
 

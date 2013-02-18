@@ -29,7 +29,7 @@ XXX Remaining problems:
 import string
 import urllib
 import hdllib
-import nullAPI
+from . import nullAPI
 import grailutil
 
 

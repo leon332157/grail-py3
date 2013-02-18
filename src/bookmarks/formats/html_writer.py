@@ -4,12 +4,12 @@ __version__ = '$Revision: 1.4 $'
 
 
 import bookmarks                        # parent
-import bookmarks.walker
+from .. import walker
 import string
 import sys
 
 
-class Writer(bookmarks.walker.TreeWalker):
+class Writer(walker.TreeWalker):
     __depth = 1
     __need_header = 1
     __alias_id = ''

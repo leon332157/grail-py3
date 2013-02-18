@@ -4,7 +4,7 @@ __version__ = '$Revision: 1.10 $'
 
 import formatter
 import string
-import utils
+from . import utils
 
 
 class PSWriter(formatter.AbstractWriter):
@@ -41,8 +41,8 @@ class PSWriter(formatter.AbstractWriter):
                  settings=None):
         if not title:
             title = url
-        import PSFont
-        import PSStream
+        from . import PSFont
+        from . import PSStream
         fontsize, leading = settings.get_fontsize()
         font = PSFont.PSFont(varifamily=varifamily,
                              fixedfamily=fixedfamily,

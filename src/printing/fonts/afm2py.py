@@ -85,7 +85,7 @@ TEMPLATE = """\
 #
 # %(notice)s
 #
-import PSFont
+from . import PSFont
 font = PSFont.PSFont('%(fontname)s', '%(fullname)s',
 """
 

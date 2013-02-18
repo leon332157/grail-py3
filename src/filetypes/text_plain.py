@@ -15,6 +15,6 @@ def parse_text_plain(*args, **kw):
         if opts.get('format'):
             how = string.lower(opts['format'])
             if how == "flowed":
-                import FlowingText
+                from . import FlowingText
                 return apply(FlowingText.FlowingTextParser, args, kw)
     return apply(Reader.TextParser, args, kw)

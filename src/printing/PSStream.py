@@ -1,10 +1,10 @@
 __version__ = '$Revision: 1.6 $'
 
-import fonts                            # a package
-import utils                            # || module
+from . import fonts                            # a package
+from . import utils                            # || module
 import os
 import re
-import settings
+from . import settings
 import string
 import sys
 import time

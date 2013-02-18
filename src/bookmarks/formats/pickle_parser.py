@@ -4,8 +4,8 @@ automatically converted to the current type."""
 __version__ = '$Revision: 1.3 $'
 
 import bookmarks
-import bookmarks.nodes
-import bookmarks.walker
+from .. import nodes
+from .. import walker
 import re
 import string
 
@@ -68,20 +68,20 @@ class Parser:
 
 
 
-class CopyWalker(bookmarks.walker.TreeWalker):
+class CopyWalker(walker.TreeWalker):
     """Copy any bookmark tree to a new, version 4 tree."""
 
     __copy = None
 
     def __init__(self, root=None):
-        bookmarks.walker.TreeWalker.__init__(self, root)
+        walker.TreeWalker.__init__(self, root)
         self.__context = []
 
     def get_copy(self):
         return self.__copy
 
     def start_Folder(self, node):
-        new = bookmarks.nodes.Folder()
+        new = nodes.Folder()
         new.set_id(node.id())
         new.set_title(node.title())
         new.set_description(node.description())
@@ -95,7 +95,7 @@ class CopyWalker(bookmarks.walker.TreeWalker):
         del self.__context[-1]
 
     def start_Bookmark(self, node):
-        new = bookmarks.nodes.Bookmark()
+        new = nodes.Bookmark()
         new.set_uri(node.uri())
         new.set_id(node.id())
         new.set_title(node.title())
@@ -104,4 +104,4 @@ class CopyWalker(bookmarks.walker.TreeWalker):
         self.__context[-1].append_child(new)
 
     def start_Separator(self, node):
-        self.__context[-1].append_child(bookmarks.nodes.Separator())
+        self.__context[-1].append_child(nodes.Separator())

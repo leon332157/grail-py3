@@ -4,7 +4,7 @@
 #
 # Copyright (c) 1989, 1990, 1991 Adobe Systems Incorporated. All rights reserved.
 #
-import PSFont
+from . import PSFont
 font = PSFont.PSFont('Courier-Oblique', 'Courier Oblique',
 [    0,    0,    0,    0,    0,    0,    0,    0,
      0,    0,    0,    0,    0,    0,    0,    0,

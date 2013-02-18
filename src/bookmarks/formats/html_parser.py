@@ -4,8 +4,8 @@ __version__ = '$Revision: 1.3 $'
 
 
 import bookmarks
-import bookmarks.nodes
-import html_scraper
+from .. import nodes
+from . import html_scraper
 import string
 
 import sgml.SGMLParser
@@ -24,13 +24,13 @@ class Parser(html_scraper.Parser):
         self.__context = []
 
     def new_bookmark(self):
-        self.__node = bookmarks.nodes.Bookmark()
+        self.__node = nodes.Bookmark()
         self.__folder.append_child(self.__node)
         return self.__node
 
     def new_folder(self, attrs={}):
         self.__context.append(self.__folder)
-        self.__folder = bookmarks.nodes.Folder()
+        self.__folder = nodes.Folder()
         if self.__context:
             self.__context[-1].append_child(self.__folder)
         if attrs.has_key("folded"):
@@ -60,7 +60,7 @@ class Parser(html_scraper.Parser):
             self.__store_node.set_title(title)
 
     def do_hr(self, attrs):
-        snode = bookmarks.nodes.Separator()
+        snode = nodes.Separator()
         self.__folder.append_child(snode)
 
     def end_dl(self):
@@ -96,13 +96,13 @@ class Parser(html_scraper.Parser):
                 bookmark = self.__idmap[idref]
             except KeyError:
                 # bookmark not yet read in:
-                alias = bookmarks.nodes.Alias()
+                alias = nodes.Alias()
                 try:
                     self.__missing_ids[idref].append(alias)
                 except KeyError:
                     self.__missing_ids[idref] = [alias]
             else:
-                alias = bookmarks.nodes.Alias(bookmark)
+                alias = nodes.Alias(bookmark)
             self.__folder.append_child(alias)
         else:
             self.new_bookmark()

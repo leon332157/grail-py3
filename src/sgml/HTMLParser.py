@@ -11,13 +11,13 @@ if __name__ == '__main__':
 
 import htmlentitydefs
 import string
-import SGMLHandler
-import SGMLLexer
-import SGMLParser
+from . import SGMLHandler
+from . import SGMLLexer
+from . import SGMLParser
 
 from formatter import AS_IS
 from types import DictType, StringType
-from utils import *
+from .utils import *
 
 
 URL_VALUED_ATTRIBUTES = ['href', 'src', 'codebase', 'data']

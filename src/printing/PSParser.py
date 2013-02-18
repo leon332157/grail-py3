@@ -12,8 +12,8 @@ from formatter import AS_IS
 from sgml.HTMLParser import HTMLParser
 from sgml.utils import *
 
-import epstools                         # in package
-import utils
+from . import epstools                         # in package
+from . import utils
 
 
 SIZE_STEP = 0.2

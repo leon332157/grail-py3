@@ -2,7 +2,7 @@
 
 __version__ = '$Revision: 1.4 $'
 
-from utils import inch_to_pt
+from .utils import inch_to_pt
 
 
 class PaperInfo:

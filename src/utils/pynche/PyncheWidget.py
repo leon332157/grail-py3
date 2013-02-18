@@ -149,7 +149,7 @@ class PyncheWidget:
         return self.__root
 
     def __popup_about(self, event=None):
-        from Main import __version__
+        from .Main import __version__
         tkMessageBox.showinfo('About Pynche ' + __version__,
                               '''\
 Pynche %s
@@ -167,21 +167,21 @@ email:   bwarsaw@python.org''' % __version__)
 
     def __popup_text(self, event=None):
         if not self.__textwin:
-            from TextViewer import TextViewer
+            from .TextViewer import TextViewer
             self.__textwin = TextViewer(self.__sb, self.__root)
             self.__sb.add_view(self.__textwin)
         self.__textwin.deiconify()
 
     def __popup_listwin(self, event=None):
         if not self.__listwin:
-            from ListViewer import ListViewer
+            from .ListViewer import ListViewer
             self.__listwin = ListViewer(self.__sb, self.__root)
             self.__sb.add_view(self.__listwin)
         self.__listwin.deiconify()
 
     def __popup_details(self, event=None):
         if not self.__detailswin:
-            from DetailsViewer import DetailsViewer
+            from .DetailsViewer import DetailsViewer
             self.__detailswin = DetailsViewer(self.__sb, self.__root)
             self.__sb.add_view(self.__detailswin)
         self.__detailswin.deiconify()
@@ -196,7 +196,7 @@ email:   bwarsaw@python.org''' % __version__)
 
 class Helpwin:
     def __init__(self, master, quitfunc):
-        from Main import __version__, docstring
+        from .Main import __version__, docstring
         self.__root = root = Toplevel(master, class_='Pynche')
         root.protocol('WM_DELETE_WINDOW', self.__withdraw)
         root.title('Pynche Help Window')

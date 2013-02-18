@@ -2,7 +2,7 @@
 
 import grailutil
 
-from nullAPI import null_access
+from .nullAPI import null_access
 
 from MailDialog import MailDialog
 

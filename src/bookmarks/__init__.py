@@ -79,7 +79,7 @@ del sysid_fmt
 
 
 def check_xml_format(buffer):
-    import xmlinfo
+    from . import xmlinfo
     try:
         info = xmlinfo.get_xml_info(buffer)
     except xmlinfo.Error:

@@ -3,7 +3,7 @@
 __version__ = "$Revision: 1.1 $"
 # $Source: /cvsroot/grail/grail/src/sgml/SGMLHandler.py,v $
 
-import SGMLLexer
+from . import SGMLLexer
 
 
 class ElementHandler:

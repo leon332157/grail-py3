@@ -1,4 +1,4 @@
-import nullAPI
+from . import nullAPI
 import string
 
 

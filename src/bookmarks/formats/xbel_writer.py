@@ -3,13 +3,13 @@
 __version__ = '$Revision: 1.12 $'
 
 import bookmarks
-import bookmarks.iso8601
-import bookmarks.walker
+from .. import iso8601
+from .. import walker
 import string
 import sys
 
 
-class Writer(bookmarks.walker.TreeWalker):
+class Writer(walker.TreeWalker):
     _depth = 0
     __header = '''\
 <?xml version="1.0" encoding="ISO-8859-1"?>
@@ -22,7 +22,7 @@ class Writer(bookmarks.walker.TreeWalker):
     SYSTEM_ID = bookmarks.XBEL_1_0_SYSTEM_ID
 
     def __init__(self, root=None):
-        bookmarks.walker.TreeWalker.__init__(self, root)
+        walker.TreeWalker.__init__(self, root)
         self.__close_folders = []
 
     def write_tree(self, fp):
@@ -46,7 +46,7 @@ class Writer(bookmarks.walker.TreeWalker):
         attrs = ''
         added = node.add_date()
         if added:
-            attrs = '\n      added="%s"' % bookmarks.iso8601.ctime(added)
+            attrs = '\n      added="%s"' % iso8601.ctime(added)
         if node.id():
             if not attrs:
                 attrs = "\n     "
@@ -196,7 +196,7 @@ class Writer(bookmarks.walker.TreeWalker):
 
 def _fmt_date_attr(date, attrname):
     if date:
-        return '%s="%s"' % (attrname, bookmarks.iso8601.ctime(date))
+        return '%s="%s"' % (attrname, iso8601.ctime(date))
     return ''
 
 
