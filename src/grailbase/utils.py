@@ -72,7 +72,7 @@ def establish_dir(dir):
     if not establish_dir(head):
         return 0
     try:
-        os.mkdir(dir, 0777)
+        os.mkdir(dir, 0o777)
         return 1
     except os.error:
         return 0

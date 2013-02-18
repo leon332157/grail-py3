@@ -41,7 +41,7 @@ try:
     file = os.path.expanduser(file)
     if file:
         BOOKMARKS_FILES.insert(0, file)
-        if file <> DEFAULT_NETSCAPE_BM_FILE:
+        if file != DEFAULT_NETSCAPE_BM_FILE:
             DEFAULT_GRAIL_BM_FILE = file
 except KeyError:
     pass
@@ -662,7 +662,7 @@ class BookmarksDialog:
         self._frame.withdraw()
 
     def visible_p(self):
-        return self._frame.state() <> 'withdrawn'
+        return self._frame.state() != 'withdrawn'
 
     def set_labels(self, filename, title):
         self._file.config(text=filename)

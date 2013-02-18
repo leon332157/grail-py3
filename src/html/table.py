@@ -500,7 +500,7 @@ class Table(AttrElem):
         for row in range(rowcount):
             for col in range(colcount):
                 index = (row, col)
-                if rawtable.get(index, OCCUPIED) <> OCCUPIED:
+                if rawtable.get(index, OCCUPIED) != OCCUPIED:
                     rowprune[row] = 1
                     colprune[col] = 1
 
@@ -700,7 +700,7 @@ class Table(AttrElem):
 
         # if caption aligns top, then insert it now.  it doesn't need
         # to be moved, just resized
-        if self.caption and self.caption.align <> 'bottom':
+        if self.caption and self.caption.align != 'bottom':
             if canvaswidth < 0:
                 canvaswidth = self.get_available_width()
             # must widen before calculating height!
@@ -1028,10 +1028,10 @@ class ContainedText(AttrElem):
         self._x = x
         self._y = y
         self._container.move(self._tag, xdelta, ydelta)
-        if width <> None and height <> None:
+        if width != None and height != None:
             self._container.itemconfigure(self._tag,
                                           width=width, height=height)
-        elif width <> None:
+        elif width != None:
             self._container.itemconfigure(self._tag, width=width)
         else:
             self._container.itemconfigure(self._tag, height=height)
@@ -1161,5 +1161,5 @@ if __name__ == '__main__':
 else:
     tparser = TableSubParser()
     for attr in dir(TableSubParser):
-        if attr[0] <> '_':
+        if attr[0] != '_':
             globals()[attr] = getattr(tparser, attr)

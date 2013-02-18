@@ -145,7 +145,7 @@ def parse(filename, outdir):
         print TEMPLATE % tdict,
         print '[',
         for i in range(0, 256, 8):
-            if i <> 0:
+            if i != 0:
                 print ' ',
             print FORMAT % tuple(cwidths[i:i+8])
         print '])'
@@ -167,7 +167,7 @@ def main():
         print msg
         usage(1)
 
-    if len(args) <> 1:
+    if len(args) != 1:
         usage(1)
 
     filename = args[0]

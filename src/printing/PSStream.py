@@ -456,12 +456,12 @@ class PSStream:
 
     def push_underline(self, flag):
         render = flag and 'U' or 'S'
-        if self._render <> render and self._linestr:
+        if self._render != render and self._linestr:
             self.close_string()
         self._render = render
 
     def push_literal(self, flag):
-        if self._inliteral_p <> flag and self._linestr:
+        if self._inliteral_p != flag and self._linestr:
             self.close_string()
         self._inliteral_p = flag
 

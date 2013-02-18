@@ -31,7 +31,7 @@ _subsystems = {}
 
 def debug(text, subsystem=None):
     if get_debugging(subsystem):
-        if text[-1] <> '\n':
+        if text[-1] != '\n':
             text = text + '\n'
         sys.stderr.write(text)
         sys.stderr.flush()

@@ -178,7 +178,7 @@ class Controller:
                 dirhier.insert(0, t)
             for dir in dirhier:
                 head = os.path.join(head, dir)
-                os.mkdir(head, 0700)
+                os.mkdir(head, 0o700)
             self._filename = self._path
             # TBD: What do we do with multiple Grail processes?  Which
             # one do we remote control?
@@ -316,7 +316,7 @@ class Controller:
 
     def ping_cmd(self, cmdstr, argstr, conn):
         try:
-            if argstr <> 'NOACK':
+            if argstr != 'NOACK':
                 conn.send('ACK')
         except socket.error:
             print 'RemoteControl: unable to acknowledge PING'

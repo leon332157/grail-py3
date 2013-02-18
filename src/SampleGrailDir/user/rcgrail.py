@@ -89,7 +89,7 @@ def main():
     try:
         optlist, args = getopt.getopt(sys.argv[1:], 'bdhp')
         for switch, arg in optlist:
-            if switch == '-b' and cmd[-3:] <> 'NEW':
+            if switch == '-b' and cmd[-3:] != 'NEW':
                 cmd = cmd + 'NEW'
             elif switch == '-d':
                 display = arg
