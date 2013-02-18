@@ -6,6 +6,7 @@ Loads preference modules from GRAILROOT/prefpanels/*Panel.py and
 __version__ = "$Revision: 2.37 $"
 
 import sys, os
+from functools import reduce
 
 if __name__ == "__main__":
     # For operation outside of Grail:

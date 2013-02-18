@@ -8,13 +8,7 @@ from .. import nodes
 from .. import walker
 import re
 import string
-
-try:
-    import cPickle
-except ImportError:
-    import pickle
-else:
-    pickle = cPickle
+import pickle
 
 
 class Parser:

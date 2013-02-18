@@ -9,12 +9,7 @@ import string
 import sys
 import time
 import urlparse
-
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
-
+from io import StringIO
 from types import StringType, TupleType
 
 

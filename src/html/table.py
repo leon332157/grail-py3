@@ -8,6 +8,7 @@ from Tkinter import *
 from formatter import AbstractWriter, AbstractFormatter
 from Viewer import Viewer
 from types import *
+from functools import reduce
 
 FIXEDLAYOUT = 1
 AUTOLAYOUT = 2

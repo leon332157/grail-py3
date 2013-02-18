@@ -39,6 +39,7 @@ import Reader
 import string
 import sys
 import tktools
+from functools import reduce
 
 
 USER_DATA_DIR = os.path.abspath(

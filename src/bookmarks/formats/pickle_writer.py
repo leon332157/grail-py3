@@ -4,13 +4,7 @@ __version__ = '$Revision: 1.4 $'
 
 
 import bookmarks                        # parent
-
-try:
-    import cPickle
-except ImportError:
-    import pickle
-else:
-    pickle = cPickle
+import pickle
 
 
 class Writer(bookmarks.BookmarkWriter):
