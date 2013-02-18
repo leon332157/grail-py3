@@ -1,6 +1,5 @@
 """Implement applet loading, possibly asynchronous."""
 
-import os
 import re
 import string
 import urllib
@@ -656,7 +655,7 @@ class CleanupHandler:
     def __call__(self, *args):
         import sys
         try: self._handler()
-        except: sys.exc_traceback = None ## Pulling in show_tb from the loader
+        except: pass ## Pulling in show_tb from the loader
         del self._handler                ## doesn't work; not sure why.
         self._viewer.unregister_reset_interest(self)
         del self._viewer

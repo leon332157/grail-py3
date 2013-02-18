@@ -23,7 +23,6 @@ color formats, and for calculating other color values.
 import sys
 import string
 import re
-from types import *
 import operator
 
 class BadColor(Exception):
@@ -195,11 +194,6 @@ def triplet_to_rrggbb(rgbtuple):
         hexname = '#%02x%02x%02x' % rgbtuple
         _tripdict[rgbtuple] = hexname
     return hexname
-
-
-_maxtuple = (256.0,) * 3
-def triplet_to_fractional_rgb(rgbtuple):
-    return map(operator.__div__, rgbtuple, _maxtuple)
 
 
 def triplet_to_brightness(rgbtuple):

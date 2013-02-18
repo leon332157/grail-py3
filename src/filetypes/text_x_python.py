@@ -78,7 +78,7 @@ class parse_text_x_python:
                 "Syntax error in Python source: %s" % err)
             return
         self.setup_tags()
-        from types import IntType, ListType
+        from types import ListType
         ISTERMINAL = token.ISTERMINAL
         wanted = self.__wanted_terminals.has_key
         tag_add = self.tag_add = self.__viewer.text.tag_add

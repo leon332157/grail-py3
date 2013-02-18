@@ -267,10 +267,6 @@ class DocumentHandler:
                 return
             func(date)
 
-    def __normalize_metadata(self, metadata):
-        self.__normalize_thing(metadata)
-        return metadata
-
     __buffer = ""
     def save_bgn(self):
         self.__buffer = ""

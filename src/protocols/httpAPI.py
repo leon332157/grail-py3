@@ -203,8 +203,6 @@ class http_access:
             return "receiving server response", 0
         if not self.line1seen:
             i = string.find(self.readahead, '\n')
-            if i < 0:
-                return "receiving server response", 0
             self.line1seen = 1
             line = self.readahead[:i+1]
             if not replyprog.match(line):

@@ -456,7 +456,7 @@ class PSStream:
             self._linefp.write(bullet.data)
             self._linefp.write("grestore\n")
 
-    def push_hard_newline(self, blanklines=1):
+    def push_hard_newline(self):
         self.close_line()
 
     def push_underline(self, flag):
@@ -606,7 +606,6 @@ class PSStream:
         if self.get_pageno() != 1:
             title = cook(self.get_title())
         self.prune_titles()
-        stdout = sys.stdout
         self._ofp.write("(%s)\n(%s)\n%d EP\n"
                         % (url, title, self.get_pageno()))
 

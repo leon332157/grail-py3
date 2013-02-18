@@ -367,7 +367,6 @@ def parse_cookie(s):
             others[k] = v
         #
         s = string.strip(s[pos:])
-        pos = 0
         if s and s[0] != ';':
             break
         if s:

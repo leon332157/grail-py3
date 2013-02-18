@@ -20,8 +20,7 @@ class SGMLParser(SGMLLexer.SGMLLexer):
 
     doctype = ''                        # 'html', 'sdl', '...'
 
-    def __init__(self, gatherer=None, verbose=0):
-        self.verbose = verbose
+    def __init__(self, gatherer=None):
         if gatherer is None:
             gatherer = SGMLHandler.BaseSGMLHandler()
         self.push_handler(gatherer)

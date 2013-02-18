@@ -75,7 +75,7 @@ def nicebytes(n):
 
 
 def pref_or_getenv(name, group='proxies', type_name='string',
-                   check_ok=None, user=0, factory=0):
+                   check_ok=None):
     """Help for integrating environment variables with preferences.
 
     First check preferences, under 'group', for the component 'name'.
@@ -85,9 +85,7 @@ def pref_or_getenv(name, group='proxies', type_name='string',
     associated with the name, None if it's not defined in either place
     (env or prefs... and it's a 'string').  If check_ok is not None,
     it is expected to be a tuple of valid names. e.g. ('name1',
-    'name2').  If factory is TRUE then the value for name is retrieved
-    only from factory defaults and not user preferences and not the
-    environment. If it's not found there, return None.
+    'name2').
 
     """
     if check_ok and  name not in check_ok:
@@ -96,17 +94,17 @@ def pref_or_getenv(name, group='proxies', type_name='string',
     app = get_grailapp()
 
     if type_name == 'string':
-        component = app.prefs.Get(group, name, factory=factory)
-        if len(component) or factory:
+        component = app.prefs.Get(group, name)
+        if len(component):
             return component
     elif type_name == 'int':
-        component = app.prefs.GetInt(group, name, factory=factory)
+        component = app.prefs.GetInt(group, name)
         return component
     elif type_name == 'Boolean':
-        component = app.prefs.GetBoolean(group, name, factory=factory)
+        component = app.prefs.GetBoolean(group, name)
         return component
     elif type_name == 'float':
-        component = app.prefs.GetFloat(group, name, factory=factory)
+        component = app.prefs.GetFloat(group, name)
         return component
     else:
         raise ValueError, ('%s not supported - must be one of %s'

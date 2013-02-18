@@ -15,13 +15,7 @@ class FileReader(BaseReader):
     level and should normally be left alone (or extended, not
     overridden).
 
-    Class or instance variable filemode may be set to override the
-    file writing mode (default 'wb' -- make sure it's a writing
-    mode!).
-
     """
-
-    filemode = "wb"
 
     def __init__(self, context, api, filename):
         self.filename = filename

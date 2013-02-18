@@ -8,8 +8,6 @@ __version__ = '$Revision: 2.9 $'
 
 ATTRIBUTES_AS_KEYWORDS = 1
 
-from grailutil import extract_keyword
-
 
 def writer_start_fn(parser, attrs):
     if 'p' in parser.stack:

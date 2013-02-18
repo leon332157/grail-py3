@@ -562,7 +562,6 @@ class DiskCache:
         self.items = {}
         self.use_order = []
         self.log = None
-        self.checkpoint = 0
         self.expires = []
         self.types = {}
 
@@ -981,7 +980,7 @@ class HTTime:
                 str = any
             elif type(any) in [type(1), type(.1)]:
                 secs = any
-        if str and str != '':
+        if str:
             self.str = str
         else:
             self.str = None

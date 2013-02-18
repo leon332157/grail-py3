@@ -158,7 +158,6 @@ class Writer(walker.TreeWalker):
 
     def __dump_xml(self, stuff, L, tab):
         tag, attrs, content = stuff
-        has_text = 0
         append = L.append
         append("<")
         append(tag)

@@ -7,7 +7,7 @@ import os
 import sys
 
 grail_root = sys.path[0]
-for path in 'utils', 'pythonlib', 'ancillary', 'sgml_lex':
+for path in 'utils', 'pythonlib', 'ancillary':
     sys.path.insert(0, os.path.normpath(os.path.join(grail_root, path)))
 
 

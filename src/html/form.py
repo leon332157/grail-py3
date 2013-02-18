@@ -158,9 +158,6 @@ class FormInfo:
         else:
             self.formdata = []
 
-    def __del__(self):
-        pass                            # XXX
-
     def get(self):
         state = []
         for i in self.inputs:
@@ -817,7 +814,6 @@ class InputImageWindow(Frame):
         self.label = Label(self, text=self.alt, background=bg)
         self.label.pack(fill=BOTH, expand=1)
 ##      self.pack()
-        self.image_loaded = 0
         height = height and int(height) or 0
         width = width and int(width) or 0
         if width > 0 and height > 0:

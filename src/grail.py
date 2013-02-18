@@ -31,7 +31,6 @@ for path in 'utils', 'pythonlib', 'ancillary', 'applets', script_dir:
 import getopt
 import string
 import urllib
-import tempfile
 import posixpath
 
 # More imports
@@ -350,42 +349,6 @@ class Application(BaseApplication.BaseApplication):
     def get_cache_keys(self):
         """For applets."""
         return self.url_cache.items.keys()
-
-    def decode_pipeline(self, fp, content_encoding, error=1):
-        if self.decode_prog.has_key(content_encoding):
-            prog = self.decode_prog[content_encoding]
-            if not prog: return fp
-            tfn = tempfile.mktemp()
-            ok = 0
-            try:
-                temp = open(tfn, 'w')
-                BUFSIZE = 8192
-                while 1:
-                        buf = fp.read(BUFSIZE)
-                        if not buf: break
-                        temp.write(buf)
-                temp.close()
-                ok = 1
-            finally:
-                if not ok:
-                    try:
-                        os.unlink(tfn)
-                    except os.error:
-                        pass
-            pipeline = '%s <%s; rm -f %s' % (prog, tfn, tfn)
-            # XXX What if prog fails?
-            return os.popen(pipeline, 'r')
-        if error:
-            self.error_dialog(IOError,
-                "Can't decode content-encoding: %s" % content_encoding)
-        return None
-
-    decode_prog = {
-        'gzip': 'gzip -d',
-        'x-gzip': 'gzip -d',
-        'compress': 'compress -d',
-        'x-compress': 'compress -d',
-        }
 
     def exception_dialog(self, message="", root=None):
         exc, val, tb = sys.exc_type, sys.exc_value, sys.exc_traceback

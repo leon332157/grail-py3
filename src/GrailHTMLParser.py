@@ -8,7 +8,6 @@
 from Tkinter import *
 import os
 import urllib
-import urlparse
 import string
 import tktools
 import formatter

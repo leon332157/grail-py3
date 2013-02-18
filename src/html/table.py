@@ -32,12 +32,6 @@ class TableSubParser:
         self._table_stack = []
 
     def start_table(self, parser, attrs):
-##      try:
-##          from pure import *
-##          quantify_clear_data()
-##      except ImportError:
-##          pass
-
         # this call is necessary because if a <P> tag is open, table
         # rendering gets totally hosed.  this is caused by the parser
         # not knowing about content model.
@@ -66,11 +60,6 @@ class TableSubParser:
                 del self._table_stack[-1]
             else:
                 self._lasttable = None
-##      try:
-##          from pure import *
-##          quantify_save_data()
-##      except ImportError:
-##          pass
 
     def start_caption(self, parser, attrs):
         ti = self._lasttable 
@@ -730,7 +719,6 @@ class Table(AttrElem):
         # now place and size each cell
         for row in range(rowcount):
             xpos = bw + self.Acellspacing
-            tallest = 0
             for col in range(colcount):
                 cell = table[(row, col)]
                 if cell in (EMPTY, OCCUPIED):
@@ -950,7 +938,6 @@ class ContainedText(AttrElem):
         self._fw = self._viewer.frame
         self._tw = self._viewer.text
         self._tw.config(highlightthickness=0)
-        self._width = 0
         self._embedheight = 0
 
     def new_formatter(self):

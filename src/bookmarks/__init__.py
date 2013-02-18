@@ -1,7 +1,6 @@
 import os
 import string
 import sys
-import urlparse
 
 
 class Error(Exception):

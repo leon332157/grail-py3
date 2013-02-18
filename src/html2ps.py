@@ -35,7 +35,6 @@ import grailutil
 grailutil._grail_root = script_dir
 
 import printing.main
-import printing.utils
 
 
 if __name__ == '__main__':

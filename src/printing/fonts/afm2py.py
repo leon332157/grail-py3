@@ -176,7 +176,6 @@ def main():
     filename = args[0]
     outdir = '.'
     mapfile = None
-    verbose = 0
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             help = 1

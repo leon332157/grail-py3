@@ -14,7 +14,6 @@ import sgml.SGMLParser
 class Parser(sgml.SGMLHandler.BaseSGMLHandler):
     __buffer = ''
     __baseurl = None
-    __collect_metadata = 0
 
     from htmlentitydefs import entitydefs
 

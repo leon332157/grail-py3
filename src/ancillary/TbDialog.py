@@ -11,9 +11,6 @@ class TracebackDialog:
 
     def __init__(self, master, exc, val, tb):
         self.master = master
-        self.exc = exc
-        self.val = val
-        self.tb = tb
         self.root = tktools.make_toplevel(self.master,
                                           title="Traceback Dialog")
         close = self.close_command

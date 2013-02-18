@@ -109,8 +109,7 @@ class QuotedPrintableWrapper:
             return
         s = data[:pos]
         data = data[pos:]
-        pos = 0
-        while pos <= len(data):
+        while True:
             xx = data[:2]
             if xx == '=\n':
                 data = data[2:]
@@ -128,13 +127,9 @@ class QuotedPrintableWrapper:
                 else:
                     s = s + chr(v)
                     data = data[3:]
-            elif len(data) < 3:
+            else:
                 # wait for more data
                 break
-            else:
-                s = s + '='
-                data = data[1:]
-                print "invalid quoted-printable encoding -- skipping '='"
             # now look for the next '=':
             pos = string.find(data, '=')
             if pos == -1:
@@ -143,7 +138,6 @@ class QuotedPrintableWrapper:
             else:
                 s = s + data[:pos]
                 data = data[pos:]
-                pos = 0
         self.__parser.feed(s)
         self.__buffer = data
 

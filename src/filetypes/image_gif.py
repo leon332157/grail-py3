@@ -147,7 +147,6 @@ class TkGifParser:
             self.tf = None
             self.label.image = Tkinter.PhotoImage(file=self.tfname)
             self.label.config(image=self.label.image)
-        if self.tfname:
             try:
                 os.unlink(self.tfname)
             except os.error:

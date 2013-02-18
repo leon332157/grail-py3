@@ -4,7 +4,6 @@ __version__ = '$Revision: 1.11 $'
 
 import PrefsPanels
 from Tkinter import *
-import tktools
 
 from BookmarksGUI import \
      NEW_AT_BEG, \

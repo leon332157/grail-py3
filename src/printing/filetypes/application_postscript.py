@@ -3,7 +3,6 @@ __version__ = '$Revision: 1.7 $'
 import sgml.HTMLParser
 import string
 import sys
-import urlparse
 
 from grailbase.utils import conv_mimetype
 from .. import epstools

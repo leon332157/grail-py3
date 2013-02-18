@@ -19,8 +19,6 @@ import traceback
 import urllib
 import urlparse
 
-from types import TupleType
-
 # local modules:
 from . import epstools
 from . import fonts                            # nested package

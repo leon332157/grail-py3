@@ -9,8 +9,6 @@ XXX To do
 
 META, DATA, DONE = 'META', 'DATA', 'DONE' # Three stages
 
-SharedItemExpired = 'SharedItem Expired'
-
 import os
 import protocols
 import time

@@ -39,8 +39,6 @@ def parse(url):
     pos = string.find(url, ';')
     if pos >= 0:
         ctype = string.lower(string.strip(url[:pos]))
-        if ctype:
-            ctype = ctype
         url = url[pos + 1:]
     pos = string.find(url, ',')
     if pos >= 0:

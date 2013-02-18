@@ -100,17 +100,17 @@ def conv_mimetype(type):
 
 def _parse_mimetypeoptions(options):
     opts = {}
-    options = string.strip(options)
     while options:
         if '=' in options:
             pos = string.find(options, '=')
             name = string.lower(string.strip(options[:pos]))
-            value = string.strip(options[pos + 1:])
+            value = options[pos + 1:]
             options = ''
             if ';' in value:
                 pos = string.find(value, ';')
-                options = string.strip(value[pos + 1:])
-                value = string.strip(value[:pos])
+                options = value[pos + 1:]
+                value = value[:pos]
+            value = string.strip(value)
             if name:
                 opts[name] = value
         else:

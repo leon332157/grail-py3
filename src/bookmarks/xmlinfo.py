@@ -857,9 +857,7 @@ def ordwstr(wstr, byte_order=None, charsize=2):
     return ords
 
 
-def dump_info(values, labels=None):
-    if labels is None:
-        labels = FieldLabels
+def dump_info(values):
     format = "%%%ds: %%s" % max(map(len, FieldLabels.__dict__.values()))
     for field_name in FieldNames:
         value = getattr(values, field_name)

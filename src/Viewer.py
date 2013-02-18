@@ -486,7 +486,7 @@ class Viewer(formatter.AbstractWriter):
     def scroll_line_up(self, event=None):
         self.text.tk.call('tkScrollByUnits', self.text.vbar, 'v', -1)
 
-    def new_tags(self, doit_now = 0):
+    def new_tags(self):
         if self.pendingdata and strip(self.pendingdata):
             self.text.insert(END, self.pendingdata, self.flowingtags)
             self.pendingdata = ''

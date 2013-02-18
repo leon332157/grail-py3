@@ -15,8 +15,6 @@ class UndefinedStyle(Exception):
 
 class Stylesheet:
 
-    registered_style_validator = 0
-
     def __init__(self, prefs):
         self.prefs = prefs
         self.load()
@@ -27,7 +25,7 @@ class Stylesheet:
         prefs.AddGroupCallback('styles', self.load)
 
     def load(self):
-        self.attrs = attrs = {}
+        self.attrs = {}
         self.sizename = self.prefs.Get('styles', 'size')
         self.family = self.prefs.Get('styles', 'family')
         self.size, fparms_dict = self.get_sizes()
@@ -46,10 +44,9 @@ class Stylesheet:
             massaged.append(((g, c), v % fparms_dict))
         self.dictify_group(massaged)
 
-    def __getattr__(self, composite):
+    def __getattr__(self, attr):
         """Make the self.attrs dict keys look like class attributes."""
         try:
-            attr = string.splitfields(composite, '.')[0]
             return self.attrs[attr]
         except KeyError:
             raise AttributeError, attr

@@ -6,7 +6,6 @@ Loads preference modules from GRAILROOT/prefpanels/*Panel.py and
 __version__ = "$Revision: 2.37 $"
 
 import sys, os
-import imp
 
 if __name__ == "__main__":
     # For operation outside of Grail:
@@ -166,7 +165,7 @@ class Framework:
         self.PrefsWidgetLabel(frame, label, label_width=label_width)
         if entry_height == 1:
             entry = Entry(frame, relief=SUNKEN, border=1, width=entry_width,
-                          textvariable=(variable and variable or None))
+                          textvariable=(variable or None))
             # note that the variable setting is stripped if None, so this is ok
             entry.pack(side=use_side, expand=use_expand, fill=use_fill)
             if not variable:

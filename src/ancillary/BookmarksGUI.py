@@ -821,7 +821,7 @@ class BookmarksController(OutlinerController):
         self.autodetails = BooleanVar(master)
         #
         # get preferences and set the values
-        self._prefs = prefs = app.prefs
+        prefs = app.prefs
         prefs.AddGroupCallback(BMPREFGROUP, self._notify)
         self._notify()
         # other initializations

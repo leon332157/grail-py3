@@ -57,8 +57,6 @@ Exported exceptions:
 
 InitError       - the socket couldn't be initialized
 ClashError      - another Grail is already being remote controlled
-BadCommandError - a badly formatted command was received
-NoHandlerError  - no handler for the received command has been registered
 
 
 Example (put this in your grailrc.py file):

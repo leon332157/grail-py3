@@ -16,7 +16,7 @@ from . import SGMLLexer
 from . import SGMLParser
 
 from formatter import AS_IS
-from types import DictType, StringType
+from types import StringType
 from .utils import *
 
 
@@ -86,7 +86,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
 
     object_aware_tags = ['param', 'script', 'object', 'a', 'param']
 
-    def __init__(self, formatter, verbose=0):
+    def __init__(self, formatter):
         self.sgml_parser = SGMLParser.SGMLParser(gatherer=self)
         self.sgml_parser.restrict(1)
         self.formatter = formatter
@@ -331,7 +331,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             self.base = attrs['href']
 
     def do_isindex(self, attrs):
-        self.isindex = 1
+        pass
 
     def do_link(self, attrs):
         pass
@@ -915,8 +915,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             except: pass
             else: height = max(1, height)
         if attrs.has_key('align'):
-            try: align = string.lower(attrs['align'])
-            except: pass
+            align = string.lower(attrs['align'])
         self.formatter.add_hor_rule(abswidth, percentwidth, height, align)
 
     def parse_width(self, str):

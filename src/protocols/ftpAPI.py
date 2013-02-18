@@ -20,7 +20,6 @@ import ftplib
 from urllib import unquote, splithost, splitport, splituser, \
      splitpasswd, splitattr, splitvalue, quote
 from urlparse import urljoin
-import mimetools
 import grailutil
 import socket
 
@@ -227,8 +226,7 @@ class ftp_access:
                 if href[-1:] != '/':
                     href = href + '/'
             line = '%s%s<A HREF="%s">%s</A>%s\n' % (
-                mode, middle, self.escape(href), name,
-                (symlink and symlink or ''))
+                mode, middle, self.escape(href), name, (symlink or ''))
             data = data + line
         if self.lines == [None]:
             data = data + self.listing_trailer

@@ -9,16 +9,12 @@ __version__ = "$Revision: 2.33 $"
 import os
 import sys
 import string
-if __name__ == "__main__":
-    sys.path.insert(0, '../utils')
 from . import utils
 
 from . import parseprefs
 
 USERPREFSFILENAME = 'grail-preferences'
 SYSPREFSFILENAME = os.path.join('data', 'grail-defaults')
-
-verbose = 0
 
 class Preferences:
     """Get and set fields in a customization-values file."""
@@ -28,20 +24,17 @@ class Preferences:
     # self.Save(), and self.deleted, which indicates settings to be omitted
     # during save (for reversion to "factory default", ie system, settings).
 
-    def __init__(self, filename, readonly=0):
-        """Initiate from FILENAME with MODE (default 'r' read-only)."""
+    def __init__(self, filename):
+        """Initiate from FILENAME."""
         self.filename = filename
         self.mods = {}                  # Changed settings not yet saved.
         self.deleted = {}               # Settings overridden, not yet saved.
         try:
             f = open(filename)
-            self.last_mtime = os.stat(filename)[9]
             self.saved = parseprefs.parseprefs(f)
             f.close()
         except IOError:
             self.saved = {}
-            self.last_mtime = 0
-        self.modified = 0
 
     def Get(self, group, cmpnt):
         """Get preference or raise KeyError if not found."""
@@ -53,7 +46,6 @@ class Preferences:
             raise KeyError, "Preference %s not found" % ((group, cmpnt),)
 
     def Set(self, group, cmpnt, val):
-        self.modified = 1
         if not self.mods.has_key(group):
             self.mods[group] = {}
         self.mods[group][cmpnt] = str(val)
@@ -78,10 +70,6 @@ class Preferences:
                 if not (deleted.has_key(g) and deleted[g].has_key(c)):
                     got[(g,c)] = v
         return got.items()
-
-    def Tampered(self):
-        """Has the file been externally modified?"""
-        return os.stat(self.filename)[9] != self.mtime
 
     def Editable(self):
         """Ensure that the user has a graildir and it is editable."""
@@ -138,8 +126,7 @@ class AllPreferences:
         self.user = Preferences(os.path.join(utils.getgraildir(),
                                              USERPREFSFILENAME))
         self.sys = Preferences(os.path.join(utils.get_grailroot(),
-                                            SYSPREFSFILENAME),
-                               1)
+                                            SYSPREFSFILENAME))
 
     def AddGroupCallback(self, group, callback):
         """Register callback to be invoked when saving GROUP changed prefs.
@@ -201,8 +188,6 @@ class AllPreferences:
     def GetGroup(self, group):
         """Get a list of ((group,cmpnt), value) tuples in group."""
         got = []
-        prefix = string.lower(group) + '--'
-        l = len(prefix)
         for it in self.items():
             if it[0][0] == group:
                 got.append(it)
@@ -226,10 +211,6 @@ class AllPreferences:
     def Editable(self):
         """Identify or establish user's prefs file, or IO error."""
         return self.user.Editable()
-
-    def Tampered(self):
-        """True if user prefs file modified since we read them."""
-        return self.user.Tampered()
 
     def Save(self):
         """Save (only) values different than sys defaults in the users file."""
@@ -342,8 +323,5 @@ def test():
     return prefs
 
 if __name__ == "__main__":
-
-    global grail_root
-    grail_root = '..'
 
     prefs = test()

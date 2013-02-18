@@ -47,11 +47,10 @@ if hasattr(os, 'popen') and _FILTERPATH:
                 self.tf = None
                 self.label.image = PhotoImage(file=self.tfname)
                 self.label.config(image=self.label.image)
-            if self.tfname:
-                try:
-                    os.unlink(self.tfname)
-                except os.error:
-                    pass
+            try:
+                os.unlink(self.tf.name)
+            except os.error:
+                pass
             if self.broken:
                 # TBD: horrid kludge... don't hate me! ;-)
                 self.label.image = PhotoImage(file='icons/sadsmiley.gif')

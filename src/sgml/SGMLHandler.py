@@ -154,7 +154,6 @@ class CompositeHandler:
 from types import StringType
 
 class TagInfo:
-    as_dict = 1
     container = 1
 
     def __init__(self, tag, start, do, end):
