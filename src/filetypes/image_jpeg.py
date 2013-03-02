@@ -1,13 +1,12 @@
 import tempfile
 import os
-import string
 from grailutil import getenv, which
 from Tkinter import *
 from formatter import AS_IS
 
 _FILTERCMD = 'djpeg'
 _FILTERARG = '-gif'
-_FILTERPATH = which(_FILTERCMD, string.splitfields(getenv('PATH'), ':'))
+_FILTERPATH = which(_FILTERCMD, getenv('PATH').split(':'))
 
 if hasattr(os, 'popen') and _FILTERPATH:
     _FILTER = _FILTERPATH + ' ' + _FILTERARG

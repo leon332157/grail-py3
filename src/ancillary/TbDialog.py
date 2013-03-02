@@ -1,6 +1,5 @@
 """Modeless dialog displaying exception and traceback."""
 
-import string
 import tktools
 import traceback
 
@@ -30,7 +29,7 @@ class TracebackDialog:
         self.text, self.text_frame = tktools.make_text_box(self.root, width=90)
         lines = traceback.format_exception(exc, val, tb)
         lines.append('')
-        tb = string.join(map(string.rstrip, lines), '\n')
+        tb = '\n'.join(map(str.rstrip, lines))
         self.text.insert(END, tb)
         self.text.yview_pickplace(END)
         self.text["state"] = DISABLED

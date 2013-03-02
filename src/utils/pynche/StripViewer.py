@@ -24,7 +24,6 @@ select the color under the cursor while you drag it, but be forewarned that
 this can be slow.
 """
 
-import string
 from Tkinter import *
 from . import ColorDB
 
@@ -302,7 +301,7 @@ class StripWidget:
                 chip = i
             i = i + 1
         # call the raw tcl script
-        colors = string.join(chips)
+        colors = ' '.join(chips)
         tk.eval('setcolor %s {%s}' % (self.__canvas._w, colors))
         # move the arrows around
         self.__trackarrow(chip, (red, green, blue))

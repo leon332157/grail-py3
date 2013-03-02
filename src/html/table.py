@@ -1,7 +1,6 @@
 """HTML 3.0 <TABLE> tag support."""
 __version__ = '$Id: table.py,v 2.62 1999/03/05 21:55:36 fdrake Exp $'
 
-import string
 import re
 import grailutil
 from Tkinter import *
@@ -163,7 +162,7 @@ class TableSubParser:
             # tosses any dangling text not in a caption or explicit cell
             parser.save_end()
             #parser.formatter.push_alignment(cell.attribute('align',
-            #                                      conv=string.lower))
+            #                                      conv=str.lower))
             cell.init_style()
             ti.lastbody.lastrow.cells.append(cell)
 
@@ -207,7 +206,7 @@ def conv_stdunits(val):
     handled by the table extension.
 
     """
-    val = string.strip(val)
+    val = val.strip()
     if len(val) <= 0:
         return 0
     if val[-1] in ['%', '*']:
@@ -848,7 +847,7 @@ class TR(AttrElem):
 
 
 def _get_linecount(tw):
-    return string.atoi(string.splitfields(tw.index(END), '.')[0]) - 1
+    return int(tw.index(END).split('.')[0]) - 1
 
 def _get_widths(tw):
     width_max = 0
@@ -868,7 +867,7 @@ def _get_widths(tw):
     # get minimum width of cell: longest word
     tw['wrap'] = WORD
     contents = tw.get(1.0, END)
-    longest_word = reduce(max, map(len, string.split(contents)), 0)
+    longest_word = reduce(max, map(len, contents.split()), 0)
     tw['width'] = longest_word + 1
     width_min = tw.winfo_reqwidth() + (2 * border_x)
     wn = float(width_min)+2
@@ -1003,7 +1002,7 @@ class ContainedText(AttrElem):
                 # want to put equal amounts of pad on both sides of
                 # the picture.
                 padding = int(self._table.get_available_width() *
-                              string.atoi(padding[:-1]) / 200)
+                              int(padding[:-1]) / 200)
             except ValueError:
                 padding = 0
         tw['padx'] = padding

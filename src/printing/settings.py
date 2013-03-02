@@ -12,7 +12,6 @@ def get_settings(prefs=None):
     return _settings
 
 
-import string
 from . import utils                            # || module
 
 
@@ -67,12 +66,12 @@ class PrintSettings:
         self.strip_blanks = prefs.GetBoolean(
             self.GROUP, 'skip-leading-blank-lines')
         self.strict_parsing = prefs.GetBoolean('parsing-html', 'strict')
-        self.user_headers = string.split(prefs.Get(self.GROUP, 'user-header'))
+        self.user_headers = prefs.Get(self.GROUP, 'user-header').split()
         self.postscript_level = prefs.GetInt(self.GROUP, 'postscript-level')
         #
         margins = prefs.Get(self.GROUP, 'margins')
         if margins:
-            self.margins = tuple(map(string.atoi, string.split(margins)))
+            self.margins = tuple(map(int, margins.split()))
         self.printcmd = prefs.Get(self.GROUP, 'command') or self.PRINTCMD
         self.paragraph_indent = prefs.GetFloat(self.GROUP, 'paragraph-indent')
         self.paragraph_skip = prefs.GetFloat(self.GROUP, 'paragraph-skip')

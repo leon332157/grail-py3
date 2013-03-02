@@ -5,7 +5,6 @@ __version__ = '$Revision: 1.12 $'
 import bookmarks
 from .. import iso8601
 from .. import walker
-import string
 import sys
 
 
@@ -27,7 +26,7 @@ class Writer(walker.TreeWalker):
 
     def write_tree(self, fp):
         root = self.get_root()
-        root_type = string.lower(root.get_nodetype())
+        root_type = root.get_nodetype().lower()
         if root_type == "folder":
             root_type = "xbel"
         fp.write(self.__header % (root_type, self.PUBLIC_ID, self.SYSTEM_ID))
@@ -109,7 +108,7 @@ class Writer(walker.TreeWalker):
         added = date_attr(node.add_date(), "added")
         modified = date_attr(node.last_modified(), "modified")
         visited = date_attr(node.last_visited(), "visited")
-        desc = string.strip(node.description() or '')
+        desc = (node.description() or '').strip()
         idref = node.id() or ''
         if idref:
             idref = 'id="%s"' % idref
@@ -118,12 +117,12 @@ class Writer(walker.TreeWalker):
         attrs = filter(None, (idref, added, modified, visited))
         #
         tab = "  " * self._depth
+        sep = "\n%s          " % tab
+        attrs = sep.join(attrs)
         if attrs:
-            sep = "\n%s          " % tab
-            attrs = " " + string.join(attrs, sep)
+            attrs = " " + attrs
         else:
             sep = " "
-            attrs = ""
         self.write('%s<bookmark%s%shref="%s">\n' % (tab, attrs, sep, uri))
         if title:
             self.write("%s  <title>%s</title>\n" % (tab, title))
@@ -154,7 +153,7 @@ class Writer(walker.TreeWalker):
             append("\n")
         append(tab)
         append("  </info>\n")
-        self.write(string.join(L, ""))
+        self.write("".join(L))
 
     def __dump_xml(self, stuff, L, tab):
         tag, attrs, content = stuff
@@ -200,7 +199,7 @@ def _fmt_date_attr(date, attrname):
 
 
 def _wrap_lines(s, width, indentation=0):
-    words = string.split(s)
+    words = s.split()
     lines = []
     buffer = ''
     for w in words:
@@ -217,4 +216,4 @@ def _wrap_lines(s, width, indentation=0):
         lines.append(buffer)
     if len(lines) > 1:
         lines.insert(0, '')
-    return string.join(lines, "\n" + " "*indentation)
+    return ("\n" + " "*indentation).join(lines)

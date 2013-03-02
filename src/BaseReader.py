@@ -1,7 +1,6 @@
 """Base reader class -- read from a URL in the background."""
 
 import sys
-import string
 from Tkinter import *
 import urlparse
 import grailutil
@@ -101,7 +100,7 @@ class BaseReader:
         if self.api and not self.shorturl:
             tuple = urlparse.urlparse(self.api._url_)
             path = tuple[2]
-            i = string.rfind(path[:-1], '/')
+            i = path.rfind('/', 0, -1)
             if i >= 0:
                 path = path[i+1:]
             self.shorturl = path or self.api._url_
@@ -117,8 +116,8 @@ class BaseReader:
         self.maxbytes = 0
         if headers.has_key('content-length'):
             try:
-                self.maxbytes = string.atoi(headers['content-length'])
-            except string.atoi_error:
+                self.maxbytes = int(headers['content-length'])
+            except ValueError:
                 pass
         self.update_status()
 

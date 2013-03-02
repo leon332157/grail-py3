@@ -1,5 +1,4 @@
 import os
-import string
 import sys
 
 
@@ -57,7 +56,7 @@ for c in "<>&'\"":
 
 def _prepstring(s):
     """Return HTML/XML safe copy of a string."""
-    return string.join(map(__tr_map.get, s), '')
+    return ''.join(map(__tr_map.get, s))
 
 
 

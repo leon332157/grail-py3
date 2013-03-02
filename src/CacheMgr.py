@@ -1,6 +1,5 @@
 from Cache import SharedItem, SharedAPI
 import urlparse
-import string
 import os
 import time
 import ht_time
@@ -23,13 +22,10 @@ from mimetypes import guess_extension
 
 
 def parse_cache_control(s):
-    def parse_directive(s):
-        i = string.find(s, '=')
-        if i >= 0:
-            return (s[:i], s[i+1:])
-        return (s, '')
-    elts = string.splitfields(s, ',')
-    return map(parse_directive, elts)
+    elts = s.split(',')
+    for s in elts:
+        a, _, b = s.partition('=')
+        yield (a, b)
 
 class CacheManager:
     """Manages one or more caches in hierarchy.
@@ -323,7 +319,7 @@ class CacheManager:
                 if k in  ('no-cache', 'no-store'):
                     return 0
                 if k == 'max-age':
-                    expires = string.atoi(v)
+                    expires = int(v)
 
         return 1
 
@@ -414,11 +410,11 @@ class DiskCacheEntry:
     def parse(self,parsed_rep):
         """Reads transaction log entry.
         """
-        vars = string.splitfields(parsed_rep,'\t')
+        vars = parsed_rep.split('\t')
         self.key = vars[0]
         self.url = vars[1]
         self.file = vars[2]
-        self.size = string.atoi(vars[3])
+        self.size = int(vars[3])
         self.type = vars[7]
         try:
             self.encoding = vars[8]
@@ -451,7 +447,7 @@ class DiskCacheEntry:
         if match and match.start() == 0:
             setattr(self,var,HTTime(str=rep))
         else:
-            setattr(self,var,HTTime(secs=string.atof(rep)))
+            setattr(self,var,HTTime(secs=float(rep)))
 
     def unparse(self):
         """Return entry for transaction log.
@@ -461,7 +457,7 @@ class DiskCacheEntry:
         stuff = [self.key, self.url, self.file, self.size, self.date,
                  self.lastmod, self.expires, self.type, self.encoding,
                  self.transfer_encoding]
-        s = string.join(map(str, stuff), '\t')
+        s = '\t'.join(map(str, stuff))
         return s
 
     def get(self):

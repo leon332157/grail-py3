@@ -107,7 +107,7 @@ class MailDialog:
             variables["content-transfer-encoding"] = "7bit"
         # move default set of query'd headers into variables
         for header, vlist in headers.items():
-            header = string.lower(header)
+            header = header.lower()
             if header != 'body':
                 if header not in DISALLOWED_HEADERS:
                     variables[header] = vlist[0]        # toss duplicates

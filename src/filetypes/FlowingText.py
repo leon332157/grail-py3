@@ -13,7 +13,6 @@ __version__ = '$Revision: 2.4 $'
 
 
 import formatter
-import string
 
 from formatter import AS_IS
 
@@ -34,7 +33,7 @@ class FlowingTextParser:
         if self.signature:
             self.send_data(data)
         else:
-            lines = string.split(data, '\n')
+            lines = data.split('\n')
             if lines:
                 self.buffer = lines[-1]
                 for line in lines[:-1]:
@@ -44,7 +43,7 @@ class FlowingTextParser:
                     if self.signature:
                         self.send_data(line + '\n')
                         continue
-                    if len(string.rstrip(line)) == (len(line) - 1) \
+                    if len(line.rstrip()) == (len(line) - 1) \
                        and line[-1] == ' ':
                         self.set_flow(1)
                         self.send_data(line + '\n')

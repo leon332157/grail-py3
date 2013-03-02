@@ -14,7 +14,6 @@ see information about all-too-many command-line options.
 import os
 import sys
 import posixpath
-import string
 import traceback
 import urllib
 import urlparse
@@ -121,11 +120,11 @@ def run(app):
         elif opt in ('-s', '--strict-parsing'):
             settings.strict_parsing = not settings.strict_parsing
         elif opt in ('-C', '--copies'):
-            copies = string.atoi(arg)
+            copies = int(arg)
         elif opt in ('-P', '--printer'):
             printer = arg
         elif opt in ('-T', '--tab-width'):
-            tabstop = string.atof(arg)
+            tabstop = float(arg)
         elif opt in ('-m', '--multi'):
             multi = 1
         elif opt in ('-v', '--verbose'):
@@ -139,9 +138,9 @@ def run(app):
         elif opt == '--paragraph-indent':
             # negative indents should indicate hanging indents, but we don't
             # do those yet, so force to normal interpretation
-            settings.paragraph_indent = max(string.atof(arg), 0.0)
+            settings.paragraph_indent = max(float(arg), 0.0)
         elif opt == '--paragraph-skip':
-            settings.paragraph_skip = max(string.atof(arg), 0.0)
+            settings.paragraph_skip = max(float(arg), 0.0)
     if help:
         usage(settings)
         sys.exit(error)
@@ -176,7 +175,7 @@ def run(app):
     # open the output file
     #
     if outfile[0] == '|':
-        cmd = string.strip(outfile[1:])
+        cmd = outfile[1:].strip()
         outfile = '|' + cmd
         outfp = os.popen(cmd, 'w')
     elif outfile == '-':
@@ -355,7 +354,7 @@ class multi_transform:
         baseurl = context.get_baseurl()
         scheme, netloc, path, params, query, frag = urlparse.urlparse(baseurl)
         self.__scheme = scheme
-        self.__netloc = string.lower(netloc)
+        self.__netloc = netloc.lower()
         self.__path = os.path.dirname(path)
         self.__subdocs = []
         self.__max_levels = levels
@@ -366,7 +365,7 @@ class multi_transform:
         scheme, netloc, path, params, query, frag = urlparse.urlparse(url)
         if params or query:             # safety restraint
             return url
-        netloc = string.lower(netloc)
+        netloc = netloc.lower()
         if scheme != self.__scheme or netloc != self.__netloc:
             return url
         # check the paths:

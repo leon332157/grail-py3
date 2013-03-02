@@ -1,7 +1,6 @@
 __version__ = '$Revision: 1.5 $'
 
 import Reader
-import string
 
 
 class PrintingTextParser(Reader.TextParser):
@@ -21,7 +20,7 @@ class PrintingTextParser(Reader.TextParser):
     def feed(self, data):
         data = self.__buffer + data
         self.__buffer = ''
-        strings = string.splitfields(data, "\f")
+        strings = data.split("\f")
         if strings:
             for s in strings[:-1]:
                 self.write_page(s)
@@ -29,7 +28,7 @@ class PrintingTextParser(Reader.TextParser):
 
     __first = 1
     def write_page(self, data):
-        data = string.rstrip(data)
+        data = data.rstrip()
         if self.__strip_blanks:
             data = self.strip_blank_lines(data)
             # discard blank pages:
@@ -43,13 +42,13 @@ class PrintingTextParser(Reader.TextParser):
         self.viewer.send_literal_data(data)
 
     def strip_blank_lines(self, data):
-        lines = map(string.rstrip, string.splitfields(data, "\n"))
+        lines = map(str.rstrip, data.split("\n"))
         while lines:
-            if string.strip(lines[0]) == "":
+            if lines[0].strip() == "":
                 del lines[0]
             else:
                 break
-        return string.joinfields(lines, "\n")
+        return "\n".join(lines)
 
 
 def parse_text(writer, settings, context):

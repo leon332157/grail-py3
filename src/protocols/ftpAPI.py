@@ -13,7 +13,6 @@ XXX Main deficiencies:
 """
 
 
-import string
 import re
 
 import ftplib
@@ -84,14 +83,14 @@ class ftp_access:
         host = socket.gethostbyname(host)
         if port:
             try:
-                port = string.atoi(port)
-            except string.atoi_error:
+                port = int(port)
+            except ValueError:
                 raise IOError, ('ftp error', 'bad port')
         else:
             port = ftplib.FTP_PORT
         path, attrs = splitattr(path)
         self.url = "ftp://%s%s" % (netloc, path)
-        dirs = string.splitfields(path, '/')
+        dirs = path.split('/')
         dirs, file = dirs[:-1], dirs[-1]
         self.content_length = None
         if not file:
@@ -108,19 +107,19 @@ class ftp_access:
             else:
                 type = 'i'
         if dirs and not dirs[0]: dirs = dirs[1:]
-        key = (user, host, port, string.joinfields(dirs, '/'))
+        key = (user, host, port, '/'.join(dirs))
         self.debuglevel = None
         try:
             if not ftpcache.has_key(key):
                 ftpcache[key] = []
             for attr in attrs:
-                [attr, value] = map(string.lower, splitvalue(attr))
+                [attr, value] = map(str.lower, splitvalue(attr))
                 if attr == 'type' and value in ('a', 'i', 'd'):
                     type = value
                 elif attr == 'debug':
                     try:
-                        self.debuglevel = string.atoi(value)
-                    except string.atoi_error:
+                        self.debuglevel = int(value)
+                    except ValueError:
                         pass
             candidates = ftpcache[key]
             for cand in candidates:
@@ -187,7 +186,7 @@ class ftp_access:
                     del self.lines[-1]
                 self.lines.append(None) # Mark the end
         else:
-            lines = string.splitfields(data, '\n')
+            lines = data.split('\n')
             if self.debuglevel > 3:
                 for line in lines: print "*addl*", `line`
             if self.lines:
@@ -303,7 +302,7 @@ class ftpwrapper:
 
     def retrfile(self, file, type):
         if type == 'd': cmd = 'TYPE A'; isdir = 1
-        else: cmd = 'TYPE ' + string.upper(type); isdir = 0
+        else: cmd = 'TYPE ' + type.upper(); isdir = 0
         try:
             self.ftp.voidcmd(cmd)
         except ftplib.all_errors:
@@ -342,7 +341,7 @@ class GrailFTP(ftplib.FTP):
         if len(resp) >= 3 and resp[:3] == "150":
             m = self._size_re.search(resp)
             if m and m.start() >= 0:
-                self._xfer_size = string.atoi(m.group(1))
+                self._xfer_size = int(m.group(1))
         return resp
 
 

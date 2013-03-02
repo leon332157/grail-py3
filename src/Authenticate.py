@@ -5,7 +5,6 @@ To start, this is used by the HTTP api to perform basic access authorization.
 
 from Tkinter import *
 import tktools
-import string
 import urlparse
 import base64
 import re
@@ -102,7 +101,7 @@ class AuthenticationManager:
         pass
 
     def basic_cookie(self, str):
-        return "Basic " + string.strip(base64.encodestring(str))
+        return "Basic " + base64.encodestring(str).strip()
 
     def basic_user_dialog(self, data):
         scheme, netloc, path, \
@@ -119,15 +118,14 @@ class AuthenticationManager:
 
         challenge = headers['www-authenticate']
         # <authscheme> realm="<value>" [, <param>="<value>"] ...
-        parts = string.splitfields(challenge, ',')
+        parts = challenge.split(',')
         p = parts[0]
-        i = string.find(p, '=')
-        if i < 0: return
-        key, value = p[:i], p[i+1:]
-        keyparts = string.split(string.lower(key))
+        key, sep, value = p.partition('=')
+        if not sep: return
+        keyparts = key.lower().split()
         if not(len(keyparts) == 2 and keyparts[1] == 'realm'): return
         authscheme = keyparts[0]
-        value = string.strip(value)
+        value = value.strip()
         if len(value) >= 2 and value[0] == value[-1] and value[0] in '\'"':
             value = value[1:-1]
 
@@ -170,8 +168,8 @@ class LoginDialog:
         self.passwd_entry.focus_set()
 
     def ok_command(self, event=None):
-        user = string.strip(self.user_entry.get())
-        passwd = string.strip(self.passwd_entry.get())
+        user = self.user_entry.get().strip()
+        passwd = self.passwd_entry.get().strip()
         if not user:
             self.root.bell()
             return

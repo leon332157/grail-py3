@@ -139,12 +139,12 @@ class BMSaveDialog(FileDialog.SaveFileDialog, FileDialogExtras):
     def export(self):
         return self.__export.get()
 
-    __charmap_out = string.maketrans(" ", "-")
-    __charmap_in = string.maketrans("-", " ")
+    __charmap_out = str.maketrans(" ", "-")
+    __charmap_in = str.maketrans("-", " ")
     def get_filetype(self):
         f = self.__filetype.get()
-        f = string.translate(f, self.__charmap_out)
-        f = string.lower(f)
+        f = f.translate(self.__charmap_out)
+        f = f.lower()
         return f
 
     def set_filetype(self, filetype):
@@ -159,8 +159,7 @@ class BMSaveDialog(FileDialog.SaveFileDialog, FileDialogExtras):
         if pat != oldpat:
             self.set_filter(dir, pat)
         if filetype not in ("HTML", "XBEL"):
-            filetype = string.capwords(
-                string.translate(filetype, self.__charmap_in))
+            filetype = string.capwords(filetype.translate(self.__charmap_in))
         self.__filetype.set(filetype)
 
 
@@ -237,7 +236,7 @@ class BookmarksIO:
                 fp = open(cachename)
                 fp.readline()           # skip header
                 fp.readline()           # skip embedded file name
-                mtime = int(string.strip(fp.readline()))
+                mtime = int(fp.readline())
                 fp.close()
             except IOError:
                 pass
@@ -1344,7 +1343,7 @@ class BookmarksController(OutlinerController):
             else:
                 cre = re.compile(pattern)
         elif not case_flag:
-            pattern = string.lower(pattern)
+            pattern = pattern.lower()
         # depth-first search for the next (or previous) node
         # containing the pattern.  Handle wrapping.
         sv = OutlinerViewer(self._root,
@@ -1381,10 +1380,10 @@ class BookmarksController(OutlinerController):
             else:
                 continue
             if not regex_flag and not case_flag:
-                text = string.lower(text)
+                text = text.lower()
             # literal match
             if not regex_flag:
-                if string.find(text, pattern) >= 0:
+                if pattern in text:
                     break
             # regex match
             elif cre.search(text):

@@ -1,7 +1,6 @@
 """Assorted Tk-related subroutines."""
 
 
-import string
 from types import *
 from Tkinter import *
 
@@ -22,7 +21,7 @@ def make_toplevel(master, title=None, class_=None, name=None):
 
     """
 
-    name = name or string.lower(class_ or "") or None
+    name = name or (class_ or "").lower() or None
     if name and master.children.has_key(name):
         i = 0
         while master.children.has_key(name + `i`):
@@ -370,7 +369,7 @@ def flatten(msg):
     """Turn a list or tuple into a single string -- recursively."""
     t = type(msg)
     if t in (ListType, TupleType):
-        msg = string.join(map(flatten, msg))
+        msg = " ".join(map(flatten, msg))
     elif t is ClassType:
         msg = msg.__name__
     else:
@@ -380,7 +379,7 @@ def flatten(msg):
 
 def boolean(s):
     """Test whether a string is a Tk boolean, without error checking."""
-    if string.lower(s) in ('', '0', 'no', 'off', 'false'): return 0
+    if s.lower() in ('', '0', 'no', 'off', 'false'): return 0
     else: return 1
 
 

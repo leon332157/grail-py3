@@ -4,7 +4,6 @@ import grailutil
 import ht_time
 import os
 import sys
-import string
 import urlparse
 from Tkinter import *
 import tktools
@@ -67,8 +66,8 @@ class TextLineendWrapper:
         if self.__last_was_cr and data[0:1] == '\n':
             data = data[1:]
         self.__last_was_cr = data[-1:] == '\r'
-        data = string.replace(data, '\r\n', '\n')
-        data = string.replace(data, '\r', '\n')
+        data = data.replace('\r\n', '\n')
+        data = data.replace('\r', '\n')
         self.__parser.feed(data)
 
     def close(self):
@@ -97,12 +96,12 @@ class QuotedPrintableWrapper:
         if self.__last_was_cr and data[0:1] == '\n':
             data = data[1:]
         self.__last_was_cr = data[-1:] == '\r'
-        data = string.replace(data, '\r\n', '\n')
-        data = string.replace(data, '\r', '\n')
+        data = data.replace('\r\n', '\n')
+        data = data.replace('\r', '\n')
 
         # now get the real buffer
         data = self.__buffer + data
-        pos = string.find(data, '=')
+        pos = data.find('=')
         if pos == -1:
             self.__parser.feed(data)
             self.__buffer = ''
@@ -131,7 +130,7 @@ class QuotedPrintableWrapper:
                 # wait for more data
                 break
             # now look for the next '=':
-            pos = string.find(data, '=')
+            pos = data.find('=')
             if pos == -1:
                 s = s + data
                 data = ''
@@ -164,12 +163,12 @@ class Base64Wrapper:
         if self.__last_was_cr and data[0:1] == '\n':
             data = data[1:]
         self.__last_was_cr = data[-1:] == '\r'
-        data = string.replace(data, '\r\n', '\n')
-        data = string.replace(data, '\r', '\n')
+        data = data.replace('\r\n', '\n')
+        data = data.replace('\r', '\n')
 
         # now get the real buffer
         data = self.__buffer + data
-        lines = string.split(data, '\n')
+        lines = data.split('\n')
         if len(lines) > 1:
             data = lines[-1]
             del lines[-1]
@@ -185,7 +184,7 @@ class Base64Wrapper:
                     stuff = stuff + bin
                 del lines[0]
             lines.append(data)
-            data = string.join(lines, '\n')
+            data = '\n'.join(lines)
             if stuff:
                 self.__parser.feed(stuff)
         self.__buffer = data
@@ -321,10 +320,10 @@ class GzipWrapper:
 
     def __read_zstring(self, data):
         """Attempt to read a null-terminated string."""
-        if '\0' in data:
-            stuff = data[:string.index(data, '\0')]
-            return data[len(stuff) + 1:], 1, stuff
-        return data, 0, None
+        stuff, sep, data = data.partition('\0')
+        if sep:
+            return data, 1, stuff
+        return stuff, 0, None
 
     def close(self):
         if self.__in_data:
@@ -373,9 +372,9 @@ else:
 def get_encodings(headers):
     content_encoding = transfer_encoding = None
     if headers.has_key("content-encoding"):
-        content_encoding = string.lower(headers["content-encoding"])
+        content_encoding = headers["content-encoding"].lower()
     if headers.has_key("content-transfer-encoding"):
-        transfer_encoding = string.lower(headers["content-transfer-encoding"])
+        transfer_encoding = headers["content-transfer-encoding"].lower()
     return content_encoding, transfer_encoding
 
 
@@ -467,8 +466,7 @@ class Reader(BaseReader):
         tuple = tuple[:-1] + ("",)
         if self.user_passwd:
             netloc = tuple[1]
-            i = string.find(netloc, '@')
-            if i >= 0: netloc = netloc[i+1:]
+            netloc = netloc.split('@', 1)[-1]
             netloc = self.user_passwd + '@' + netloc
             tuple = (tuple[0], netloc) + tuple[2:]
         realurl = urlparse.urlunparse(tuple)
@@ -558,9 +556,9 @@ class Reader(BaseReader):
         content_encoding, transfer_encoding = get_encodings(headers)
         if headers.has_key('content-type'):
             content_type = headers['content-type']
-            if ';' in content_type:
-                content_type = string.strip(
-                    content_type[:string.index(content_type, ';')])
+            content_type, sep, _ = content_type.partition(';')
+            if sep:
+                content_type = content_type.strip()
         else:
             content_type, encoding = self.app.guess_type(self.url)
             if not content_encoding:
@@ -633,7 +631,7 @@ class Reader(BaseReader):
             label.pack(before=fd.filter)
             # give it a default filename on which save within the
             # current directory
-            urlasfile = string.splitfields(self.url, '/')
+            urlasfile = self.url.split('/')
             fn = fd.go(default=urlasfile[-1], key="save")
             if not fn:
                 # User canceled.  Stop the transfer.
@@ -679,7 +677,7 @@ class Reader(BaseReader):
 
         cred_headers = {}
         for k in headers.keys():
-            cred_headers[string.lower(k)] = headers[k]
+            cred_headers[k.lower()] = headers[k]
         cred_headers['request-uri'] = self.url
 
         if self.params.has_key('Authorization'):
@@ -814,7 +812,7 @@ class TransferDisplay:
         #
         self.content_length = None
         if headers.has_key('content-length'):
-            self.content_length = string.atoi(headers['content-length'])
+            self.content_length = int(headers['content-length'])
         self.create_widgets(url, filename, self.content_length)
         #
         if restart:

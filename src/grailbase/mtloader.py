@@ -9,13 +9,12 @@ __version__ = '$Revision: 2.4 $'
 
 
 from . import extloader
-import string
 
 
 class MIMEExtensionLoader(extloader.ExtensionLoader):
     def find(self, name):
-        new_name = string.replace(name, "-", "_")
-        major, minor = tuple(string.split(new_name, "/"))
+        new_name = name.replace("-", "_")
+        major, minor = new_name.split("/")
         if minor:
             modname = "%s_%s" % (major, minor)
         else:

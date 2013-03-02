@@ -20,7 +20,7 @@ import urlparse
 from Tkinter import *
 import tktools
 import grailutil
-import string, re
+import re
 from types import StringType
 
 
@@ -543,7 +543,7 @@ class PrefsPanelsMenu:
                     # [module name, directory, instance]
                     self.panels[nm] = [modnm, moddir, None]
         raworder = self.app.prefs.Get('preferences', 'panel-order')
-        order = string.split(raworder)
+        order = raworder.split()
         keys = self.panels.keys()
         ordered = []
         for name in order:
@@ -581,7 +581,7 @@ class PrefsPanelsMenu:
                 match = modname_matcher.match(entry)
                 if match:
                     name = match.group(1).replace("_", " ")
-                    got[name] = ((string.strip(name), entry, dir))
+                    got[name] = ((name.strip(), entry, dir))
         return got.values()
                     
     def do_post(self, name):
@@ -604,7 +604,7 @@ class PrefsPanelsMenu:
         try:
             sys.path.insert(0, dir)
             try:
-                modnm = modnm[:string.index(modnm, '.')]
+                modnm = modnm.split('.', 1)[0]
                 mod = __import__(modnm)
                 if reloading:
                     reload(mod)

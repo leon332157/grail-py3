@@ -3,12 +3,11 @@
 __version__ = '$Revision: 2.16 $'
 
 import re
-import string
 import Tkinter
 import tktools
 import urlparse
 
-FIELD_BREAKER = string.maketrans("&", "\n")
+FIELD_BREAKER = str.maketrans("&", "\n")
 MAX_TEXT_FIELD_LINES = 10
 
 
@@ -49,12 +48,12 @@ class DocumentInfoDialog:
             s = "%s%s:\t%s\n" % (s, k, v)
         stretch = self.add_text_field("Response headers", s, "headers")
         if query:
-            query = string.translate(query, FIELD_BREAKER)
+            query = query.translate(FIELD_BREAKER)
             stretch = stretch or \
                       self.add_text_field("Query fields", query, "query")
         postdata = context.get_postdata()
         if postdata:
-            postdata = string.translate(postdata, FIELD_BREAKER)
+            postdata = postdata.translate(FIELD_BREAKER)
             stretch = stretch or \
                       self.add_text_field("POST fields", postdata, "postdata")
         #

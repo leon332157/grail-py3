@@ -4,7 +4,6 @@ __version__ = "$Revision: 1.12 $"
 
 import grailutil
 import PrefsPanels
-import string
 import Tkinter
 
 
@@ -25,10 +24,10 @@ class FontSizeVar(Tkinter.StringVar):
 
 class StringSetVar(Tkinter.StringVar):
     def get(self):
-        return string.lower(Tkinter.StringVar.get(self))
+        return Tkinter.StringVar.get(self).lower()
 
     def set(self, value):
-        value = string.capitalize(value)
+        value = value.capitalize()
         return Tkinter.StringVar.set(self, value)
 
 
@@ -61,7 +60,7 @@ class PrintingPanel(PrefsPanels.Framework):
         import printing.paper
         sizes = printing.paper.paper_sizes.keys()
         sizes.sort()
-        sizes = map(string.capitalize, sizes)
+        sizes = map(str.capitalize, sizes)
         self.PrefsOptionMenu(frame, "Paper size: ", GROUP, 'paper-size',
                              sizes, label_width=LABEL_WIDTH,
                              variable=StringSetVar())
@@ -69,7 +68,7 @@ class PrintingPanel(PrefsPanels.Framework):
         var = StringSetVar()
         opts = printing.paper.paper_rotations.keys()
         opts.sort()
-        opts = map(string.capitalize, opts)
+        opts = map(str.capitalize, opts)
         self.PrefsOptionMenu(frame, "Orientation: ", GROUP, 'orientation',
                              opts, label_width=LABEL_WIDTH,
                              variable=StringSetVar())

@@ -55,7 +55,6 @@ import __builtin__
 import imp
 import os
 import sys
-import string
 
 
 VERBOSE = 0
@@ -409,22 +408,15 @@ class ModuleImporter(BasicModuleImporter):
             parent = self.modules[pname]
             assert globals is parent.__dict__
             return parent
-        if '.' in pname:
-            i = string.rfind(pname, '.')
-            pname = pname[:i]
+        pname, sep, _ = pname.rpartition('.')
+        if sep:
             parent = self.modules[pname]
             assert parent.__name__ == pname
             return parent
         return None
 
     def find_head_package(self, parent, name):
-        if '.' in name:
-            i = string.find(name, '.')
-            head = name[:i]
-            tail = name[i+1:]
-        else:
-            head = name
-            tail = ""
+        head, _, tail = name.partition('.')
         if parent:
             qname = "%s.%s" % (parent.__name__, head)
         else:
@@ -441,9 +433,7 @@ class ModuleImporter(BasicModuleImporter):
     def load_tail(self, q, tail):
         m = q
         while tail:
-            i = string.find(tail, '.')
-            if i < 0: i = len(tail)
-            head, tail = tail[:i], tail[i+1:]
+            head, _, tail = tail.partition('.')
             mname = "%s.%s" % (m.__name__, head)
             m = self.import_it(head, mname, m)
             if not m:
@@ -490,10 +480,9 @@ class ModuleImporter(BasicModuleImporter):
         name = module.__name__
         if '.' not in name:
             return self.import_it(name, name, None)
-        i = string.rfind(name, '.')
-        pname = name[:i]
+        pname, _, partname = name.rpartition('.')
         parent = self.modules[pname]
-        return self.import_it(name[i+1:], name, parent)
+        return self.import_it(partname, name, parent)
 
 
 default_importer = None

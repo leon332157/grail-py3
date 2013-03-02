@@ -15,18 +15,13 @@ _named_chars = {'#re' : '\r',
 for i in range(256):
     _named_chars["#" + `i`] = chr(i)
 
-#  build a table suitable for string.translate()
-_chartable = map(chr, range(256))
-for i in range(256):
-    if chr(i) in string.whitespace:
-        _chartable[i] = " "
-_chartable = string.joinfields(_chartable, '')
+_chartable = str.maketrans(string.whitespace, " " * len(string.whitespace))
 
 
 def replace(data, entities = None):
     """Perform general entity replacement on a string.
     """
-    data = string.translate(data, _chartable)
+    data = data.translate(_chartable)
     if '&' in data and entities:
         value = None
         match = _entref_exp.search(data)
@@ -39,8 +34,8 @@ def replace(data, entities = None):
             ref, term = match.group(1, 3)
             if entities.has_key(ref):
                 value = entities[ref]
-            elif _named_chars.has_key(string.lower(ref)):
-                value = _named_chars[string.lower(ref)]
+            elif _named_chars.has_key(ref.lower()):
+                value = _named_chars[ref.lower()]
             if value is not None:
                 data = data[:pos] + value + data[pos+len(ref)+len(term)+1:]
                 pos = pos + len(value)

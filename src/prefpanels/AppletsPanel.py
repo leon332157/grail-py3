@@ -1,6 +1,5 @@
 """Preference panel to control applet privileges."""
 
-import string
 from Tkinter import *
 
 import tktools
@@ -54,12 +53,12 @@ class AppletsPanel(PrefsPanels.Framework):
 
     def getgroups(self):
         data = self.textbox.get("1.0", END)
-        words = string.split(data)
-        return string.joinfields(words, "\n ")
+        words = data.split()
+        return "\n ".join(words)
 
     def setgroups(self, data):
-        words = string.split(data)
-        data = string.joinfields(words, "\n")
+        words = data.split()
+        data = "\n".join(words)
         self.textbox.delete("1.0", END)
         self.textbox.insert("1.0", data)
 

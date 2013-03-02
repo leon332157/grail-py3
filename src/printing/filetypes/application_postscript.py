@@ -1,7 +1,6 @@
 __version__ = '$Revision: 1.7 $'
 
 import sgml.HTMLParser
-import string
 import sys
 
 from grailbase.utils import conv_mimetype
@@ -18,7 +17,7 @@ def embed_application_postscript(parser, attrs):
         extract_keyword('type', attrs, conv=conv_normstring))
     if typeopts.has_key("level"):
         try:
-            level = string.atoi(typeopts["level"])
+            level = int(typeopts["level"])
         except ValueError:
             return None
         if level > parser.settings.postscript_level:
@@ -52,8 +51,8 @@ def load_eps_object(parser, imageurl):
         return None
     if not image:
         return None
-    lines = string.splitfields(image, '\n')
+    lines = image.split('\n')
     try: lines.remove('showpage')
     except ValueError: pass             # o.k. if not found
     bbox = epstools.load_bounding_box(lines)
-    return epstools.EPSImage(string.joinfields(lines, '\n'), bbox)
+    return epstools.EPSImage('\n'.join(lines), bbox)

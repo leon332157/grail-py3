@@ -36,7 +36,6 @@ whitespace = '\\t\\n\x0b\x0c\\r '
 # and CDATA (character data -- only end tags are special).
 
 import re
-import string
 
 class SGMLError(Exception):
     pass
@@ -261,8 +260,8 @@ class SGMLLexer(SGMLLexerBase):
                 self.cleanup()
 
     def normalize(self, norm):
-        prev = ((self._normfunc is string.lower) and 1) or 0
-        self._normfunc = (norm and string.lower) or (lambda s: s)
+        prev = ((self._normfunc is str.lower) and 1) or 0
+        self._normfunc = (norm and str.lower) or (lambda s: s)
         return prev
 
     def restrict(self, constrain):
@@ -273,7 +272,7 @@ class SGMLLexer(SGMLLexerBase):
     def setliteral(self, tag):
         self.literal = 1
         re = "%s%s[%s]*%s" % (ETAGO, tag, whitespace, TAGC)
-        if self._normfunc is string.lower:
+        if self._normfunc is str.lower:
             self._lit_etag_re = re.compile(re, re.IGNORECASE)
         else:
             self._lit_etag_re = re.compile(re)
@@ -305,7 +304,7 @@ class SGMLLexer(SGMLLexerBase):
                     self.literal = 0
                     continue
                 else:
-                    pos = string.rfind(rawdata, "<", i)
+                    pos = rawdata.rfind("<", i)
                     if pos >= 0:
                         self.lex_data(rawdata[i:pos])
                         i = pos
@@ -366,7 +365,7 @@ class SGMLLexer(SGMLLexerBase):
                         i = i + 3
                         continue
                     if self._strict:
-                        if rawdata[i+2] in string.letters:
+                        if rawdata[i+2].isalpha():
                             k = self.parse_declaration(i)
                             if k > -1:
                                 i = i + k
@@ -398,7 +397,7 @@ class SGMLLexer(SGMLLexerBase):
                     if name[0] in '0123456789':
                         #  Character reference:
                         try:
-                            self.lex_charref(string.atoi(name), terminator)
+                            self.lex_charref(int(name), terminator)
                         except ValueError:
                             self.lex_data("&#%s%s" % (name, terminator))
                     else:
@@ -477,8 +476,8 @@ class SGMLLexer(SGMLLexerBase):
         match = commentclose.search(rawdata, i+4)
         if not match:
             if end:
-                if MDC in rawdata[i:]:
-                    j = string.find(rawdata, MDC, i)
+                j = rawdata.find(MDC, i)
+                if j >= 0:
                     self.lex_comment(rawdata[i+4: j])
                     return j + len(MDC) - i
                 self.lex_comment(rawdata[i+4:])
@@ -558,7 +557,7 @@ class SGMLLexer(SGMLLexerBase):
             endchars = self._strict and "<>/" or "<>"
             while 1:
                 try:
-                    while rawdata[k] in string.whitespace:
+                    while rawdata[k].isspace():
                         k = k + 1
                 except IndexError:
                     return -1
@@ -650,15 +649,15 @@ class SGMLLexer(SGMLLexerBase):
                 k = match.start()
                 s = match.group(1)
                 try:
-                    strs.append(string.atoi(s))
-                except string.atoi_error:
+                    strs.append(int(s))
+                except ValueError:
                     strs.append(self._normfunc(s))
                 i = i + k
                 continue
-        k = string.find(rawdata, end_target, i)
+        k = rawdata.find(end_target, i)
         if end_target == ']>':
             if k < 0:
-                k = string.find(rawdata, '>', i)
+                k = rawdata.find('>', i)
             else:
                 k = k + 1
         if k >= 0:

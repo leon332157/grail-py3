@@ -2,7 +2,6 @@
 
 from Tkinter import *
 import tktools
-import string
 import os
 import sys
 import time

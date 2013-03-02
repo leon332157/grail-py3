@@ -2,7 +2,6 @@
 
 from Tkinter import *
 import tktools
-import string
 
 
 
@@ -57,7 +56,7 @@ class OpenURIDialog:
             focuswin.focus_set()
             self.__frame.destroy()
             if uri:
-                uri = string.joinfields(string.split(uri), '')
+                uri = ''.join(uri.split())
                 self.__class__.__lasturi = uri
             return uri, new
 

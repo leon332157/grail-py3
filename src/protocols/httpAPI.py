@@ -15,7 +15,6 @@ XXX Main deficiencies:
 """
 
 
-import string
 import httplib
 from urllib import splithost
 import mimetools
@@ -91,8 +90,8 @@ class MyHTTP(httplib.HTTP):
             self.headers['content-type'] = c_type or "text/html"
             return 200, "OK", self.headers
         errcode, errmsg = m.group(1, 2)
-        errcode = string.atoi(errcode)
-        errmsg = string.strip(errmsg)
+        errcode = int(errcode)
+        errmsg = errmsg.strip()
         self.headers = mimetools.Message(self.file, 0)
         return errcode, errmsg, self.headers
 
@@ -139,15 +138,12 @@ class http_access:
             host, selector = splithost(resturl)
         if not host:
             raise IOError, "no host specified in URL"
-        i = string.find(host, '@')
-        if i >= 0:
-            user_passwd, host = host[:i], host[i+1:]
-        else:
-            user_passwd = None
-        if user_passwd:
+        user_passwd, sep, host = host.partition('@')
+        if sep:
             import base64
-            auth = string.strip(base64.encodestring(user_passwd))
+            auth = base64.encodestring(user_passwd).strip()
         else:
+            host = user_passwd
             auth = None
         self.h = MyHTTP(host)
         self.h.putrequest(method, selector)
@@ -160,8 +156,7 @@ class http_access:
             encodings = Reader.get_content_encodings()
             if encodings:
                 encodings.sort()
-                self.h.putheader(
-                    'Accept-Encoding', string.join(encodings, ", "))
+                self.h.putheader('Accept-Encoding', ", ".join(encodings))
         for key, value in params.items():
             if key[:1] != '.':
                 self.h.putheader(key, value)
@@ -202,9 +197,8 @@ class http_access:
         if '\n' not in new:
             return "receiving server response", 0
         if not self.line1seen:
-            i = string.find(self.readahead, '\n')
             self.line1seen = 1
-            line = self.readahead[:i+1]
+            line = self.readahead.split('\n', 1)[0]
             if not replyprog.match(line):
                 return "received non-HTTP/1.0 server response", 1
         m = endofheaders.search(self.readahead)

@@ -4,8 +4,6 @@ import sys
 from Tkinter import *
 import tktools
 import formatter
-import string
-from string import strip
 from Context import Context, SimpleContext
 from Cursors import *
 from types import StringType
@@ -297,7 +295,7 @@ class Viewer(formatter.AbstractWriter):
                         fontname = self.stylesheet.styles[tag]['font']
                         fontname = self.text.tk.call('font', 'create',
                                                      '-family', fontname)
-                        if string.find(fontname, 'dingbat') == -1:
+                        if 'dingbat' not in fontname:
                             use_font_dingbats = 0
             #
             # Set dingbat approach appropriately:
@@ -456,7 +454,7 @@ class Viewer(formatter.AbstractWriter):
         self.text['state'] = NORMAL
 
     def freeze(self, update=0):
-        if self.pendingdata and strip(self.pendingdata):
+        if self.pendingdata and self.pendingdata.strip():
             self.text.insert(END, self.pendingdata, self.flowingtags)
             self.pendingdata = ''
         if self.smoothscroll:
@@ -484,7 +482,7 @@ class Viewer(formatter.AbstractWriter):
         self.text.tk.call('tkScrollByUnits', self.text.vbar, 'v', -1)
 
     def new_tags(self):
-        if self.pendingdata and strip(self.pendingdata):
+        if self.pendingdata and self.pendingdata.strip():
             self.text.insert(END, self.pendingdata, self.flowingtags)
             self.pendingdata = ''
         self.flowingtags = filter(
@@ -633,14 +631,13 @@ class Viewer(formatter.AbstractWriter):
                 ghist = self.context.app.global_history
                 title, when = ghist.lookup_url(absurl)
                 if title:
-                    message = string.join(string.split(title))
+                    message = ' '.join(title.split())
             self.text.tag_remove('hover', '0.1', END)
             ranges = self.find_tag_ranges()
-            split = string.split
-            point = map(int, split(self.text.index(CURRENT), '.'))
+            point = map(int, self.text.index(CURRENT).split('.'))
             for start, end in ranges:
-                startv = map(int, split(start, '.'))
-                endv = map(int, split(end, '.'))
+                startv = map(int, start.split('.'))
+                endv = map(int, end.split('.'))
                 if startv <= point < endv:
                     self.text.tag_add('hover', start, end)
                     break
@@ -710,9 +707,8 @@ class Viewer(formatter.AbstractWriter):
             self.remove_temp_tag(histify=1)
 
     def split_target(self, url):
-        i = string.find(url, TARGET_SEPARATOR)
-        if i < 0: return url, ""
-        return url[:i], url[i+1:]
+        a, _, b = url.partition(TARGET_SEPARATOR)
+        return a, b
 
     def add_temp_tag(self):
         list = self.find_tag_ranges()
@@ -785,9 +781,7 @@ class Viewer(formatter.AbstractWriter):
                 except TclError:
                     return              # unknown mark
                 #  Highlight the entire line:
-                r = (first,
-                     `1 + string.atoi(string.splitfields(first,'.')[0])` \
-                     + '.0')
+                r = (first, `1 + int(first.split('.')[0])` + '.0')
         else:
             r = self.parse_range(fragment)
             if not r:
@@ -947,7 +941,7 @@ class ViewerMenu:
     def set_image_url(self, url):
         self.__image_url = url or ""
         url = self.__context.get_baseurl(url)
-        if len(url) < 5 or string.lower(url[:5]) != "data:":
+        if len(url) < 5 or url[:5].lower() != "data:":
             from posixpath import basename
             self.__image_file = basename(urlparse(url)[2])
         else:
@@ -989,8 +983,8 @@ class ViewerMenu:
         self.__viewer.text.selection_own()
 
     def __selection_handler(self, offset, maxbytes):
-        offset = string.atoi(offset)
-        maxbytes = string.atoi(maxbytes)
+        offset = int(offset)
+        maxbytes = int(maxbytes)
         endpos = min(maxbytes + offset, len(self.__selection))
         return self.__selection[offset:endpos]
 

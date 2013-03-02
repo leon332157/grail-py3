@@ -6,7 +6,6 @@ It is used to bring up other windows.
 
 import sys
 import os
-import string
 from Tkinter import *
 import tkMessageBox
 
@@ -215,9 +214,9 @@ class Helpwin:
                 fp = open(readmefile)
                 contents = fp.read()
                 # wax the last page, it contains Emacs cruft
-                i = string.rfind(contents, '\f')
+                i = contents.rfind('\f')
                 if i > 0:
-                    contents = string.rstrip(contents[:i])
+                    contents = contents[:i].rstrip()
             finally:
                 if fp:
                     fp.close()

@@ -26,7 +26,6 @@ XXX Remaining problems:
 
 """
 
-import string
 import urllib
 import hdllib
 from . import nullAPI
@@ -79,12 +78,12 @@ def parse_handle(hdl):
     d = {}
     if attrs:
         for attr in attrs:
-            i = string.find(attr, '=')
-            if i < 0:
-                key, value = attr, None
+            key, sep, value = attr.partition('=')
+            if not sep:
+                value = None
             else:
-                key, value = attr[:i], urllib.unquote(attr[i+1:])
-            d[string.lower(key)] = value
+                value = urllib.unquote(value)
+            d[key.lower()] = value
     return urllib.unquote(hdl), d
 
 def escape(s):
@@ -122,9 +121,9 @@ class hdl_access(nullAPI.null_access):
         self.app = grailutil.get_grailapp()
 
         if self._attrs.has_key('type'):
-            t = string.lower(self._attrs['type'])
+            t = self._attrs['type'].lower()
             mname = "hdl_type_" + t
-            tname = string.upper(mname)
+            tname = mname.upper()
             try:
                 m = self.app.get_loader('protocols').find_module(mname)
                 if not m:
@@ -138,7 +137,7 @@ class hdl_access(nullAPI.null_access):
                     self._types = [hdllib.data_map[tname]]
                 else:
                     try:
-                        n = string.atoi(t)
+                        n = int(t)
                     except ValueError:
                         self._types = [] # Request all types
                     else:

@@ -1,5 +1,4 @@
 from . import nullAPI
-import string
 
 
 class data_access(nullAPI.null_access):
@@ -36,13 +35,13 @@ class data_access(nullAPI.null_access):
 
 def parse(url):
     ctype, data, encoding = None, "", "raw"
-    pos = string.find(url, ';')
+    pos = url.find(';')
     if pos >= 0:
-        ctype = string.lower(string.strip(url[:pos]))
+        ctype = url[:pos].strip().lower()
         url = url[pos + 1:]
-    pos = string.find(url, ',')
+    pos = url.find(',')
     if pos >= 0:
-        encoding = string.lower(string.strip(url[:pos]))
+        encoding = url[:pos].strip().lower()
         url = url[pos + 1:]
     data = url
     if data and encoding == "base64":

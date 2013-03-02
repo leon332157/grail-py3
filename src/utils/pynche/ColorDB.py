@@ -21,7 +21,6 @@ color formats, and for calculating other color values.
 """
 
 import sys
-import string
 import re
 import operator
 
@@ -63,7 +62,7 @@ class ColorDB:
             #
             red, green, blue = map(int, mo.group('red', 'green', 'blue'))
             name = mo.group('name')
-            keyname = string.lower(name)
+            keyname = name.lower()
             #
             # TBD: for now the `name' is just the first named color with the
             # rgb values we find.  Later, we might want to make the two word
@@ -87,7 +86,7 @@ class ColorDB:
             raise BadColor(rgbtuple)
 
     def find_byname(self, name):
-        name = string.lower(name)
+        name = name.lower()
         try:
             return self.__byname[name]
         except KeyError:
@@ -100,7 +99,7 @@ class ColorDB:
         nearest = -1
         nearest_name = ''
         for name, aliases in self.__byrgb.values():
-            r, g, b = self.__byname[string.lower(name)]
+            r, g, b = self.__byname[name.lower()]
             rdelta = red - r
             gdelta = green - g
             bdelta = blue - b
@@ -118,7 +117,7 @@ class ColorDB:
                 self.__allnames.append(name)
             # sort irregardless of case
             def nocase_cmp(n1, n2):
-                return cmp(string.lower(n1), string.lower(n2))
+                return cmp(n1.lower(), n2.lower())
             self.__allnames.sort(nocase_cmp)
         return self.__allnames
 
@@ -172,7 +171,7 @@ def get_colordb(file, filetype=X_RGB_TXT):
 
 
 _namedict = {}
-def rrggbb_to_triplet(color, atoi=string.atoi):
+def rrggbb_to_triplet(color, atoi=int):
     """Converts a #rrggbb color to the tuple (red, green, blue)."""
     rgbtuple = _namedict.get(color)
     if rgbtuple is None:
@@ -207,8 +206,6 @@ def triplet_to_brightness(rgbtuple):
 
 
 if __name__ == '__main__':
-    import string
-
     colordb = get_colordb('/usr/openwin/lib/rgb.txt')
     if not colordb:
         print 'No parseable color database found'
@@ -218,7 +215,7 @@ if __name__ == '__main__':
     red, green, blue = rgbtuple = colordb.find_byname(target)
     print target, ':', red, green, blue, triplet_to_rrggbb(rgbtuple)
     name, aliases = colordb.find_byrgb(rgbtuple)
-    print 'name:', name, 'aliases:', string.join(aliases, ", ")
+    print 'name:', name, 'aliases:', ", ".join(aliases)
     r, g, b = (1, 1, 128)			  # nearest to navy
     r, g, b = (145, 238, 144)			  # nearest to lightgreen
     r, g, b = (255, 251, 250)			  # snow
@@ -233,4 +230,4 @@ if __name__ == '__main__':
         r, g, b = colordb.find_byname(n)
         aliases = colordb.aliases_of(r, g, b)
         print '%20s: (%3d/%3d/%3d) == %s' % (n, r, g, b,
-                                             string.join(aliases[1:]))
+                                             " ".join(aliases[1:]))

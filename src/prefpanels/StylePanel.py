@@ -6,7 +6,6 @@ __version__ = "$Revision: 1.18 $"
 import PrefsPanels
 
 from Tkinter import *
-import string
 
 
 class ColorButton(Button):
@@ -40,10 +39,8 @@ class StylePanel(PrefsPanels.Framework):
 
     def CreateLayout(self, name, frame):
 
-        style_sizes = string.split(self.app.prefs.Get('styles',
-                                                      'all-sizes'))
-        style_families = string.split(self.app.prefs.Get('styles',
-                                                         'all-families'))
+        style_sizes = self.app.prefs.Get('styles', 'all-sizes').split()
+        style_families = self.app.prefs.Get('styles', 'all-families').split()
 
         self.PrefsRadioButtons(frame, "Font size group:", style_sizes,
                                'styles', 'size', label_width=20)

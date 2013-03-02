@@ -3,7 +3,6 @@ __version__ = "$Revision: 1.6 $"
 
 import AsyncImage
 from sgml import HTMLParser
-import string
 import Tkinter
 
 from grailutil import *
@@ -19,7 +18,7 @@ def init_types():
     if AsyncImage.isPILAllowed():
         import Image
         for datatype in Image.MIME.values():
-            type, subtype = string.splitfields(datatype, '/')
+            type, subtype = datatype.split('/')
             if type == "image":
                 allowed_types[datatype] = datatype
     else:
@@ -55,12 +54,11 @@ def embed_image(parser, attrs):
 
     # Image type is supported; get parameters and load it.
     shapes = attrs.has_key('shapes')
-    border = extract_keyword('border', attrs, shapes and 2 or 0,
-                             conv=string.atoi)
-    width = extract_keyword('width', attrs, 0, conv=string.atoi)
-    height = extract_keyword('height', attrs, 0, conv=string.atoi)
-    hspace = extract_keyword('hspace', attrs, 0, conv=string.atoi)
-    vspace = extract_keyword('vspace', attrs, 0, conv=string.atoi)
+    border = extract_keyword('border', attrs, shapes and 2 or 0, conv=int)
+    width = extract_keyword('width', attrs, 0, conv=int)
+    height = extract_keyword('height', attrs, 0, conv=int)
+    hspace = extract_keyword('hspace', attrs, 0, conv=int)
+    vspace = extract_keyword('vspace', attrs, 0, conv=int)
     return ImageObject(parser, src, shapes=shapes, border=border, width=width,
                        height=height, hspace=hspace, vspace=vspace)
 

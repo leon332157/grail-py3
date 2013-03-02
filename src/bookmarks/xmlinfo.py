@@ -161,7 +161,7 @@ def extract(encoding, buffer, values, best_effort=0):
 
 _extractor_map = {}
 def new_extractor(encoding, buffer, values):
-    encoding = string.lower(encoding)
+    encoding = encoding.lower()
     klass = _extractor_map.get(encoding, Extractor)
     return klass(buffer, values)
 
@@ -171,8 +171,6 @@ def add_extractor_class(klass):
 
 
 class Extractor:
-    VERSION_CHARS = string.letters + string.digits + "_.:-"
-
     Encodings = ()
 
     def __init__(self, buffer, values):
@@ -196,7 +194,7 @@ class Extractor:
         self.parse_VersionInfo()
         attrname, encoding = self.get_opt_pseudo_attr()
         if attrname == "encoding":
-            self.values.encoding = string.lower(encoding)
+            self.values.encoding = encoding.lower()
             attrname, standalone = self.get_opt_pseudo_attr()
             if attrname == "standalone":
                 if standalone not in ("yes", "no"):
@@ -219,9 +217,8 @@ class Extractor:
                "first pseudo-attribute in XML declaration must be version")
         if not verno:
             raise ParseError("version number cannot be empty")
-        version_chars = self.VERSION_CHARS
         for c in verno:
-            if not c in version_chars:
+            if not c.isalpha() and not c.isdecimal() and c not in "_.:-":
                 raise ParseError(
                     "illegal character in XML version declaration: " + `c`)
         self.values.xml_version = verno
@@ -234,7 +231,7 @@ class Extractor:
         self.require_whitespace("pseudo-attribute")
         while 1:
             c = self.get_ascii(1)
-            if c in string.letters:
+            if c.isalpha():
                 attrname = attrname + c
                 self.discard_chars(1)
             else:
@@ -575,7 +572,7 @@ class ISO8859Extractor(Extractor):
         if not m:
             return None
         self.buffer = self.buffer[m.end():]
-        return string.lstrip(m.group())[1:-1]
+        return m.group().lstrip()[1:-1]
 
     def parse_doctype(self):
         self.require_ascii("<!DOCTYPE", "doctype declaration")
@@ -599,7 +596,7 @@ class ISO8859Extractor(Extractor):
     
     def skip_to_doctype(self):
         while self.buffer:
-            self.buffer = string.lstrip(self.buffer)
+            self.buffer = self.buffer.lstrip()
             if self.buffer[:4] == "<!--":
                 self.skip_comment()
             elif self.buffer[:2] == "<?":
@@ -608,20 +605,20 @@ class ISO8859Extractor(Extractor):
                 break
 
     def skip_pi(self):
-        pos = string.find(self.buffer, "?>", 2)
+        pos = self.buffer.find("?>", 2)
         if pos < 0:
             raise ParseError("could not scan over processing instruction")
         self.buffer = self.buffer[pos + 2:]
 
     def skip_comment(self):
-        pos = string.find(self.buffer, "-->", 4)
+        pos = self.buffer.find("-->", 4)
         if pos < 0:
             raise ParseError("could not scan over comment")
         self.buffer = self.buffer[pos + 4:]
 
     def skip_whitespace(self):
         old_buffer = self.buffer
-        self.buffer = string.lstrip(old_buffer)
+        self.buffer = old_buffer.lstrip()
         return len(old_buffer) - len(self.buffer)
 
     def get_ascii(self, count):
@@ -640,7 +637,7 @@ class ISO8859Extractor(Extractor):
         self.buffer = self.buffer[count:]
 
     def lower(self, str):
-        return string.lower(str)
+        return str.lower()
 
 
 class ISO8859_1_Extractor(ISO8859Extractor):
@@ -731,8 +728,8 @@ class EBCDICExtractor(Extractor):
 
     __EBCDIC_TO_ASCII = tuple(_m)
 
-    __translation = string.maketrans(string.join(__ASCII_TO_EBCDIC, ''),
-                                     string.join(__EBCDIC_TO_ASCII, ''))
+    __translation = string.maketrans(''.join(__ASCII_TO_EBCDIC),
+                                     ''.join(__EBCDIC_TO_ASCII))
 
     def get_ascii(self, count):
         buffer = self.buffer[:count]

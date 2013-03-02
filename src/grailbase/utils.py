@@ -4,7 +4,6 @@ applications.
 __version__ = '$Revision: 1.3 $'
 
 import os
-import string
 
 # TBD: hack!  grail.py calculates grail_root, which would be
 # convenient to export to extensions, but you can't `import grail' or
@@ -85,32 +84,26 @@ def conv_mimetype(type):
     """
     if not type:
         return None, {}
-    if ';' in type:
-        i = string.index(type, ';')
-        opts = _parse_mimetypeoptions(type[i + 1:])
-        type = type[:i]
+    (type, sep, opts) = type.partition(';')
+    if sep:
+        opts = _parse_mimetypeoptions(opts)
     else:
         opts = {}
-    fields = string.split(string.lower(type), '/')
+    type = type.lower()
+    fields = type.split('/')
     if len(fields) != 2:
         raise ValueError, "Illegal media type specification."
-    type = string.join(fields, '/')
     return type, opts
 
 
 def _parse_mimetypeoptions(options):
     opts = {}
     while options:
-        if '=' in options:
-            pos = string.find(options, '=')
-            name = string.lower(string.strip(options[:pos]))
-            value = options[pos + 1:]
-            options = ''
-            if ';' in value:
-                pos = string.find(value, ';')
-                options = value[pos + 1:]
-                value = value[:pos]
-            value = string.strip(value)
+        name, sep, value = options.partition('=')
+        if sep:
+            name = name.strip().lower()
+            value, _, options = value.partition(';')
+            value = value.strip()
             if name:
                 opts[name] = value
         else:

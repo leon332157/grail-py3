@@ -6,9 +6,7 @@ This module is safe for 'from sgml.utils import *'.
 __version__ = '$Revision: 1.4 $'
 
 
-import string
-_string = string
-del string
+import string as _string
 
 
 def extract_attribute(key, dict, default=None, conv=None, delete=1):
@@ -51,8 +49,8 @@ def extract_keyword(key, dict, default=None, conv=None):
     return default
 
 
-def conv_integer(val, conv=_string.atoi, otherlegal=''):
-    val = _string.strip(val)
+def conv_integer(val, conv=int, otherlegal=''):
+    val = val.strip()
     l = len(val)
     start = 0
     if val[0] in '+-':
@@ -66,11 +64,11 @@ def conv_integer(val, conv=_string.atoi, otherlegal=''):
 
 
 def conv_float(val):
-    return conv_integer(val, conv=_string.atof, otherlegal='.')
+    return conv_integer(val, conv=float, otherlegal='.')
 
 
 def conv_normstring(val):
-    return _string.lower(_string.strip(val))
+    return val.strip().lower()
 
 
 def conv_enumeration(val, mapping_or_list):
@@ -84,7 +82,7 @@ def conv_enumeration(val, mapping_or_list):
 
 
 def conv_normwhitespace(val):
-    return _string.join(_string.split(val))
+    return ' '.join(val.split())
 
 
 def conv_exists(val):

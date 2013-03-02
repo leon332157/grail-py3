@@ -21,7 +21,6 @@ TBD:
 
 import os
 import re
-import string
 import sys
 import time
 from grailutil import *
@@ -49,9 +48,9 @@ class HistoryLineReader:
 class NetscapeHistoryReader(HistoryLineReader):
     def parse_line(self, line):
         try:
-            fields = string.splitfields(line, '\t')
-            url = string.strip(fields[0])
-            timestamp = string.atoi(string.strip(fields[1]))
+            fields = line.split('\t')
+            url = fields[0].strip()
+            timestamp = int(fields[1])
             return (url, '', timestamp or now())
         except (ValueError, IndexError, TypeError):
             self._error(line)
@@ -64,7 +63,7 @@ class GrailHistoryReader(HistoryLineReader):
             match = GRAIL_RE.match(line)
             if match:
                 url, ts, title = match.group(1, 2, 3)
-                timestamp = string.atoi(string.strip(ts))
+                timestamp = int(ts)
                 return url, title, timestamp or now()
         except (ValueError, TypeError):
             self._error(line)

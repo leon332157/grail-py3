@@ -125,7 +125,6 @@ import tempfile
 import os
 import socket
 import re
-import string
 from Tkinter import tkinter
 from grailutil import *
 
@@ -264,15 +263,13 @@ class Controller:
     def _dispatch(self, *args):
         conn, addr = self._socket.accept()
         rawdata = conn.recv(1024)
-        # strip off the command string
-        string.strip(rawdata)
         match = self._cmdre.match(rawdata)
         if not match:
             print 'Remote Control: Ignoring badly formatted command:', rawdata
             return
         # extract the command and args strings
-        command = string.strip(match.group(1))
-        argstr = string.strip(match.group(2))
+        command = match.group(1).strip()
+        argstr = match.group(2).strip()
         # look up the command string
         if not self._cbdict.has_key(command):
             print 'Remote Control: Ignoring unrecognized command:', command
@@ -291,7 +288,7 @@ class Controller:
             return Browser(b.master)
 
         if " " in uri:
-            [uri, target] = string.split(uri)
+            [uri, target] = uri.split()
 
         browsers = self._app.browsers[:]
         if not len(browsers):

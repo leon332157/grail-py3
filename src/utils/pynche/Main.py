@@ -53,7 +53,6 @@ __version__ = '0.1'
 
 import sys
 import os
-import string
 import getopt
 from . import ColorDB
 from .PyncheWidget import PyncheWidget
@@ -79,7 +78,7 @@ RGB_TXT = [
 
 
 def docstring():
-    return string.rstrip(__doc__ % globals())
+    return (__doc__ % globals()).rstrip()
 
 
 def usage(status, msg=''):

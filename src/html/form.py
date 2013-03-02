@@ -1,6 +1,5 @@
 """HTML <FORM> tag support (and <INPUT>, etc.)."""
 
-import string
 from Tkinter import *
 import urllib
 import tktools
@@ -35,7 +34,7 @@ def end_form(parser):
 
 def do_input(parser, attrs):
     try:
-        type = string.lower(attrs['type'])
+        type = attrs['type'].lower()
         del attrs['type']
     except KeyError:
         type = ''
@@ -47,8 +46,8 @@ def start_select(parser, attrs):
     except KeyError:
         name = ''
     try:
-        size = string.atoi(attrs['size'])
-    except (KeyError, string.atoi_error):
+        size = int(attrs['size'])
+    except (KeyError, ValueError):
         size = 0
     multiple = attrs.has_key('multiple')
     select_bgn(parser, name, size, multiple)
@@ -70,12 +69,12 @@ def start_textarea(parser, attrs):
     except KeyError:
         name = ''
     try:
-        rows = string.atoi(attrs['rows'])
-    except (KeyError, string.atoi_error):
+        rows = int(attrs['rows'])
+    except (KeyError, ValueError):
         rows = 0
     try:
-        cols = string.atoi(attrs['cols'])
-    except (KeyError, string.atoi_error):
+        cols = int(attrs['cols'])
+    except (KeyError, ValueError):
         cols = 0
     textarea_bgn(parser, name, rows, cols)
 
@@ -189,8 +188,8 @@ class FormInfo:
             self.reset_command()
 
     def do_input(self, type, options, bgcolor):
-        type = string.lower(type) or 'text'
-        classname = 'Input' + string.upper(type[0]) + type[1:]
+        type = type.lower() or 'text'
+        classname = 'Input' + type[0].upper() + type[1:]
         if hasattr(self, classname):
             klass = getattr(self, classname)
             instance = klass(self, options, bgcolor)
@@ -198,8 +197,8 @@ class FormInfo:
             print "*** Form with <INPUT TYPE=%s> not supported ***" % type
 
     def submit_command(self):
-        enctype = string.lower(self.enctype)
-        method = string.lower(self.method)
+        enctype = self.enctype.lower()
+        method = self.method.lower()
         if method not in ('get', 'post'):
             print "*** Form with unknown method:", `method`
             print "Default to method=GET"
@@ -300,7 +299,7 @@ class FormInfo:
         import rfc822
         headers = rfc822.Message(fp)
         ctype = headers['content-type']
-        ctype = string.join(string.split(ctype)) # Get rid of newlines
+        ctype = ' '.join(ctype.split()) # Get rid of newlines
         data = fp.read()
         return ctype, data
 
@@ -395,11 +394,10 @@ class FormInfo:
             self.entry.bind('<Return>', self.return_event)
             if self.size:
                 size = self.size
-                i = string.find(size, ',')
-                if i >= 0: size = size[:i]
+                size = size.split(',', 1)[0]
                 try:
-                    width = string.atoi(size)
-                except string.atoi_error:
+                    width = int(size)
+                except ValueError:
                     pass
                 else:
                     self.entry['width'] = width
@@ -733,7 +731,7 @@ class Select:
         self.option = (value, selected)
 
     def end_option(self):
-        data = string.strip(self.parser.save_end())
+        data = self.parser.save_end().strip()
         if self.option:
             value, selected = self.option
             self.option = None
@@ -785,9 +783,9 @@ class Textarea:
         self.w.insert(END, value)
 
 def quote(s):
-    w = string.splitfields(s, ' ')
+    w = s.split(' ')
     w = map(urllib.quote, w)
-    return string.joinfields(w, '+')
+    return '+'.join(w)
 
 
 class InputImageWindow(Frame):

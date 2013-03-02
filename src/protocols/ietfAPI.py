@@ -7,7 +7,6 @@ import grailutil
 from . import nullAPI
 import os
 from . import ProtocolAPI
-import string
 
 
 PREF_GROUP = "ietf-resolver"
@@ -20,7 +19,7 @@ def ietf_access(resturl, method, params):
 
 def convert_to_url(urn):
     prefs = grailutil.get_grailapp().prefs
-    urn = string.lower(urn)
+    urn = urn.lower()
     m = _reference_rx.match(urn)
     if m:
         type, number = m.group(1, 2)

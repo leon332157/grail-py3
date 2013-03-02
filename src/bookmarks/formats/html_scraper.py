@@ -4,7 +4,6 @@ __version__ = '$Revision: 1.5 $'
 
 
 from .. import nodes
-import string
 import urlparse
 
 import sgml.SGMLHandler
@@ -35,7 +34,7 @@ class Parser(sgml.SGMLHandler.BaseSGMLHandler):
     def save_end(self, reflow=1):
         s, self.__buffer = self.__buffer, ''
         if reflow:
-            s = string.join(string.split(s))
+            s = ' '.join(s.split())
         return s
 
     def handle_data(self, data):
@@ -54,21 +53,21 @@ class Parser(sgml.SGMLHandler.BaseSGMLHandler):
 
     def do_meta(self, attrs):
         # attempt to pull in a description:
-        name = string.strip(string.lower(attrs.get("name", "")))
+        name = attrs.get("name", "").lower().strip()
         if name in ("description", "dc.description"):
-            desc = string.strip(attrs.get("content", ""))
+            desc = attrs.get("content", "").strip()
             if desc:
                 self.__root.set_description(desc)
 
     def start_a(self, attrs):
-        uri = string.strip(attrs.get("href", ""))
+        uri = attrs.get("href", "").strip()
         if uri:
             self.__node = nodes.Bookmark()
             self.__root.append_child(self.__node)
             if self.__baseurl:
                 uri = urlparse.urljoin(self.__baseurl, uri)
             self.__node.set_uri(uri)
-            title = string.join(string.split(attrs.get("title", "")))
+            title = " ".join(attrs.get("title", "").split())
             if title:
                 self.__node.set_title(title)
         else:
@@ -86,7 +85,7 @@ class Parser(sgml.SGMLHandler.BaseSGMLHandler):
         self.save_bgn()
 
     def end_title(self):
-        s = string.strip(self.save_end())
+        s = self.save_end().strip()
         if s and not self.__root.title():
             self.__root.set_title(s)
 

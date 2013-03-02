@@ -3,7 +3,6 @@
 __version__ = '$Revision: 1.5 $'
 
 import os
-import string
 import sys
 
 from . import utils
@@ -172,17 +171,16 @@ def load_eps(eps_fn):
     try: lines.remove('showpage\n')
     except: pass                        # o.k. if not found
     bbox = load_bounding_box(lines)
-    return EPSImage(string.joinfields(lines, ''), bbox)
+    return EPSImage(''.join(lines), bbox)
 
 
 def load_bounding_box(lines):
     """Determine bounding box for EPS image given as sequence of text lines.
     """
-    from string import lower
     bbox = None
     for line in lines:
-        if len(line) > 21 and lower(line[:15]) == '%%boundingbox: ':
-            bbox = tuple(map(string.atoi, string.split(line[15:])))
+        if len(line) > 21 and line[:15].lower() == '%%boundingbox: ':
+            bbox = tuple(map(int, line[15:].split()))
             break
     if not bbox:
         raise EPSError('Bounding box not specified.')

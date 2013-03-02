@@ -8,7 +8,6 @@ __version__ = "$Revision: 2.33 $"
 
 import os
 import sys
-import string
 from . import utils
 
 from . import parseprefs
@@ -248,7 +247,7 @@ class AllPreferences:
 
 def make_key(group, cmpnt):
     """Produce a key from preference GROUP, COMPONENT strings."""
-    return string.lower(group + '--' + cmpnt)
+    return (group + '--' + cmpnt).lower()
                     
 
 def typify(val, type_name):
@@ -259,11 +258,11 @@ def typify(val, type_name):
         if type_name == 'string':
             return val
         elif type_name == 'int':
-            return string.atoi(val)
+            return int(val)
         elif type_name == 'float':
-            return string.atof(val)
+            return float(val)
         elif type_name == 'Boolean':
-            i = string.atoi(val)
+            i = int(val)
             if i not in (0, 1):
                 raise TypeError, '%s should be Boolean' % `val`
             return i

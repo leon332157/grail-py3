@@ -29,7 +29,6 @@ for path in 'utils', 'pythonlib', 'ancillary', 'applets', script_dir:
     sys.path.insert(0, os.path.join(grail_root, path))
 
 import getopt
-import string
 import urllib
 import posixpath
 
@@ -139,7 +138,7 @@ def main(args=None):
         except ImportError, e:
             # Only catch this if grailrc itself doesn't import,
             # otherwise propagate.
-            if string.split(e.args[0])[-1] != "grailrc":
+            if e.args[0].split()[-1] != "grailrc":
                 raise
         except:
             app.exception_dialog('during import of startup file')

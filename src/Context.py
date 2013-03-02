@@ -2,7 +2,6 @@
 
 import History
 import Reader
-import string
 import grailutil
 import time
 import math
@@ -13,8 +12,6 @@ from Cursors import *
 from grailbase.uricontext import URIContext
 from urlparse import urldefrag
 
-
-VALID_TARGET_STARTS = string.letters + '_'
 
 # TBD: horrible hack.  search down for reason. -bwarsaw
 LAST_CONTEXT = None
@@ -391,7 +388,7 @@ class Context(URIContext):
         if not scheme:
             raise IOError, ("protocol error",
                             "no scheme identifier in URL", url)
-        scheme = string.lower(scheme)
+        scheme = scheme.lower()
         sanitized = re.sub("[^a-zA-Z0-9]", "_", scheme)
         modname = sanitized + "API"
         try:
@@ -426,14 +423,12 @@ class Context(URIContext):
         if urllib.splittype(url)[0] == "data":
             default = ""
         else:
-            urlasfile = string.splitfields(url, '/')
+            urlasfile = url.split('/')
             default = urlasfile[-1]
             # strip trailing query
-            i = string.find(default, '?')
-            if i > 0: default = default[:i]
+            default = default.split('?', 1)[0]
             # strip trailing fragment
-            i = string.rfind(default, '#')
-            if i > 0: default = default[:i]
+            default = default.rsplit('#', 1)[0]
             # maybe bogus assumption?
             if not default: default = 'index.html'
         file = fd.go(default=default, key="save")
@@ -496,7 +491,7 @@ class Context(URIContext):
     def find_window_target(self, target):
         """Return a context gotten from the target; by default self."""
         context = None
-        if target and target[0] not in VALID_TARGET_STARTS:
+        if target and not target[0].isalpha() and not target.startswith('_'):
             target = ""
         if target == self.viewer.name:
             target = ""

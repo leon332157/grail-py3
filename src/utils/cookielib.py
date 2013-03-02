@@ -5,7 +5,6 @@ This can be used to implement client-side cookie handling.
 __author__ = "Fred L. Drake, Jr. <fdrake@acm.org>"
 __version__ = '$Revision: 2.1 $'
 
-import string
 import time
 import ht_time
 
@@ -88,10 +87,10 @@ class CookieDB:
             lineno = lineno + 1
             if line[0] == '#':
                 continue
-            line = string.strip(line)
+            line = line.strip()
             if not line:
                 continue
-            parts = string.split(line, '\t')
+            parts = line.split('\t')
             if len(parts) != 7:
                 raise FormatError("wrong number of fields", lineno)
             domain, isdomain, path, secure, expires, name, value = parts
@@ -113,7 +112,7 @@ class CookieDB:
                 expires = `cookie.expires`[:-1]
                 l = [cookie.domain, isdomain, cookie.path, secure,
                      expires, cookie.name, cookie.value]
-                s = string.join(l, '\t')
+                s = '\t'.join(l)
                 fp.write(s + '\n')
 
     def set_cookie(self, cookie):
@@ -168,15 +167,15 @@ class CookieDB:
                 break
 
     def lookup(self, domain, path='/', secure=0):
-        domain = string.lower(domain)
-        hostparts = string.split(domain, '.')
+        domain = domain.lower()
+        hostparts = domain.split('.')
         results = self.__match_path(domain, path)
         minparts = 3
         if is_special_domain(hostparts[-1]):
             minparts = 2
         while len(hostparts) > minparts:
             del hostparts[0]
-            key = string.join([''] + hostparts, '.')
+            key = '.'.join([''] + hostparts)
             results[len(results):] = self.__match_path(key, path)
         if not secure:
             results = filter(lambda c: not c.secure, results)
@@ -282,7 +281,7 @@ class Cookie:
 
     def __init__(self, domain, path, secure, expires,
                  name, value, others=None):
-        self.domain = domain and string.lower(domain)
+        self.domain = domain and domain.lower()
         self.isdomain = domain and domain[0] == '.'
         self.path = path
         self.secure = secure
@@ -308,14 +307,14 @@ del re
 
 def parse_cookies(s):
     results = []
-    s = string.strip(s)
+    s = s.strip()
     while s:
         c, s = parse_cookie(s)
         results.append(c)
-        s = string.strip(s)
+        s = s.strip()
         if s:
             if s[0] == ",":
-                s = string.strip(s[1:])
+                s = s[1:].strip()
             else:
                 raise ValueError, "illegal cookie separator"
     return results
@@ -336,14 +335,14 @@ def parse_cookie(s):
     value, pos = _get_value(s, pos)
     if value is None:
         raise ValueError, "no value for cookie"
-    s = string.strip(s[pos:])
+    s = s[pos:].strip()
     pos = 0
     if s and s[0] == ';':
         # look for parameters
         pos = 1
     while s:
         k, pos = _get_name(s, pos)
-        k = string.lower(k)
+        k = k.lower()
         if k == "expires":
             expires, pos = _get_value(s, pos, _date_rx)
             if expires is None:
@@ -357,7 +356,7 @@ def parse_cookie(s):
         elif k == 'path':
             path = v
         elif k == 'domain':
-            domain = string.lower(v)
+            domain = v.lower()
         elif k == 'max-age':
             max_age = long(v)
         elif k == 'expires':
@@ -366,15 +365,15 @@ def parse_cookie(s):
         else:
             others[k] = v
         #
-        s = string.strip(s[pos:])
+        s = s[pos:].strip()
         if s and s[0] != ';':
             break
         if s:
             # discard ';'
-            s = string.strip(s[1:])
+            s = s[1:].strip()
     if domain and domain[0] == '.':
         minparts = 3
-        hostparts = string.split(domain, '.')
+        hostparts = '.'.split(domain)
         del hostparts[0]
         if hostparts[-1] in SPECIAL_DOMAINS:
             minparts = 2

@@ -2,7 +2,6 @@
 
 
 import os
-import string
 import sys
 import grailutil
 
@@ -123,7 +122,7 @@ class Browser:
 
     def create_menu(self, name):
         menu = Menu(self.mbar, name=name)
-        self.mbar.add_cascade(label=string.capitalize(name), menu=menu)
+        self.mbar.add_cascade(label=name.capitalize(), menu=menu)
         setattr(self, name + "menu", menu)
         getattr(self, "create_menu_" + name)(menu)
 
@@ -134,18 +133,18 @@ class Browser:
         underline = None
         if len(accelerator) == 1:
             # do a lot to determine the underline position
-            underline = string.find(label, accelerator)
+            underline = label.find(accelerator)
             if underline == -1:
-                accelerator = string.lower(accelerator)
-                underline = string.find(label, accelerator)
+                accelerator = accelerator.lower()
+                underline = label.find(accelerator)
                 if underline == -1:
                     underline = None
-                accelerator = string.upper(accelerator)
+                accelerator = accelerator.upper()
         menu.add_command(label=label, command=command, underline=underline,
                          accelerator="Alt-" + accelerator)
         self.root.bind("<Alt-%s>" % accelerator, command)
         if len(accelerator) == 1:
-            self.root.bind("<Alt-%s>" % string.lower(accelerator), command)
+            self.root.bind("<Alt-%s>" % accelerator.lower(), command)
 
     def create_menu_file(self, menu):
         self._menucmd(menu, "New Window", "N", self.new_command)
@@ -209,9 +208,9 @@ class Browser:
         if self.__helpspec is not None:
             return self.__helpspec
         raw = self.app.prefs.Get('browser', 'help-menu')
-        lines = filter(None, map(string.strip, string.split(raw, '\n')))
-        lines = map(string.split, lines)
-        self.__helpspec = tuple(map(string.join, lines))
+        lines = filter(None, map(str.strip, raw.split('\n')))
+        lines = map(str.split, lines)
+        self.__helpspec = tuple(map(' '.join, lines))
         return self.__helpspec
 
     def create_urlbar(self):
@@ -228,7 +227,7 @@ class Browser:
         msg_frame.pack(fill=X, side=BOTTOM, in_=self.topframe)
         msg_frame.propagate(OFF)
         fontspec = self.app.prefs.Get('presentation', 'message-font')
-        fontspec = string.strip(fontspec) or None
+        fontspec = fontspec.strip() or None
         self.msg = Label(self.root, font=fontspec, name="status")
         self.msg.pack(fill=X, in_=msg_frame)
 
@@ -318,7 +317,7 @@ class Browser:
     # <Return> in URL entry field
 
     def load_from_entry(self, event):
-        url = string.strip(self.entry.get())
+        url = self.entry.get().strip()
         if url:
             self.context.load(grailutil.complete_url(url))
         else:
@@ -367,7 +366,7 @@ class Browser:
         except TclError:
             self.root.bell()
             return
-        uri = string.joinfields(string.split(selection), '')
+        uri = ''.join(selection.split())
         self.context.load(grailutil.complete_url(uri))
 
     def view_source_command(self, event=None):

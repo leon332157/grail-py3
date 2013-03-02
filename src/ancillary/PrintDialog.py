@@ -36,7 +36,6 @@ import os
 import printing.paper
 import printing.settings
 import Reader
-import string
 import sys
 import tktools
 from functools import reduce
@@ -194,10 +193,10 @@ class RealPrintDialog:
             fr = Frame(generalfr)
             fr.pack(fill=X)
             self.orientation = StringVar(top)
-            self.orientation.set(string.capitalize(settings.orientation))
+            self.orientation.set(settings.orientation.capitalize())
             opts = printing.paper.paper_rotations.keys()
             opts.sort()
-            opts = tuple(map(string.capitalize, opts))
+            opts = tuple(map(str.capitalize, opts))
             Label(fr, text="Orientation: ", width=13, anchor=E).pack(side=LEFT)
             Frame(fr, width=3).pack(side=LEFT)
             menu = apply(OptionMenu, (fr, self.orientation) + opts)
@@ -279,7 +278,7 @@ class RealPrintDialog:
                                           "Please enter a print command")
                 return
             try:
-                if string.find(cmd, '%s') != -1:
+                if '%s' in cmd:
                     import tempfile
                     tempname = tempfile.mktemp()
                     fp = open(tempname, 'w')
@@ -301,8 +300,8 @@ class RealPrintDialog:
         sts = fp.close()
         if not sts:
             try:
-                cmd_parts = string.splitfields(cmd, '%s')
-                cmd = string.joinfields(cmd_parts, tempname)
+                cmd_parts = cmd.split('%s')
+                cmd = tempname.join(cmd_parts)
                 sts = os.system(cmd)
                 os.unlink(tempname)
             except NameError:           # expected on tempname except on NT
@@ -360,7 +359,7 @@ class RealPrintDialog:
         if self.ctype == "application/postscript":
             return
         settings.set_fontsize(self.fontsize.get())
-        settings.orientation = string.lower(self.orientation.get())
+        settings.orientation = self.orientation.get().lower()
         if self.mod.update_settings:
             self.mod.update_settings(self, settings)
 
