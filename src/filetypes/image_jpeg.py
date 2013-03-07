@@ -3,6 +3,7 @@ import os
 from grailutil import getenv, which
 from Tkinter import *
 from formatter import AS_IS
+from os import getenv
 
 _FILTERCMD = 'djpeg'
 _FILTERARG = '-gif'

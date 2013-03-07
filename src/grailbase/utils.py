@@ -4,6 +4,7 @@ applications.
 __version__ = '$Revision: 1.3 $'
 
 import os
+from os import getenv
 
 # TBD: hack!  grail.py calculates grail_root, which would be
 # convenient to export to extensions, but you can't `import grail' or
@@ -44,11 +45,6 @@ def gethome():
         return home
     except (KeyError, ImportError):
         return os.curdir
-
-
-def getenv(s):
-    if os.environ.has_key(s): return os.environ[s]
-    return None
 
 
 def which(filename, searchlist=None):

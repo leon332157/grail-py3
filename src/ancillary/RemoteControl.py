@@ -127,6 +127,7 @@ import socket
 import re
 from Tkinter import tkinter
 from grailutil import *
+from os import getenv
 
 # The file structure.  Modeled after X11
 _filename = getenv('GRAIL_REMOTE')
