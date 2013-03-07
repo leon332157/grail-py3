@@ -178,26 +178,31 @@ HDL_ERR_INTERNAL_ERROR = HP_INTERNAL_ERROR
 
 
 # error class for this module
-class Error:
-    """Exception class for module hdllib."""
-    def __init__(self, msg, err=None, info=None):
-        self.msg = msg                  # Error message (string) or None
-        self.err = err                  # Error code (int) or None
-        self.info = info                # Additional info or None
+class Error(IOError):
+    """Exception class for module hdllib.
+    
+    strerror: Error message (string) or None
+    errno: Error code (int) or None
+    info: Additional info or None
+    """
+    def __init__(self, strerror, errno=None, info=None):
+        if errno is None:
+            IOError.__init__(self, strerror)
+        else:
+            IOError.__init__(self, errno, strerror)
+        self.info = info
     def __repr__(self):
-        msg = "Error(%s" % `self.msg`
-        if self.err is not None:
-            msg = msg + ", %s" % `self.err`
+        msg = "Error(%s" % `self.strerror`
+        if self.errno is not None:
+            msg = msg + ", %s" % `self.errno`
         if self.info is not None:
             msg = msg + ", %s" % `self.info`
         msg = msg + ")"
         return msg
     def __str__(self):
-        msg = self.msg or ""
-        if self.err is not None:
-            msg = msg + " (err=%s)" % str(self.err)
+        msg = IOError.__str__(self)
         if self.info is not None:
-            msg = msg + " (info=%s)" % str(self.info)
+            msg = msg + " (info=%s)" % self.info
         return msg
 
 
@@ -524,7 +529,7 @@ class HashTable:
             for fn in (DEFAULT_HASH_FILE, HASH_TABLE_FILE_FALLBACK):
                 try:
                     self._read_hash_table(fn)
-                except (IOError, Error), msg:
+                except IOError, msg:
                     if self.debug:
                         print "Error for %s: %s" % (`fn`, str(msg))
                 else:

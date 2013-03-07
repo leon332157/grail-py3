@@ -26,7 +26,6 @@ XXX Remaining problems:
 
 """
 
-import sys
 import string
 import urllib
 import hdllib
@@ -100,11 +99,8 @@ class hdl_access(nullAPI.null_access):
 
     _types = HANDLE_TYPES
 
-    try:
-        #print "Fetching global hash table"
-        _global_hashtable = hdllib.fetch_global_hash_table()
-    except hdllib.Error, inst:
-        raise IOError, inst, sys.exc_traceback
+    #print "Fetching global hash table"
+    _global_hashtable = hdllib.fetch_global_hash_table()
 
     _hashtable = _global_hashtable
 
@@ -161,24 +157,13 @@ class hdl_access(nullAPI.null_access):
             replyflags, self._items = self._hashtable.get_data(
                 self._hdl, self._types)
         except hdllib.Error, inst:
-            if inst.err == hdllib.HP_HANDLE_NOT_FOUND:
+            if inst.errno == hdllib.HP_HANDLE_NOT_FOUND:
                 #print "Retry using a local handle server"
-                try:
-                    self._hashtable = self.get_local_hash_table(
-                        self._hdl)
-                    replyflags, self._items = self._hashtable.get_data(
-                        self._hdl, self._types)
-                except hdllib.Error, inst:
-                    # (Same comment as below)
-                    raise IOError, inst, sys.exc_traceback
-                else:
-                    return 'Ready', 1
-            # Catch all errors and raise an IOError.  The Grail
-            # protocol extension defines this as the only error we're
-            # allowed to raise.
-            # Because the hdllib.Error instance is passed, no
-            # information is lost.
-            raise IOError, inst, sys.exc_traceback
+                self._hashtable = self.get_local_hash_table(self._hdl)
+                replyflags, self._items = self._hashtable.get_data(
+                    self._hdl, self._types)
+                return 'Ready', 1
+            raise
         else:
             return 'Ready', 1
 
