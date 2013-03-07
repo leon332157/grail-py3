@@ -8,7 +8,8 @@ Use note() to emit an error message to standard error."""
 
 __version__ = "$Revision: 2.8 $"
 
-TestFailure = 'TestFailure'
+class TestFailure(Exception):
+    pass
 
 def note(msg, *args):
     """Emit message to stderr, formatting message string with optional args."""

@@ -10,12 +10,8 @@ import utils
 
 
 #  Exception which should not propagate outside printing support.
-class EPSError:
-    def __init__(self, message):
-        self.message = message
-
-    def __str__(self):
-        return self.message
+class EPSError(Exception):
+    pass
 
 
 class EPSImage:

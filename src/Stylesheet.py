@@ -7,7 +7,8 @@ configuration."""
 
 import string
 
-UndefinedStyle = 'UndefinedStyle'
+class UndefinedStyle(Exception):
+    pass
 
 ## NOTE: Link colors are taken from Netscape 1.1's X app defaults
 

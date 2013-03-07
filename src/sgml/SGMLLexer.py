@@ -38,12 +38,8 @@ whitespace = '\\t\\n\x0b\x0c\\r '
 import re
 import string
 
-try:
-    class SGMLError(Exception):
-        pass
-except TypeError:
-    class SGMLError:
-        pass
+class SGMLError(Exception):
+    pass
 
 
 # SGML lexer base class -- find tags and call handler functions.

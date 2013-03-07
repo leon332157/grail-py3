@@ -4,7 +4,7 @@ import sys
 import urlparse
 
 
-class Error:
+class Error(Exception):
     def __init__(self, filename):
         self.filename = filename
     def __repr__(self):

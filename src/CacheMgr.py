@@ -11,10 +11,14 @@ import re
 
 META, DATA, DONE = 'META', 'DATA', 'DONE' # Three stages
 
-CacheMiss = 'Cache Miss'
-CacheEmpty = 'Cache Empty'
-CacheReadFailed = 'Cache Item Expired or Missing'
-CacheFileError = 'Cache File Error'
+class CacheEmpty(Exception):
+    def __str__(self): return 'Cache Empty'
+class CacheReadFailed(Exception):
+    def __str__(self): return 'Cache Item Expired or Missing: {}'.format(
+        Exception.__str__(self))
+class CacheFileError(Exception):
+    def __str__(self):
+        return 'Cache File Error: {}'.format(Exception.__str__(self))
 
 
 try:
@@ -178,7 +182,8 @@ class CacheManager:
 
         try:
             api = self.cache_read(key)
-        except CacheReadFailed, cache:
+        except CacheReadFailed as err:
+            (cache,) = err.args
             cache.evict(key)
             api = None
         if api:

@@ -76,10 +76,10 @@ except RemoteControl.ClashError:
 
 
 # errors
-InitError = 'RemoteControl.InitError'
-ClashError = 'RemoteControl.ClashError'
-BadCommandError = 'RemoteControl.BadCommandError'
-NoHandlerError = 'RemoteControl.NoHandlerError'
+class InitError(Exception):
+    pass
+class ClashError(Exception):
+    pass
 
 _controller = None
 _filename = None
