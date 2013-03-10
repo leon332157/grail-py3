@@ -850,7 +850,7 @@ class DiskCache:
             self.expires.remove(key)
         try:
             os.unlink(self.get_file_path(evictee.file))
-        except (os.error, IOError), err:
+        except EnvironmentError as err:
             # print "error deleting %s from cache: %s" % (key, err)
             pass
         self.log_entry(evictee,delete=True)

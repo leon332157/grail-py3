@@ -27,9 +27,9 @@ class FileReader(BaseReader):
             if self.fp is None:
                 self.fp = self.open_file()
             self.fp.write(data)
-        except IOError, msg:
+        except EnvironmentError as msg:
             self.stop()
-            self.handle_error(-1, "IOError", {'detail': msg})
+            self.handle_error(-1, "EnvironmentError", {'detail': msg})
             return
  
     def open_file(self):
@@ -69,10 +69,7 @@ class TempFileReader(FileReader):
         if not self.pipeline:
             return FileReader.open_file(self)
         else:
-            import os, sys
+            import os
             if not hasattr(os, 'popen'):
-                raise IOError, "pipelines not supported"
-            try:
-                return os.popen(self.pipeline + ">" + self.filename, "wb")
-            except os.error, msg:
-                raise IOError, msg, sys.exc_traceback
+                raise EnvironmentError("pipelines not supported")
+            return os.popen(self.pipeline + ">" + self.filename, "wb")

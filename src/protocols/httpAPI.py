@@ -187,10 +187,7 @@ class http_access:
                 return "waiting for server response", False
         except select.error, msg:
             raise IOError, msg, sys.exc_traceback
-        try:
-            new = sock.recv(1024)
-        except socket.error, msg:
-            raise IOError, msg, sys.exc_traceback
+        new = sock.recv(1024)
         if not new:
             return "EOF in server response", True
         self.readahead = self.readahead + new
@@ -231,10 +228,7 @@ class http_access:
             data = self.readahead[:maxbytes]
             self.readahead = self.readahead[maxbytes:]
             return data
-        try:
-            data = self.h._conn.sock.recv(maxbytes)
-        except socket.error, msg:
-            raise IOError, msg, sys.exc_traceback
+        data = self.h.sock.recv(maxbytes)
         if not data:
             self.state = DONE
             # self.close()
