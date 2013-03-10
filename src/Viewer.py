@@ -294,14 +294,11 @@ class Viewer(formatter.AbstractWriter):
                         raise TclError, err, sys.exc_traceback
                 else:
                     if tag == '_ding':
-                        try:
-                            fontname = self.stylesheet.styles[tag]['font']
-                            fontname = self.text.tk.call('font', 'create',
-                                                         '-family', fontname)
-                            if string.find(fontname, 'dingbat') == -1:
-                                use_font_dingbats = 0
-                        except TclError:
-                            pass            # pre-8.0 Tk
+                        fontname = self.stylesheet.styles[tag]['font']
+                        fontname = self.text.tk.call('font', 'create',
+                                                     '-family', fontname)
+                        if string.find(fontname, 'dingbat') == -1:
+                            use_font_dingbats = 0
             #
             # Set dingbat approach appropriately:
             #

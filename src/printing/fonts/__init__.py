@@ -19,14 +19,3 @@ def font_from_name(psfontname):
     # for us!
     module = __import__(modulename, globals(), locals(), level=1)
     return module.font
-
-# Need different code here for ni than for 1.5 packages
-try:
-    __ # This fails with 1.5 packages, succeeds when using ni
-except NameError:
-    # 1.5 packages -- nothing more to do
-    pass
-else:
-    # Backward compatible solution for ni
-    for name in ['font_from_name', '__doc__']:
-        setattr(__, name, vars()[name])

@@ -13,17 +13,6 @@ from sgml.utils import *
 from printing.utils import conv_fontsize
 
 
-# This is here for compatibility with pre-1.5.2 Python versions.
-try:
-    abspath = os.path.abspath
-except AttributeError:
-    # Copied from posixpath in Python 1.5.2.
-    def abspath(path):
-        if not os.path.isabs(path):
-            path = join(os.getcwd(), path)
-        return os.path.normpath(path)
-
-
 def complete_url(url):
     import urlparse
     scheme, netloc = urlparse.urlparse(url)[:2]

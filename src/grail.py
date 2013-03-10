@@ -367,10 +367,7 @@ class Application(BaseApplication.BaseApplication):
         self.in_exception_dialog = 1
         def f(s=self, m=message, e=exc, v=val, t=tb, root=root):
             s._exc_dialog(m, e, v, t, root)
-        if TkVersion >= 4.1:
-            self.root.after_idle(f)
-        else:
-            self.root.after(0, f)
+        self.root.after_idle(f)
 
     def _exc_dialog(self, message, exc, val, tb, root=None):
         # XXX This needn't be a modal dialog --

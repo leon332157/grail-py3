@@ -41,7 +41,7 @@ import sys
 import tktools
 
 
-USER_DATA_DIR = grailutil.abspath(
+USER_DATA_DIR = os.path.abspath(
     os.path.join(grailutil.getgraildir(), "data"))
 
 

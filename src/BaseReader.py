@@ -74,8 +74,6 @@ class BaseReader:
             print "start() called after a kill"
             return
         self.fno = self.api.fileno()
-        if TkVersion == 4.0 and sys.platform == 'irix5':
-            if self.fno >= 20: self.fno = -1 # XXX for SGI Tk OPEN_MAX bug
 
         if self.fno >= 0:
             self.context.app.root.createfilehandler(

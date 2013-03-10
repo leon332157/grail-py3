@@ -5,7 +5,6 @@ import os
 import time
 import ht_time
 import grailutil
-import mimetypes
 import re
 
 META, DATA, DONE = 'META', 'DATA', 'DONE' # Three stages
@@ -20,17 +19,7 @@ class CacheFileError(Exception):
         return 'Cache File Error: {}'.format(Exception.__str__(self))
 
 
-try:
-    # Python 1.5.2:
-    from mimetypes import guess_extension
-except ImportError:
-    # This is for users of Python 1.5.1:
-    def guess_extension(type):
-        type = string.lower(type)
-        for ext, stype in mimetypes.types_map.items():
-            if type == stype:
-                return ext
-        return None
+from mimetypes import guess_extension
 
 
 def parse_cache_control(s):

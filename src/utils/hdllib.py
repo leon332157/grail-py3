@@ -264,16 +264,7 @@ class PacketUnpacker:
         self.u = xdrlib.Unpacker(data)
         
     def buf(self):
-        try:
-            return self.u.get_buffer()
-        except AttributeError:
-            # TBD: digusting hack made necessary by a missing
-            # interface in xdrlib.Unpacker to get either the buffer or
-            # the length of the remaining buffer.  this requires
-            # knowledge of Python 1.4's name munging scheme so we can
-            # peek at this object's private attribute.  This will be
-            # fixed in Python 1.5.
-            return self.u._Unpacker__buf
+        return self.u.get_buffer()
 
     def unpack_header(self):
         """Unpack a packet header (except the body length).
