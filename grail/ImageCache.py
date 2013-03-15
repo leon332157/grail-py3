@@ -26,7 +26,8 @@ class ImageCache:
             for image in images:
                 print image
 
-    def form_key(self, (url, width, height)):
+    def form_key(self, key):
+        url, width, height = key
         if url:
             return (self.url_cache.url2key(url, "GET", {}),
                     (width or 0),

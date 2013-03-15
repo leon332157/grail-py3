@@ -37,7 +37,8 @@ class PaperInfo:
             self.PaperWidth, self.PaperHeight = ph, pw
         self.__update()
 
-    def set_margins(self, (top, bottom, left, right)):
+    def set_margins(self, margins):
+        top, bottom, left, right = margins
         self.TopMargin = float(top)
         self.BottomMargin = float(bottom)
         self.LeftMargin = float(left)

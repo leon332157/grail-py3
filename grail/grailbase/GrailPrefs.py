@@ -55,8 +55,9 @@ class Preferences:
         # Undelete.
         self.deleted[group].discard(cmpnt)
 
-    def __delitem__(self, (group, cmpnt)):
+    def __delitem__(self, key):
         """Inhibit preference (GROUP, COMPONENT) from being seen or saved."""
+        group, cmpnt = key
         self.Get(group, cmpnt)  # Verify item existence.
         self.deleted[group].add(cmpnt)
 

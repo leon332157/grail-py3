@@ -509,7 +509,8 @@ class Viewer(formatter.AbstractWriter):
             self.fonttag = tag
         self.new_tags()
 
-    def make_fonttag(self, (tag, i, b, tt)):
+    def make_fonttag(self, font):
+        tag, i, b, tt = font
         tag = tag or ''
         if tt: tag = tag + '_tt'
         if b: tag = tag + '_b'

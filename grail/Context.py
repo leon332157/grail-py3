@@ -323,7 +323,8 @@ class Context(URIContext):
     def reload_page(self):
         self.load_from_history(self.history.peek(0), reload=True)
 
-    def load_from_history(self, (future, page), reload=False):
+    def load_from_history(self, future_page, reload=False):
+        future, page = future_page
         if not page:
             return False
         self.future = future
