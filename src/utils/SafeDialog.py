@@ -3,7 +3,6 @@
 # XXX Bugs:
 # - Resizing behavior is ugly
 
-#from SafeTkinter import *
 from Tkinter import *
 import tktools
 

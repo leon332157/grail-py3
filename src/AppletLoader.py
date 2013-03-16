@@ -6,7 +6,6 @@ import urllib
 import urlparse
 from Tkinter import *
 from BaseReader import BaseReader
-from Bastion import Bastion
 
 
 # Pattern for valid CODE attribute; group(2) extracts module name
@@ -63,8 +62,6 @@ class AppletLoader:
         self.klass = None
         self.instance = None
 
-        self.rexec = None
-
         if self.reload:
             self.reload.attach(self)
 
@@ -78,23 +75,13 @@ class AppletLoader:
         self.params = {}
         self.modname = self.codeurl = None
         self.parent = self.module = self.klass = self.instance = None
-        self.rexec = None
         if self.reload:
             self.reload.detach(self)
         self.reload = None
 
     def get_rexec(self):
         """Get or create the rexec object for this applet's group."""
-        if not self.rexec:
-            key = get_key(self.context)
-            cache = self.app.rexec_cache
-            if not cache.has_key(key) or not cache[key]:
-                from AppletRExec import AppletRExec
-                rexec = AppletRExec(hooks=None, verbose=2, app=self.app,
-                                    group=key)
-                cache[key] = rexec
-            self.rexec = cache[key]
-        return self.rexec
+        raise NotImplementedError('"rexec" module was disabled and removed')
 
     def feasible(self):
         """Test whether we should try load the applet."""
@@ -349,176 +336,6 @@ class ModuleReader(BaseReader):
 
 
 
-class Dummy:
-    """Base for dummy classes that wrap around Grail objects.
-
-    Ordinary bastions are not enough because there are some methods
-    that return existing or new objects that need to be bastionized.
-
-    Thus there are now two layers around each object before it is
-    passed to the applet: Bastion -> Dummy -> RealObject.
-
-    In order to make the overhead palatable, the bastions are shared
-    within an applet group, but in order to keep applet groups
-    compartmentalized, there is a bastion per applet group.
-
-    """
-
-    ok_names = []
-
-    def __init__(self, real):
-        self.real = real
-
-    def __getattr__(self, name):
-        if name in self.ok_names:
-            attr = getattr(self.real, name)
-            setattr(self, name, attr)
-            return attr
-        else:
-            raise AttributeError, name  # Attribute not allowed
-
-class AppDummy(Dummy):
-
-    ok_names = ['get_cache_keys']
-
-class BrowserDummy(Dummy):
-
-    ok_names = ['load', 'message', 'valid', 'get_async_image',
-                'reload_command']
-
-    def __init__(self, real, key):
-        self.real = real
-        self.key = key
-
-    def new_command(self):
-        return BrowserBastion(self.real.new_command(), self.key)
-
-    def clone_command(self):
-        return BrowserBastion(self.real.clone_command(), self.key)
-
-    # 0.2 compatibility:
-    
-    def follow(self, url):
-        self.real.context.follow(url)
-
-##    def get_async_image(self, src):
-##      # For 0.2 ImageLoopItem only
-##      return Bastion(self.real.get_async_image(src))
-
-class ContextDummy(Dummy):
-
-    ok_names = ['get_baseurl', 'load', 'follow', 'message',
-                'get_async_image', 'set_local_api']
-
-##    def get_async_image(self, src):
-##      return Bastion(self.real.get_async_image(src))
-
-class GlobalHistoryDummy(Dummy):
-
-    ok_names = ['remember_url', 'lookup_url', 'inhistory_p', 'urls']
-
-class ParserDummy(Dummy):
-
-    ok_names = []
-
-class ViewerDummy(Dummy):
-
-    ok_names = [
-        'add_subwindow',
-        'bind_anchors',
-        # Writer methods:
-        'new_alignment',
-        'new_font',
-        'new_margin',
-        'new_spacing',
-        'new_styles',
-        'send_paragraph',
-        'send_line_break',
-        'send_hor_rule',
-        'send_label_data',
-        'send_flowing_data',
-        'send_literal_data',
-        ]
-
-def AppBastion(real, key):
-    try:
-        return real._bastions[key]
-    except KeyError:
-        pass
-    except AttributeError:
-        real._bastions = {}
-    real._bastions[key] = bastion = Bastion(AppDummy(real))
-    bastion.global_history = GlobalHistoryBastion(real.global_history, key)
-    return bastion
-
-def BrowserBastion(real, key):
-    try:
-        return real._bastions[key]
-    except KeyError:
-        pass
-    except AttributeError:
-        real._bastions = {}
-    # Add .context instance variable to help certain applets
-    real._bastions[key] = bastion = Bastion(BrowserDummy(real, key))
-    bastion.context = ContextBastion(real.context, key)
-    bastion.app = AppBastion(real.app, key)
-    # 0.2 compatibility:
-    bastion.viewer = ViewerBastion(real.context.viewer, key)
-    return bastion
-
-def ContextBastion(real, key):
-    try:
-        return real._bastions[key]
-    except KeyError:
-        pass
-    except AttributeError:
-        real._bastions = {}
-    real._bastions[key] = bastion = Bastion(ContextDummy(real))
-    return bastion
-
-def GlobalHistoryBastion(real, key):
-    try:
-        return real._bastions[key]
-    except KeyError:
-        pass
-    except AttributeError:
-        real._bastions = {}
-    real._bastions[key] = bastion = Bastion(GlobalHistoryDummy(real))
-    return bastion
-
-def ParserBastion(real, key):
-    try:
-        return real._bastions[key]
-    except KeyError:
-        pass
-    except AttributeError:
-        real._bastions = {}
-    real._bastions[key] = bastion = Bastion(ParserDummy(real))
-    return bastion
-
-def ViewerBastion(real, key):
-    try:
-        return real._bastions[key]
-    except KeyError:
-        pass
-    except AttributeError:
-        real._bastions = {}
-    real._bastions[key] = bastion = Bastion(ViewerDummy(real))
-    # Add the text instance variable since it is referenced by some demos.
-    # Need a special filter, too!
-    def filter(name):
-        return name[0] != '_' or name in ('__getitem__',
-                                          '__setitem__',
-                                          '__str__')
-    rtext = real.text
-    bastion.text = btext = Bastion(real.text, filter=filter)
-    btext._w = rtext._w                 # XXX This defeats the purpose :-(
-    btext.tk = rtext.tk                 # XXX This too :-(
-    btext.children = rtext.children     # XXX And this :-(
-    btext.master = rtext.master         # XXX And so on :-(
-    return bastion
-
-
 class AppletMagic:
 
     def __init__(self, loader):
@@ -528,15 +345,8 @@ class AppletMagic:
             context = loader.context
             if context:
                 key = context.applet_group
-                if loader.parser:
-                    self.grail_parser = ParserBastion(loader.parser, key)
-                if loader.viewer:
-                    self.grail_viewer = ViewerBastion(loader.viewer, key)
-                self.grail_context = ContextBastion(context, key)
-                if context.browser:
-                    self.grail_browser = BrowserBastion(context.browser, key)
-                if context.app:
-                    self.grail_app = AppBastion(context.app, key)
+                raise NotImplementedError(
+                    "Bastion module was disabled and removed")
 
 
 class AppletFrame(Frame, AppletMagic):
@@ -606,11 +416,8 @@ def _get_key(context):
 
 def get_rexec(context):
     """Get the rexec object for this context, if one already exists."""
-    app = context.app
-    key = get_key(context)
-    cache = app.rexec_cache
-    if cache.has_key(key):
-        return cache[key]
+    get_key(context)
+    return None
 
 def set_reload(context):
     """If there's a rexec object for this context, prepare it for reloading."""

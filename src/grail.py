@@ -260,7 +260,6 @@ class Application(BaseApplication.BaseApplication):
         self.on_exit_methods = []
         self.global_history = GlobalHistory.GlobalHistory(self)
         self.login_cache = {}
-        self.rexec_cache = {}
         self.url_cache = CacheManager(self)
         self.image_cache = ImageCache(self.url_cache)
         self.auth = AuthenticationManager(self)
@@ -345,10 +344,6 @@ class Application(BaseApplication.BaseApplication):
         if errcode != 200:
             raise IOError, ('url open error', errcode, errmsg, meta)
         return URLReadWrapper(api, meta)
-
-    def get_cache_keys(self):
-        """For applets."""
-        return self.url_cache.items.keys()
 
     def exception_dialog(self, message="", root=None):
         exc, val, tb = sys.exc_type, sys.exc_value, sys.exc_traceback

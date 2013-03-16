@@ -1,6 +1,7 @@
 ﻿Notes:
 
-* Applets don’t work in Python 2 because the rexec module has been deprecated.
+* Applets don’t work because the _rexec_ and _Bastion_ modules have been
+removed.
 * Also, HTTPS does not work.
 
 *******************************************************************************
