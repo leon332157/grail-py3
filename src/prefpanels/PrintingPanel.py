@@ -91,9 +91,9 @@ class PrintingPanel(PrefsPanels.Framework):
         self.PrefsEntry(entries_frame,
                         "Indentation:",
                         GROUP, 'paragraph-indent', 'float',
-                        label_width=10, entry_width=5, composite=1)
+                        label_width=10, entry_width=5, composite=True)
         self.PrefsEntry(entries_frame,
                         "Vertical separation:",
                         GROUP, 'paragraph-skip', 'float',
-                        label_width=16, entry_width=5, composite=1)
+                        label_width=16, entry_width=5, composite=True)
         f.pack(fill=Tkinter.X, side=Tkinter.TOP, pady='1m')

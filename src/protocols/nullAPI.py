@@ -7,7 +7,7 @@ class null_access:
 
     def pollmeta(self):
         assert self.state == META
-        return "Ready", 1
+        return "Ready", True
 
     def getmeta(self):
         assert self.state == META
@@ -16,7 +16,7 @@ class null_access:
 
     def polldata(self):
         assert self.state == DATA
-        return "Ready", 1
+        return "Ready", True
 
     def getdata(self, maxbytes):
         assert self.state == DATA

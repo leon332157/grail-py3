@@ -34,10 +34,10 @@ class GeneralPanel(PrefsPanels.Framework):
         entries_frame = Frame(tempfr, relief=SUNKEN, borderwidth=1)
         self.PrefsEntry(entries_frame,
                         "Width:", 'browser', 'default-width', 'int',
-                        label_width=6, entry_width=4, composite=1)
+                        label_width=6, entry_width=4, composite=True)
         self.PrefsEntry(entries_frame,
                         "Height:", 'browser', 'default-height', 'int',
-                        label_width=7, entry_width=4, composite=1)
+                        label_width=7, entry_width=4, composite=True)
         f.pack(fill=X, side=TOP, pady='1m')
 
         self.PrefsEntry(frame, 'Max. connections:', 'sockets', 'number', 'int',

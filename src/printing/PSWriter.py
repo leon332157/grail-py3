@@ -27,13 +27,13 @@ class PSWriter(formatter.AbstractWriter):
       send_flowing_data(TEXT)
       send_literal_data(TEXT)
       send_indentation(WIDTH)
-      suppress_indentation([suppress=1])
+      suppress_indentation([suppress=True])
 
     Exported ivars:
     """
     __detab_pos = 0
     __pending_indentation = None
-    __suppress_indentation = 0
+    __suppress_indentation = False
 
     def __init__(self, ofile, title='', url='',
                  varifamily='Times', fixedfamily='Courier', paper=None,
@@ -88,9 +88,9 @@ class PSWriter(formatter.AbstractWriter):
         self.ps.push_paragraph(blankline, self.settings.paragraph_skip)
         self.__detab_pos = 0
         self.__pending_indentation = None
-        self.__suppress_indentation = 0
+        self.__suppress_indentation = False
 
-    def suppress_indentation(self, suppress=1):
+    def suppress_indentation(self, suppress=True):
         """Controll suppression of the *next* indentation sent."""
         self.__suppress_indentation = suppress
         if suppress:
@@ -101,7 +101,7 @@ class PSWriter(formatter.AbstractWriter):
         later."""
 ##      utils.debug('send_indentation: %s' % width)
         if self.__suppress_indentation:
-            self.__suppress_indentation = 0
+            self.__suppress_indentation = False
         else:
             self.__pending_indentation = width
 
@@ -110,7 +110,7 @@ class PSWriter(formatter.AbstractWriter):
         self.ps.push_hard_newline()
         self.__detab_pos = 0
         self.__pending_indentation = None
-        self.__suppress_indentation = 0
+        self.__suppress_indentation = False
 
     def send_hor_rule(self, abswidth=None, percentwidth=None,
                       height=None, align=None):
@@ -118,34 +118,34 @@ class PSWriter(formatter.AbstractWriter):
         self.ps.push_horiz_rule(abswidth, percentwidth, height, align)
         self.__detab_pos = 0
         self.__pending_indentation = None
-        self.__suppress_indentation = 0
+        self.__suppress_indentation = False
 
     def send_label_data(self, data):
 ##      utils.debug('send_label_data: %s' % data)
         self.ps.push_label(data)
         self.__detab_pos = 0
         self.__pending_indentation = None
-        self.__suppress_indentation = 0
+        self.__suppress_indentation = False
 
     def send_flowing_data(self, data):
 ##      utils.debug('send_flowing_data: %s' % data)
-        self.ps.push_literal(0)
+        self.ps.push_literal(False)
         if self.__pending_indentation:
             self.ps.push_horiz_space(self.__pending_indentation)
             self.__pending_indentation = None
         else:
-            self.__suppress_indentation = 0
+            self.__suppress_indentation = False
         self.ps.push_string_flowing(data)
         self.__detab_pos = 0
 
     def send_literal_data(self, data):
 ##      utils.debug('send_literal_data: %s' % data)
-        self.ps.push_literal(1)
+        self.ps.push_literal(True)
         if self.__pending_indentation:
             self.ps.push_horiz_space(self.__pending_indentation)
             self.__pending_indentation = None
         else:
-            self.__suppress_indentation = 0
+            self.__suppress_indentation = False
         self.ps.push_string(self.__detab_data(data))
 
     def send_eps_data(self, image, align):
@@ -154,7 +154,7 @@ class PSWriter(formatter.AbstractWriter):
             self.ps.push_horiz_space(self.__pending_indentation)
             self.__pending_indentation = None
         else:
-            self.__suppress_indentation = 0
+            self.__suppress_indentation = False
         self.ps.push_eps(image, align)
         self.__detab_pos = 0
 

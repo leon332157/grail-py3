@@ -34,9 +34,9 @@ class ExportWalker(walker.TreeWalker):
 
 
 class ExportOptions:
-    remove_add_date = 1
-    remove_last_visited = 1
-    remove_last_modified = 1
+    remove_add_date = True
+    remove_last_visited = True
+    remove_last_modified = True
 
     def __init__(self):
         pass

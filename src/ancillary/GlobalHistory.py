@@ -119,7 +119,7 @@ class GlobalHistory:
         urls()
                 Return a list, in order of all URLs on the GlobalHistory.
     """
-    def __init__(self, app, readonly=0):
+    def __init__(self, app, readonly=False):
         self._app = app
         self._urlmap = {}               # for fast lookup
         self._history = []              # to maintain order

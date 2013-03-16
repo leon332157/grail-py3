@@ -32,7 +32,7 @@ class SharedItem:
     """
 
     def __init__(self, url, mode, params, cache, key, data=None,
-                 api=None, reload=None, refresh=None):  
+                 api=None, reload=False, refresh=None):
         self.refcnt = 0
 
         # store the arguments 
@@ -44,11 +44,11 @@ class SharedItem:
         self.cache = cache
 
         # status
-        self.reloading = 0
+        self.reloading = False
         self.data = []
         self.datalen = 0
         self.datamap = {}
-        self.complete = 0
+        self.complete = False
 
         # initialize in one of four states
         # some variables may be initialized in reset or refresh
@@ -56,18 +56,18 @@ class SharedItem:
         if reload:               ## forced reload
             self.api = None
             self.stage = DONE
-            self.incache = 0
+            self.incache = False
             self.reset(reload)
 
         elif refresh:            ## check freshness
             self.cache_api = api
             self.cache_meta = api.getmeta()
             self.cache_stage = api.state
-            self.incache = 1
+            self.incache = True
             self.refresh(refresh)
 
         elif api == None:        ## a POST
-            self.incache = 0
+            self.incache = False
             self.reset()
 
         else:                    ## read from cache
@@ -77,9 +77,9 @@ class SharedItem:
             self.stage = self.api.state
 
             # status
-            self.incache = 1
+            self.incache = True
 
-    def reset(self, reload=0):
+    def reset(self, reload=False):
         # Should only be used inside constructor function.
         # For next release, make it __reset
         self.reloading = reload
@@ -109,19 +109,19 @@ class SharedItem:
                 self.abort()
 
     def cache_update(self):
-        if (self.incache == 0 or self.reloading == 1) \
-           and not self.postdata and self.complete == 1 \
+        if (not self.incache or self.reloading) \
+           and not self.postdata and self.complete \
            and (self.meta and self.meta[0] == 200):
             self.cache.add(self,self.reloading)
-            self.incache = 1
+            self.incache = True
 
     def pollmeta(self):
         if self.stage == META:
             return self.api.pollmeta()
         elif self.stage == DATA:
-            return self.api.polldata()[0], 1
+            return self.api.polldata()[0], True
         else:
-            return "Reading cache", 1
+            return "Reading cache", True
 
     def getmeta(self):
         if self.stage == META:
@@ -138,7 +138,7 @@ class SharedItem:
         elif self.stage == DATA:
             msg, ready = self.api.polldata()
         else:
-            msg, ready = "Reading cache", 1
+            msg, ready = "Reading cache", True
         return msg, ready
 
     def getdata(self, offset, maxbytes):
@@ -149,7 +149,7 @@ class SharedItem:
             buf = self.api.getdata(maxbytes)
             if not buf:
                 self.finish()
-                self.complete = 1
+                self.complete = True
             else:
                 l = len(buf)
                 if l > maxbytes:
@@ -175,7 +175,7 @@ class SharedItem:
             if self.stage == META:
                 self.meta = self.api.getmeta()
                 self.stage = DATA
-            elif self.complete == 1 and offset >= self.datalen:
+            elif self.complete and offset >= self.datalen:
                 return ''
             chunk_key, delta = self._getdata_search_string_list(offset)
             chunk = self.data[self.datamap[chunk_key]]
@@ -221,7 +221,7 @@ class SharedItem:
         self.datalen = 0
         self.datamap = {}
         self.stage = stage
-        self.complete = 0
+        self.complete = False
 
     def refresh(self,when):
         params = copy.copy(self.params)
@@ -250,7 +250,7 @@ class SharedItem:
         else:
             # forget about the cached stuff
             self.cache_api.close()
-            self.reloading = 1
+            self.reloading = True
 
         self.getmeta = self.hidden_getmeta
         self.stage = DATA
@@ -345,14 +345,14 @@ def test():
     c = Cache()
     for i in range(3):
         api = c.open(url, 'GET', {})
-        while 1:
+        while True:
             message, ready = api.pollmeta()
             print message
             if ready:
                 meta = api.getmeta()
                 print repr(meta)
                 break
-        while 1:
+        while True:
             message, ready = api.polldata()
             print message
             if ready:

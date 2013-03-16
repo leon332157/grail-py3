@@ -217,7 +217,7 @@ class BookmarksIO:
         except IOError, error:
             raise bookmarks.BookmarkFormatError(url, error, what="URL")
 
-    def load(self, usedefault=0, filename=None):
+    def load(self, usedefault=False, filename=None):
         req_filename = filename
         filename = filename or self.filename() or DEFAULT_GRAIL_BM_FILE
         if not (usedefault or req_filename):
@@ -304,7 +304,7 @@ class BookmarksIO:
         if not self.filename(): self.saveas(root)
         else: self.__save_to_file(root, self.filename())
 
-    def saveas(self, root, export=0):
+    def saveas(self, root, export=False):
         filename = self.filename() or DEFAULT_GRAIL_BM_FILE
         saver = BMSaveDialog(self.__frame, self.__controller)
         saver.set_filetype(self.format())
@@ -769,7 +769,7 @@ class DetailsDialog:
         else:
             self._controller.viewer().update_node(self._node)
             self._controller.viewer().select_node(self._node)
-        self._controller.set_modflag(1)
+        self._controller.set_modflag(True)
 
     def cancel(self, event=None):
         self.revert()
@@ -796,7 +796,7 @@ class DetailsDialog:
 
 
 class BookmarksController(OutlinerController):
-    _initialized_p = 0
+    _initialized_p = False
     _active = 0
     _dialog = None
     _listbox = None
@@ -826,7 +826,7 @@ class BookmarksController(OutlinerController):
         # other initializations
         self.fileformat.set('Automatic')
         self.statusmsg.set('')
-        self._modflag = 0
+        self._modflag = False
         app.register_on_exit(self.on_app_exit)
 
     def _notify(self):
@@ -845,11 +845,11 @@ class BookmarksController(OutlinerController):
         if self._dialog:
             self._dialog.update_prefs()
 
-    def __get_boolean_pref(self, option, default=0):
+    def __get_boolean_pref(self, option, default=False):
         try:
             return self._app.prefs.GetBoolean(BMPREFGROUP, option) and 1 or 0
         except (TypeError, KeyError):
-            return default and 1 or 0
+            return bool(default)
 
     def add_watched_menu(self, menu):
         self._menus.append(menu)
@@ -871,11 +871,11 @@ class BookmarksController(OutlinerController):
     ## coordinate with Application instance
 
     def on_app_exit(self):
-        if self._modflag: self.save(exiting=1)
+        if self._modflag: self.save(exiting=True)
         self._app.unregister_on_exit(self.on_app_exit)
 
     ## Modifications updating
-    def set_modflag(self, flag, quiet=0):
+    def set_modflag(self, flag, quiet=False):
         if not quiet:
             if self._dialog:
                 self._dialog.set_modflag(flag)
@@ -897,7 +897,7 @@ class BookmarksController(OutlinerController):
         for file in filenames:
             self._iomgr.set_filename(file)
             try:
-                root, reader = self._iomgr.load(usedefault=1)
+                root, reader = self._iomgr.load(usedefault=True)
                 break
             except bookmarks.BookmarkFormatError:
                 pass
@@ -907,7 +907,7 @@ class BookmarksController(OutlinerController):
             self._iomgr.set_filename(DEFAULT_GRAIL_BM_FILE)
         self.set_root(root)
         self._collection = bookmarks.collection.Collection(root)
-        self._initialized_p = 1
+        self._initialized_p = True
 
     def _on_new_root(self):
         for dialog in self._details.values(): dialog.destroy()
@@ -916,11 +916,11 @@ class BookmarksController(OutlinerController):
         self.root_redisplay()
         # set up new state
         node = self.viewer().node(0)
-        self.set_modflag(0)
+        self.set_modflag(False)
         if node: self.viewer().select_node(node)
         self._collection = bookmarks.collection.Collection(self.root())
 
-    def load(self, usedefault=0):
+    def load(self, usedefault=False):
         root, reader = self._iomgr.load(usedefault=usedefault)
         if not root and not reader:
             # load dialog was cancelled
@@ -934,11 +934,11 @@ class BookmarksController(OutlinerController):
         OutlinerController.revert(self)
         self._on_new_root()
 
-    def save(self, event=None, exiting=0):
+    def save(self, event=None, exiting=False):
         # if it hasn't been modified, it doesn't need saving
         if not self.set_modflag: return
         self._iomgr.save(self._root)
-        self.set_modflag(0)
+        self.set_modflag(False)
         self.update_backup()
         if self._dialog and not exiting:
             self._dialog.set_labels(self._iomgr.filename(), self._root.title())
@@ -946,7 +946,7 @@ class BookmarksController(OutlinerController):
     def saveas(self, event=None):
         # always save-as, even if unmodified
         self._iomgr.saveas(self._root)
-        self.set_modflag(0)
+        self.set_modflag(False)
         self.update_backup()
         if self._dialog:
             self._dialog.set_labels(self._iomgr.filename(), self._root.title())
@@ -955,13 +955,13 @@ class BookmarksController(OutlinerController):
         # save the selected node
         node, selection = self._get_selected_node()
         if node:
-            self._iomgr.saveas(node, export=1)
+            self._iomgr.saveas(node, export=True)
 
     def importBookmarks(self, event=None):
         # need to get URL or filename here...
         import OpenURIDialog
         dialog = OpenURIDialog.OpenURIDialog(
-            self._master, title="Import Bookmarks Dialog", new=0)
+            self._master, title="Import Bookmarks Dialog", new=False)
         filename, new = dialog.go()
         if not filename:
             return
@@ -976,7 +976,7 @@ class BookmarksController(OutlinerController):
         if not at_end:
             parent.insert_child(node, 0)
         self.root_redisplay()
-        self.set_modflag(1)
+        self.set_modflag(True)
         self.viewer().select_node(node)
         if self.autodetails.get():
             self.show_details(node)
@@ -1010,7 +1010,7 @@ class BookmarksController(OutlinerController):
                     bookmark.set_last_modified(last_modified)
                 if id(bookmark) in self._details:
                     self._details[id(bookmark)].update_timestamp_fields()
-            self.set_modflag(1, quiet=1)
+            self.set_modflag(True, quiet=True)
 
     def focus_on_dialog(self):
         self._dialog and self._dialog.show()
@@ -1032,7 +1032,7 @@ class BookmarksController(OutlinerController):
         if node.expanded_p(): self.collapse_node(node)
         else: self.expand_node(node)
         self.viewer().select_node(node)
-        self.set_modflag(1, quiet=1)
+        self.set_modflag(True, quiet=True)
 
     def goto(self, event=None):
         node, selection = self._get_selected_node()
@@ -1089,7 +1089,7 @@ class BookmarksController(OutlinerController):
             if browser is None:
                 return
         browser.context.load(node.uri())
-        self.set_modflag(1, quiet=1)
+        self.set_modflag(True, quiet=True)
 
     def insert_node(self, node):
         addlocation = self.addcurloc.get()
@@ -1101,7 +1101,7 @@ class BookmarksController(OutlinerController):
         else:
             parent.insert_child(node, 0)
         # scroll the newly added node into view
-        self.set_modflag(1)
+        self.set_modflag(True)
         self.root_redisplay()
         self.viewer().select_node(node)
 
@@ -1204,7 +1204,6 @@ class BookmarksController(OutlinerController):
         # with the X server too early in the widget creation cycle.
         # for those window managers without automatic (random)
         # placement, the user will see a zero-sized widget
-        show_p = 1
         if not self._dialog:
             self._dialog = BookmarksDialog(self._master, self)
             self._listbox = self._dialog._listbox # TBD: gross
@@ -1212,8 +1211,7 @@ class BookmarksController(OutlinerController):
             self.set_viewer(viewer)
             viewer.populate()
             if viewer.count() > 0: viewer.select_node(viewer.node(0))
-            show_p = 0
-        if show_p: self._dialog.show()
+        else: self._dialog.show()
 
     def hide(self, event=None): self._dialog.hide()
     def quit(self, event=None): sys.exit(0)
@@ -1231,7 +1229,7 @@ class BookmarksController(OutlinerController):
             node.insert_child(newnode, 0)
         self.root_redisplay()
         self.viewer().select_node(newnode)
-        self.set_modflag(1)
+        self.set_modflag(True)
 
     def insert_separator(self, event=None):
         node, selection = self._get_selected_node()
@@ -1271,7 +1269,7 @@ class BookmarksController(OutlinerController):
         parent.del_child(node)
         self.root_redisplay()
         self.viewer().select_node(self.viewer().node(selection))
-        self.set_modflag(1)
+        self.set_modflag(True)
         # destroy the details dialog for the node, if it has one
         if id(node) in self._details:
             self._details.pop(id(node)).destroy()
@@ -1286,27 +1284,27 @@ class BookmarksController(OutlinerController):
     def aggressive_collapse_p(self): return self.aggressive.get()
 
     def collapsable_p(self, node):
-        if node == self.root(): return 0
+        if node == self.root(): return False
         else: return OutlinerController.collapsable_p(self, node)
 
     ## Commands
 
-    def _cmd(self, method, quiet=0):
+    def _cmd(self, method, quiet=False):
         node, selection = self._get_selected_node()
         if node:
             selected_node = method(node)
             if not selected_node: selected_node = node
             self.viewer().select_node(selected_node)
-            self.set_modflag(1, quiet=quiet)
+            self.set_modflag(True, quiet=quiet)
 
     def shift_left_cmd(self, event=None):  self._cmd(self.shift_left)
     def shift_right_cmd(self, event=None): self._cmd(self.shift_right)
     def shift_up_cmd(self, event=None):    self._cmd(self.shift_up)
     def shift_down_cmd(self, event=None):  self._cmd(self.shift_down)
     def collapse_cmd(self, event=None):
-        self._cmd(self.collapse_node, quiet=1)
+        self._cmd(self.collapse_node, quiet=True)
     def expand_cmd(self, event=None):
-        self._cmd(self.expand_node, quiet=1)
+        self._cmd(self.expand_node, quiet=True)
 
     def shift_to_top_cmd(self, event=None):
         node = self.root()
@@ -1345,15 +1343,15 @@ class BookmarksController(OutlinerController):
         # depth-first search for the next (or previous) node
         # containing the pattern.  Handle wrapping.
         sv = OutlinerViewer(self._root,
-                            follow_all_children=1,
-                            shared_root=1)
+                            follow_all_children=True,
+                            shared_root=True)
         sv.populate()
         # get the index of the listbox's selected node in the search
         # viewer's flat space
         startnode, selection = self._get_selected_node()
         nodei = sv.index(startnode)
         node = None
-        while 1:
+        while True:
             if backwards_flag:
                 nodei = nodei - 1
                 if nodei < 0:
@@ -1366,7 +1364,7 @@ class BookmarksController(OutlinerController):
 ##          print 'checking nodei(%d): %s' % (nodei, node)
             if not node:
                 print 'no node for', nodei
-                return None
+                return False
             # match can occur in the title, uri string, or
             # description string. get this as one big ol' string
             nodetype = node.get_nodetype()
@@ -1388,13 +1386,13 @@ class BookmarksController(OutlinerController):
                 break
             # have we gone round the world without a match?
             if node == startnode:
-                return None
+                return False
         # we found a matching node. make sure it's visible in the
         # listbox and then select it.
         self.show_node(node)
         self.viewer().select_node(node)
-        self.set_modflag(1, quiet=1)
-        return 1
+        self.set_modflag(True, quiet=True)
+        return True
 
 
 class BookmarksFormatter:
@@ -1412,7 +1410,7 @@ class BookmarksFormatter:
 
     def fmt_root(self, root):
         self.formatter.end_paragraph(1)
-        self.formatter.push_font(("h1", 0, 1, 0))
+        self.formatter.push_font(("h1", False, True, False))
         self.formatter.add_flowing_data(root.title())
         self.formatter.pop_font()
         self.formatter.end_paragraph(1)
@@ -1436,11 +1434,11 @@ class BookmarksFormatter:
         refnode = node.get_refnode()
         nodetype = refnode.get_nodetype()
         if nodetype == "Folder":
-            self.fmt_Folder(refnode, alias=1)
+            self.fmt_Folder(refnode, alias=True)
         elif nodetype == "Bookmark":
-            self.fmt_Bookmark(refnode, alias=1)
+            self.fmt_Bookmark(refnode, alias=True)
 
-    def fmt_Bookmark(self, node, alias=0):
+    def fmt_Bookmark(self, node, alias=False):
         uri = node.uri()
         atag = 'a'
         utag = '>' + uri
@@ -1458,7 +1456,7 @@ class BookmarksFormatter:
         self.formatter.add_line_break()
         self.__fmt_description(node.description())
 
-    def fmt_Folder(self, node, alias=0):
+    def fmt_Folder(self, node, alias=False):
         id = node.id()
         if id and not alias:
             idtag = "#" + id
@@ -1469,13 +1467,13 @@ class BookmarksFormatter:
         else:
             idtag = None
         self.formatter.end_paragraph(1)
-        self.formatter.push_font((None, alias, 1, None))
+        self.formatter.push_font((None, alias, True, None))
         self.formatter.push_style(idtag)
         self.formatter.add_flowing_data(node.title())
         self.formatter.pop_style()
         if alias:
             self.formatter.pop_font()
-            self.formatter.push_font((None, alias, 0, None))
+            self.formatter.push_font((None, alias, False, None))
             self.formatter.add_flowing_data(" (Alias)")
         self.formatter.pop_font()
         self.formatter.end_paragraph(1)
@@ -1516,7 +1514,7 @@ class BookmarksMenuViewer(OutlinerViewer):
         self._menustack = [parentmenu]
         root = controller.root().clone()
         OutlinerViewer.__init__(self, root)
-        self._follow_all_children_p = 1
+        self._follow_all_children_p = True
 
     def _insert(self, node, index=None):
         depth = node.depth()

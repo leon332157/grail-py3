@@ -24,7 +24,7 @@ class KeywordMatcher:
         return self.__match(bookmark)
 
     def match_Folder(self, folder):
-        return self.__match(folder), 1
+        return self.__match(folder), True
 
     __s = ".,-!@#$%^&*(){}[]|+=?'\""
     __tr = str.maketrans(__s, " " * len(__s))
@@ -32,13 +32,13 @@ class KeywordMatcher:
     def __match(self, node):
         keywords = self.__keywords
         if not keywords:
-            return 0
+            return False
         text = "%s %s" % (node.description(), node.title())
         if not self.__case_sensitive:
             text = text.lower()
         words = set(text.translate(self.__tr).split())
         if not words:
-            return 0
+            return False
         if self.__and:
             # require that all are present:
             return all(kw in words for kw in keywords)
@@ -50,8 +50,8 @@ class KeywordMatcher:
 class KeywordOptions:
     __keywords = ()
     __keywords_text = ""
-    __and_keywords = 0
-    __case_sensitive = 0
+    __and_keywords = False
+    __case_sensitive = False
 
     def __init__(self):
         # defined in case we need additional stuff later;
@@ -59,7 +59,7 @@ class KeywordOptions:
         pass
 
     def set_case_sensitive(self, case_sensitive):
-        case_sensitive = case_sensitive and 1 or 0
+        case_sensitive = bool(case_sensitive)
         if case_sensitive != self.__case_sensitive:
             self.__case_sensitive = case_sensitive
             self.set_keywords(self.__keywords_text)

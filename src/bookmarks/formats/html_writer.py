@@ -10,7 +10,7 @@ import sys
 
 class Writer(walker.TreeWalker):
     __depth = 1
-    __need_header = 1
+    __need_header = True
     __alias_id = ''
     __id_next = 0
 
@@ -65,7 +65,7 @@ class Writer(walker.TreeWalker):
 
     def start_Folder(self, node):
         if self.__need_header:
-            self.__need_header = 0
+            self.__need_header = False
             self.__write_header(node)
             self.__write_description(node.description())
             print "<DL><p>"

@@ -13,7 +13,7 @@ from io import StringIO
 from collections import Iterable
 
 
-RECT_DEBUG = 0
+RECT_DEBUG = False
 
 SYSTEM_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -83,7 +83,7 @@ class PSStream:
     _rmargin = 0.0
     _leading = 0.0                      # "external" leading == between lines
     _align = ALIGN_LEFT
-    _inliteral_p = None
+    _inliteral_p = False
     _render = 'S'                       # S == normal string, U == underline
 
     # current line state; we really need some good comments about these....

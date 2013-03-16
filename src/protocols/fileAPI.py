@@ -28,7 +28,7 @@ class file_access:
     def __init__(self, url, method, params):
         from urllib import url2pathname, pathname2url
         self.url = url
-        self.redirect = None
+        self.redirect = False
         pathname = url2pathname(url)
         if not os.path.isabs(pathname):
             try:
@@ -39,7 +39,7 @@ class file_access:
                 pathname = os.path.expanduser(pathname)
                 pathname = os.path.join(pwd, pathname)
                 pathname = os.path.normpath(pathname)
-                self.redirect = 1
+                self.redirect = True
         self.pathname = pathname
         self.url = "file:" + pathname2url(pathname)
         self.method = method
@@ -64,7 +64,7 @@ class file_access:
 
     def pollmeta(self):
         assert self.state == META
-        return "Ready", 1
+        return "Ready", True
 
     def getmeta(self):
         assert self.state == META
@@ -75,7 +75,7 @@ class file_access:
 
     def polldata(self):
         assert self.state == DATA
-        return "Ready", 1
+        return "Ready", True
 
     def getdata(self, maxbytes):
         assert self.state == DATA

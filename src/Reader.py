@@ -27,8 +27,8 @@ class ParserWrapper:
         self.__parser = parser
         self.__viewer = viewer
         self.__pendingdata = ''
-        self.__closed = 0
-        self.__closing = 0
+        self.__closed = False
+        self.__closing = False
         self.__level = 0
 
     def feed(self, data):
@@ -42,16 +42,16 @@ class ParserWrapper:
                 self.__parser.feed(data)
             if self.__closing and not self.__closed:
                 self.__parser.close()
-            self.__viewer.freeze(1)
+            self.__viewer.freeze(True)
         self.__level = self.__level - 1
 
     def close(self):
-        self.__closing = 1
+        self.__closing = True
         if not self.__level:
             self.__viewer.unfreeze()
             self.__parser.close()
             self.__viewer.freeze()
-            self.__closed = 1
+            self.__closed = True
 
 
 class TextLineendWrapper:
@@ -88,7 +88,7 @@ class QuotedPrintableWrapper:
         """Initialize the decoder.  Pass in the real parser as a parameter."""
         self.__parser = parser
         self.__buffer = ''
-        self.__last_was_cr = 0
+        self.__last_was_cr = False
 
     def feed(self, data):
         """Decode data and feed as much as possible to the real parser."""
@@ -229,12 +229,12 @@ class GzipWrapper:
 
     def __init__(self, parser):
         self.__parser = parser
-        self.__header = 0
-        self.__fextra = 0
-        self.__fname = 0
-        self.__fcomment = 0
-        self.__fhcrc = 0
-        self.__in_data = 0
+        self.__header = False
+        self.__fextra = False
+        self.__fname = False
+        self.__fcomment = False
+        self.__fhcrc = False
+        self.__in_data = False
         self.__buffer = ''
 
     def feed(self, data):
@@ -252,10 +252,10 @@ class GzipWrapper:
                 if data[:3] != '\037\213\010':
                     raise RuntimeError, "invalid gzip header"
                 self.__flag = ord(data[3])
-                self.__header = 1
+                self.__header = True
                 data = data[10:]
         if self.__header:
-            ok = 1
+            ok = True
             if not self.__fextra:
                 data, ok = self.__read_fextra(data)
             if ok and not self.__fname:
@@ -266,7 +266,7 @@ class GzipWrapper:
                 data, ok = self.__read_fhcrc(data)
             if ok:
                 self.__buffer = ''
-                self.__in_data = 1
+                self.__in_data = True
                 # Call the constructor exactly this way to get gzip-style
                 # compression.  Omitting the optional arg doesn't lead to
                 # gzip-compatible decompression.
@@ -278,24 +278,24 @@ class GzipWrapper:
 
     def __read_fextra(self, data):
         if not self.__flag & gzip.FEXTRA:
-            self.__fextra = 1
-            return data, 1
+            self.__fextra = True
+            return data, True
         if len(data) < 2:
-            return data, 0
+            return data, False
         length = ord(data[0]) + (256 * ord(data[1]))
         if len(data) < (length + 2):
-            return data, 0
-        self.__fextra = 1
+            return data, False
+        self.__fextra = True
         self.extra = data[2:length]
-        return data[length + 2:], 1
+        return data[length + 2:], True
 
     def __read_fname(self, data):
         if self.__flag & gzip.FNAME:
             data, ok, stuff = self.__read_zstring(data)
         else:
-            ok, stuff = 1, None
+            ok, stuff = True, None
         if ok:
-            self.__fname = 1
+            self.__fname = True
             self.name = stuff
         return data, ok
 
@@ -303,27 +303,27 @@ class GzipWrapper:
         if self.__flag & gzip.FCOMMENT:
             data, ok, stuff = self.__read_zstring(data)
         else:
-            ok, stuff = 1, None
+            ok, stuff = True, None
         if ok:
-            self.__fcomment = 1
+            self.__fcomment = True
             self.comment = stuff
         return data, ok
 
     def __read_fhcrc(self, data):
         if self.__flag & gzip.FHCRC:
             if len(data) >= 2:
-                self.__fhcrc = 1
+                self.__fhcrc = True
                 data = data[2:]
         else:
-            self.__fhcrc = 1
+            self.__fhcrc = True
         return data, self.__fhcrc
 
     def __read_zstring(self, data):
         """Attempt to read a null-terminated string."""
         stuff, sep, data = data.partition('\0')
         if sep:
-            return data, 1, stuff
-        return stuff, 0, None
+            return data, True, stuff
+        return stuff, False, None
 
     def close(self):
         if self.__in_data:
@@ -405,11 +405,11 @@ def support_encodings(content_encoding, transfer_encoding):
     supported."""
     if content_encoding \
        and content_encoding not in content_decoding_wrappers:
-        return 0
+        return False
     if transfer_encoding \
        and transfer_encoding not in transfer_decoding_wrappers:
-        return 0
-    return 1
+        return False
+    return True
 
 
 class Reader(BaseReader):
@@ -511,13 +511,13 @@ class Reader(BaseReader):
             if errcode != 200:
                 self.stop()
                 self.handle_error(errcode, errmsg, headers)
-            return
+            return False
 
         if errcode == 204:
-            self.last_context.viewer.remove_temp_tag(histify=1)
+            self.last_context.viewer.remove_temp_tag(histify=True)
             self.app.global_history.remember_url(self.url)
             self.stop()
-            return
+            return False
 
         if errcode in (301, 302) and 'location' in headers:
             url = headers['location']
@@ -529,13 +529,13 @@ class Reader(BaseReader):
                 self.method = 'GET'
                 self.data = ""
                 self.restart(url)
-                return
+                return False
 
         if errcode == 401:
             if self.handle_auth_error(errcode, errmsg, headers):
-                return
+                return False
 
-        return 1
+        return True
 
     def handle_meta(self, errcode, errmsg, headers):
         if not self.handle_meta_prelim(errcode, errmsg, headers):
@@ -606,7 +606,7 @@ class Reader(BaseReader):
                     self.save_file = open(self.save_filename, "wb")
                     # remember the original click location
                     self.app.global_history.remember_url(self.url)
-                    self.viewer.remove_temp_tag(histify=1)
+                    self.viewer.remove_temp_tag(histify=True)
                     return
             # No relief from mailcap either.
             # Ask the user whether and where to save it.
@@ -637,7 +637,7 @@ class Reader(BaseReader):
                 # User canceled.  Stop the transfer.
                 self.viewer.remove_temp_tag()
                 return
-            self.viewer.remove_temp_tag(histify=1)
+            self.viewer.remove_temp_tag(histify=True)
             self.app.global_history.remember_url(self.url)
             # Prepare to save.
             # Always save in binary mode.
@@ -669,10 +669,10 @@ class Reader(BaseReader):
 
 
     def handle_auth_error(self, errcode, errmsg, headers):
-        # Return nonzero if handle_error() should return now
+        # Return True if handle_error() should return now
         if 'www-authenticate' not in headers \
            or self.maxrestarts <= 0:
-            return
+            return False
 
         cred_headers = {}
         for k,v in headers.items():
@@ -682,7 +682,7 @@ class Reader(BaseReader):
         if 'Authorization' in self.params:
             self.app.auth.invalidate_credentials(cred_headers,
                                                  self.params['Authorization'])
-            return
+            return False
 
         self.stop()
         credentials = self.app.auth.request_credentials(cred_headers)
@@ -690,11 +690,11 @@ class Reader(BaseReader):
             for k,v in credentials.items():
                 self.params[k] = v
             self.restart(self.url)
-            return 1
+            return True
         # couldn't figure out scheme
         self.maxrestarts = 0
         self.restart(self.url)
-        return
+        return False
 
     def handle_data(self, data):
         if self.save_file:
@@ -761,9 +761,9 @@ class TextParser:
 
     title = ""
 
-    def __init__(self, viewer, reload=0):
+    def __init__(self, viewer, reload=False):
         self.viewer = viewer
-        self.viewer.new_font((AS_IS, AS_IS, AS_IS, 1))
+        self.viewer.new_font((AS_IS, AS_IS, AS_IS, True))
 
     def feed(self, data):
         self.viewer.send_literal_data(data)
@@ -787,7 +787,7 @@ LIGHT_BLUE = "#b0e0e6"
 class TransferDisplay:
     """A combined browser / viewer for asynchronous file transfers."""
 
-    def __init__(self, old_context, filename, reader, restart=1):
+    def __init__(self, old_context, filename, reader, restart=True):
         url = old_context.get_url()
         headers = old_context.get_headers()
         self.app = old_context.browser.app

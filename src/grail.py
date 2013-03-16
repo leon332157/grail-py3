@@ -65,15 +65,13 @@ def main(args=None):
     if sys.platform == 'win32':
         prefs.Set('disk-cache', 'size', '0')
     global ilu_tk
-    ilu_tk = 0
+    ilu_tk = None
     if prefs.GetBoolean('security', 'enable-ilu'):
         try: import ilu_tk
         except ImportError: pass
-    if args is not None:
-        embedded = 1
-    else:
+    embedded = args is not None
+    if not embedded:
         args = sys.argv[1:]
-        embedded = 0
     try:
         opts, args = getopt.getopt(args, 'd:g:iq',
                                    ['display=', 'geometry=', 'noimages'])
@@ -87,17 +85,17 @@ def main(args=None):
 
     geometry = prefs.Get('browser', 'initial-geometry')
     display = None
-    user_init = 1
+    user_init = True
 
     for o, a in opts:
         if o in ('-i', '--noimages'):
-            load_images = 0
+            load_images = False
         if o in ('-g', '--geometry'):
             geometry = a
         if o in ('-d', '--display'):
             display = a
         if o == "-q":
-            user_init = 0
+            user_init = False
     if args:
         url = grailutil.complete_url(args[0])
     else:
@@ -240,7 +238,7 @@ class Application(BaseApplication.BaseApplication):
         # registers its' prefs callbacks first, hence reloads before the
         # viewers reconfigure w.r.t. the new styles.
         self.stylesheet = Stylesheet.Stylesheet(self.prefs)
-        self.load_images = 1            # Overridden by cmd line or pref.
+        self.load_images = True            # Overridden by cmd line or pref.
 
         # socket management
         sockets = self.prefs.GetInt('sockets', 'number')
@@ -264,7 +262,7 @@ class Application(BaseApplication.BaseApplication):
             self.keep_alive()
         self.browsers = []
         self.iostatuspanel = None
-        self.in_exception_dialog = None
+        self.in_exception_dialog = False
         import Greek
         for k, v in Greek.entitydefs.items():
             Application.dingbatimages[k] = (v, '_sym')
@@ -328,7 +326,7 @@ class Application(BaseApplication.BaseApplication):
     def set_cached_image(self, url, image, owner=None):
         self.image_cache.set_image(url, image, owner)
 
-    def open_url(self, url, method, params, reload=0, data=None):
+    def open_url(self, url, method, params, reload=False, data=None):
         api = self.url_cache.open(url, method, params, reload, data=data)
         api._url_ = url
         return api
@@ -354,7 +352,7 @@ class Application(BaseApplication.BaseApplication):
             import traceback
             traceback.print_exception(exc, val, tb)
             return
-        self.in_exception_dialog = 1
+        self.in_exception_dialog = True
         def f(s=self, m=message, e=exc, v=val, t=tb, root=root):
             s._exc_dialog(m, e, v, t, root)
         self.root.after_idle(f)
@@ -372,7 +370,7 @@ class Application(BaseApplication.BaseApplication):
                                 default=0,
                                 strings=("OK", "Show traceback"),
                                 )
-        self.in_exception_dialog = 0
+        self.in_exception_dialog = False
         if dlg.num == 1:
             self.traceback_dialog(exc, val, tb)
 

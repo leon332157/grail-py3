@@ -154,10 +154,10 @@ class hdl_access(nullAPI.null_access):
                 self._hashtable = self.get_local_hash_table(self._hdl)
                 replyflags, self._items = self._hashtable.get_data(
                     self._hdl, self._types)
-                return 'Ready', 1
+                return 'Ready', True
             raise
         else:
-            return 'Ready', 1
+            return 'Ready', True
 
     def getmeta(self):
         nullAPI.null_access.getmeta(self)

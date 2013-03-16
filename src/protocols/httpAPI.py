@@ -166,7 +166,7 @@ class http_access:
             self.h.send(data)
         self.readahead = ""
         self.state = META
-        self.line1seen = 0
+        self.line1seen = False
         if self.reader_callback:
             self.reader_callback()
 
@@ -184,7 +184,7 @@ class http_access:
         sock = self.h._conn.sock
         try:
             if not select.select([sock], [], [], timeout)[0]:
-                return "waiting for server response", 0
+                return "waiting for server response", False
         except select.error, msg:
             raise IOError, msg, sys.exc_traceback
         try:
@@ -192,19 +192,19 @@ class http_access:
         except socket.error, msg:
             raise IOError, msg, sys.exc_traceback
         if not new:
-            return "EOF in server response", 1
+            return "EOF in server response", True
         self.readahead = self.readahead + new
         if '\n' not in new:
-            return "receiving server response", 0
+            return "receiving server response", False
         if not self.line1seen:
-            self.line1seen = 1
+            self.line1seen = True
             line = self.readahead.split('\n', 1)[0]
             if not replyprog.match(line):
-                return "received non-HTTP/1.0 server response", 1
+                return "received non-HTTP/1.0 server response", True
         m = endofheaders.search(self.readahead)
         if m and m.start() >= 0:
-            return "received server response", 1
-        return "receiving server response", 0
+            return "received server response", True
+        return "receiving server response", False
 
     def getmeta(self):
         assert self.state == META
@@ -221,9 +221,9 @@ class http_access:
     def polldata(self):
         assert self.state == DATA
         if self.readahead:
-            return "processing readahead data", 1
+            return "processing readahead data", True
         return ("waiting for data",
-                len(select.select([self], [], [], 0)[0]))
+                bool(select.select([self], [], [], 0)[0]))
 
     def getdata(self, maxbytes):
         assert self.state == DATA

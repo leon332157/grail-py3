@@ -82,12 +82,9 @@ class BaseAsyncImage:
         self.context = context
         self.url = url
         self.reader = None
-        self.loaded = 0
+        self.loaded = False
         self.headers = {}
-        if reload:
-            self.reload = 1
-        else:
-            self.reload = 0
+        self.reload = bool(reload)
 
     def load_synchronously(self, context=None):
         if not self.loaded:
@@ -96,8 +93,8 @@ class BaseAsyncImage:
                 self.reader.geteverything()
         return self.loaded
 
-    def start_loading(self, context=None, reload=0):
-        # seems that the reload=1 when you click on an image that
+    def start_loading(self, context=None, reload=False):
+        # seems that the reload=True when you click on an image that
         # you had stopped loading
         if context: self.context = context
         if self.reader:
@@ -133,14 +130,14 @@ class BaseAsyncImage:
         except TclError:
             self.show_bad()
         else:
-            self.loaded = 1
+            self.loaded = True
 
     def do_color_magic(self):
         self.context.root.tk.setvar("TRANSPARENT_GIF_COLOR",
                                     self.context.viewer.text["background"])
 
     def set_error(self, errcode, errmsg, headers):
-        self.loaded = 0
+        self.loaded = False
         if errcode in (301, 302) and 'location' in headers:
             self.url = headers['location']
             self.start_loading()
@@ -173,7 +170,7 @@ class BaseAsyncImage:
 
 class TkAsyncImage(BaseAsyncImage, TkPhotoImage):
 
-    def __init__(self, context, url, reload=0, **kw):
+    def __init__(self, context, url, reload=False, **kw):
         TkPhotoImage.__init__(self, **kw)
         self.setup(context, url, reload)
 
@@ -191,7 +188,8 @@ class PILAsyncImageSupport(BaseAsyncImage):
     __width = 0
     __height = 0
 
-    def __init__(self, context, url, reload=0, width=None, height=None, **kw):
+    def __init__(self, context, url, reload=False, width=None, height=None,
+    **kw):
         import ImageTk
         self.setup(context, url, reload)
         master = kw.get("master")
@@ -342,13 +340,13 @@ def pil_installed():
         import Image
         import ImageTk
     except ImportError:
-        return 0
+        return False
     # Now check the integration with Tk:
     try:
         ImageTk.PhotoImage(Image.new("L", (1, 1)))
     except TclError:
-        return 0
-    return 1
+        return False
+    return True
 
 
 _pil_allowed = None
@@ -363,7 +361,7 @@ def isPILAllowed():
     return _pil_allowed
 
 
-def AsyncImage(context, url, reload=0, **kw):
+def AsyncImage(context, url, reload=False, **kw):
     # Check the enable-pil preference and replace this function
     # with the appropriate implementation in the module namespace:
     #

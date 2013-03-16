@@ -34,9 +34,9 @@ class ExtensionLoader:
         path = os.path.normpath(os.path.join(os.getcwd(), path))
         if path not in self.__package.__path__:
             self.__package.__path__.insert(0, path)
-            return 1
+            return True
         else:
-            return 0
+            return False
 
     def add_extension(self, name, extension):
         self.__extensions[name] = extension

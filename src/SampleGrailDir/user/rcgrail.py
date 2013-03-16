@@ -75,7 +75,7 @@ def usage(progname):
 def main():
     progname = sys.argv[0]
     filename = FILENAME
-    pingonly = None
+    pingonly = False
     #
     # if I have it, try :0.1 first, then :0
     # yeah, this is pretty damn Solaris specific!
@@ -98,7 +98,7 @@ def main():
                 usage(progname)
                 sys.exit(0)
             elif switch == '-p':
-                pingonly = 1
+                pingonly = True
                 cmd = 'PING'
                 uri = ''
             else:

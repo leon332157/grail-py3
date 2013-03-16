@@ -51,10 +51,10 @@ ws_width = re.compile("[%s]*" % whitespace).match
 
 
 class parse_text_x_python:
-    def __init__(self, viewer, reload=0):
+    def __init__(self, viewer, reload=False):
         self.__viewer = viewer
         self.__source = ''
-        viewer.new_font((None, 0, 0, 1))
+        viewer.new_font((None, False, False, True))
 
     def feed(self, data):
         self.__source = self.__source + data
@@ -71,7 +71,7 @@ class parse_text_x_python:
         self.show("Colorizing Python source text - parsing...")
         import parser
         try:
-            nodes = parser.st2list(parser.suite(self.__source), 1)
+            nodes = parser.st2list(parser.suite(self.__source), True)
         except parser.ParserError, err:
             self.__viewer.context.message(
                 "Syntax error in Python source: %s" % err)

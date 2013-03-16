@@ -50,7 +50,7 @@ class Node:
         return copy.deepcopy(self)
 
     def leaf_p(self):
-        return 1
+        return True
 
     def depth(self):
         return self.__depth
@@ -166,7 +166,7 @@ class Bookmark(DescribableNode):
 
 
 class Folder(DescribableNode):
-    __folded = 0
+    __folded = False
 
     def __init__(self):
         self.__children = []
@@ -209,13 +209,13 @@ class Folder(DescribableNode):
 
 
     def leaf_p(self):
-        return 0
+        return False
 
     def expand(self):
-        self.__folded = 0
+        self.__folded = False
 
     def collapse(self):
-        self.__folded = 1
+        self.__folded = True
 
     def expanded_p(self):
         return not self.__folded

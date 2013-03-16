@@ -39,7 +39,7 @@ class PrintingHTMLParser(HTMLParser):
     The underline_anchors flag controls the visual treatment of the
     anchor text in the main document.
     """
-    _inited = 0
+    _inited = False
     _image_loader = None
 
     def __init__(self, writer, settings, context):
@@ -52,10 +52,10 @@ class PrintingHTMLParser(HTMLParser):
                 tup = (v, 'Symbol')
                 self.dingbats[(k, 'grey')] = tup
                 self.dingbats[(k, 'color')] = tup
-            PrintingHTMLParser._inited = 1
+            PrintingHTMLParser._inited = True
         HTMLParser.__init__(self, AbstractFormatter(writer))
         if settings.strict_parsing:
-            self.sgml_parser.restrict(0)
+            self.sgml_parser.restrict(False)
         self._baseurl = context.get_baseurl()
         self.context = context
         self.settings = settings
@@ -150,7 +150,7 @@ class PrintingHTMLParser(HTMLParser):
         self.end_small()
         self.end_div()
 
-    _inanchor = 0
+    _inanchor = False
     def start_a(self, attrs):
         href = extract_keyword('href', attrs)
         if href:
@@ -159,7 +159,7 @@ class PrintingHTMLParser(HTMLParser):
         if href:
             if self.settings.underflag:
                 self.formatter.push_style('underline')
-                self._inanchor = 1
+                self._inanchor = True
             if href not in self._anchors:
                 href = self.anchor = self.__footnote_anchor(href, attrs)
                 if href in self._anchors: return
@@ -168,7 +168,7 @@ class PrintingHTMLParser(HTMLParser):
                 title = ' '.join(title.split())
                 self._anchor_sequence.append((href, title))
         else:
-            self._inanchor = 0
+            self._inanchor = False
         name = extract_keyword('name', attrs, conv=conv_normstring)
         if name:
             self.register_id(name)
@@ -182,7 +182,7 @@ class PrintingHTMLParser(HTMLParser):
             self.start_small({}, steps=2)
             new_size = self.formatter.writer.ps.get_fontsize()
             yshift = old_size - ((1.0 + SIZE_STEP / 2) * new_size)
-            self.formatter.push_font((AS_IS, 0, 0, 0))
+            self.formatter.push_font((AS_IS, False, False, False))
             self.formatter.writer.ps.push_yshift(yshift)
             self.handle_data(self.FOOTNOTE_INDICATOR_FORMAT
                              % self._anchors[anchor])
@@ -208,7 +208,7 @@ class PrintingHTMLParser(HTMLParser):
         else:
             self.para_end(parbreak=1)
         self.formatter.writer.send_indentation(None)
-        self.formatter.writer.suppress_indentation(0)
+        self.formatter.writer.suppress_indentation(False)
 
     def do_basefont(self, attrs):
         if "size" in attrs:
@@ -344,7 +344,7 @@ class PrintingHTMLParser(HTMLParser):
         pass
 
     def start_th(self, attrs):
-        self.formatter.push_font((AS_IS, AS_IS, 1, AS_IS))
+        self.formatter.push_font((AS_IS, AS_IS, True, AS_IS))
 
     def end_th(self):
         self.formatter.pop_font()
@@ -422,10 +422,10 @@ class PrintingHTMLParser(HTMLParser):
         self.formatter.writer.ps.push_page_break()
 
     def pi_debugging_on(self, arglist):
-        self.__do_debugging(1, arglist)
+        self.__do_debugging(True, arglist)
 
     def pi_debugging_off(self, arglist):
-        self.__do_debugging(0, arglist)
+        self.__do_debugging(False, arglist)
 
     def __do_debugging(self, flag, arglist):
         arglist = arglist or (None,)
@@ -441,7 +441,7 @@ class PrintingHTMLParser(HTMLParser):
 
     def end_ul(self):
         HTMLParser.end_ul(self)
-        self.formatter.writer.suppress_indentation(0)
+        self.formatter.writer.suppress_indentation(False)
 
     def start_dl(self, attrs):
         HTMLParser.start_dl(self, attrs)
@@ -449,7 +449,7 @@ class PrintingHTMLParser(HTMLParser):
 
     def end_dl(self):
         HTMLParser.end_dl(self)
-        self.formatter.writer.suppress_indentation(0)
+        self.formatter.writer.suppress_indentation(False)
 
     def start_ol(self, attrs):
         HTMLParser.start_ol(self, attrs)
@@ -457,7 +457,7 @@ class PrintingHTMLParser(HTMLParser):
 
     def end_ol(self):
         HTMLParser.end_ol(self)
-        self.formatter.writer.suppress_indentation(0)
+        self.formatter.writer.suppress_indentation(False)
 
     def do_li(self, attrs):
         self.list_check_dingbat(attrs)

@@ -19,13 +19,13 @@ from formatter import AS_IS
 
 class FlowingTextParser:
     buffer = ''
-    flowing = 0
-    signature = 0
+    flowing = False
+    signature = False
 
-    def __init__(self, viewer, reload=0):
+    def __init__(self, viewer, reload=False):
         self.viewer = viewer
         self.formatter = formatter.AbstractFormatter(viewer)
-        self.set_flow(1)
+        self.set_flow(True)
 
     def feed(self, data):
         data = self.buffer + data
@@ -38,17 +38,17 @@ class FlowingTextParser:
                 self.buffer = lines[-1]
                 for line in lines[:-1]:
                     if line == '-- ':
-                        self.signature = 1
-                        self.set_flow(0)
+                        self.signature = True
+                        self.set_flow(False)
                     if self.signature:
                         self.send_data(line + '\n')
                         continue
                     if len(line.rstrip()) == (len(line) - 1) \
                        and line[-1] == ' ':
-                        self.set_flow(1)
+                        self.set_flow(True)
                         self.send_data(line + '\n')
                     else:
-                        self.set_flow(0)
+                        self.set_flow(False)
                         self.send_data(line + '\n')
 
     def close(self):

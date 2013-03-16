@@ -117,7 +117,7 @@ def initial_color(s, colordb):
 
 
 
-def build(master=None, initialcolor=None, initfile=None, ignore=None):
+def build(master=None, initialcolor=None, initfile=None, ignore=False):
     # create the windows and go
     for f in RGB_TXT:
         try:
@@ -181,7 +181,7 @@ def main():
     else:
         usage(1)
 
-    ignore = 0
+    ignore = False
     initfile = os.path.expanduser('~/.pynche')
     for opt, arg in opts:
         if opt in ('-h', '--help'):
@@ -196,7 +196,7 @@ Version: %s''' % __version__
         elif opt in ('-d', '--database'):
             RGB_TXT.insert(0, arg)
         elif opt in ('-X', '--ignore'):
-            ignore = 1
+            ignore = True
         elif opt in ('-i', '--initfile'):
             initfile = arg
 

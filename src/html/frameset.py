@@ -54,7 +54,7 @@ class FrameSet:
         self.cols = cols
         self.parent = parent            # None or a FrameSet instance
         if self.parent:
-            self.viewer = self.parent.make_next_viewer(scrolling=0)
+            self.viewer = self.parent.make_next_viewer(scrolling=False)
         else:
             self.viewer = self.parser.viewer
         if self.viewer:

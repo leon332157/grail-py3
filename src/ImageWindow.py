@@ -8,7 +8,7 @@ ATEMPPREF = 'history-atemp-foreground'
 class ImageWindow(Frame):
 
     def __init__(self, viewer, url, src, alt, usemap, ismap, align,
-                 width, height, borderwidth, target="", reload=0):
+                 width, height, borderwidth, target="", reload=False):
         self.viewer = viewer
         self.context = self.viewer.context
         self.src, self.alt, self.align = src, alt, align
@@ -17,14 +17,14 @@ class ImageWindow(Frame):
         if usemap:
             self.map = usemap
             self.url = None
-            self.ismap = None
+            self.ismap = False
         elif ismap:
-            self.ismap = 1
+            self.ismap = True
             self.url = url
             self.map = None
         else:
             self.url = url
-            self.ismap = None
+            self.ismap = False
             self.map = None
         bgcolor = self.get_bgcolor(borderwidth)
         Frame.__init__(self, viewer.text, borderwidth=borderwidth,

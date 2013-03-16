@@ -13,7 +13,7 @@ class ImageLoopItem:
         self.urlpattern = img + "T%d.gif"
         self.images = []
         self.index = 0
-        self.done = 0
+        self.done = False
         self.label = Label(master, text=text, background=master['background'])
         self.label.pack()
         self.loadnext()
@@ -23,7 +23,7 @@ class ImageLoopItem:
         url = self.urlpattern % (len(self.images) + 1)
         image = self.context.get_async_image(url)
         if not image:
-            self.done = 1
+            self.done = True
         else:
             self.images.append(image)
 
@@ -45,7 +45,7 @@ class ImageLoopItem:
                     self.schedule()
                     return
                 # Image loading failed -- we're done
-                self.done = 1
+                self.done = True
                 del self.images[self.index]
                 self.index = 0
                 self.schedule()

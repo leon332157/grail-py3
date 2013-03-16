@@ -23,7 +23,7 @@ class ListViewer:
         self.__sb = switchboard
         optiondb = switchboard.optiondb()
         self.__lastbox = None
-        self.__dontcenter = 0
+        self.__dontcenter = False
         # GUI
         root = self.__root = Toplevel(master, class_='Pynche')
         root.protocol('WM_DELETE_WINDOW', self.withdraw)
@@ -111,7 +111,7 @@ class ListViewer:
 ##            print 'No color tag found!'
             return
         red, green, blue = ColorDB.rrggbb_to_triplet(t)
-        self.__dontcenter = 1
+        self.__dontcenter = True
         if self.__uoc.get():
             self.__sb.update_views(red, green, blue)
         else:
@@ -154,7 +154,7 @@ class ListViewer:
                 self.__aliases.insert(END, name)
         # maybe scroll the canvas so that the item is visible
         if self.__dontcenter:
-            self.__dontcenter = 0
+            self.__dontcenter = False
         else:
             ig, ig, ig, y1 = canvas.coords(colortag)
             ig, ig, ig, y2 = canvas.coords(self.__bboxes[-1])

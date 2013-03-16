@@ -114,7 +114,7 @@ class Collection:
     __id_format = "bkmk.%s"
     def new_id(self):
         i = self.__next_id
-        while 1:
+        while True:
             id = self.__id_format % i
             i = i + 1
             if id not in self.__id_map:

@@ -81,7 +81,7 @@ class ClashError(Exception):
 
 _controller = None
 _filename = None
-_loads_registered = None
+_loads_registered = False
 
 def _create():
     global _controller
@@ -110,14 +110,14 @@ def register_loads():
     if not _loads_registered:
         _controller.register('LOAD', _controller.load_cmd)
         _controller.register('LOADNEW', _controller.load_new_cmd)
-        _loads_registered = 1
+        _loads_registered = True
 
 def unregister_loads():
     global _loads_registered
     if _loads_registered:
         _controller.unregister('LOAD', _controller.load_cmd)
         _controller.unregister('LOADNEW', _controller.load_new_cmd)
-        _loads_registered = None
+        _loads_registered = False
 
 
 
@@ -160,7 +160,7 @@ class Controller:
         self._path = path
         self._fileno = None
         self._socket = None
-        self._enabled = None
+        self._enabled = False
         # Don't create the socket now, because we want to allow
         # clients of this class to register callbacks for commands
         # first.
@@ -208,7 +208,7 @@ class Controller:
                 self._fileno = None
                 raise InitError
         if not self._enabled:
-            self._enabled = 1
+            self._enabled = True
             tkinter.createfilehandler(
                 self._fileno, tkinter.READABLE, self._dispatch)
             self.register('PING', self.ping_cmd)
@@ -216,7 +216,7 @@ class Controller:
     def stop(self):
         """Stop listening for remote control commands."""
         if self._enabled:
-            self._enabled = None
+            self._enabled = False
             tkinter.deletefilehandler(self._fileno)
 
     def register(self, cmdstr, callback):
@@ -282,7 +282,7 @@ class Controller:
 
     # convenience methods
 
-    def _do_load(self, uri, in_new_window=None):
+    def _do_load(self, uri, in_new_window=False):
         target = ""
         def _new_browser(b):
             from Browser import Browser
@@ -313,7 +313,7 @@ class Controller:
         self._do_load(argstr)
 
     def load_new_cmd(self, cmdstr, argstr, conn):
-        self._do_load(argstr, in_new_window=1)
+        self._do_load(argstr, in_new_window=True)
 
     def ping_cmd(self, cmdstr, argstr, conn):
         try:

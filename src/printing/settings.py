@@ -23,18 +23,18 @@ class PrintSettings:
 
     printcmd = None
     printfile = ""
-    fileflag = 0
-    imageflag = 0
-    greyscale = 0
-    underflag = 1
-    footnoteflag = 1
+    fileflag = False
+    imageflag = False
+    greyscale = False
+    underflag = True
+    footnoteflag = True
     fontsize = 10.0
     leading = 10.7
     papersize = "letter"
     orientation = ""
     margins = None
-    strip_blanks = 1
-    strict_parsing = 0
+    strip_blanks = True
+    strict_parsing = False
     postscript_level = 1
     paragraph_indent = 0.0
     # Proper values for a Sun 20" 1152 x 900 pixel display:

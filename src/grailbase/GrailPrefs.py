@@ -71,16 +71,16 @@ class Preferences:
     def Editable(self):
         """Ensure that the user has a graildir and it is editable."""
         if not utils.establish_dir(os.path.split(self.filename)[0]):
-            return 0
+            return False
         elif os.path.exists(self.filename):
-            return 1
+            return True
         else:
             try:
                 tempf = open(self.filename, 'a')
                 tempf.close()
-                return 1
+                return True
             except os.error:
-                return 0
+                return False
 
     def Save(self):
         """Write the preferences out to file, if possible."""
@@ -146,7 +146,7 @@ class AllPreferences:
 
     # Getting:
 
-    def Get(self, group, cmpnt, factory=0):
+    def Get(self, group, cmpnt, factory=False):
         """Get pref GROUP, COMPONENT, trying the user then the sys prefs.
 
         Optional FACTORY true means get system default ("factory") value.
@@ -160,7 +160,7 @@ class AllPreferences:
             except KeyError:
                 return self.sys.Get(group, cmpnt)
 
-    def GetTyped(self, group, cmpnt, type_name, factory=0):
+    def GetTyped(self, group, cmpnt, type_name, factory=False):
         """Get preference, using CONVERTER to convert to type NAME.
 
         Optional SYS true means get system default value.
@@ -173,11 +173,11 @@ class AllPreferences:
             raise TypeError, ('%s should be %s: %r'
                                % (str((group, cmpnt)), type_name, val))
 
-    def GetInt(self, group, cmpnt, factory=0):
+    def GetInt(self, group, cmpnt, factory=False):
         return self.GetTyped(group, cmpnt, "int", factory)
-    def GetFloat(self, group, cmpnt, factory=0):
+    def GetFloat(self, group, cmpnt, factory=False):
         return self.GetTyped(group, cmpnt, "float", factory)
-    def GetBoolean(self, group, cmpnt, factory=0):
+    def GetBoolean(self, group, cmpnt, factory=False):
         return self.GetTyped(group, cmpnt, "Boolean", factory)
 
     def GetGroup(self, group):

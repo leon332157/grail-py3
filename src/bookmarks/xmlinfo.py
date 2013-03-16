@@ -79,18 +79,18 @@ def main():
     #
     reqs = set()                     # required values (for output)
     #
-    get_defaults = 1
-    full_report = 0
+    get_defaults = True
+    full_report = False
     debugging = 0
     program = os.path.basename(sys.argv[0])
     opts, args = getopt.getopt(sys.argv[1:], "ad",
                                ["all", "docelem", "encoding", "public-id",
                                 "standalone", "system-id", "version"])
     if opts:
-        get_defaults = 0
+        get_defaults = False
     for opt, arg in opts:
         if opt in ("-a", "--all"):
-            full_report = 1
+            full_report = True
         elif opt == "-d":
             debugging = debugging + 1
         elif opt == "--docelem":
@@ -106,7 +106,7 @@ def main():
         elif opt == "--version":
             reqs.add("xml_version")
     if get_defaults:
-        full_report = 1
+        full_report = True
     #
     if len(args) > 1:
         sys.stderr.write(program + ": too many input sources specified")

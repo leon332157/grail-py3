@@ -93,7 +93,7 @@ class CacheManager:
             self.disk._checkpoint_metadata()
             self.reset_disk_cache(size, new_dir)
 
-    def reset_disk_cache(self, size=None, dir=None, flush_log=0):
+    def reset_disk_cache(self, size=None, dir=None, flush_log=False):
         """Close the current disk cache and open a new one.
 
         Used primarily to change the cache directory or to clear
@@ -125,11 +125,11 @@ class CacheManager:
             self.fresh_p = lambda key, self=self, t=fresh_rate: \
                            self.fresh_periodic(self.items[key],t)  
         elif fresh_type == 'never':
-            self.fresh_p = lambda x: 1
+            self.fresh_p = lambda x: True
         else: #         == 'always'
-            self.fresh_p = lambda x: 0
+            self.fresh_p = lambda x: False
 
-    def open(self, url, mode, params, reload=0, data=None):
+    def open(self, url, mode, params, reload=False, data=None):
         """Opens a URL and returns a protocol API for it.
 
         This is the method called by the Application to load a
@@ -180,7 +180,7 @@ class CacheManager:
             elif not self.fresh_p(key):
                 item = SharedItem(url, mode, params, self, key, data, api,
                                  refresh=self.items[key].lastmod)
-                self.touch(key,refresh=1)
+                self.touch(key,refresh=True)
             else:
                 item = SharedItem(url, mode, params, self, key, data, api)
                 
@@ -225,7 +225,7 @@ class CacheManager:
         else:
             return None
 
-    def touch(self,key=None,url=None,refresh=0):
+    def touch(self,key=None,url=None,refresh=False):
         """Calls touch() method of CacheEntry object."""
         if url:
             key = self.url2key(url,'GET',{})
@@ -238,7 +238,7 @@ class CacheManager:
         assert key in self.items
         self.items[key].evict()
 
-    def delete(self, keys, evict=1):
+    def delete(self, keys, evict=True):
         if not isinstance(keys, list):
             keys = [keys]
 
@@ -252,13 +252,13 @@ class CacheManager:
             for key in keys:
                 self.items.pop(key, None)
 
-    def add(self,item,reload=0):
+    def add(self,item,reload=False):
         """If item is not in the cache and is allowed to be cached, add it. 
         """
         try:
             if item.key not in self.items and self.okay_to_cache_p(item):
                 self.caches[0].add(item)
-            elif reload == 1:
+            elif reload:
                 self.caches[0].update(item)
         except CacheFileError, err_tuple:
             (file, err) = err_tuple
@@ -282,59 +282,59 @@ class CacheManager:
         """
 
         if len(self.caches) < 1:
-            return 0
+            return False
 
         (scheme, netloc, path, parm, query, frag) = \
                  urlparse.urlparse(item.url)
 
         if query or scheme not in self.cache_protocols:
-            return 0
+            return False
 
         # don't cache really big things
         #####
         ##### limit is hardcoded, please fix
         #####
         if item.datalen > self.caches[0].max_size / 4:
-            return 0
+            return False
 
         code, msg, params = item.meta
 
         # don't cache things that don't want to be cached
         pragma = params.get('pragma')
         if pragma == 'no-cache':
-            return 0
+            return False
 
         expires = params.get('expires')
         if expires == 0:
-            return 0
+            return False
 
         # respond to http/1.1 cache control directives
         if 'cache-control' in params:
             for k, v in parse_cache_control(params['cache-control']):
                 if k in  ('no-cache', 'no-store'):
-                    return 0
+                    return False
                 if k == 'max-age':
                     expires = int(v)
 
-        return 1
+        return True
 
     def fresh_every_session(self,entry):
         """Refresh the page once per session"""
         if not entry.key in self.session_freshen:
             self.session_freshen.append(entry.key)
-            return 0
-        return 1
+            return False
+        return True
 
     def fresh_periodic(self,entry,max_age):
         """Refresh it max_age seconds have passed since it was loaded."""
         try:
             age = time.time() - entry.date.get_secs()
             if age > max_age:
-                return 0
-            return 1
+                return False
+            return True
         except AttributeError:
             # if you don't tell me the date, I don't tell you it's stale
-            return 1
+            return True
 
     def url2key(self, url, mode, params):
         """Normalize a URL for use as a caching key.
@@ -476,7 +476,7 @@ class DiskCacheEntry:
             raise CacheReadFailed, self.cache
         return api
 
-    def touch(self,refresh=0):
+    def touch(self,refresh=False):
         """Change the date of most recent check with server."""
         self.date = HTTime(secs=time.time())
         if refresh:
@@ -542,14 +542,14 @@ class DiskCache:
     log_ok_versions = ["1.2", "1.3"]
 
     def close(self,log):
-        self.manager.delete(self.items.keys(), evict=0)
+        self.manager.delete(self.items.keys(), evict=False)
         if log:
             self.use_order = []
             self._checkpoint_metadata()
         del self.items
         del self.expires
         self.manager.close_cache(self)
-        self.dead = 1
+        self.dead = True
 
     def _read_metadata(self):
         """Read the transaction log from the cache directory.
@@ -626,7 +626,7 @@ class DiskCache:
             newlog = open(newpath, 'w')
             newlog.write('3 ' + self.log_version + '\n')
             for key in self.use_order:
-                self.log_entry(self.items[key],alt_log=newlog,flush=None)
+                self.log_entry(self.items[key],alt_log=newlog,flush=False)
                 # don't flush writes during the checkpoint, because if
                 # we crash it won't matter
             newlog.close()
@@ -642,7 +642,7 @@ class DiskCache:
         logpath = os.path.join(self.directory, 'LOG')
         self.log = open(logpath, 'a')
 
-    def log_entry(self,entry,delete=0,alt_log=None,flush=1):
+    def log_entry(self,entry,delete=False,alt_log=None,flush=True):
         """Write to the log adds and evictions."""
         if alt_log:
             dest = alt_log
@@ -679,7 +679,7 @@ class DiskCache:
                         os.unlink(path)
 
         os.path.walk(self.directory, walk_erase, self.cache_file)
-        self.manager.reset_disk_cache(flush_log=1)
+        self.manager.reset_disk_cache(flush_log=True)
 
     def erase_unlogged_files(self):
 
@@ -853,7 +853,7 @@ class DiskCache:
         except (os.error, IOError), err:
             # print "error deleting %s from cache: %s" % (key, err)
             pass
-        self.log_entry(evictee,1) # 1 indicates delete entry
+        self.log_entry(evictee,delete=True)
         evictee.delete()
         self.size = self.size - evictee.size
 
@@ -879,13 +879,13 @@ class disk_cache_access:
         self.state = DATA
 
     def pollmeta(self):
-        return "Ready", 1
+        return "Ready", True
 
     def getmeta(self):
         return 200, "OK", self.headers
 
     def polldata(self):
-        return "Ready", 1
+        return "Ready", True
 
     def getdata(self,maxbytes):
         # get some data from the disk

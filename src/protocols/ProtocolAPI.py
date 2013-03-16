@@ -94,17 +94,17 @@ def protocol_access(url, mode, params, data=None):
         else:
             no_proxy = None
             
-        do_proxy = 1
+        do_proxy = True
         if no_proxy:
             list = map(str.strip, no_proxy.split(","))
             url_host, url_remains = splithost(resturl)
             url_host = (url_host or '').lower()
             if proxy_exception(url_host, list):
-                do_proxy = 0
+                do_proxy = False
             else:
                 url_host, url_port = splitport(url_host)
                 if proxy_exception(url_host, list):
-                    do_proxy = 0
+                    do_proxy = False
         if do_proxy:
             proxy_scheme, proxy_resturl = splittype(proxy)
             proxy_host, proxy_remains = splithost(proxy_resturl)
@@ -160,14 +160,14 @@ def test(url = "http://www.python.org/"):
     import sys
     if sys.argv[1:]: url = sys.argv[1]
     api = protocol_access(url, 'GET', {})
-    while 1:
+    while True:
         message, ready = api.pollmeta()
         print message
         if ready:
             meta = api.getmeta()
             print repr(meta)
             break
-    while 1:
+    while True:
         message, ready = api.polldata()
         print message
         if ready:
@@ -178,26 +178,26 @@ def test(url = "http://www.python.org/"):
     api.close()
 
 def proxy_exception(host, list):
-    """Return 1 if host is contained in list or host's suffix matches
+    """Return True if host is contained in list or host's suffix matches
     an entry in list that begins with a leading dot."""
     for exception in list:
         if host == exception:
-            return 1
+            return True
         try:
             if exception[0] == '.' and host[-len(exception):] == exception:
-                return 1
+                return True
         except IndexError:
             pass
-    return 0
+    return False
 
 def valid_proxy(proxy):
-    """Return 1 if the proxy string looks like a valid url, for an
-    proxy URL else return 0."""
+    """Return True if the proxy string looks like a valid proxy URL, else
+    return False."""
     import urlparse
     scheme, netloc, url, params, query, fragment = urlparse.urlparse(proxy)
     if scheme != 'http' or params or query or fragment:
-        return 0
-    return 1
+        return False
+    return True
     
 if __name__ == '__main__':
     test()

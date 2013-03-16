@@ -106,7 +106,7 @@ class Viewer(formatter.AbstractWriter):
         self.init_presentation()
         self.create_widgets(width=width, height=height)
         self.reset_state()
-        self.freeze(1)
+        self.freeze(True)
         self.text.bind('<Configure>', self.resize_event)
         self._atemp = []
         self.current_index = None
@@ -276,7 +276,7 @@ class Viewer(formatter.AbstractWriter):
                 self.set_cursor(CURSOR_WAIT)
 
             self.text.config(stylesheet.default)
-            use_font_dingbats = 1
+            use_font_dingbats = True
             # Build tags that we might be using or have special semantics;
             # other font tags will be configured dynamically.
             for tag in ['_ding'] + self.__fonttags_built.keys():
@@ -287,7 +287,7 @@ class Viewer(formatter.AbstractWriter):
                     # dingbats if the font is not available in the current
                     # size.
                     if tag == '_ding':
-                        use_font_dingbats = 0
+                        use_font_dingbats = False
                     else:
                         raise TclError, err, sys.exc_traceback
                 else:
@@ -296,7 +296,7 @@ class Viewer(formatter.AbstractWriter):
                         fontname = self.text.tk.call('font', 'create',
                                                      '-family', fontname)
                         if 'dingbat' not in fontname:
-                            use_font_dingbats = 0
+                            use_font_dingbats = False
             #
             # Set dingbat approach appropriately:
             #
@@ -453,7 +453,7 @@ class Viewer(formatter.AbstractWriter):
     def unfreeze(self):
         self.text['state'] = NORMAL
 
-    def freeze(self, update=0):
+    def freeze(self, update=False):
         if self.pendingdata and self.pendingdata.strip():
             self.text.insert(END, self.pendingdata, self.flowingtags)
             self.pendingdata = ''
@@ -619,7 +619,7 @@ class Viewer(formatter.AbstractWriter):
 
     # Viewer's own methods
 
-    SHOW_TITLES = 0
+    SHOW_TITLES = False
     def anchor_enter(self, event):
         tagurl = self.find_tag_url()
         url, target = self.split_target(tagurl)
@@ -665,7 +665,7 @@ class Viewer(formatter.AbstractWriter):
         self.context.message_clear()
 
     def anchor_press(self, event):
-        self._shifted = 0
+        self._shifted = False
         self.context.viewer.text.focus_set()
         self.current_index = self.text.index(CURRENT) # For anchor_click
         url = self.find_tag_url()
@@ -674,7 +674,7 @@ class Viewer(formatter.AbstractWriter):
 
     def shift_anchor_press(self, event):
         self.anchor_press(event)
-        self._shifted = 1
+        self._shifted = True
 
     def anchor_click(self, event):
         here = self.text.index("@%d,%d" % (event.x, event.y))
@@ -703,7 +703,7 @@ class Viewer(formatter.AbstractWriter):
             app = self.context.app
             b = Browser(app.root, app)
             b.context.load(self.context.get_baseurl(url))
-            self.remove_temp_tag(histify=1)
+            self.remove_temp_tag(histify=True)
 
     def split_target(self, url):
         a, _, b = url.partition(TARGET_SEPARATOR)
@@ -716,7 +716,7 @@ class Viewer(formatter.AbstractWriter):
             for (start, end) in list:
                 self.text.tag_add('atemp', start, end)
 
-    def remove_temp_tag(self, histify=0):
+    def remove_temp_tag(self, histify=False):
         for (start, end) in self._atemp:
             self.text.tag_remove('atemp', start, end)
         if histify:
@@ -863,8 +863,8 @@ class Viewer(formatter.AbstractWriter):
 
 
 class ViewerMenu:
-    __have_link = 0
-    __have_image = 0
+    __have_link = False
+    __have_image = False
     __link_url = None
     __image_url = None
     __image_file = ""
@@ -918,14 +918,14 @@ class ViewerMenu:
         parent = self.__context.viewer.parent
         self.__menu.entryconfig(3, state=(parent and NORMAL or DISABLED))
         #
-        need_link = self.__link_url and 1 or 0
-        need_image = self.__image_url and 1 or 0
+        need_link = bool(self.__link_url)
+        need_image = bool(self.__image_url)
         if (need_link != self.__have_link
             or need_image != self.__have_image
             or self.__image_prev != self.__image_file):
             if self.__have_link or self.__have_image:
                 self.__menu.delete(self.__last_standard_index + 1, END)
-                self.__have_link = self.__have_image = 0
+                self.__have_link = self.__have_image = False
             if need_link:
                 self.__add_link_items()
             if need_image:
@@ -946,7 +946,7 @@ class ViewerMenu:
             self.__image_file = ""
 
     def __add_image_items(self):
-        self.__have_image = 1
+        self.__have_image = True
         self.__menu.add_separator()
         self.__image_prev = self.__image_file
         self.__menu.add_command(label="Open Image " + self.__image_file,
@@ -957,7 +957,7 @@ class ViewerMenu:
                                 command=self.__select_image_url)
 
     def __add_link_items(self):
-        self.__have_link = 1
+        self.__have_link = True
         self.__menu.add_separator()
         self.__menu.add_command(label="Bookmark Link",
                                 command=self.__bkmark_link)

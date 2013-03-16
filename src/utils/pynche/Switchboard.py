@@ -24,7 +24,7 @@ class Switchboard:
         self.__red = 0
         self.__green = 0
         self.__blue = 0
-        self.__canceled = 0
+        self.__canceled = False
         # read the initialization file
         fp = None
         if initfile:
@@ -91,7 +91,7 @@ class Switchboard:
             if hasattr(v, 'withdraw'):
                 v.withdraw()
 
-    def canceled(self, flag=1):
+    def canceled(self, flag=True):
         self.__canceled = flag
 
     def canceled_p(self):

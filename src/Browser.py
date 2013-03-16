@@ -97,7 +97,7 @@ class Browser:
         self.logo.pack(side=LEFT, fill=BOTH, padx=10, pady=10,
                        in_=self.topframe)
         self.root.bind("<Alt-period>", self.stop_command)
-        self.logo_animate = 0
+        self.logo_animate = False
 
     def create_menubar(self):
         # Create menu bar, menus, and menu entries
@@ -422,7 +422,7 @@ class Browser:
         self.logo_index = 0             # Currently displayed image
         self.logo_last = -1             # Last image; -1 if unknown
         self.logo_id = None             # Tk id of timer callback
-        self.logo_animate = 1           # True if animating
+        self.logo_animate = True           # True if animating
         self.logo_next()
 
     def logo_next(self):
@@ -438,13 +438,13 @@ class Browser:
         image = self.app.load_dingbat(entytyname)
         if not image:
             if self.logo_index == 1:
-                self.logo_animate = 0
+                self.logo_animate = False
                 return
             self.logo_index = 1
             entytyname = "grail.logo.%d" % self.logo_index
             image = self.app.load_dingbat(entytyname)
             if not image:
-                self.logo_animate = 0
+                self.logo_animate = False
                 return
         self.logo.config(image=image, state=NORMAL)
 

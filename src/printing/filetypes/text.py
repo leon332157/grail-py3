@@ -26,7 +26,7 @@ class PrintingTextParser(Reader.TextParser):
                 self.write_page(s)
             self.__buffer = strings[-1]
 
-    __first = 1
+    __first = True
     def write_page(self, data):
         data = data.rstrip()
         if self.__strip_blanks:
@@ -35,7 +35,7 @@ class PrintingTextParser(Reader.TextParser):
             if not data:
                 return
         if self.__first:
-            self.__first = 0
+            self.__first = False
         else:
             self.viewer.ps.close_line()
             self.viewer.ps.push_page_break()

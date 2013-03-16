@@ -25,14 +25,14 @@ from collections import defaultdict
 validpat = '^([-_a-z0-9]*)--([-_a-z0-9]*):(.*)$'
 valid = re.compile(validpat, re.IGNORECASE)
 
-debug = 0
+debug = False
 
 def parseprefs(fp):
     """Parse a Grail preferences file.  See module docstring."""
     groups = defaultdict(dict)
     group = None                        # used for continuation line
     lineno = 0
-    while 1:
+    while True:
         line = fp.readline()
         if not line:
             break
@@ -79,7 +79,7 @@ def test():
     import sys
     import time
     global debug
-    debug = 1
+    debug = True
     if sys.argv[1:]:
         fn = sys.argv[1]
     else:

@@ -87,28 +87,28 @@ class AppletLoader:
         prefs = self.app.prefs
         mode = prefs.Get("applets", "load")
         if mode == "none":
-            return 0
+            return False
         if mode == "some":
             key = get_key(self.context)
             rawgroups = prefs.Get("applets", "groups")
             groups = rawgroups.lower().split()
             if key not in groups:
-                return 0
+                return False
         if self.code:                   # <APP> or <APPLET>
             match = codeprog.match(self.code)
             if not match:
-                return 0
+                return False
             return match.end() == len(self.code)
         else:                           # <OBJECT>
             if self.classid:
                 match = codeprog.match(self.classid)
                 if match and match.end() == len(self.classid):
-                    return 1
+                    return True
             if self.codebase:
                 match = codeprog.match(self.codebase)
                 if match and match.end() == len(self.codebase):
-                    return 1
-            return 0
+                    return True
+            return False
 
     def set_param(self, name, value):
         """Set the value for a named parameter for the widget."""

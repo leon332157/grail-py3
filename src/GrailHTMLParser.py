@@ -25,7 +25,7 @@ if hasattr(HTMLParser, 'do_isindex'):
 if hasattr(HTMLParser, 'do_link'):
     del HTMLParser.do_link
 
-_inited = 0
+_inited = False
 
 def init_module(prefs):
     for opt in (1, 2, 3, 4, 5, 6):
@@ -37,7 +37,7 @@ class GrailHTMLParser(HTMLParser):
 
     object_aware_tags = ['param', 'a', 'alias', 'applet', 'script', 'object']
 
-    def __init__(self, viewer, reload=0):
+    def __init__(self, viewer, reload=False):
         global _inited
         self.viewer = viewer
         self.reload = reload
@@ -52,7 +52,7 @@ class GrailHTMLParser(HTMLParser):
         HTMLParser.__init__(self, fmt)
         self.push_formatter(fmt)
         if not _inited:
-            _inited = 1
+            _inited = True
             init_module(self.app.prefs)
         self._ids = {}
         # Hackery so reload status can be reset when all applets are loaded
@@ -61,7 +61,7 @@ class GrailHTMLParser(HTMLParser):
         if self.reload1:
             self.reload1.attach(self)
         if self.app.prefs.GetBoolean('parsing-html', 'strict'):
-            self.sgml_parser.restrict(0)
+            self.sgml_parser.restrict(False)
         # Information from <META ... CONTENT="..."> is collected here.
         # Entries are KEY --> [(NAME, HTTP-EQUIV, CONTENT), ...], where
         # KEY is (NAME or HTTP-EQUIV).
@@ -108,11 +108,11 @@ class GrailHTMLParser(HTMLParser):
 
     def register_id(self, id):
         if id in self._ids:
-            self.badhtml = 1
-            return 0
+            self.badhtml = True
+            return False
         self._ids[id] = id
         self.viewer.add_target('#' + id)
-        return 1
+        return True
 
     def anchor_bgn(self, href, name, type, target="", id=None):
         self.anchor = href
@@ -199,7 +199,7 @@ class GrailHTMLParser(HTMLParser):
                           hspace=hspace, vspace=vspace)
 
     def handle_image(self, src, alt, usemap, ismap, align, width,
-                     height, border=2, reload=0, hspace=0, vspace=0):
+                     height, border=2, reload=False, hspace=0, vspace=0):
         if not self.app.prefs.GetBoolean("browser", "load-images"):
             self.handle_data(alt)
             return
@@ -226,7 +226,7 @@ class GrailHTMLParser(HTMLParser):
         HTMLParser.end_title(self)
         self.context.set_title(self.title)
         if not self.inhead:
-            self.badhtml = 1
+            self.badhtml = True
 
     # Override tag: <BODY colorspecs...>
 
@@ -305,14 +305,14 @@ class GrailHTMLParser(HTMLParser):
         # at least one of HTTP-EQUIV=xyz or NAME=xyz is required.
         if "content" not in attrs \
            or "http-equiv" not in attrs and "name" not in attrs:
-            self.badhtml = 1
+            self.badhtml = True
             return
         name = extract_keyword("name", attrs, conv=grailutil.conv_normstring)
         http_equiv = extract_keyword("http-equiv", attrs,
                                      conv=grailutil.conv_normstring)
         key = name or http_equiv
         if not key:
-            self.badhtml = 1
+            self.badhtml = True
             return
         content = extract_keyword("content", attrs, conv=str.strip)
         item = (name, http_equiv, content)
@@ -324,11 +324,11 @@ class GrailHTMLParser(HTMLParser):
             content = grailutil.conv_normstring(content)
             strict = self.sgml_parser.strict_p()
             if content == "strict" and not strict:
-                self.sgml_parser.restrict(0)
+                self.sgml_parser.restrict(False)
                 self.context.message("Entered strict parsing mode on"
                                      " document request.")
             elif content == "forgiving" and strict:
-                self.sgml_parser.restrict(1)
+                self.sgml_parser.restrict(True)
                 self.context.message("Exited strict parsing mode on"
                                      " document request.")
 
@@ -374,7 +374,7 @@ class GrailHTMLParser(HTMLParser):
             from ImageMap import MapInfo
             self.current_map = MapInfo(attrs['name'])
         else:
-            self.badhtml = 1
+            self.badhtml = True
 
     def end_map(self):
         if self.current_map:
@@ -392,7 +392,7 @@ class GrailHTMLParser(HTMLParser):
                             conv=grailutil.conv_normstring)
             if shape == 'polygon':
                 shape = 'poly'
-                self.badhtml = 1
+                self.badhtml = True
             coords = extract('coords', attrs, '')
             alt = extract('alt', attrs, '')
             target = extract('target', attrs, '')
@@ -405,11 +405,11 @@ class GrailHTMLParser(HTMLParser):
             except (IndexError, ValueError):
                 # wrong number of coordinates
                 # how should this get reported to the user?
-                self.badhtml = 1
+                self.badhtml = True
                 print "imagemap specifies bad coordinates:", repr(coords)
                 pass
         else:
-            self.badhtml = 1
+            self.badhtml = True
 
     def parse_area_coords(self, shape, text):
         """Parses coordinate string into list of numbers.
@@ -563,7 +563,7 @@ class GrailHTMLParser(HTMLParser):
                                           listtype = listtype)
 
     def report_unbalanced(self, tag):
-        self.badhtml = 1
+        self.badhtml = True
 
     # Handle proposed iconic entities (see W3C working drafts or HTML 3):
 
@@ -703,7 +703,7 @@ class IconicEntityLinker:
         app = viewer.context.app
         b = Browser.Browser(app.root, app)
         b.context.load(url)
-        viewer.remove_temp_tag(histify=1)
+        viewer.remove_temp_tag(histify=True)
 
     def button_3_event(self, event=None):
         url = self.__viewer.context.get_baseurl(self.__url)
@@ -745,7 +745,8 @@ class DynamicReloader:
            and context.viewer.text:
             same_page = (self.__starting_url == self.__target_url)
             if same_page:
-                context.load_from_history(context.history.peek(0), reload=1)
+                context.load_from_history(
+                    context.history.peek(0), reload=True)
             else:
                 context.load(self.__target_url)
 

@@ -93,7 +93,7 @@ __formats = {
                       "xbel",      ".xml",	"xbel"),
     }
 
-__format_inited = 0
+__format_inited = False
 
 def __init_format_table():
     global __format_inited
@@ -104,7 +104,7 @@ def __init_format_table():
         if rx:
             rx = re.compile(rx)
             table.append((rx, result))
-    __format_inited = 1
+    __format_inited = True
 
 def get_format(fp):
     if not __format_inited:

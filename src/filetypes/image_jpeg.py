@@ -21,11 +21,11 @@ if hasattr(os, 'popen') and _FILTERPATH:
     
         """
     
-        def __init__(self, viewer, reload=0):
+        def __init__(self, viewer, reload=False):
             self.broken = None
             self.tf = self.tfname = None
             self.viewer = viewer
-            self.viewer.new_font((AS_IS, AS_IS, AS_IS, 1))
+            self.viewer.new_font((AS_IS, AS_IS, AS_IS, True))
             self.tfname = tempfile.mktemp()
             self.tf = os.popen(_FILTER + '>' + self.tfname, 'wb')
             self.label = Label(self.viewer.text, text=self.tfname,
@@ -38,7 +38,7 @@ if hasattr(os, 'popen') and _FILTERPATH:
             except IOError, (errno, errmsg):
                 self.tf.close()
                 self.tf = None
-                self.broken = 1
+                self.broken = True
                 raise IOError, (errno, errmsg)
     
         def close(self):

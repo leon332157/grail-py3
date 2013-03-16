@@ -54,7 +54,7 @@ class Context(URIContext):
         self._target = None
         self.last_status_update = 0.0   # Time when last status update was done
         self.next_status_update = None  # ID of next scheduled status update
-        self.show_source = 0
+        self.show_source = False
         self.applet_group = None
         self.notifications = []         # callbacks when no readers left
         self.image_maps = {}            # For ImageMap
@@ -97,7 +97,7 @@ class Context(URIContext):
 
     # Load URL, base URL and target
 
-    def set_url(self, url, baseurl=None, target=None, histify=1):
+    def set_url(self, url, baseurl=None, target=None, histify=True):
         """Set loaded URL, base URL and target for the current page.
 
         The loaded URL is what this page was loaded from; the base URL
@@ -145,7 +145,7 @@ class Context(URIContext):
         """Return the default target for this page (which may be None)."""
         return self._target
 
-    def follow(self, url, target="", histify=1, scrollpos=None):
+    def follow(self, url, target="", histify=True, scrollpos=None):
         """Follow a link, given by a relative URL.
 
         If the relative URL is a fragment id (#name) on the current
@@ -172,7 +172,7 @@ class Context(URIContext):
         else:
             self.viewer.scroll_to_position(self.page.scrollpos())
             self.viewer.clear_selection()
-        self.viewer.remove_temp_tag(histify=1)
+        self.viewer.remove_temp_tag(histify=True)
         baseurl = self.get_baseurl(url)
         page = self.page
         self.page = None # triggers set_url() to update history
@@ -277,7 +277,7 @@ class Context(URIContext):
                 image = None
         return image
 
-    def get_async_image(self, src, reload=0, width=0, height=0):
+    def get_async_image(self, src, reload=False, width=0, height=0):
         # check out the request
         if not src: return None
         url = self.get_baseurl(src)
@@ -321,19 +321,19 @@ class Context(URIContext):
         self.load_from_history(self.history.peek(+1))
 
     def reload_page(self):
-        self.load_from_history(self.history.peek(0), reload=1)
+        self.load_from_history(self.history.peek(0), reload=True)
 
-    def load_from_history(self, (future, page), reload=0):
+    def load_from_history(self, (future, page), reload=False):
         if not page:
-            return 0
+            return False
         self.future = future
         if not reload:
-            self.follow(page.url(), histify=0, scrollpos=page.scrollpos(),
-                        target="_self")
+            self.follow(page.url(), histify=False,
+                        scrollpos=page.scrollpos(), target="_self")
         else:
             self.load(page.url(), reload=reload, scrollpos=page.scrollpos(),
                       target="_self")
-        return 1
+        return True
 
     def show_history_dialog(self):
         if not self.history_dialog:
@@ -350,7 +350,7 @@ class Context(URIContext):
 
     # Internals handle loading pages
 
-    def save_page_state(self, reload=0):
+    def save_page_state(self, reload=False):
         if not self.page: return
         # Save page scroll position
         self.page.set_scrollpos(self.viewer.scrollpos())
@@ -363,7 +363,7 @@ class Context(URIContext):
             del self.forms
         self.page.set_formdata(formdata)
 
-    def read_page(self, url, method, params, show_source=0, reload=0,
+    def read_page(self, url, method, params, show_source=False, reload=False,
                   scrollpos=None, data=None):
         # TBD: this is a horrid hack used so that
         # mailtoAPI.mailto_access can get at the URL of the page that
@@ -414,7 +414,7 @@ class Context(URIContext):
         """
         # File/Save As...
         url = self.get_baseurl(*relurls)
-        if url == self.get_url() and self.busycheck(): return 0
+        if url == self.get_url() and self.busycheck(): return False
         import FileDialog
         fd = FileDialog.SaveFileDialog(self.root)
         # give it a default filename on which save within the
@@ -432,11 +432,11 @@ class Context(URIContext):
             # maybe bogus assumption?
             if not default: default = 'index.html'
         file = fd.go(default=default, key="save")
-        if not file: return 0
+        if not file: return False
         #
         SavingReader(self, url, 'GET', {}, 0, 0, filename=file)
         self.message_clear()
-        return 1
+        return True
 
     def print_document(self):
         # File/Print...
@@ -449,12 +449,12 @@ class Context(URIContext):
     def view_source(self):
         from Browser import Browser
         browser = Browser(self.app.root, self.app, height=24)
-        browser.context.load(self.get_url(), show_source=1)
+        browser.context.load(self.get_url(), show_source=True)
 
     # Externals for loading pages
 
     def load(self, url, method='GET', params={},
-             show_source=0, reload=0, scrollpos=None,
+             show_source=False, reload=False, scrollpos=None,
              target="", source=None):
         # Update state of current page, in case we re-visit it via the
         # history mechanism.
@@ -547,7 +547,7 @@ class Context(URIContext):
         method = 'POST'
         self.message("Posting to %s" % url)
         try:
-            self.read_page(url, method, params, reload=1, data=data)
+            self.read_page(url, method, params, reload=True, data=data)
         except IOError, msg:
             self.error_dialog(IOError, msg)
             self.message_clear()
@@ -567,7 +567,7 @@ class Context(URIContext):
             if self.on_top():
                 self.browser.clearstop()
             if self.source:
-                self.source.remove_temp_tag(histify=1)
+                self.source.remove_temp_tag(histify=True)
                 self.source = None
             self.notify()
         self.new_reader_status()
@@ -579,8 +579,8 @@ class Context(URIContext):
         if self.readers:
             self.error_dialog('Busy',
                 "Please wait until the transfer is done (or stop it)")
-            return 1
-        return 0
+            return True
+        return False
 
     def stop(self):
         for reader in self.readers[:]:
@@ -601,7 +601,7 @@ class Context(URIContext):
 class SimpleContext(Context):
     # this can be used when interactive updates are not desired
     def new_reader_status(self): pass
-    def on_top(self): return 0
+    def on_top(self): return False
 
 
 

@@ -140,7 +140,7 @@ class ftp_access:
 
     def pollmeta(self):
         assert self.state == META
-        return "Ready", 1
+        return "Ready", True
 
     def getmeta(self):
         assert self.state == META
@@ -162,7 +162,7 @@ class ftp_access:
 
     def polldata(self):
         assert self.state in (EOF, DATA)
-        return "Ready", 1
+        return "Ready", True
 
     def getdata(self, maxbytes):
         if self.state == EOF:
@@ -283,7 +283,7 @@ class ftpwrapper:
             self.ftp.cwd(dir)
 
     def busy(self):
-        return self.conn and 1
+        return bool(self.conn)
 
     def done(self):
         conn = self.conn
@@ -296,8 +296,9 @@ class ftpwrapper:
                 print "[ftp.voidresp() failed]"
 
     def retrfile(self, file, type):
-        if type == 'd': cmd = 'TYPE A'; isdir = 1
-        else: cmd = 'TYPE ' + type.upper(); isdir = 0
+        isdir = type == 'd'
+        if isdir: cmd = 'TYPE A'
+        else: cmd = 'TYPE ' + type.upper()
         try:
             self.ftp.voidcmd(cmd)
         except ftplib.all_errors:
@@ -313,7 +314,7 @@ class ftpwrapper:
                     raise IOError, ('ftp error', reason)
         if not conn:
             # Try a directory listing
-            isdir = 1
+            isdir = True
             if file: cmd = 'LIST ' + file
             else: cmd = 'LIST'
             conn = self.ftp.transfercmd(cmd)

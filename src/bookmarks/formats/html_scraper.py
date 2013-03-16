@@ -31,7 +31,7 @@ class Parser(sgml.SGMLHandler.BaseSGMLHandler):
     def save_bgn(self):
         self.__buffer = ''
 
-    def save_end(self, reflow=1):
+    def save_end(self, reflow=True):
         s, self.__buffer = self.__buffer, ''
         if reflow:
             s = ' '.join(s.split())

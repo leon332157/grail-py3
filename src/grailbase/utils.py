@@ -61,17 +61,17 @@ def which(filename, searchlist=None):
 def establish_dir(dir):
     """Ensure existence of DIR, creating it if necessary.
 
-    Returns 1 if successful, 0 otherwise."""
+    Returns True if successful, False otherwise."""
     if os.path.isdir(dir):
-        return 1
+        return True
     head, tail = os.path.split(dir)
     if not establish_dir(head):
-        return 0
+        return False
     try:
         os.mkdir(dir, 0o777)
-        return 1
+        return True
     except os.error:
-        return 0
+        return False
 
 
 def conv_mimetype(type):

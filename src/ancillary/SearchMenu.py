@@ -39,7 +39,7 @@ class SearchMenu:
         self.create_dialog(0)
         self.sdialog.search_command()
 
-    def create_dialog(self, force=0):
+    def create_dialog(self, force=False):
         if not self.sdialog:
             self.sdialog = SearchDialog(self._root, self._searchable)
         elif force:
@@ -123,7 +123,7 @@ class SearchDialog:
         pat = self.pat_entry.get()
         if not pat:
             self._root.bell()
-            return 0
+            return False
         status = self._searchable.search_for_pattern(
             pat, self.regexp_var.get(), self.case_var.get(),
             self.backwards_var.get())

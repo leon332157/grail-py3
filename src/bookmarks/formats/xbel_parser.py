@@ -29,7 +29,7 @@ class CaptureMixin:
     __capturing = 0
 
     def capturing(self):
-        return self.__capturing and 1
+        return bool(self.__capturing)
 
     def capture_bgn(self, tag, attrs):
         if self.__capturing:
@@ -38,7 +38,7 @@ class CaptureMixin:
         self.__context = [self.__capture[-1]]
         self.__capturing = 1
 
-    def capture_end(self, normalize=0):
+    def capture_end(self, normalize=False):
         if self.__capturing:
             raise CaptureError("capturing not complete")
         if normalize:
@@ -71,7 +71,7 @@ class CaptureMixin:
         return self.__capturing
 
 
-def normalize_capture(data, preserve=0):
+def normalize_capture(data, preserve=False):
     queue = [(data, preserve)]
     while queue:
         (tag, attrs, content), preserve = queue[0]
@@ -230,7 +230,7 @@ class DocumentHandler:
         self.handle_id(self.__folder, attrs)
         return self.__folder
 
-    def handle_id(self, node, attrs, attrname="id", required=0):
+    def handle_id(self, node, attrs, attrname="id", required=False):
         id = attrs.get(attrname)
         if id:
             node.set_id(id)
@@ -241,7 +241,7 @@ class DocumentHandler:
             raise BookmarkFormatError(self.__filename,
                                       "missing %s attribute" % attrname)
 
-    def handle_idref(self, node, attrs, attrname="ref", required=1):
+    def handle_idref(self, node, attrs, attrname="ref", required=True):
         idref = attrs.get(attrname)
         if idref:
             if idref in self.__idmap:

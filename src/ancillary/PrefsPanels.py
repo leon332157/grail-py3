@@ -135,7 +135,7 @@ class Framework:
     def PrefsEntry(self, parent, label, group, component,
                    typename='string',
                    label_width=25, entry_height=1, entry_width=None,
-                   composite=0, variable=None):
+                   composite=False, variable=None):
         """Convenience for creating preferences entry or text widget.
 
         A frame is built within the specified parent, and packed with a
@@ -194,7 +194,7 @@ class Framework:
 
     def PrefsRadioButtons(self, frame, title, button_labels,
                           group, component, typename='string',
-                          composite=0, label_width=25, variable=None):
+                          composite=False, label_width=25, variable=None):
         """Convenience for creating radiobutton preferences widget.
 
         A label and a button are packed in 'frame' arg, using 'title'.
@@ -332,7 +332,7 @@ class Framework:
         self.set_widgets()
 
         if self.app.prefs.GetBoolean('preferences', 'panel-debugging'):
-            self.toggle_debugging(enable=1)
+            self.toggle_debugging(enable=True)
 
     def create_disposition_bar(self, bar):
         bartop = Frame(bar)
@@ -381,10 +381,10 @@ class Framework:
                                         command=self.reload_preferences_cmd)
         reload_panel_btn.pack(side=LEFT, expand=1)
         reload_preferences_btn.pack(side=RIGHT, expand=1)
-        self.debugging = 0
+        self.debugging = False
 
     # Operational commands:
-    def set_widgets(self, factory=0):
+    def set_widgets(self, factory=False):
         """Initialize panel widgets with preference db values.
 
         Optional FACTORY true means use system defaults for values."""
@@ -399,7 +399,7 @@ class Framework:
 
     def done_cmd(self, event=None):
         """Conclude panel: commit and withdraw it."""
-        self.apply_cmd(close=1)
+        self.apply_cmd(close=True)
 
     def help_cmd(self, event=None):
         """Dispatch browser on self.help_url."""
@@ -415,7 +415,7 @@ class Framework:
         browser.context.load(urlparse.urljoin(helproot, self.HELP_URL))
         browser.root.tkraise()
 
-    def apply_cmd(self, event=None, close=0):
+    def apply_cmd(self, event=None, close=False):
         """Apply settings from panel to preferences."""
         self.widget.update_idletasks()
 
@@ -440,7 +440,7 @@ class Framework:
 
     def factory_defaults_cmd(self):
         """Reinit panel widgets with system-defaults preference db values."""
-        self.set_widgets(factory=1)
+        self.set_widgets(factory=True)
         self.poll_modified()
         self.UpdateLayout()
 
@@ -458,21 +458,21 @@ class Framework:
         self.Dismiss()
         self.widget.withdraw()
 
-    def toggle_debugging(self, event=None, enable=0):
+    def toggle_debugging(self, event=None, enable=False):
         """Include debug buttons - for, eg, reloading panel and prefs."""
         if self.debugging and not enable:
             self.debug_bar.forget()
-            self.debugging = 0
+            self.debugging = False
         else:
             self.debug_bar.pack(fill=X, side=BOTTOM)
-            self.debugging = 1
+            self.debugging = True
 
     def reload_panel_cmd(self, event=None):
         """Unadvertised routine for reloading panel code during development."""
         # Zeroing the entry for the module will force an import, which
         # will force a reload if the code has been modified.
         self.hide()
-        self.app.prefs_panels.load(self.name, reloading=1)
+        self.app.prefs_panels.load(self.name, reloading=True)
 
     def reload_preferences_cmd(self, event=None):
         """Unadvertised routine for reloading preferences db.
@@ -497,12 +497,12 @@ class Framework:
             self.apply_btn.config(state='disabled')
             self.revert_btn.config(state='disabled')
         # Factory Defaults w.r.t. factory settings:
-        if self.modified_p(factory=1):
+        if self.modified_p(factory=True):
             self.factory_defaults_btn.config(state='normal')
         else:
             self.factory_defaults_btn.config(state='disabled')
 
-    def modified_p(self, factory=0):
+    def modified_p(self, factory=False):
         """True if any UI setting is changed from saved.
 
         Optional 'factory' keyword means check wrt system default settings."""
@@ -516,12 +516,12 @@ class Framework:
                     if isinstance(uival, str):
                         uival = typify(uival, type_nm)
                     if uival != prefsgettyped(g, c, type_nm, factory):
-                        return 1
+                        return True
                 elif uival != prefsgetstr(g, c, factory):
-                    return 1
-            return 0
+                    return True
+            return False
         except TypeError:
-            return 1
+            return True
 
 # Setup
 
@@ -594,10 +594,10 @@ class PrefsPanelsMenu:
             if self.load(name):
                 self.do_post(name)
 
-    def load(self, name, reloading=0):
+    def load(self, name, reloading=False):
         """Import the panel module and init the instance.
 
-        Returns 1 if successful, None otherwise."""
+        Returns True if successful, False otherwise."""
         entry = self.panels[name]
         modnm, dir, _ = entry
         try:
@@ -611,12 +611,12 @@ class PrefsPanelsMenu:
                               + PANEL_CLASS_NAME_SUFFIX)
                 # Instantiate it:
                 entry[2] = getattr(mod, class_name)(name, self.app)
-                return 1
+                return True
             except:
                 # Whatever may go wrong in import or panel post
                 e, v, tb = sys.exc_type, sys.exc_value, sys.exc_traceback
                 self.app.root.report_callback_exception(e, v, tb)
-                return None
+                return False
         finally:
             try:
                 sys.path.remove(dir)

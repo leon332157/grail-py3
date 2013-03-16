@@ -8,7 +8,7 @@ import tktools
 class OpenURIDialog:
     __lasturi = ''
 
-    def __init__(self, master, title=None, new=1):
+    def __init__(self, master, title=None, new=True):
         # create widgets
         self.__frame = tktools.make_toplevel(
             master, title=title or "Open Location Dialog")
@@ -60,12 +60,12 @@ class OpenURIDialog:
 
     def okaycmd(self, event=None):
         self.__uri = self.__entry.get()
-        self.__new = 0
+        self.__new = False
         self.__frame.quit()
 
     def newcmd(self, event=None):
         self.__uri = self.__entry.get()
-        self.__new = 1
+        self.__new = True
         self.__frame.quit()
 
     def clearcmd(self, event=None):
@@ -73,5 +73,5 @@ class OpenURIDialog:
 
     def cancelcmd(self, event=None):
         self.__uri = None
-        self.__new = 0
+        self.__new = False
         self.__frame.quit()

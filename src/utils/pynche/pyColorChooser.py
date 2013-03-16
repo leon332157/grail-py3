@@ -11,8 +11,8 @@ class Chooser:
                  master = None,
                  databasefile = None,
                  initfile = None,
-                 ignore = None,
-                 wantspec = None):
+                 ignore = False,
+                 wantspec = False):
         self.__master = master
         self.__databasefile = databasefile
         self.__initfile = initfile or os.path.expanduser('~/.pynche')
@@ -37,7 +37,7 @@ class Chooser:
             r, g, b = Main.initial_color(color, colordb)
             self.__sb.update_views(r, g, b)
         # reset the canceled flag and run it
-        self.__sb.canceled(0)
+        self.__sb.canceled(False)
         Main.run(self.__pw, self.__sb)
         rgbtuple = self.__sb.current_rgb()
         self.__pw.withdraw()

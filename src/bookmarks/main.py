@@ -42,13 +42,13 @@ SCRIPT_PREFIX = "bkmk2"
 
 
 class Options:
-    guess_type = 0
+    guess_type = False
     output_format = "html"
-    scrape_links = 0
-    export = 0
+    scrape_links = False
+    export = False
     export_fields = []
     info = 0
-    search = 0
+    search = False
     keywords = []
     __export_field_map = {
         "modified": "last_modified",
@@ -70,7 +70,7 @@ class Options:
             if opt in ("-h", "--help"):
                 usage()
             elif opt in ("-g", "--guess-type"):
-                self.guess_type = 1
+                self.guess_type = True
             elif opt in ("-f", "--format"):
                 if not valid_output_format(arg):
                     usage(2, "unknown output format: " + arg)
@@ -78,11 +78,11 @@ class Options:
             elif opt in ("-i", "--info"):
                 self.info = self.info + 1
             elif opt in ("-s", "--scrape"):
-                self.scrape_links = 1
+                self.scrape_links = True
             elif opt == "-x":
-                self.export = 1
+                self.export = True
             elif opt == "--export":
-                self.export = 1
+                self.export = True
                 fields = arg.split(",")
                 print fields
                 for f in fields:
@@ -91,16 +91,16 @@ class Options:
                         self.export_fields.append(fname)
             elif opt == "--search":
                 map(self.keywords.append, arg.split(","))
-                self.search = 1
+                self.search = True
 
 
 def valid_output_format(format):
     try:
         bookmarks.get_writer_class(format)
     except ImportError:
-        return 0
+        return False
     else:
-        return 1
+        return True
 
 
 def main():
@@ -171,7 +171,7 @@ def main():
         from . import exporter
         export_options = exporter.ExportOptions()
         for s in options.export_fields:
-            setattr(export_options, "remove_" + s, 0)
+            setattr(export_options, "remove_" + s, False)
         walker = exporter.ExportWalker(root, export_options)
         walker.walk()
     if options.info:
@@ -198,7 +198,7 @@ def report_info(root):
     print "%12s: %5d" % ("Total", total)
 
 
-def guess_bookmarks_type(filename, verbose=0):
+def guess_bookmarks_type(filename, verbose=False):
     if filename == "-":
         type = bookmarks.get_format(sys.stdin)
     else:

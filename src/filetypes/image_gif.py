@@ -40,16 +40,16 @@ try:
     import ImageTk
     from pil_interface import pil_interface
 except ImportError:
-    _use_pil = 0
+    _use_pil = False
 else:
-    _use_pil = 1
+    _use_pil = True
 
 
 class PILGifParser(pil_interface):
     im = None
     currentpos = 0
     duration = 0
-    loop = 0
+    loop = False
 
     def close(self):
         if self.buf:
@@ -65,7 +65,7 @@ class PILGifParser(pil_interface):
             except:
                 # XXX What was I trying to catch here?
                 # I think (EOFError, IOError).
-                self.broken = 1
+                self.broken = True
                 stdout = sys.stdout
                 try:
                     sys.stdout = sys.stderr
@@ -127,10 +127,10 @@ class TkGifParser:
     image from it.
     """
 
-    def __init__(self, viewer, reload=0):
+    def __init__(self, viewer, reload=False):
         self.tf = self.tfname = None
         self.viewer = viewer
-        self.viewer.new_font((AS_IS, AS_IS, AS_IS, 1))
+        self.viewer.new_font((AS_IS, AS_IS, AS_IS, True))
         self.tfname = tempfile.mktemp()
         self.tf = open(self.tfname, 'wb')
         self.label = Tkinter.Label(self.viewer.text, text=self.tfname,

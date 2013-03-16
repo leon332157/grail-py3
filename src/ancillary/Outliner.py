@@ -1,7 +1,3 @@
-True = 1
-False = None
-
-
 class OutlinerNode:
     _expanded_p = True
     _parent = None
@@ -80,7 +76,7 @@ class OutlinerNode:
 
 
 class OutlinerViewer:
-    def __init__(self, root, follow_all_children=None, shared_root=None):
+    def __init__(self, root, follow_all_children=False, shared_root=False):
         """Create a new viewer for a tree of nodes.
 
         If follow_all_children is true, then child links are followed
@@ -120,7 +116,7 @@ class OutlinerViewer:
 
     ## API methods
 
-    def populate(self, showroot=0):
+    def populate(self, showroot=False):
         if showroot:
             self._populate(self._root)
         else:
@@ -131,7 +127,7 @@ class OutlinerViewer:
         self._clear()
         self._nodes = []
 
-    def insert_nodes(self, at_index, node_list, before_p=0):
+    def insert_nodes(self, at_index, node_list, before_p=False):
         if not before_p: at_index = at_index + 1
         nodecount = len(node_list)
         for node in node_list:

@@ -146,7 +146,7 @@ class FormInfo:
         # only restore the form data if it matches, as best as can be
         # determined, the current layout of the form.  Otherwise, just
         # reset the form.
-        reset = 1
+        reset = True
         if self.formdata and len(self.formdata) == len(self.inputs):
             for i in self.inputs:
                 class_, name, value = self.formdata.pop(0)
@@ -157,7 +157,7 @@ class FormInfo:
                 else:
                     break
             else:
-                reset = None
+                reset = False
         if reset:
             self.reset_command()
 
@@ -341,7 +341,7 @@ class FormInfo:
 
         def getflagopt(self, key):
             if key in self.options:
-                setattr(self, key, 1)
+                setattr(self, key, True)
 
         def getstate(self):
             # Get raw state for form caching -- default same as get()
@@ -400,7 +400,7 @@ class FormInfo:
 
     class InputCheckbox(Input):
 
-        checked = 0
+        checked = False
         value = 'on'
 
         def getoptions(self):
@@ -426,9 +426,9 @@ class FormInfo:
         def setup(self):
             if self.name not in self.fi.radios:
                 self.fi.radios[self.name] = StringVar(self.viewer.text)
-                self.first = 1
+                self.first = True
             else:
-                self.first = 0
+                self.first = False
             self.var = self.fi.radios[self.name]
             #
             # N.B. The HTML 2.0 spec is explicit in its description of
@@ -586,13 +586,14 @@ class Select:
         if not len(self.options):
             self.w = None
             return
-        any = wid = 0
+        any = False
+        wid = 0
         for v, s, t in self.options:
-            if s: any = 1
+            if s: any = True
             wid = max(wid, len(t))
         if not any and not self.multiple:
             v, s, t = self.options[0]
-            self.options[0] = v, 1, t
+            self.options[0] = v, True, t
         size = self.size
         if size <= 0:
             if self.multiple: size = 4
@@ -794,6 +795,6 @@ class InputImageWindow(Frame):
                 if status == 'loading':
                     self.image.stop_loading()
                 else:
-                    self.image.start_loading(reload=1)
+                    self.image.start_loading(reload=True)
         else:
             print "[no image]"

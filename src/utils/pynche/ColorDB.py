@@ -47,7 +47,7 @@ class ColorDB:
         #
         # all unique names (non-aliases).  built-on demand
         self.__allnames = None
-        while 1:
+        while True:
             line = fp.readline()
             if not line:
                 break

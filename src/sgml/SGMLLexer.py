@@ -219,8 +219,8 @@ class SGMLLexerBase:
 
 class SGMLLexer(SGMLLexerBase):
     entitydefs = {}
-    _in_parse = 0
-    _finish_parse = 0
+    _in_parse = False
+    _finish_parse = False
 
     def __init__(self):
         self.reset()
@@ -235,17 +235,17 @@ class SGMLLexer(SGMLLexerBase):
     def reset(self):
         self.stack = []
         self.lasttag = '???'
-        self.nomoretags = 0
-        self.literal = 0
+        self.nomoretags = False
+        self.literal = False
         self._normfunc = lambda s: s
-        self._strict = 0
+        self._strict = False
 
     def close(self):
         if not self._in_parse:
-            self.goahead(1)
+            self.goahead(True)
             self.cleanup()
         else:
-            self._finish_parse = 1
+            self._finish_parse = True
 
     def line(self):
         return None
@@ -253,24 +253,24 @@ class SGMLLexer(SGMLLexerBase):
     def feed(self, data):
         self.rawdata = self.rawdata + data
         if not self._in_parse:
-            self._in_parse = 1
-            self.goahead(0)
-            self._in_parse = 0
+            self._in_parse = True
+            self.goahead(False)
+            self._in_parse = False
             if self._finish_parse:
                 self.cleanup()
 
     def normalize(self, norm):
-        prev = ((self._normfunc is str.lower) and 1) or 0
+        prev = self._normfunc is str.lower
         self._normfunc = (norm and str.lower) or (lambda s: s)
         return prev
 
     def restrict(self, constrain):
         prev = not self._strict
-        self._strict = not ((constrain and 1) or 0)
+        self._strict = not constrain
         return prev
 
     def setliteral(self, tag):
-        self.literal = 1
+        self.literal = True
         re = "%s%s[%s]*%s" % (ETAGO, tag, whitespace, TAGC)
         if self._normfunc is str.lower:
             self._lit_etag_re = re.compile(re, re.IGNORECASE)
@@ -278,7 +278,7 @@ class SGMLLexer(SGMLLexerBase):
             self._lit_etag_re = re.compile(re)
 
     def setnomoretags(self):
-        self.nomoretags = 1
+        self.nomoretags = True
 
     # Internal -- handle data as far as reasonable.  May leave state
     # and data to be processed by a subsequent call.  If 'end' is
@@ -301,7 +301,7 @@ class SGMLLexer(SGMLLexerBase):
                     # found end
                     self.lex_data(rawdata[i:pos])
                     i = pos + len(match.group(0))
-                    self.literal = 0
+                    self.literal = False
                     continue
                 else:
                     pos = rawdata.rfind("<", i)
@@ -335,7 +335,7 @@ class SGMLLexer(SGMLLexerBase):
                     k = self.parse_endtag(i)
                     if k < 0: break
                     i = k
-                    self.literal = 0
+                    self.literal = False
                     continue
                 if commentopen.match(rawdata, i):
                     if self.literal:
@@ -555,7 +555,7 @@ class SGMLLexer(SGMLLexerBase):
         if not xx:
             #  something vile
             endchars = self._strict and "<>/" or "<>"
-            while 1:
+            while True:
                 try:
                     while rawdata[k].isspace():
                         k = k + 1

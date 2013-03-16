@@ -47,7 +47,7 @@ class BaseReader:
         self.context.addreader(self)
 
         self.fno = None   # will be assigned by start
-        self.killed = None
+        self.killed = False
 
         # Only http_access has delayed startup property.
         # Second argument would allow implementation of persistent
@@ -56,10 +56,10 @@ class BaseReader:
             self.api.register_reader(self.start, self.checkapi)
         except AttributeError:
             # if the protocol doesn't do that
-            ok = 0
+            ok = False
             try:
                 self.start()
-                ok = 1
+                ok = True
             finally:
                 if not ok:
                     if self.context:
@@ -126,7 +126,7 @@ class BaseReader:
         self.update_status()
 
     def kill(self):
-        self.killed = 1
+        self.killed = True
         self.stop()
         self.handle_error(-1, "Killed", {})
 

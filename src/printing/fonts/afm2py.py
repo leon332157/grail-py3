@@ -47,7 +47,7 @@ def splitline(line):
 def read_unicode_mapping(filename, dict=None):
     result = dict or {}
     with open(filename) as fp:
-        while 1:
+        while True:
             line = fp.readline()
             if not line:
                 break
@@ -99,7 +99,7 @@ def parse(filename, outdir):
              }
 
     infp = open(filename, 'r')
-    while 1:
+    while True:
         line = infp.readline()
         if line == '':
             print 'No character metrics found in file:', filename
@@ -118,7 +118,7 @@ def parse(filename, outdir):
         '_'.join(['PSFont'] + tdict['fontname'].split('-')) + '.py')
 
     # read the character metrics into the list
-    while 1:
+    while True:
         line = infp.readline()
         if line == '':
             break
@@ -157,7 +157,7 @@ def parse(filename, outdir):
 
 
 def main():
-    help = 0
+    help = False
     status = 0
 
     try:
@@ -175,7 +175,7 @@ def main():
     mapfile = None
     for opt, arg in opts:
         if opt in ('-h', '--help'):
-            help = 1
+            help = True
         elif opt in ('-d', '--dir'):
             outdir = arg
         elif opt in ('-m', '--map'):

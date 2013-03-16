@@ -31,7 +31,7 @@ from . import paper as printing_paper  # 'paper' used as a local
 from grailbase.uricontext import URIContext
 
 
-MULTI_DO_PAGE_BREAK = 1                 # changing this breaks stuff
+MULTI_DO_PAGE_BREAK = True                 # changing this breaks stuff
 
 
 
@@ -48,13 +48,13 @@ def run(app):
     # get_settings() w/out an arg to get a usable object.
     load_rcscript()
     context = None
-    help = None
+    help = False
     error = 0
     logfile = None
     title = ''
     url = ''
     tabstop = None
-    multi = 0
+    multi = False
     verbose = 0
     printer = None
     copies = 1
@@ -89,18 +89,18 @@ def run(app):
                                        ])
     except getopt.error, err:
         error = 1
-        help = 1
+        help = True
         options = ()
         sys.stderr.write("option failure: %s\n" % err)
     for opt, arg in options:
         if opt in ('-h', '--help'):
-            help = 1
+            help = True
         elif opt in ('-a', '--footnote-anchors'):
             settings.footnoteflag = not settings.footnoteflag
         elif opt in ('-i', '--images'):
             settings.imageflag = not settings.imageflag
         elif opt in ('-d', '--debug'):
-            utils.set_debugging(1)
+            utils.set_debugging(True)
         elif opt in ('-l', '--logfile'):
             logfile = arg
         elif opt in ('-o', '--orientation'):
@@ -126,7 +126,7 @@ def run(app):
         elif opt in ('-T', '--tab-width'):
             tabstop = float(arg)
         elif opt in ('-m', '--multi'):
-            multi = 1
+            multi = True
         elif opt in ('-v', '--verbose'):
             verbose = verbose + 1
         elif opt == '--output':
@@ -134,7 +134,7 @@ def run(app):
         elif opt == '--tags':
             if not load_tag_handler(app, arg):
                 error = 2
-                help = 1
+                help = True
         elif opt == '--paragraph-indent':
             # negative indents should indicate hanging indents, but we don't
             # do those yet, so force to normal interpretation
@@ -159,7 +159,7 @@ def run(app):
     if args:
         infile = args[0]
         if args[1:]:
-            multi = 1
+            multi = True
         infp, outfn = open_source(infile)
         infile = getattr(infp, "url", infile)
         if not outfile:
@@ -280,7 +280,7 @@ def load_tag_handler(app, arg):
             print ("Extra tags must be defined in a"
                    " Python source file with '.py' extension.")
             print
-            return 0
+            return False
         dirname, modname = os.path.split(basename)
         mloader = pkgutil.get_importer(dirname).find_module(modname)
         if not mloader:
@@ -296,8 +296,8 @@ def load_tag_handler(app, arg):
         print "handlers defined in the directory or file will take precedence"
         print "over any defined in other extensions."
         print
-        return 0
-    return 1
+        return False
+    return True
 
 
 def get_ctype(app, url, infp):
@@ -467,7 +467,8 @@ class Application(BaseApplication.BaseApplication):
     def __init__(self, prefs=None):
         BaseApplication.BaseApplication.__init__(self, prefs)
         import GlobalHistory
-        self.global_history = GlobalHistory.GlobalHistory(self, readonly=1)
+        self.global_history = GlobalHistory.GlobalHistory(
+            self, readonly=True)
 
     def exception_dialog(self, message='', *args):
         traceback.print_exc()

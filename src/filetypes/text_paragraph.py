@@ -19,7 +19,7 @@ import re
 
 
 class parse_text_paragraph:
-    def __init__(self, viewer, reload=0):
+    def __init__(self, viewer, reload=False):
         self.__fmt = formatter.AbstractFormatter(viewer)
 
     __eol_re = re.compile("[\r\n]+")

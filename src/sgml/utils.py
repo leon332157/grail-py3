@@ -10,7 +10,7 @@ import string as _string
 from collections import Mapping
 
 
-def extract_attribute(key, dict, default=None, conv=None, delete=1):
+def extract_attribute(key, dict, default=None, conv=None, delete=True):
     """Extracts an attribute from a dictionary.
 
     KEY is the attribute name to look up in DICT.  If KEY is missing
@@ -86,4 +86,4 @@ def conv_normwhitespace(val):
 
 
 def conv_exists(val):
-    return 1
+    return True

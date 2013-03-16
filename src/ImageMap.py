@@ -11,11 +11,11 @@ class Shape:
 
     def pointin(self, x, y):
         """predicate: Are x,y coordinates within region?"""
-        isin = 0
+        isin = False
         if self.kind == 'rect':
             if self.coords[0][0] <= x <= self.coords[1][0] and \
                self.coords[0][1] <= y <= self.coords[1][1]:
-                isin = 1
+                isin = True
 
         elif self.kind == 'circle':
             # is the distance from the point to the center of the
@@ -23,13 +23,13 @@ class Shape:
             distance_squared = pow((self.coords[0][0] - x), 2) + \
                                pow((self.coords[0][1] - y), 2)  
             if distance_squared <= pow(self.coords[1], 2):
-                isin = 1
+                isin = True
 
         elif self.kind == 'poly':
             isin = self.poly_pointin(x, y)
 
         elif self.kind == 'default':
-            isin = 1
+            isin = True
 
         return isin
 
@@ -96,7 +96,7 @@ class MapThunk:
         self.context = context
         self.name = name
         self.shapes = []
-        self.waiting = 1
+        self.waiting = True
         self.memo = {}
 
     def force(self):
@@ -108,15 +108,15 @@ class MapThunk:
             pass
         else:
             self.shapes = map.shapes
-            self.waiting = 0
+            self.waiting = False
     
     def url(self, x, y):
         """Get url associated with shape at (x,y)."""
 
         # first check to see if the map has been parsed
-        if self.waiting == 1:
+        if self.waiting:
             self.force()
-            if self.waiting == 1:
+            if self.waiting:
                 return None, None
 
         # get the shape and return url
@@ -135,7 +135,7 @@ class MapThunk:
             # does this iterate through in order?
             # it should so that overlapping shapes are handled properly
             for shape in self.shapes:
-                if shape.pointin(x, y) == 1:
+                if shape.pointin(x, y):
                     self.memo[(x,y)] = shape
                     return shape
             return None

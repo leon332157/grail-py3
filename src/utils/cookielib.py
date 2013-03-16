@@ -80,7 +80,7 @@ class CookieDB:
 
     def load_ns(self, fp=None):
         lineno = 0
-        while 1:
+        while True:
             line = fp.readline()
             if not line:
                 break
@@ -166,7 +166,7 @@ class CookieDB:
                 self.__num_cookies = self.__num_cookies - 1
                 break
 
-    def lookup(self, domain, path='/', secure=0):
+    def lookup(self, domain, path='/', secure=False):
         domain = domain.lower()
         hostparts = domain.split('.')
         results = self.__match_path(domain, path)
@@ -323,7 +323,7 @@ def parse_cookie(s):
     """Return the first cookie in the string and any unparsed data."""
     domain = None
     path = None
-    secure = 0
+    secure = False
     expires = None
     name = None
     value = None
@@ -351,7 +351,7 @@ def parse_cookie(s):
             v, pos = _get_value(s, pos)
         #
         if k == 'secure':
-            secure = 1
+            secure = True
         elif k == 'path':
             path = v
         elif k == 'domain':

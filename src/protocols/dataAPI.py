@@ -21,7 +21,7 @@ class data_access(nullAPI.null_access):
 
     def polldata(self):
         assert self.state in (nullAPI.META, nullAPI.DATA)
-        return "Ready", 1
+        return "Ready", True
 
     def getdata(self, maxbytes):
         assert self.state == nullAPI.DATA

@@ -152,7 +152,7 @@ class CompositeHandler:
 
 
 class TagInfo:
-    container = 1
+    container = True
 
     def __init__(self, tag, start, do, end):
         self.tag = tag
@@ -160,7 +160,7 @@ class TagInfo:
             self.start = start
             self.end = end or _nullfunc
         else:
-            self.container = 0
+            self.container = False
             self.start = do or _nullfunc
             self.end = _nullfunc
 

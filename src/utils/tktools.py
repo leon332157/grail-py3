@@ -74,9 +74,9 @@ def _inTkStep(window):
         try:
             f = Frame(window, text='is TkStep installed?')
         except TclError:
-            _in_tkstep = 0
+            _in_tkstep = False
         else:
-            _in_tkstep = 1
+            _in_tkstep = True
         return _in_tkstep
 
 

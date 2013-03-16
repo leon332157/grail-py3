@@ -78,14 +78,15 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
     autonumber = None
     savedata = None
     title = base = anchor = nextid = None
-    nofill = badhtml = 0
-    inhead = 1
+    nofill = 0
+    badhtml = False
+    inhead = True
 
     object_aware_tags = ['param', 'script', 'object', 'a', 'param']
 
     def __init__(self, formatter):
         self.sgml_parser = SGMLParser.SGMLParser(gatherer=self)
-        self.sgml_parser.restrict(1)
+        self.sgml_parser.restrict(True)
         self.formatter = formatter
         self.anchor = None
         self.anchorlist = []
@@ -114,7 +115,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         if self.suppress_output:
             return
         if data.strip():
-            self.inhead = 0
+            self.inhead = False
             self.set_data_handler(self.formatter.add_flowing_data)
             self.handle_data(data)
             self.element_close_maybe('head', 'script', 'style', 'title')
@@ -188,9 +189,9 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             else:
                 handler = self.formatter.add_flowing_data
             self.set_data_handler(handler)
-            r = 1
+            r = True
         else:
-            r = 0
+            r = False
         self.object_stack.pop()
         return r
 
@@ -303,11 +304,11 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
 
     def start_head(self, attrs): pass
     def end_head(self):
-        self.inhead = 0
+        self.inhead = False
 
     def start_body(self, attrs):
         self.element_close_maybe('head', 'style', 'script', 'title')
-        self.inhead = 0
+        self.inhead = False
 
     def end_body(self): pass
 
@@ -338,7 +339,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             self.nextid = attrs['n']
             self.badhtml = self.badhtml or not self.inhead
         else:
-            self.badhtml = 1
+            self.badhtml = True
 
     def start_style(self, attrs):
         """Disable display of document data -- this is a style sheet.
@@ -412,12 +413,12 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         self.element_close_maybe('h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p')
         if self.sgml_parser.strict_p():
             while self.list_stack:
-                self.badhtml = 1
+                self.badhtml = True
                 self.sgml_parser.lex_endtag(self.list_stack[0][0])
         self.formatter.end_paragraph(1)
         align = extract_keyword('align', attrs, conv=conv_normstring)
         self.formatter.push_alignment(align)
-        self.formatter.push_font((tag, 0, 1, 0))
+        self.formatter.push_font((tag, False, True, False))
         self.header_number(tag, level, attrs)
 
     def header_end(self, tag, level):
@@ -506,7 +507,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
     def start_pre(self, attrs):
         self.close_paragraph()
         self.formatter.end_paragraph(1)
-        self.formatter.push_font((AS_IS, AS_IS, AS_IS, 1))
+        self.formatter.push_font((AS_IS, AS_IS, AS_IS, True))
         self.formatter.push_alignment('left')
         self.push_nofill()
         self.set_data_handler(NewlineScratcher(self))
@@ -533,7 +534,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
 
     def start_address(self, attrs):
         self.do_br({})
-        self.formatter.push_font((AS_IS, 1, AS_IS, AS_IS))
+        self.formatter.push_font((AS_IS, True, AS_IS, AS_IS))
 
     def end_address(self):
         self.do_br({})
@@ -567,7 +568,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
     #           writer;
     #         entry_count is the expected index of the next list
     #           item - 1;
-    #         compact_p is a boolean (*must* be 0 or 1) set to true
+    #         compact_p is a boolean (*must* be False or True) set to true
     #           if COMPACT is set for the list (not implied by being
     #           in Grail) for the current list or an enclosing list;
     #         stack_depth is the depth of the element stack when the
@@ -583,13 +584,13 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             if listtype == 'dl':
                 margin = 'lh'
         elif self.sgml_parser.has_context('p'):
-            self.badhtml = 1
+            self.badhtml = True
             self.sgml_parser.lex_endtag('p')
         self.do_br({})
-        self.formatter.push_font(('', 1, 1, 0))
+        self.formatter.push_font(('', True, True, False))
         self.formatter.push_margin(margin)
         if not self.list_stack:
-            self.badhtml = 1
+            self.badhtml = True
 
     def end_lh(self):
         self.formatter.pop_margin()
@@ -606,7 +607,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             compact = self.list_stack[-1][3]
         else:
             self.formatter.end_paragraph(1)
-            compact = 0
+            compact = False
         self.formatter.push_margin('ul')
         if 'plain' in attrs:
             label = ''
@@ -666,7 +667,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
 
     def fake_li(self, attrs):
         #  Illegal, but let's try not to be ugly:
-        self.badhtml = 1
+        self.badhtml = True
         self.element_close_maybe('p', 'lh')
         self.formatter.end_paragraph(0)
         format = '*'
@@ -698,7 +699,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             compact = self.list_stack[-1][3]
         else:
             self.formatter.end_paragraph(1)
-            compact = 0
+            compact = False
         self.formatter.push_margin('ol')
         if 'type' in attrs:
             label = self.make_format(attrs['type'], '1', listtype='ol')
@@ -774,7 +775,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             # this isn't perfect compatibility, but keeps grail from
             # dying a horrible death.
             self.sgml_parser.lex_starttag('dl', {})
-            self.badhtml = 1
+            self.badhtml = True
         if self.list_stack:
             if self.list_stack[-1][0] == 'dd':
                 del self.list_stack[-1]
@@ -803,14 +804,14 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
     def end_code(self): self.end_tt()
 
     def start_del(self, attrs):
-        self.formatter.push_font((AS_IS, 1, AS_IS, AS_IS))
+        self.formatter.push_font((AS_IS, True, AS_IS, AS_IS))
         self.formatter.push_style('red')
     def end_del(self):
         self.formatter.pop_style()
         self.formatter.pop_font()
 
     def start_ins(self, attrs):
-        self.formatter.push_font((AS_IS, 1, AS_IS, AS_IS))
+        self.formatter.push_font((AS_IS, True, AS_IS, AS_IS))
         self.formatter.push_style('ins')
     def end_ins(self):
         self.formatter.pop_style()
@@ -842,17 +843,17 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
     # Typographic Elements
 
     def start_i(self, attrs):
-        self.formatter.push_font((AS_IS, 1, AS_IS, AS_IS))
+        self.formatter.push_font((AS_IS, True, AS_IS, AS_IS))
     def end_i(self):
         self.formatter.pop_font()
 
     def start_b(self, attrs):
-        self.formatter.push_font((AS_IS, AS_IS, 1, AS_IS))
+        self.formatter.push_font((AS_IS, AS_IS, True, AS_IS))
     def end_b(self):
         self.formatter.pop_font()
 
     def start_tt(self, attrs):
-        self.formatter.push_font((AS_IS, AS_IS, AS_IS, 1))
+        self.formatter.push_font((AS_IS, AS_IS, AS_IS, True))
     def end_tt(self):
         self.formatter.pop_font()
 
@@ -1006,13 +1007,13 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         ]
 
     def unknown_starttag(self, tag, attrs):
-        self.badhtml = 1
+        self.badhtml = True
 
     def register_id(self, id):
         pass
 
     def unknown_endtag(self, tag):
-        self.badhtml = 1
+        self.badhtml = True
 
     def get_taginfo(self, tag):
         override = self.context.app.prefs.GetBoolean(
@@ -1065,7 +1066,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             data = self.__charrefs[ordinal]
         else:
             data = "%s%d%s" % (SGMLLexer.CRO, ordinal, terminator)
-            self.badhtml = 1
+            self.badhtml = True
         self.handle_data(data)
 
     def unknown_entityref(self, entname, terminator):
@@ -1073,7 +1074,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         if hasattr(self, "entref_" + entname):
             getattr(self, "entref_" + entname)(terminator)
             return
-        self.badhtml = 1
+        self.badhtml = True
         # if the name is not all lower case, try a lower case version:
         if entname == entname.upper():
             self.handle_entityref(entname.lower(), terminator)
@@ -1107,7 +1108,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         self.unknown_entityref("disc", terminator)
 
     def report_unbalanced(self, tag):
-        self.badhtml = 1
+        self.badhtml = True
 
     # --- Utilities:
 

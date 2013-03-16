@@ -57,7 +57,7 @@ import os
 import sys
 
 
-VERBOSE = 0
+VERBOSE = False
 
 
 from imp import C_EXTENSION, PY_SOURCE, PY_COMPILED
@@ -233,13 +233,13 @@ class ModuleLoader(BasicModuleLoader):
             return None, '', ('', '', FROZEN_MODULE)
         return None
 
-    def find_module_in_dir(self, name, dir, allow_packages=1):
+    def find_module_in_dir(self, name, dir, allow_packages=True):
         if dir is None:
             return self.find_builtin_module(name)
         if allow_packages:
             fullname = self.hooks.path_join(dir, name)
             if self.hooks.path_isdir(fullname):
-                stuff = self.find_module_in_dir("__init__", fullname, 0)
+                stuff = self.find_module_in_dir("__init__", fullname, False)
                 if stuff:
                     file = stuff[0]
                     if file: file.close()
@@ -289,7 +289,7 @@ class FancyModuleLoader(ModuleLoader):
         path = None
 
         if type == PKG_DIRECTORY:
-            initstuff = self.find_module_in_dir("__init__", filename, 0)
+            initstuff = self.find_module_in_dir("__init__", filename, False)
             if not initstuff:
                 raise ImportError, "No __init__ module in package %s" % name
             initfile, initfilename, initinfo = initstuff
@@ -440,7 +440,7 @@ class ModuleImporter(BasicModuleImporter):
                 raise ImportError, "No module named " + mname
         return m
 
-    def ensure_fromlist(self, m, fromlist, recursive=0):
+    def ensure_fromlist(self, m, fromlist, recursive=False):
         for sub in fromlist:
             if sub == "*":
                 if not recursive:
@@ -449,7 +449,7 @@ class ModuleImporter(BasicModuleImporter):
                     except AttributeError:
                         pass
                     else:
-                        self.ensure_fromlist(m, all, 1)
+                        self.ensure_fromlist(m, all, True)
                 continue
             if sub != "*" and not hasattr(m, sub):
                 subname = "%s.%s" % (m.__name__, sub)

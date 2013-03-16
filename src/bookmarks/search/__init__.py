@@ -21,7 +21,7 @@ def get_matcher(which, options):
         return klass(options)
 
 
-def find_nodes(folder, matcher, copynodes=1):
+def find_nodes(folder, matcher, copynodes=True):
     # determine if folder matches,
     # then check to see what children match,
     # calling find_nodes() recursively on
@@ -79,7 +79,7 @@ class MatcherInterface:
 
         Returns true iff the bookmark matches the search specification.
         """
-        return 0
+        return False
 
     def match_Folder(self, folder):
         """Determine if a folder matches the search specification.
@@ -90,10 +90,10 @@ class MatcherInterface:
         The default result fails to match the node but does continue to
         search the children.
         """
-        return 0, 1
+        return False, True
 
     def match_SomeNodeType(self, somenodetype):
-        return 0
+        return False
 
 
 # Internal helpers:

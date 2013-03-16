@@ -1047,8 +1047,8 @@ def test(defargs = testsets[0]):
         print usage_msg
         sys.exit(2)
 
-    bootstrap = 0
-    local = 0
+    bootstrap = False
+    local = False
     debug = DEBUG
     timeout = 30
     interval = 5
@@ -1059,11 +1059,11 @@ def test(defargs = testsets[0]):
     
     for o, a in opts:
         if o == '-a': types = []
-        if o == '-b': bootstrap = 1
+        if o == '-b': bootstrap = True
         if o == '-d': types.append(int(a))
         if o == '-f': filename = a
         if o == '-i': interval = float(a)
-        if o == '-l': local = 1
+        if o == '-l': local = True
         if o == '-q': debug = 0
         if o == '-t': timeout = float(a)
         if o == '-s': server = a
@@ -1074,7 +1074,7 @@ def test(defargs = testsets[0]):
         if o == '-3': args = args + testsets[3]
         if o == '-4':
             args = testsets[4]
-            local = 1
+            local = True
             if types: types.append(HDL_TYPE_DLS)
 
     if not args:

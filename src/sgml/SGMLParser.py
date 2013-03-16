@@ -41,9 +41,9 @@ class SGMLParser(SGMLLexer.SGMLLexer):
     # Interface -- reset this instance.  Loses all unprocessed data.
     def reset(self):
         SGMLLexer.SGMLLexer.reset(self)
-        self.normalize(1)               # normalize NAME token to lowercase
-        self.restrict(1)                # impose user-agent compatibility
-        self.omittag = 1                # default to HTML style
+        self.normalize(True)  # normalize NAME token to lowercase
+        self.restrict(True)                # impose user-agent compatibility
+        self.omittag = True                # default to HTML style
         self.stack = []
 
     def get_handler(self):
@@ -113,8 +113,8 @@ class SGMLParser(SGMLLexer.SGMLLexer):
     def has_context(self, gi):
         for entry in self.stack:
             if entry[0].tag == gi:
-                return 1
-        return 0
+                return True
+        return False
 
     #  The remaining methods are the internals of the implementation and
     #  interface with the lexer.  Subclasses should rarely need to deal

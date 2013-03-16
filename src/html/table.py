@@ -141,7 +141,7 @@ class TableSubParser:
             ti.lastbody.trows[-1].close()
             ti.lastbody.lastrow = None
 
-    def _do_cell(self, parser, attrs, header=None):
+    def _do_cell(self, parser, attrs, header=False):
         ti = self._lasttable
         if ti:
             # finish any previously opened cell
@@ -176,7 +176,7 @@ class TableSubParser:
             parser.save_bgn()
             parser.pop_formatter()
 
-    def do_th(self, parser, attrs): self._do_cell(parser, attrs, 1)
+    def do_th(self, parser, attrs): self._do_cell(parser, attrs, True)
     def do_td(self, parser, attrs): self._do_cell(parser, attrs)
 
 
@@ -250,7 +250,7 @@ class AttrElem:
         return grailutil.extract_attribute(attr, self.attrs,
                                            conv=conv,
                                            default=default,
-                                           delete=None)
+                                           delete=False)
 
 
 def _safe_mojo_height(cell):
@@ -289,7 +289,7 @@ class Table(AttrElem):
         AttrElem.__init__(self, attrs)
         self.parentviewer = parentviewer
         self._parenttable = parenttable
-        self._cleared = None
+        self._cleared = False
         # alignment
         self.Aalign = self.attribute('align', conv=conv_halign)
         # this call enforces alignment of the table by inserting a
@@ -393,7 +393,7 @@ class Table(AttrElem):
         self.tbodies = []
         self.lastbody = None
         self.lastcell = None
-        self._mapped = None
+        self._mapped = False
         # register with the parent viewer
         self.parentviewer.register_reset_interest(self._reset)
         abswidth = None
@@ -421,7 +421,7 @@ class Table(AttrElem):
             self.container.pack()
             pv = self.parentviewer
             pv.add_subwindow(self.container, index=self._mappos)
-            self._mapped = 1
+            self._mapped = True
 
     def finish(self):
         if self._cleared:
@@ -458,7 +458,7 @@ class Table(AttrElem):
             for trow in tb.trows:
                 col = 0
                 for cell in trow.cells:
-                    while 1:
+                    while True:
                         index = (row, col)
                         # if the table has an entry for this row and
                         # column, then it could only be an OCCUPIED
@@ -518,12 +518,12 @@ class Table(AttrElem):
         row = 0
         lastcol = 0
         for rawrow in range(rowcount):
-            rowflag = 0
+            rowflag = False
             col = 0
             for rawcol in range(colcount):
                 if not rowprune[rawrow] or not colprune[rawcol]:
                     continue
-                rowflag = 1
+                rowflag = True
                 rawindex = (rawrow, rawcol)
                 index = (row, col)
                 if rawindex not in rawtable:
@@ -595,7 +595,7 @@ class Table(AttrElem):
         self._minwidths = minwidths
 
     _prevwidth = -1
-    def _autolayout_3(self, force=None):
+    def _autolayout_3(self, force=False):
         # This test protects against re-doing the layout if only the
         # vertical size changed.
         availablewidth = self.get_available_width()
@@ -747,7 +747,7 @@ class Table(AttrElem):
 
     def _reset(self, viewer):
         # called when the viewer is cleared
-        self._cleared = 1
+        self._cleared = True
 ##      print '_reset:', self, viewer, self._cleared
         self.parentviewer.context.unregister_notification(self._notify)
         self.parentviewer.unregister_reset_interest(self._reset)
@@ -765,7 +765,7 @@ class Table(AttrElem):
     def _force_resize(self):
         # called when the stylesheet changes:
         self._autolayout_2()
-        self._autolayout_3(force=1)
+        self._autolayout_3(force=True)
 
     def _notify(self, context):
         # receives notification when all readers for the shared
@@ -783,7 +783,7 @@ class Table(AttrElem):
                 recalc_needed = recalc_needed or status
         if recalc_needed:
             self._autolayout_2()
-            self._autolayout_3(force=1)
+            self._autolayout_3(force=True)
         if not self._mapped:
             self._map()
 
@@ -822,9 +822,9 @@ class HeadFootBody(AttrElem):
 class TR(AttrElem):
     """A TR table row element."""
 
-    _accepting = 1
+    _accepting = True
 
-    def __init__(self, attrs, bgcolor=None, honor_colors=None,
+    def __init__(self, attrs, bgcolor=None, honor_colors=False,
                  valign=DEFAULT_VALIGN):
         AttrElem.__init__(self, attrs)
         self.Ahalign = self.attribute('align', conv=conv_halign)
@@ -838,7 +838,7 @@ class TR(AttrElem):
         self.cells = []
 
     def close(self):
-        self._accepting = 0
+        self._accepting = False
 
     def is_accepting(self):
         return self._accepting
@@ -879,7 +879,7 @@ def _get_height(tw):
     tw.see(1.0)
     x, border_y, w, other_h, b = tw.dlineinfo(1.0)
     loopcnt = 0
-    while 1:
+    while True:
         tw.see(1.0)
         info = tw.dlineinfo('end - 1 c')
         if info:
@@ -918,13 +918,13 @@ class ContainedText(AttrElem):
 ##      from pstats import Stats
 ##      p = Profile()
 ##      # can't use runcall because that doesn't return the results
-##      p.runctx('self._viewer = Viewer(master=table.container, context=parentviewer.context, scrolling=0, stylesheet=parentviewer.stylesheet, parent=parentviewer)',
+##      p.runctx('self._viewer = Viewer(master=table.container, context=parentviewer.context, scrolling=False, stylesheet=parentviewer.stylesheet, parent=parentviewer)',
 ##               globals(), locals())
 ##      Stats(p).strip_dirs().sort_stats('time').print_stats(5)
 
         self._viewer = Viewer(master=table.container,
                               context=parentviewer.context,
-                              scrolling=0,
+                              scrolling=False,
                               stylesheet=parentviewer.stylesheet,
                               parent=parentviewer)
         if not parentviewer.find_parentviewer():
@@ -1148,7 +1148,7 @@ class TDCell(Cell):
 class THCell(Cell):
     def init_style(self):
         # TBD: this should be extracted from stylesheets and/or preferences
-        self._parser.get_formatter().push_font((None, None, 1, None))
+        self._parser.get_formatter().push_font((None, None, False, None))
 
     def finish(self, table):
         Cell.finish(self, table)
