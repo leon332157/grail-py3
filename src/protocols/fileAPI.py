@@ -1,4 +1,3 @@
-from Assert import Assert
 import grailutil
 import ht_time
 import os
@@ -64,22 +63,22 @@ class file_access:
         self.state = META
 
     def pollmeta(self):
-        Assert(self.state == META)
+        assert self.state == META
         return "Ready", 1
 
     def getmeta(self):
-        Assert(self.state == META)
+        assert self.state == META
         self.state = DATA
         if self.redirect:
             return 301, "Redirect to absolute pathname", {"location": self.url}
         return 200, "OK", self.headers
 
     def polldata(self):
-        Assert(self.state == DATA)
+        assert self.state == DATA
         return "Ready", 1
 
     def getdata(self, maxbytes):
-        Assert(self.state == DATA)
+        assert self.state == DATA
         data = self.fp.read(maxbytes)
         if not data:
             self.state = DONE

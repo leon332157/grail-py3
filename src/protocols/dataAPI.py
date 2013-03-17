@@ -1,4 +1,3 @@
-from Assert import Assert
 import nullAPI
 import string
 
@@ -12,7 +11,7 @@ class data_access(nullAPI.null_access):
         self.__ctype, self.__data = parse(url)
 
     def getmeta(self):
-        Assert(self.state == nullAPI.META)
+        assert self.state == nullAPI.META
         self.state = nullAPI.DATA
         headers = {"content-type": self.__ctype,
                    "content-length": `len(self.__data)`,
@@ -22,11 +21,11 @@ class data_access(nullAPI.null_access):
         return 204, "No content", headers
 
     def polldata(self):
-        Assert(self.state in (nullAPI.META, nullAPI.DATA))
+        assert self.state in (nullAPI.META, nullAPI.DATA)
         return "Ready", 1
 
     def getdata(self, maxbytes):
-        Assert(self.state == nullAPI.DATA)
+        assert self.state == nullAPI.DATA
         split_pos = min(maxbytes, len(self.__data))
         data = self.__data[:split_pos]
         self.__data = self.__data[split_pos:]

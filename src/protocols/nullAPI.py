@@ -1,5 +1,3 @@
-from Assert import Assert
-
 META, DATA, DONE = 'META', 'DATA', 'DONE'
 
 class null_access:
@@ -8,20 +6,20 @@ class null_access:
         self.state = META
 
     def pollmeta(self):
-        Assert(self.state == META)
+        assert self.state == META
         return "Ready", 1
 
     def getmeta(self):
-        Assert(self.state == META)
+        assert self.state == META
         self.state = DATA
         return 204, "No content", {}
 
     def polldata(self):
-        Assert(self.state == DATA)
+        assert self.state == DATA
         return "Ready", 1
 
     def getdata(self, maxbytes):
-        Assert(self.state == DATA)
+        assert self.state == DATA
         self.state = DONE
         return ""
 

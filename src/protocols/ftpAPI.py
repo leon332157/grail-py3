@@ -21,7 +21,6 @@ from urllib import unquote, splithost, splitport, splituser, \
      splitpasswd, splitattr, splitvalue, quote
 from urlparse import urljoin
 import mimetools
-from Assert import Assert
 import grailutil
 import socket
 
@@ -76,7 +75,7 @@ ftpcache = {}                           # XXX Ouch!  A global!
 class ftp_access:
 
     def __init__(self, url, method, params):
-        Assert(method == 'GET')
+        assert method == 'GET'
         netloc, path = splithost(url)
         if not netloc: raise IOError, ('ftp error', 'no host given')
         host, port = splitport(netloc)
@@ -141,11 +140,11 @@ class ftp_access:
         self.state = META
 
     def pollmeta(self):
-        Assert(self.state == META)
+        assert self.state == META
         return "Ready", 1
 
     def getmeta(self):
-        Assert(self.state == META)
+        assert self.state == META
         self.state = DATA
         headers = {}
         if self.isdir:
@@ -163,14 +162,14 @@ class ftp_access:
         return 200, "OK", headers
 
     def polldata(self):
-        Assert(self.state in (EOF, DATA))
+        assert self.state in (EOF, DATA)
         return "Ready", 1
 
     def getdata(self, maxbytes):
         if self.state == EOF:
             self.state = DONE
             return ""
-        Assert(self.state == DATA)
+        assert self.state == DATA
         data = self.sock.recv(maxbytes)
         if self.debuglevel > 4: print "*data*", `data`
         if not data:

@@ -19,7 +19,6 @@ import string
 import httplib
 from urllib import splithost
 import mimetools
-from Assert import Assert
 import grailutil
 import select
 import Reader
@@ -128,12 +127,12 @@ class http_access:
             reader_callback()
 
     def open(self):
-        Assert(self.state == WAIT)
+        assert self.state == WAIT
         resturl, method, params, data = self.args
         if data:
-            Assert(method=="POST")
+            assert method=="POST"
         else:
-            Assert(method in ("GET", "POST"))
+            assert method in ("GET", "POST")
         if type(resturl) == type(()):
             host, selector = resturl    # For proxy interface
         else:
@@ -185,7 +184,7 @@ class http_access:
         self.h = None
 
     def pollmeta(self, timeout=0):
-        Assert(self.state == META)
+        assert self.state == META
 
         sock = self.h._conn.sock
         try:
@@ -216,7 +215,7 @@ class http_access:
         return "receiving server response", 0
 
     def getmeta(self):
-        Assert(self.state == META)
+        assert self.state == META
         if not self.readahead:
             x, y = self.pollmeta(None)
             while not y:
@@ -228,14 +227,14 @@ class http_access:
         return errcode, errmsg, headers
 
     def polldata(self):
-        Assert(self.state == DATA)
+        assert self.state == DATA
         if self.readahead:
             return "processing readahead data", 1
         return ("waiting for data",
                 len(select.select([self], [], [], 0)[0]))
 
     def getdata(self, maxbytes):
-        Assert(self.state == DATA)
+        assert self.state == DATA
         if self.readahead:
             data = self.readahead[:maxbytes]
             self.readahead = self.readahead[maxbytes:]
