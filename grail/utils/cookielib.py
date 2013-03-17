@@ -7,6 +7,7 @@ __version__ = '$Revision: 2.1 $'
 
 import time
 from . import ht_time
+import operator
 
 
 class Error(Exception):
@@ -135,8 +136,8 @@ class CookieDB:
                     self.__expire_cookies(cookies)
                 if len(cookies) == caps.num_per_server:
                     # need to remove one more!
-                    mcookies = cookies[:]
-                    mcookies.sort(lambda l, r: cmp(l.expires, r.expires))
+                    key = operator.attrgetter('expires')
+                    mcookies = sorted(cookies, key=key)
                     for c, i in mcookies:
                         if c.expires:
                             cookies.remove(c)
@@ -193,8 +194,7 @@ class CookieDB:
         num_per_server = self.__caps.num_per_server
         if len(cookies) > num_per_server:
             # sort on expiration
-            ncookies = cookies[:]
-            ncookies.sort(lambda l, r: cmp(l.expires, r.expires))
+            ncookies = sorted(cookies, key=operator.attrgetter('expires'))
             for cookie in ncookies:
                 if cookie.expires:
                     cookies.remove(cookies)
@@ -236,7 +236,7 @@ class CookieDB:
                 # nothing left in domain
                 del self.__cookies[domain]
         if results:
-            results.sort(lambda l,r: cmp(len(r.path), len(l.path)))
+            results.sort(key=lambda x: len(x.path), reverse=True)
             results.reverse()
         return results
 

@@ -4,6 +4,7 @@ __version__ = "$Revision: 1.1 $"
 # $Source: /cvsroot/grail/grail/src/sgml/SGMLHandler.py,v $
 
 from . import SGMLLexer
+import functools
 
 
 class ElementHandler:
@@ -151,6 +152,7 @@ class CompositeHandler:
         self.__tagmap[tag].handle_endtag(tag, method)
 
 
+@functools.total_ordering
 class TagInfo:
     container = True
 
@@ -164,13 +166,19 @@ class TagInfo:
             self.start = do or _nullfunc
             self.end = _nullfunc
 
-    def __cmp__(self, other):
-        # why is this needed???
+    # why is this needed???
+    def __eq__(self, other):
         if isinstance(other, str):
-            return cmp(self.tag, other)
+            return self.tag == other
         if isinstance(other, TagInfo):
-            return cmp(self.tag, other.tag)
-        raise TypeError, "incomparable values"
+            return self.tag == other.tag
+        return NotImplemented
+    def __lt__(self, other):
+        if isinstance(other, str):
+            return self.tag < other
+        if isinstance(other, TagInfo):
+            return self.tag < other.tag
+        return NotImplemented
 
 
 def _nullfunc(*args, **kw):

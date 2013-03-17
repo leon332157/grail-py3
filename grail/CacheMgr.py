@@ -489,16 +489,9 @@ class DiskCacheEntry:
     def delete(self):
         pass
 
-def compare_expire_items(item1,item2):
+def expire_key(item):
     """used with list.sort() to sort list of CacheEntries by expiry date."""
-    e1 = item1.expires.get_secs() 
-    e2 = item2.expires.get_secs()
-    if e1 > e2:
-        return 1
-    elif e2 > e1:
-        return -1
-    else:
-        return 0
+    return item.expires.get_secs()
 
 class DiskCache:
     """Persistent object cache.
@@ -832,7 +825,7 @@ class DiskCache:
 
     def evict_expired_pages(self):
         """Evict any pages on the expires list that have expired."""
-        self.expires.sort(compare_expire_items)
+        self.expires.sort(key=expire_key)
         size = len(self.expires)
         if size > 0 \
            and self.expires[0].expires.get_secs() < time.time():
