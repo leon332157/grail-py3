@@ -15,6 +15,7 @@ from . import nodes                            # sibling
 from . import search                           # sibling sub-package
 import urlparse
 from . import walker                           # sibling
+from collections import defaultdict
 
 
 class NodeIDError(Exception):
@@ -45,7 +46,7 @@ class Collection:
     def set_root(self, root):
         self.__root = root
         if root is None:
-            maps = {}, {}, {}
+            maps = defaultdict(list), {}, defaultdict(list)
         else:
             maps = self.build_info(root)
         self.__node_map, self.__id_map, self.__ref_map = maps
@@ -122,9 +123,9 @@ class Collection:
         return id
 
     def build_info(self, node):
-        node_map = {}
+        node_map = defaultdict(list)
         id_map = {}
-        ref_map = {}
+        ref_map = defaultdict(list)
         need_ids = []
         queue = [node]
         while queue:
@@ -140,10 +141,7 @@ class Collection:
                         need_ids.remove(id)
                 uri = node.uri()
                 key = urlparse.urlunparse(_parse_uri(uri)[:3] + ('', '', ''))
-                try:
-                    node_map[key].append(node)
-                except KeyError:
-                    node_map[key] = [node]
+                node_map[key].append(node)
             elif nodetype == "Folder":
                 id = node.id()
                 if id_map.has_key(id):
@@ -158,10 +156,7 @@ class Collection:
                 idref = node.idref()
                 if not id_map.has_key(idref):
                     need_ids.append(idref)
-                try:
-                    ref_map[idref].append(node)
-                except KeyError:
-                    ref_map[idref] = [node]
+                ref_map[idref].append(node)
         if need_ids:
             raise NodeIDError("Could not locate IDs", need_ids)
         return node_map, id_map, ref_map
@@ -169,10 +164,7 @@ class Collection:
     def add_Bookmark(self, node):
         self.add_Folder(node)
         key = self.__make_node_key(node)
-        try:
-            self.__node_map[key].append(node)
-        except KeyError:
-            self.__node_map[key] = [node]
+        self.__node_map[key].append(node)
 
     def add_Folder(self, node):
         id = node.id()
@@ -184,7 +176,7 @@ class Collection:
     def del_node(self, node):
         try:
             self.__node_map[self.__make_node_key(node)].remove(node)
-        except (KeyError, ValueError, AttributeError):
+        except (ValueError, AttributeError):
             pass
         try:
             del self.__id_map[node.id()]
@@ -197,10 +189,7 @@ class Collection:
     def get_bookmarks_by_uri(self, uri):
         parsed = _parse_uri(uri)
         uri = urlparse.urlunparse(parsed[:3] + ('', '', ''))
-        try:
-            return tuple(self.__node_map[uri])
-        except KeyError:
-            return ()
+        return tuple(self.__node_map[uri])
 
     def __make_node_key(self, node):
         parsed = _parse_uri(node.uri())[:3] + ('', '', '')
@@ -210,9 +199,9 @@ class Collection:
 class CopyWalker(walker.TreeWalker):
     def __init__(self, root=None):
         walker.TreeWalker.__init__(self, root)
-        self.__node_map = {}
+        self.__node_map = defaultdict(list)
         self.__id_map = {}
-        self.__ref_map = {}
+        self.__ref_map = defaultdict(list)
         self.__needed_ids = []
         self.__parents = []
         self.__new_root = None
@@ -241,9 +230,8 @@ class CopyWalker(walker.TreeWalker):
         if id:
             node.set_id(id)
             self.__id_map[id] = node
-            if self.__ref_map.has_key(id):
-                for alias in self.__ref_map[id]:
-                    alias.set_refnode(node)
+            for alias in self.__ref_map[id]:
+                alias.set_refnode(node)
             if id in self.__needed_ids:
                 self.__needed_ids.remove(id)
         node.set_add_date(old_node.add_date())
@@ -259,10 +247,7 @@ class CopyWalker(walker.TreeWalker):
             new_node = nodes.Alias()
             if idref not in self.__needed_ids:
                 self.__needed_ids.append(idref)
-        if self.__ref_map.has_key(idref):
-            L = self.__ref_map[idref]
-        else:
-            L = self.__ref_map[idref] = []
+        L = self.__ref_map[idref]
         L.append(new_node)
         self.add_node(new_node)
 
@@ -275,10 +260,7 @@ class CopyWalker(walker.TreeWalker):
         new_node.set_last_modified(node.last_modified())
         new_node.set_last_visited(node.last_visited())
         key = urlparse.urlunparse(_parse_uri(uri)[:3] + ('', '', ''))
-        try:
-            self.__node_map[key].append(new_node)
-        except KeyError:
-            self.__node_map[key] = [new_node]
+        self.__node_map[key].append(new_node)
 
     def start_Folder(self, node):
         new_node = nodes.Folder()

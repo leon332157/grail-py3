@@ -62,10 +62,10 @@ class parse_text_x_python:
 
     IGNORED_TERMINALS = (
         token.ENDMARKER, token.NEWLINE, token.INDENT, token.DEDENT)
-    __wanted_terminals = {}
+    __wanted_terminals = set()
     for ntype in token.tok_name.keys():
         if token.ISTERMINAL(ntype) and ntype not in IGNORED_TERMINALS:
-            __wanted_terminals[ntype] = ntype
+            __wanted_terminals.add(ntype)
 
     def close(self):
         self.show("Colorizing Python source text - parsing...")

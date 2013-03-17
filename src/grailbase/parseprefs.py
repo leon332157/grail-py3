@@ -13,13 +13,14 @@ unchanged.
 
 The only argument is an open file, which will be read until EOF.
 
-The return value is a dictionary of dictionaries.  The outer
+The return value is a defaultdict() of dictionaries.  The outer
 dictionary represents the groups; each inner dictionary represents the
 components of its group.
 
 """
 
 import re
+from collections import defaultdict
 
 validpat = '^([-_a-z0-9]*)--([-_a-z0-9]*):(.*)$'
 valid = re.compile(validpat, re.IGNORECASE)
@@ -28,7 +29,7 @@ debug = 0
 
 def parseprefs(fp):
     """Parse a Grail preferences file.  See module docstring."""
-    groups = {}
+    groups = defaultdict(dict)
     group = None                        # used for continuation line
     lineno = 0
     while 1:
@@ -57,10 +58,7 @@ def parseprefs(fp):
                 groupname = groupname.lower()
                 cn = cn.lower()
                 value = value.strip()
-                if not groups.has_key(groupname):
-                    groups[groupname] = group = {}
-                else:
-                    group = groups[groupname]
+                group = groups[groupname]
                 group[cn] = value # XXX Override a previous value
             elif line.strip() != "":
                 # It's a bad line.  Ignore it.

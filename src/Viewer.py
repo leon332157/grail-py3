@@ -167,7 +167,7 @@ class Viewer(formatter.AbstractWriter):
         self.addtags = ()               # Additional tags (e.g. anchors)
         self.align = None               # Alignment setting
         self.pendingdata = ''           # Data 'on hold'
-        self.targets = {}               # Mark names for anchors/footnotes
+        self.targets = set()               # Mark names for anchors/footnotes
         self.new_tags()
 
     def __del__(self):
@@ -757,9 +757,8 @@ class Viewer(formatter.AbstractWriter):
     def scroll_to_position(self, pos): self.text.yview(pos)
 
     def clear_targets(self):
-        targs = self.targets.keys()
-        if targs:
-            apply(self.text.mark_unset, tuple(targs))
+        if self.targets:
+            apply(self.text.mark_unset, tuple(self.targets))
 
     def add_target(self, fragment):
         if self.pendingdata:
@@ -767,11 +766,11 @@ class Viewer(formatter.AbstractWriter):
             self.pendingdata = ''
         self.text.mark_set(fragment, END + ' - 1 char')
         self.text.mark_gravity(fragment, 'left')
-        self.targets[fragment] = 1
+        self.targets.add(fragment)
 
     def scroll_to(self, fragment):
         fragment = '#' + fragment
-        if self.targets.has_key(fragment):
+        if fragment in self.targets:
             r = self.text.tag_nextrange(fragment, '1.0')
             if not r:
                 #  Maybe an empty target; try the mark database:

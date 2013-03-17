@@ -36,24 +36,15 @@ class KeywordMatcher:
         text = "%s %s" % (node.description(), node.title())
         if not self.__case_sensitive:
             text = text.lower()
-        words = text.translate(self.__tr).split()
+        words = set(text.translate(self.__tr).split())
         if not words:
             return 0
-        d = {}
-        for w in words:
-            d[w] = 1
-        has_word = d.has_key
         if self.__and:
             # require that all are present:
-            for kw in keywords:
-                if not has_word(kw):
-                    return 0
-            return 1
+            return all(kw in words for kw in keywords)
         else:
             # at least one keyword must be present:
-            for kw in keywords:
-                if has_word(kw):
-                    return 1
+            return any(kw in words for kw in keywords)
 
 
 class KeywordOptions:

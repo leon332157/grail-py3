@@ -11,6 +11,7 @@ import sys
 from . import utils
 
 from . import parseprefs
+from collections import defaultdict
 
 USERPREFSFILENAME = 'grail-preferences'
 SYSPREFSFILENAME = os.path.join('data', 'grail-defaults')
@@ -26,14 +27,15 @@ class Preferences:
     def __init__(self, filename):
         """Initiate from FILENAME."""
         self.filename = filename
-        self.mods = {}                  # Changed settings not yet saved.
-        self.deleted = {}               # Settings overridden, not yet saved.
+        self.mods = defaultdict(dict)  # Changed settings not yet saved.
+        # Settings overridden, not yet saved.
+        self.deleted = defaultdict(set)
         try:
             f = open(filename)
             self.saved = parseprefs.parseprefs(f)
             f.close()
         except IOError:
-            self.saved = {}
+            self.saved = defaultdict(dict)
 
     def Get(self, group, cmpnt):
         """Get preference or raise KeyError if not found."""
@@ -45,19 +47,14 @@ class Preferences:
             raise KeyError, "Preference %s not found" % ((group, cmpnt),)
 
     def Set(self, group, cmpnt, val):
-        if not self.mods.has_key(group):
-            self.mods[group] = {}
         self.mods[group][cmpnt] = str(val)
-        if self.deleted.has_key(group) and self.deleted[group].has_key(cmpnt):
-            # Undelete.
-            del self.deleted[group][cmpnt]
+        # Undelete.
+        self.deleted[group].discard(cmpnt)
 
     def __delitem__(self, (group, cmpnt)):
         """Inhibit preference (GROUP, COMPONENT) from being seen or saved."""
         self.Get(group, cmpnt)  # Verify item existence.
-        if not self.deleted.has_key(group):
-            self.deleted[group] = {}
-        self.deleted[group][cmpnt] = 1
+        self.deleted[group].add(cmpnt)
 
     def items(self):
         """Return a list of ((group, cmpnt), value) tuples."""
@@ -104,15 +101,13 @@ class Preferences:
         for g, comps in self.mods.items():
             for c, v in comps.items():
                 if c not in deleted.get(g, ()):
-                    if not self.saved.has_key(g):
-                        self.saved[g] = {}
                     self.saved[g][c] = v
-                elif self.saved.has_key(g) and self.saved[g].has_key(c):
+                elif self.saved.has_key(g):
                     # Deleted - remove from saved version:
-                    del self.saved[g][c]
+                    self.saved[g].pop(c, None)
         # ... and reinit mods and deleted records:
-        self.mods = {}
-        self.deleted = {}
+        self.mods.clear()
+        self.deleted.clear()
 
 class AllPreferences:
     """Maintain the combination of user and system preferences."""
@@ -235,13 +230,13 @@ class AllPreferences:
             print "Failed save of user prefs."
 
         # Process the callbacks:
-        callbacks, did_callbacks = self.callbacks, {}
+        callbacks, did_callbacks = self.callbacks, set()
         for group in pending_groups:
             for callback in callbacks.get(group, ()):
                 # Ensure each callback is invoked only once per save,
                 # in order:
-                if not did_callbacks.has_key(callback):
-                    did_callbacks[callback] = 1
+                if callback not in did_callbacks:
+                    did_callbacks.add(callback)
                     apply(callback, ())
 
 def make_key(group, cmpnt):

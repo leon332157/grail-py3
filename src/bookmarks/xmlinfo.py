@@ -140,9 +140,9 @@ def guess_byte_order_and_encoding(buffer):
 
 
 def extract(encoding, buffer, values, best_effort=0):
-    tried = {}
-    while not tried.has_key(encoding):
-        tried[encoding] = 1
+    tried = set()
+    while encoding not in tried:
+        tried.add(encoding)
         v2 = copy.copy(values)
         extractor = new_extractor(encoding, buffer, v2)
         try:
@@ -866,7 +866,7 @@ def dump_info(values):
 def main():
     import getopt
     #
-    reqs = Record()                     # required values (for output)
+    reqs = set()                     # required values (for output)
     #
     get_defaults = 1
     full_report = 0
@@ -883,17 +883,17 @@ def main():
         elif opt == "-d":
             debugging = debugging + 1
         elif opt == "--docelem":
-            reqs.doc_elem = 1
+            reqs.add("doc_elem")
         elif opt == "--encoding":
-            reqs.encoding = 1
+            reqs.add("encoding")
         elif opt == "--public-id":
-            reqs.publib_id = 1
+            reqs.add("publib_id")
         elif opt == "--standalone":
-            reqs.standalone = 1
+            reqs.add("standalone")
         elif opt == "--system-id":
-            reqs.system_id = 1
+            reqs.add("system_id")
         elif opt == "--version":
-            reqs.xml_version = 1
+            reqs.add("xml_version")
     if get_defaults:
         full_report = 1
     #
@@ -925,7 +925,7 @@ def main():
         dump_info(values)
     else:
         for field_name in FieldNames:
-            if getattr(reqs, field_name):
+            if field_name in reqs:
                 value = getattr(values, field_name)
                 if value is None:
                     print

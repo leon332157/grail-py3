@@ -6,6 +6,7 @@ __version__ = '$Revision: 1.3 $'
 import bookmarks
 from .. import nodes
 from . import html_scraper
+from collections import defaultdict
 
 import sgml.SGMLParser
 
@@ -18,7 +19,7 @@ class Parser(html_scraper.Parser):
         html_scraper.Parser.__init__(self, filename)
         self.sgml_parser = sgml.SGMLParser.SGMLParser(gatherer=self)
         self.__idmap = {}
-        self.__missing_ids = {}
+        self.__missing_ids = defaultdict(list)
         self.__folder = self.get_root()
         self.__context = []
 
@@ -95,10 +96,7 @@ class Parser(html_scraper.Parser):
             except KeyError:
                 # bookmark not yet read in:
                 alias = nodes.Alias()
-                try:
-                    self.__missing_ids[idref].append(alias)
-                except KeyError:
-                    self.__missing_ids[idref] = [alias]
+                self.__missing_ids[idref].append(alias)
             else:
                 alias = nodes.Alias(bookmark)
             self.__folder.append_child(alias)

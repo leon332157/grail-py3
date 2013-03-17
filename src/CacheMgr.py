@@ -690,16 +690,14 @@ class DiskCache:
 
         def walk_erase_unknown(known,dir,files,regexp=self.cache_file):
             for file in files:
-                if not known.has_key(file) and regexp.match(file):
+                if file not in known and regexp.match(file):
                     path = os.path.join(dir,file)
                     if os.path.isfile(path):
                         os.unlink(path)
 
-        files = map(lambda entry:entry.file, self.items.values())
-        file_dict = { 'LOG': 1 }
-        for file in files:
-            file_dict[file] = 1
-        os.path.walk(self.directory, walk_erase_unknown, file_dict)
+        files = { 'LOG' }
+        files.update(entry.file for entry in self.items.values())
+        os.path.walk(self.directory, walk_erase_unknown, files)
 
     def get(self,key):
         """Update and log use_order."""

@@ -5,6 +5,7 @@ __version__ = '$Revision: 1.10 $'
 
 from .. import iso8601
 from .. import nodes
+from collections import defaultdict
 
 
 class CaptureError(Exception):
@@ -119,7 +120,7 @@ class DocumentHandler:
         self.__filename = filename
         self.__context = []
         self.__idmap = {}
-        self.__missing_ids = {}
+        self.__missing_ids = defaultdict(list)
         self.__root = self.new_folder()
 
     def get_root(self):
@@ -246,10 +247,7 @@ class DocumentHandler:
             if self.__idmap.has_key(idref):
                 node.set_refnode(self.__idmap[idref])
             else:
-                try:
-                    self.__missing_ids[idref].append(node)
-                except KeyError:
-                    self.__missing_ids[idref] = [node]
+                self.__missing_ids[idref].append(node)
         elif required:
             raise BookmarkFormatError(self.__filename,
                                       "missing %s attribute" % attrname)
