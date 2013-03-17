@@ -547,7 +547,7 @@ class Viewer(formatter.AbstractWriter):
             self.text.insert(END, self.pendingdata, self.flowingtags)
             self.pendingdata = ''
         self.rightmarginlevel = rl = map(None, styles).count('blockquote')
-        self.rightmargintag = rl and ('rightmargin_%d' % rl) or None
+        self.rightmargintag = ('rightmargin_%d' % rl) if rl else None
         self.flowingtags = filter(
             None,
             (self.align, self.fonttag, self.margintag, self.rightmargintag,
@@ -902,7 +902,7 @@ class ViewerMenu:
         # update the "Forward in Frame" item
         context = self.__context
         future, page = context.history.peek(+1)
-        self.__menu.entryconfig(1, state=(page and NORMAL or DISABLED))
+        self.__menu.entryconfig(1, state=(NORMAL if page else DISABLED))
         #
         # update the "Back in Frame" item
         viewer = self.__viewer
@@ -911,12 +911,12 @@ class ViewerMenu:
             viewer = viewer.parent
             context = viewer.context
             future, page = context.history.peek(-1)
-        self.__menu.entryconfig(0, state=(page and NORMAL or DISABLED))
+        self.__menu.entryconfig(0, state=(NORMAL if page else DISABLED))
         #
         # update the "Open Frame in New Window" item
         # (disable if there is no parent frame)
         parent = self.__context.viewer.parent
-        self.__menu.entryconfig(3, state=(parent and NORMAL or DISABLED))
+        self.__menu.entryconfig(3, state=(NORMAL if parent else DISABLED))
         #
         need_link = bool(self.__link_url)
         need_image = bool(self.__image_url)

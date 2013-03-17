@@ -129,7 +129,7 @@ class GrailHTMLParser(HTMLParser):
             if hist.inhistory_p(self.context.get_baseurl(href)):
                 atag = 'ahist'
         if id and self.register_id(id):
-            idtag = id and ('#' + id) or None
+            idtag = ('#' + id) if id else None
         if name and self.register_id(name):
             self.formatter.push_style(atag, utag, '#' + name, idtag)
         else:
@@ -178,7 +178,7 @@ class GrailHTMLParser(HTMLParser):
         extract = extract_keyword
         ## align = extract('align', attrs, align, conv=conv_align)
         alt = extract('alt', attrs, '(image)')
-        border = extract('border', attrs, self.anchor and 2 or None,
+        border = extract('border', attrs, 2 if self.anchor else None,
                          conv=int)
         ismap = 'ismap' in attrs
         if ismap and border is None: border = 2

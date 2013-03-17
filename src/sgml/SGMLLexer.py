@@ -261,7 +261,7 @@ class SGMLLexer(SGMLLexerBase):
 
     def normalize(self, norm):
         prev = self._normfunc is str.lower
-        self._normfunc = (norm and str.lower) or (lambda s: s)
+        self._normfunc = str.lower if norm else (lambda s: s)
         return prev
 
     def restrict(self, constrain):
@@ -380,7 +380,7 @@ class SGMLLexer(SGMLLexerBase):
                         i = match.end()
                     continue
             elif rawdata[i] == '&':
-                charref = (self._strict and legalcharref) or simplecharref
+                charref = legalcharref if self._strict else simplecharref
                 match = charref.match(rawdata, i)
                 if match:
                     k = match.end()
@@ -554,7 +554,7 @@ class SGMLLexer(SGMLLexerBase):
         xx = tagend.match(rawdata, k)
         if not xx:
             #  something vile
-            endchars = self._strict and "<>/" or "<>"
+            endchars = "<>/" if self._strict else "<>"
             while True:
                 try:
                     while rawdata[k].isspace():

@@ -455,7 +455,7 @@ class PSStream:
         self.close_line()
 
     def push_underline(self, flag):
-        render = flag and 'U' or 'S'
+        render = 'U' if flag else 'S'
         if self._render != render and self._linestr:
             self.close_string()
         self._render = render

@@ -107,8 +107,8 @@ class CookieDB:
         fp.write(BANNER)
         for cookie in self.all_cookies():
             if cookie.expires is not None:
-                isdomain = cookie.isdomain and 'TRUE' or 'FALSE'
-                secure = cookie.secure and 'TRUE' or 'FALSE'
+                isdomain = 'TRUE' if cookie.isdomain else 'FALSE'
+                secure = 'TRUE' if cookie.secure else 'FALSE'
                 expires = format(cookie.expires)
                 l = [cookie.domain, isdomain, cookie.path, secure,
                      expires, cookie.name, cookie.value]
@@ -284,7 +284,7 @@ class Cookie:
         self.isdomain = domain and domain[0] == '.'
         self.path = path
         self.secure = secure
-        self.expires = expires and int(expires) or None
+        self.expires = int(expires) if expires else None
         self.name = name
         self.value = value
         if others:

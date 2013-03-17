@@ -54,7 +54,7 @@ def embed_image(parser, attrs):
 
     # Image type is supported; get parameters and load it.
     shapes = 'shapes' in attrs
-    border = extract_keyword('border', attrs, shapes and 2 or 0, conv=int)
+    border = extract_keyword('border', attrs, 2 if shapes else 0, conv=int)
     width = extract_keyword('width', attrs, 0, conv=int)
     height = extract_keyword('height', attrs, 0, conv=int)
     hspace = extract_keyword('hspace', attrs, 0, conv=int)

@@ -134,7 +134,7 @@ class FormInfo:
         state = []
         for i in self.inputs:
             value = i.getstate()
-            name = hasattr(i, 'name') and i.name or ''
+            name = getattr(i, 'name', '')
             class_ = i.__class__
             state.append((class_, name, value))
         return state
@@ -151,7 +151,7 @@ class FormInfo:
             for i in self.inputs:
                 class_, name, value = self.formdata.pop(0)
                 iclass = i.__class__
-                iname = hasattr(i, 'name') and i.name or ''
+                iname = getattr(i, 'name', '')
                 if class_ == iclass and name == iname:
                     i.set(value)
                 else:
@@ -413,7 +413,7 @@ class FormInfo:
                                  highlightbackground=self.bgcolor)
 
         def reset(self):
-            self.var.set(self.checked and self.value or '')
+            self.var.set(self.value if self.checked else '')
 
         def set(self, value):
             self.var.set(value)
@@ -769,14 +769,14 @@ class InputImageWindow(Frame):
         self.context = self.viewer.context
         self.src, self.alt, self.align = src, alt, align
         bg = viewer.text['background']
-        borderwidth = borderwidth and int(borderwidth) or 0
+        borderwidth = int(borderwidth) if borderwidth else 0
         Frame.__init__(self, viewer.text, borderwidth=borderwidth,
                        background=bg)
         self.label = Label(self, text=self.alt, background=bg)
         self.label.pack(fill=BOTH, expand=1)
 ##      self.pack()
-        height = height and int(height) or 0
-        width = width and int(width) or 0
+        height = int(height) if height else 0
+        width = int(width) if width else 0
         if width > 0 and height > 0:
             self.propagate(0)
             self.config(width=width + 2*borderwidth,

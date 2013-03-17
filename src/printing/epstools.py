@@ -110,7 +110,7 @@ def load_image_internal(img_fn, greyscale, eps_fn):
     if not imgtype:
         os.unlink(img_fn)
         raise EPSError('Could not identify image type.')
-    cnv_key = (imgtype, (greyscale and 'grey') or 'color')
+    cnv_key = (imgtype, 'grey' if greyscale else 'color')
     if cnv_key not in image_converters:
         cnv_key = (imgtype, 'grey')
     if cnv_key not in image_converters:

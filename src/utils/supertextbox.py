@@ -42,7 +42,7 @@ def make_super_text_box(parent, width=0, height=0, hbar=0, vbar=1,
 
 
 def resize_super_text_box(event=None, frame=None):
-    canvas = frame and frame.canvas or event.widget
+    canvas = frame.canvas if frame else event.widget
     canvas.update_idletasks()
     width = canvas.winfo_width()
     height = canvas.winfo_height()

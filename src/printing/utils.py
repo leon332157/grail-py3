@@ -40,7 +40,7 @@ def debug(text, subsystem=None):
 def set_debugging(flag, subsystem=None):
     _subsystems.setdefault(subsystem, 0)
     _subsystems[subsystem] = max(
-        _subsystems[subsystem] + (flag and 1 or -1), 0)
+        _subsystems[subsystem] + (1 if flag else -1), 0)
 
 
 def get_debugging(subsystem=None):

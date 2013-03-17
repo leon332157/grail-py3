@@ -454,7 +454,7 @@ def usage(settings):
 
 
 def _onoff(bool):
-    return bool and "ON" or "OFF"
+    return "ON" if bool else "OFF"
 
 
 #  main() & relations....

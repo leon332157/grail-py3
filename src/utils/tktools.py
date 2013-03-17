@@ -388,7 +388,7 @@ def test():
     entry, eframe = make_form_entry(root, 'Boolean:')
     text, tframe = make_text_box(root)
     def enter(event, entry=entry, text=text):
-        s = boolean(entry.get()) and '\nyes' or '\nno'
+        s = '\nyes' if boolean(entry.get()) else '\nno'
         text.insert('end', s)
     entry.bind('<Return>', enter)
     entry.insert(END, flatten(sys.argv))

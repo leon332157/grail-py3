@@ -50,7 +50,7 @@ def tostring(t, timezone=0):
     else:
         timezone = int(timezone)
     if timezone:
-        sign = (timezone < 0) and "+" or "-"
+        sign = "+" if (timezone < 0) else "-"
         timezone = abs(timezone)
         hours = timezone / (60 * 60)
         minutes = (timezone % (60 * 60)) / 60

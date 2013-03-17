@@ -95,10 +95,10 @@ class MailDialog:
         hinfo = _make_sequence_dict(COMMON_HEADERS)
         variables = {
             'to':       address,
-            'subject':  data and 'Form posted from Grail' or '',
+            'subject':  'Form posted from Grail' if data else '',
             'mime-version': '1.0',
             'x-mailer': GRAILVERSION,
-            'x-url':    LAST_CONTEXT and LAST_CONTEXT.get_baseurl() or ''
+            'x-url':    LAST_CONTEXT.get_baseurl() if LAST_CONTEXT else ''
             }
         if data:
             variables["content-type"] = "application/x-www-form-urlencoded"

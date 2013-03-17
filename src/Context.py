@@ -592,7 +592,7 @@ class Context(URIContext):
         url = self.get_url()
         title, when = self.app.global_history.lookup_url(url)
         if not title:
-            title = self.page and self.page.title() or url
+            title = self.page.title() if self.page else url
         return title
 
 
