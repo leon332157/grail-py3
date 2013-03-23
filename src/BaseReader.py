@@ -189,14 +189,8 @@ class BaseReader:
         errcode, errmsg, headers = self.api.getmeta()
         self.callback = self.checkdata
         self.poller = self.api.polldata
-        if headers.has_key('content-type'):
-            content_type = headers['content-type']
-        else:
-            content_type = None
-        if headers.has_key('content-encoding'):
-            content_encoding = headers['content-encoding']
-        else:
-            content_encoding = None
+        content_type = headers.get('content-type')
+        content_encoding = headers.get('content-encoding')
         self.content_type = content_type
         self.content_encoding = content_encoding
         self.update_maxbytes(headers)

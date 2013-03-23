@@ -160,8 +160,7 @@ class GlobalHistory:
         self._urlmap[url] = (title, when)
 
     def lookup_url(self, url):
-        if self._urlmap.has_key(url): return self._urlmap[url]
-        else: return None, None
+        return self._urlmap.get(url, (None, None))
 
     def inhistory_p(self, url):
         return self._urlmap.has_key(url)

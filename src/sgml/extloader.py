@@ -26,9 +26,7 @@ class TagExtensionLoader(grailbase.extloader.ExtensionLoader):
             if not (parts[0] and parts[1]):
                 continue
             [action, tag] = parts
-            start = do = end = None
-            if handlers.has_key(tag):
-                start, do, end = handlers[tag]
+            start, do, end = handlers.get(tag, (None, None, None))
             if action == 'start':
                 start = function
             elif action == 'end':

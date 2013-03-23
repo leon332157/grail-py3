@@ -38,15 +38,9 @@ class TreeWalker:
         leave(node)
 
     def get_methods(self, nodetype, methodmap={}):
-        try:
-            enter_method = getattr(self, "start_" + nodetype)
-        except AttributeError:
-            # use id() because it's harmless and built-in
-            enter_method = id
-        try:
-            leave_method = getattr(self, "end_" + nodetype)
-        except AttributeError:
-            leave_method = id
+        # use id() as the default because it's harmless and built-in
+        enter_method = getattr(self, "start_" + nodetype, id)
+        leave_method = getattr(self, "end_" + nodetype, id)
         #
         tuple = (enter_method, leave_method)
         methodmap[nodetype] = tuple

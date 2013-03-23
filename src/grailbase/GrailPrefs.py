@@ -66,7 +66,7 @@ class Preferences:
         # Consolidate established and changed, with changed having precedence:
         for g, comps in self.saved.items() + self.mods.items():
             for c, v in comps.items():
-                if not (deleted.has_key(g) and deleted[g].has_key(c)):
+                if c not in deleted.get(g, ()):
                     got[(g,c)] = v
         return got.items()
 
@@ -103,7 +103,7 @@ class Preferences:
         deleted = self.deleted
         for g, comps in self.mods.items():
             for c, v in comps.items():
-                if not (deleted.has_key(g) and deleted[g].has_key(c)):
+                if c not in deleted.get(g, ()):
                     if not self.saved.has_key(g):
                         self.saved[g] = {}
                     self.saved[g][c] = v
@@ -237,13 +237,12 @@ class AllPreferences:
         # Process the callbacks:
         callbacks, did_callbacks = self.callbacks, {}
         for group in pending_groups:
-            if self.callbacks.has_key(group):
-                for callback in callbacks[group]:
-                    # Ensure each callback is invoked only once per save,
-                    # in order:
-                    if not did_callbacks.has_key(callback):
-                        did_callbacks[callback] = 1
-                        apply(callback, ())
+            for callback in callbacks.get(group, ()):
+                # Ensure each callback is invoked only once per save,
+                # in order:
+                if not did_callbacks.has_key(callback):
+                    did_callbacks[callback] = 1
+                    apply(callback, ())
 
 def make_key(group, cmpnt):
     """Produce a key from preference GROUP, COMPONENT strings."""

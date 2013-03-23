@@ -202,7 +202,4 @@ class PSFont:
         tuple_sz = font_tuple[0]
         if isinstance(tuple_sz, Real):
             return tuple_sz
-        try:
-            return font_sizes[tuple_sz] * self.base_size
-        except KeyError:
-            return self.base_size
+        return font_sizes.get(tuple_sz, 1) * self.base_size

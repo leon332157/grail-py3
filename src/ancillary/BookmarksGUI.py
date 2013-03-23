@@ -1148,16 +1148,15 @@ class BookmarksController(OutlinerController):
         url = browser.context.get_baseurl()
         node = self.add_link(url, title)
         headers = browser.context.get_headers()
-        if headers.has_key("last-modified"):
-            modified = headers["last-modified"]
-            if isinstance(modified, str):
-                import ht_time
-                try:
-                    modified = ht_time.parse(modified)
-                except:
-                    pass
-                else:
-                    node.set_last_modified(modified)
+        modified = headers.get("last-modified")
+        if isinstance(modified, str):
+            import ht_time
+            try:
+                modified = ht_time.parse(modified)
+            except:
+                pass
+            else:
+                node.set_last_modified(modified)
 
     def add_link(self, url, title=''):
         # create a new node to represent this addition and then fit it
@@ -1275,8 +1274,7 @@ class BookmarksController(OutlinerController):
         self.set_modflag(1)
         # destroy the details dialog for the node, if it has one
         if self._details.has_key(id(node)):
-            self._details[id(node)].destroy()
-            del self._details[id(node)]
+            self._details.pop(id(node)).destroy()
         # remove it from the URI and ID maps
         self._collection.del_node(node)
 

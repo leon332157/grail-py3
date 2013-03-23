@@ -71,8 +71,7 @@ class Parser(html_scraper.Parser):
             else:
                 extra = ""
             raise bookmarks.PoppedRootError(self._filename + extra)
-        self.__folder = self.__context[-1]
-        del self.__context[-1]
+        self.__folder = self.__context.pop()
 
     def ddpop(self):
         if self.__store_node:
@@ -118,10 +117,8 @@ class Parser(html_scraper.Parser):
                 id = attrs["aliasid"].strip()
                 self.__idmap[id] = node
                 node.set_id(id)
-                if self.__missing_ids.has_key(id):
-                    for alias in self.__missing_ids[id]:
-                        alias.set_refnode(node)
-                    del self.__missing_ids[id]
+                for alias in self.__missing_ids.pop(id, ()):
+                    alias.set_refnode(node)
             self.save_bgn()
 
     def end_a(self):

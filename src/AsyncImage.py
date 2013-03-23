@@ -46,8 +46,8 @@ class ImageTempFileReader(TempFileReader):
         if errcode == 401:
             if headers.has_key('www-authenticate'):
                 cred_headers = {}
-                for k in headers.keys():
-                    cred_headers[k.lower()] = headers[k]
+                for k,v in headers.items():
+                    cred_headers[k.lower()] = v
                 cred_headers['request-uri'] = self.image.url
                 self.stop()
                 credentials = self.image.context.app.auth.request_credentials(
@@ -110,8 +110,7 @@ class BaseAsyncImage:
             return
         cached_file, content_type = api.tk_img_access()
         if cached_file \
-           and ImageTempFileReader.image_filters.has_key(content_type) \
-           and ImageTempFileReader.image_filters[content_type] == '':
+           and ImageTempFileReader.image_filters.get(content_type) == '':
             api.close()
             self.set_file(cached_file)
         else:

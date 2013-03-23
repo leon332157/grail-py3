@@ -62,8 +62,8 @@ def read_unicode_mapping(filename, dict=None):
                 continue
             unicode = int(parts[0], 16)
             adobe_name = parts[3].strip()
-            if unicode < 256 and not result.has_key(adobe_name):
-                result[adobe_name] = unicode
+            if unicode < 256:
+                result.setdefault(adobe_name, unicode)
     return result
 
 LATIN_1_MAPPING = {

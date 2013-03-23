@@ -570,7 +570,7 @@ class Viewer(formatter.AbstractWriter):
         self.rules.append(window)
         self.prepare_for_insertion(align)
         self.add_subwindow(window)
-        del self.subwindows[-1]
+        self.subwindows.pop()
         self.send_line_break()
 ##      self.text.update_idletasks()
 

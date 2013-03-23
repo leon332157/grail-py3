@@ -21,9 +21,9 @@ class ImageCache:
         for image in self.image_objects.keys():
             print "Image: %s.\n  Owners=%s" % (image,
                                             self.current_owners[image])
-        for owner in self.old_objects.keys():
+        for owner, images in self.old_objects.items():
             print "Old images owned by ", owner
-            for image in self.old_objects[owner]:
+            for image in images:
                 print image
 
     def form_key(self, (url, width, height)):
@@ -58,9 +58,7 @@ class ImageCache:
 
     def keep_old_copy(self, owner, image, key):
         key = self.form_key(key)
-        if not self.old_objects.has_key(owner):
-            self.old_objects[owner] = []
-        self.old_objects[owner].append((key,image))
+        self.old_objects.setdefault(owner, []).append((key,image))
 
     def owner_exiting(self, owner):
         del self.old_objects[owner]

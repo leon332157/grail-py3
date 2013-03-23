@@ -473,7 +473,7 @@ class PrintingHTMLParser(HTMLParser):
         self.formatter.writer.suppress_indentation()
 
     def list_check_dingbat(self, attrs):
-        if attrs.has_key('dingbat') and attrs['dingbat']:
+        if attrs.get('dingbat'):
             img = self.load_dingbat(attrs['dingbat'])
             if img: attrs['type'] = img
 

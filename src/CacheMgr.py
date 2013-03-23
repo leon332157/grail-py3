@@ -204,8 +204,7 @@ class CacheManager:
 
     def deactivate(self,key):
         """Removes a SharedItem from the shared object list."""
-        if self.active.has_key(key):
-            del self.active[key]
+        self.active.pop(key, None)
 
     def add_cache(self, cache):
         """Called by cache to notify manager this it is ready."""
@@ -251,10 +250,7 @@ class CacheManager:
                     pass
         else:
             for key in keys:
-                try: 
-                    del self.items[key]
-                except KeyError:
-                    pass
+                self.items.pop(key, None)
 
     def add(self,item,reload=0):
         """If item is not in the cache and is allowed to be cached, add it. 
@@ -304,15 +300,13 @@ class CacheManager:
         code, msg, params = item.meta
 
         # don't cache things that don't want to be cached
-        if params.has_key('pragma'):
-            pragma = params['pragma']
-            if pragma == 'no-cache':
-                return 0
+        pragma = params.get('pragma')
+        if pragma == 'no-cache':
+            return 0
 
-        if params.has_key('expires'):
-            expires = params['expires']
-            if expires == 0:
-                return 0
+        expires = params.get('expires')
+        if expires == 0:
+            return 0
 
         # respond to http/1.1 cache control directives
         if params.has_key('cache-control'):
@@ -587,8 +581,7 @@ class DiskCache:
                     elif kind == '1':           # delete
                         key = line[2:-1]
                         if self.items.has_key(key):
-                            self.size = self.size - self.items[key].size
-                            del self.items[key]
+                            self.size = self.size - self.items.pop(key).size
                             del self.manager.items[key]
                             self.use_order.remove(key)
                             assert key not in self.use_order
@@ -609,9 +602,9 @@ class DiskCache:
                             if len(self.use_order) > 0:
                                 self.use_order = []
                                 for key in self.items.keys():
-                                    del self.items[key]
                                     del self.manager.items[key]
-                                    self.size = 0
+                                self.items.clear()
+                                self.size = 0
                                 return
                         assert ver in self.log_ok_versions
                 except IndexError:
@@ -758,31 +751,16 @@ class DiskCache:
         else:
             date = time.time()
 
-        if headers.has_key('last-modified'):
-            lastmod = headers['last-modified']
-        else:
-            lastmod = date
+        lastmod = headers.get('last-modified', date)
 
-        if headers.has_key('expires'):
-            expires = headers['expires']
-        else:
-            expires = None
+        expires = headers.get('expires')
 
-        if headers.has_key('content-type'):
-            ctype = headers['content-type']
-        else:
-            # what is the proper default content type?
-            ctype = 'text/html'
+        # what is the proper default content type?
+        ctype = headers.get('content-type', 'text/html')
 
-        if headers.has_key('content-encoding'):
-            cencoding = headers['content-encoding']
-        else:
-            cencoding = None
+        cencoding = headers.get('content-encoding')
 
-        if headers.has_key('content-transfer-encoding'):
-            ctencoding = headers['content-transfer-encoding']
-        else:
-            ctencoding = None
+        ctencoding = headers.get('content-transfer-encoding')
 
         return (date, lastmod, expires, ctype, cencoding, ctencoding)
 
@@ -868,9 +846,8 @@ class DiskCache:
     def evict(self,key):
         """Remove an entry from the cache and delete the file from disk."""
         self.use_order.remove(key)
-        evictee = self.items[key]
+        evictee = self.items.pop(key)
         del self.manager.items[key]
-        del self.items[key]
         if key in self.expires:
             self.expires.remove(key)
         try:

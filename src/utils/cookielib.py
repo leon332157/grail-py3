@@ -217,9 +217,8 @@ class CookieDB:
         # if that'll do the trick.
         domains = self.all_domains()
         while remove > 0 and domains:
-            cookies = self.__cookies[domains[0]]
+            cookies = self.__cookies[domains.pop(0)]
             num_cookies = len(cookies)
-            del domains[0]
             self.__expire_cookies(cookies)
             remove = remove - (num_cookies - len(cookies))
         if remove > 0:

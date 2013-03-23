@@ -72,11 +72,10 @@ class GrailHTMLParser(HTMLParser):
         if self.reload1:
             self.reload1.detach(self)
         self.reload1 = None
-        refresh = None
         if self._metadata.has_key("refresh"):
             name, http_equiv, refresh = self._metadata["refresh"][0]
-        elif self.context.get_headers().has_key("refresh"):
-            refresh = self.context.get_headers()["refresh"]
+        else:
+            refresh = self.context.get_headers().get("refresh")
         if refresh:
             DynamicReloader(self.context, refresh)
 
@@ -295,12 +294,8 @@ class GrailHTMLParser(HTMLParser):
     # Override tag: <BASE HREF=...>
 
     def do_base(self, attrs):
-        base = None
-        target = None
-        if attrs.has_key('href'):
-            base = attrs['href']
-        if attrs.has_key('target'):
-            target = attrs['target']
+        base = attrs.get('href')
+        target = attrs.get('target')
         self.context.set_baseurl(base, target)
 
     # Override tag: <META ...>
@@ -342,8 +337,7 @@ class GrailHTMLParser(HTMLParser):
         if self.get_object():           # expensive!
             self.get_object().anchor(attrs)
             return
-        name = type = target = title = ''
-        id = None
+        name = title = ''
         has_key = attrs.has_key
         #
         href = attrs.get("urn", "").strip()
@@ -355,9 +349,9 @@ class GrailHTMLParser(HTMLParser):
             href = attrs.get("href", "").strip()
         name = extract_keyword('name', attrs,
                                conv=grailutil.conv_normstring)
-        if has_key('type'): type = (attrs['type'] or '').lower()
-        if has_key('target'): target = attrs['target']
-        if has_key('id'): id = attrs['id']
+        type = (attrs.get('type') or '').lower()
+        target = attrs.get('target', '')
+        id = attrs.get('id')
         self.anchor_bgn(href, name, type, target, id)
         # Delay this at least a little, since we don't want to add the title
         # to the history until the last possible moment.  We need a non-history

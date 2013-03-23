@@ -234,10 +234,8 @@ class DocumentHandler:
         if id:
             node.set_id(id)
             self.__idmap[id] = node
-            if self.__missing_ids.has_key(id):
-                for n in self.__missing_ids[id]:
-                    n.set_idref(node)
-                del self.__missing_ids[id]
+            for n in self.__missing_ids.pop(id, ()):
+                n.set_idref(node)
         elif required:
             raise BookmarkFormatError(self.__filename,
                                       "missing %s attribute" % attrname)

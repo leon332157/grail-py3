@@ -11,10 +11,7 @@ def start_frameset(parser, attrs):
         tags.append('noframes')
     rows = attrs.get("rows", "")
     cols = attrs.get("cols", "")
-    if not hasattr(parser, "frameset"):
-        parent = None
-    else:
-        parent = parser.frameset
+    parent = getattr(parser, "frameset", None)
     parser.frameset = FrameSet(parser, rows, cols, parent)
 
 def end_frameset(parser):
@@ -23,7 +20,7 @@ def end_frameset(parser):
         parser.frameset = parser.frameset.parent
 
 def do_frame(parser, attrs):
-    if not (hasattr(parser, "frameset") and parser.frameset):
+    if not getattr(parser, "frameset", None):
         return
     src = attrs.get("src", "")
     name = attrs.get("name", "")

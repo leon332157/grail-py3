@@ -12,40 +12,21 @@ URLENCODED = "application/x-www-form-urlencoded"
 FORM_DATA = "multipart/form-data"
 
 def start_form(parser, attrs):
-    try:
-        action = attrs['action']
-    except KeyError:
-        action = ''
-    try:
-        method = attrs['method']
-    except KeyError:
-        method = ''
-    try:
-        enctype = attrs['enctype']
-    except KeyError:
-        enctype = URLENCODED
-    try:
-        target = attrs['target']
-    except KeyError:
-        target = ''
+    action = attrs.get('action', '')
+    method = attrs.get('method', '')
+    enctype = attrs.get('enctype', URLENCODED)
+    target = attrs.get('target', '')
     form_bgn(parser, action, method, enctype, target)
 
 def end_form(parser):
     form_end(parser)
 
 def do_input(parser, attrs):
-    try:
-        type = attrs['type'].lower()
-        del attrs['type']
-    except KeyError:
-        type = ''
+    type = attrs.pop('type', '').lower()
     handle_input(parser, type, attrs)
 
 def start_select(parser, attrs):
-    try:
-        name = attrs['name']
-    except KeyError:
-        name = ''
+    name = attrs.get('name', '')
     try:
         size = int(attrs['size'])
     except (KeyError, ValueError):
@@ -57,18 +38,12 @@ def end_select(parser):
     select_end(parser)
 
 def do_option(parser, attrs):
-    try:
-        value = attrs['value']
-    except KeyError:
-        value = ''
+    value = attrs.get('value', '')
     selected = attrs.has_key('selected')
     handle_option(parser, value, selected)
 
 def start_textarea(parser, attrs):
-    try:
-        name = attrs['name']
-    except KeyError:
-        name = ''
+    name = attrs.get('name', '')
     try:
         rows = int(attrs['rows'])
     except (KeyError, ValueError):
@@ -128,9 +103,8 @@ def textarea_end(parser):
 # --- Form state tacked on the parser
 
 def get_forminfo(parser):
-    if hasattr(parser, 'form_stack'):
-        if parser.form_stack:
-            return parser.form_stack[-1]
+    if getattr(parser, 'form_stack', None):
+        return parser.form_stack[-1]
     return None
 
 class FormInfo:
@@ -175,10 +149,9 @@ class FormInfo:
         reset = 1
         if self.formdata and len(self.formdata) == len(self.inputs):
             for i in self.inputs:
-                class_, name, value = self.formdata[0]
+                class_, name, value = self.formdata.pop(0)
                 iclass = i.__class__
                 iname = hasattr(i, 'name') and i.name or ''
-                del self.formdata[0]
                 if class_ == iclass and name == iname:
                     i.set(value)
                 else:
@@ -417,8 +390,7 @@ class FormInfo:
             if isinstance(value, str):
                 text = value
             elif isinstance(value, MutableSequence) and len(value) > 0:
-                text = value[0]
-                del value[0]
+                text = value.pop(0)
             self.entry.delete(0, END)
             self.entry.insert(0, text)
 

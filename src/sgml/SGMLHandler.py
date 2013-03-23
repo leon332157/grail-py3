@@ -11,14 +11,14 @@ class ElementHandler:
         pass
 
     def get_taginfo(self, tag):
-        start = do = end = None
         klass = self.__class__
-        if hasattr(klass, "start_" + tag):
-            start = getattr(klass, "start_" + tag)
-            if hasattr(klass, "end_" + tag):
-                end = getattr(klass, "end_" + tag)
-        elif hasattr(klass, "do_" + tag):
-            do = getattr(klass, "do_" + tag)
+        start = getattr(klass, "start_" + tag, None)
+        if start:
+            end = getattr(klass, "end_" + tag, None)
+            do = None
+        else:
+            end = None
+            do = getattr(klass, "do_" + tag, None)
         if start or do:
             return TagInfo(tag, start, do, end)
 

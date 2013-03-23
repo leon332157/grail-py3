@@ -37,8 +37,7 @@ class DocumentInfoDialog:
         if fragment:
             self.add_label_field("Fragment", fragment, "fragment")
         headers = context.get_headers()
-        if headers.has_key("date") and \
-        isinstance(headers["date"], CacheMgr.HTTime):
+        if isinstance(headers.get("date"), CacheMgr.HTTime):
             self.add_label_field("", "(Loaded from local cache.)", "cached")
         items = headers.items()
         items.sort()
@@ -130,10 +129,7 @@ class DocumentInfoDialog:
 
 class DocumentInfoCommand:
     def __init__(self, obj):
-        try:
-            self.__viewer = obj.viewer
-        except AttributeError:
-            self.__viewer = obj
+        self.__viewer = getattr(obj, "viewer", obj)
 
     def __call__(self, event=None):
         DocumentInfoDialog(self.__viewer.master,

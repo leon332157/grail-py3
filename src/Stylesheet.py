@@ -63,8 +63,7 @@ class Stylesheet:
         sdict = {}
         slist = self.prefs.Get('styles', sname + '-sizes').split()
         for k in self.prefs.Get('styles', 'size-names').split():
-            sdict[k] = int(slist[0])
-            del slist[0]
+            sdict[k] = int(slist.pop(0))
         return sname, sdict
 
     def get_bold(self):
@@ -98,11 +97,8 @@ class Stylesheet:
                 # terminal:
                 d[f] = fields[0]
                 break
-            elif d.has_key(f):
-                d = d[f]
             else:
-                d[f] = newd = {}
-                d = newd
+                d = d.setdefault(f, {})
 
     def dictify_group(self, glist, attr=None):
         """Incorporate entries in preferences GetGroup list to self.attrs."""
@@ -116,11 +112,8 @@ class Stylesheet:
                 if not fields:
                     # f is a terminal key:
                     d[f] = val
-                elif d.has_key(f):
-                    d = d[f]
                 else:
-                    d[f] = newd = {}
-                    d = newd
+                    d = d.setdefault(f, {})
 
 
 def test():

@@ -52,8 +52,7 @@ class OutlinerNode:
     def del_child(self, node):
         try:
             child_i = self._children.index(node)
-            rtnnode = self._children[child_i]
-            del self._children[child_i]
+            rtnnode = self._children.pop(child_i)
             return rtnnode
         except (ValueError, IndexError):
             return False

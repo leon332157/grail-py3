@@ -54,8 +54,7 @@ class TableSubParser:
             parser.save_end()
             parser.formatter.add_line_break()
             if self._table_stack:
-                self._lasttable = self._table_stack[-1]
-                del self._table_stack[-1]
+                self._lasttable = self._table_stack.pop()
             else:
                 self._lasttable = None
 
@@ -501,16 +500,15 @@ class Table(AttrElem):
         for row in range(rowcount):
             for col in range(colcount):
                 index = (row, col)
-                if rawtable.has_key(index) and rawtable[index] <> OCCUPIED:
+                if rawtable.get(index, OCCUPIED) <> OCCUPIED:
                     rowprune[row] = 1
                     colprune[col] = 1
 
         # adjust column and row spans based on pruning
-        for row, col in rawtable.keys():
-            index = (row, col)
-            if rawtable[index] == OCCUPIED:
+        for index, cell in rawtable.items():
+            if cell == OCCUPIED:
                 continue
-            cell = rawtable[index]
+            row, col = index
             for prune in rowprune[row:row+cell.rowspan]:
                 cell.rowspan = cell.rowspan - 1 + prune
             for prune in colprune[col:col+cell.colspan]:

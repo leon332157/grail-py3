@@ -23,7 +23,6 @@ def replace(data, entities = None):
     """
     data = data.translate(_chartable)
     if '&' in data and entities:
-        value = None
         match = _entref_exp.search(data)
         if match:
             pos = match.start()
@@ -34,12 +33,11 @@ def replace(data, entities = None):
             ref, term = match.group(1, 3)
             if entities.has_key(ref):
                 value = entities[ref]
-            elif _named_chars.has_key(ref.lower()):
-                value = _named_chars[ref.lower()]
+            else:
+                value = _named_chars.get(ref.lower())
             if value is not None:
                 data = data[:pos] + value + data[pos+len(ref)+len(term)+1:]
                 pos = pos + len(value)
-                value = None
             else:
                 pos = pos + len(ref) + len(term) + 1
             match = _entref_exp.search(data)

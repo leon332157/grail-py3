@@ -110,8 +110,7 @@ class ftp_access:
         key = (user, host, port, '/'.join(dirs))
         self.debuglevel = None
         try:
-            if not ftpcache.has_key(key):
-                ftpcache[key] = []
+            ftpcache.setdefault(key, [])
             for attr in attrs:
                 [attr, value] = map(str.lower, splitvalue(attr))
                 if attr == 'type' and value in ('a', 'i', 'd'):

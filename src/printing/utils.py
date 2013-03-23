@@ -38,8 +38,7 @@ def debug(text, subsystem=None):
 
 
 def set_debugging(flag, subsystem=None):
-    if not _subsystems.has_key(subsystem):
-        _subsystems[subsystem] = 0
+    _subsystems.setdefault(subsystem, 0)
     _subsystems[subsystem] = max(
         _subsystems[subsystem] + (flag and 1 or -1), 0)
 

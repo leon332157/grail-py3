@@ -255,10 +255,7 @@ class AppletLoader:
     def mod_is_loaded(self, mod):
         """Internal -- check whether a module has already been loaded."""
         rexec = self.get_rexec()
-        try:
-            return rexec.modules[mod]
-        except KeyError:
-            return None
+        return rexec.modules.get(mod)
 
     def mod_is_local(self, mod):
         """Internal -- check whether a module can be found locally."""

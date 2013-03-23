@@ -111,14 +111,12 @@ class MailDialog:
             if header != 'body':
                 if header not in DISALLOWED_HEADERS:
                     variables[header] = vlist[0]        # toss duplicates
-                    if not hinfo.has_key(header):
-                        hinfo[header] = 15
+                    hinfo.setdefault(header, 15)
                 del headers[header]
         # insert user-specified extra headers
         variables = self.add_user_headers(variables)
         for header in variables.keys():
-            if not hinfo.has_key(header):
-                hinfo[header] = 19
+            hinfo.setdefault(header, 19)
         # write the headers into the buffer
         variables['date'] = time.ctime(time.time())
         hseq = _make_dict_sequence(hinfo)

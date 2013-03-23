@@ -154,9 +154,8 @@ class PSStream:
             print get_systemheader()
             # define the fonts
             print "/scalfac", self._font.points_per_pixel, "D"
-            for docfont in docfonts.keys():
-                print "/%s /%s dup reencodeISO D findfont D" \
-                      % (docfont, docfonts[docfont])
+            for key, value in docfonts.items():
+                print "/%s /%s dup reencodeISO D findfont D" % (key, value)
             # finish out the prolog with paper information:
             for name, value in vars(self._paper).items():
                 if isinstance(value, str):
@@ -322,8 +321,7 @@ class PSStream:
     def pop_yshift(self):
         if self._linestr:
             self.close_string()
-        self._linefp.write('0 %s R\n' % -self._yshift[-1][1])
-        del self._yshift[-1]
+        self._linefp.write('0 %s R\n' % -self._yshift.pop()[1])
 
     def push_end(self):
         self.close_line()

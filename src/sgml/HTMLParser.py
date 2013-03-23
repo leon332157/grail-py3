@@ -72,8 +72,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         "zwj": "",                      # i18n: zero-width joiner
         "zwnj": "",                     # i18n: zero-width non-joiner
         }
-    for k, v in new_entities.items():
-        entitydefs[k] = v
+    entitydefs.update(new_entities)
 
     doctype = 'html'
     autonumber = None
@@ -140,8 +139,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
 
     def save_end(self):
         if self.savedata:
-            data = self.savedata[0]
-            del self.savedata[0]
+            data = self.savedata.pop(0)
             if not self.savedata:       # deal with cheaters
                 self.savedata = None
         else:
@@ -193,7 +191,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             r = 1
         else:
             r = 0
-        del self.object_stack[-1]
+        self.object_stack.pop()
         return r
 
     __object = None
@@ -209,7 +207,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         if self.suppress_output and tag not in self.object_aware_tags:
             return
         for k in URL_VALUED_ATTRIBUTES:
-            if attrs.has_key(k) and attrs[k]:
+            if attrs.get(k):
                 s = attrs[k].strip()
                 # we really don't want to do this if this is a data: URL
                 if len(s) < 5 or s[:5].lower() != "data:":
@@ -274,11 +272,8 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
 
     def do_param(self, attrs):
         if 0 < self.suppress_output == len(self.object_stack):
-            name, value = None, None
-            if attrs.has_key('name'):
-                name = attrs['name']
-            if attrs.has_key('value'):
-                value = attrs['value']
+            name = attrs.get('name')
+            value = attrs.get('value')
             if name is not None and value is not None:
                 self.get_object().param(name, value)
 
@@ -460,7 +455,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
                     self.sgml_parser.lex_endtag(stack[0])
                     stack = self.sgml_parser.get_context('p')
                 # XXX this is really evil!
-                del self.sgml_parser.stack[-1]
+                self.sgml_parser.stack.pop()
             return
         self.element_close_maybe('p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6')
         self.formatter.end_paragraph(parbreak)
@@ -485,7 +480,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
                 self.sgml_parser.lex_endtag(stack[0])
                 stack = self.sgml_parser.get_context('p')
             #  Remove <P> surgically:
-            del self.sgml_parser.stack[-1]
+            self.sgml_parser.stack.pop()
             self.para_end(parbreak=0)
         else:
             self.formatter.add_line_break()
@@ -675,7 +670,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         self.element_close_maybe('p', 'lh')
         self.formatter.end_paragraph(0)
         format = '*'
-        if attrs.has_key('type') and isinstance(attrs['type'], str):
+        if isinstance(attrs.get('type'), str):
             format = self.make_format(attrs['type'], format)
         else:
             format = self.make_format(format, 'disc', listtype='ul')
@@ -905,13 +900,11 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         else:
             abswidth, percentwidth = None, 1.0
         height = None
-        align = 'center'
         if attrs.has_key('size'):
             try: height = int(attrs['size'])
             except: pass
             else: height = max(1, height)
-        if attrs.has_key('align'):
-            align = attrs['align'].lower()
+        align = attrs.get('align', 'center').lower()
         self.formatter.add_hor_rule(abswidth, percentwidth, height, align)
 
     def parse_width(self, str):
@@ -938,20 +931,14 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
     # --- Image
 
     def do_img(self, attrs):
-        align = ''
-        alt = '(image)'
         ismap = ''
-        src = ''
         width = 0
         height = 0
-        if attrs.has_key('align'):
-            align = attrs['align'].lower()
-        if attrs.has_key('alt'):
-            alt = attrs['alt']
+        align = attrs.get('align', '').lower()
+        alt = attrs.get('alt', '(image)')
         if attrs.has_key('ismap'):
             ismap = 1
-        if attrs.has_key('src'):
-            src = attrs['src'].strip()
+        src = attrs.get('src', '').strip()
         if attrs.has_key('width'):
             try: width = int(attrs['width'])
             except: pass
@@ -1097,8 +1084,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
 
     # remove from the dictionary so the "unknown" handler can call the
     # magic implementation...
-    if entitydefs.has_key("nbsp"):
-        del entitydefs["nbsp"]
+    entitydefs.pop("nbsp", None)
 
     def entref_nbsp(self, terminator):
         # for non-strict interpretation: really nasty stuff to act more

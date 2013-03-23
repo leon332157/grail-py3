@@ -607,8 +607,7 @@ class SimpleContext(Context):
 
 class SavingReader(Reader.Reader):
     def __init__(self, context, url, *args, **kw):
-        self.__filename = kw['filename']
-        del kw['filename']
+        self.__filename = kw.pop('filename')
         apply(Reader.Reader.__init__, (self, context, '') + args, kw)
         context.rmreader(self)
         self.url = url

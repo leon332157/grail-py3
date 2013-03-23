@@ -146,10 +146,7 @@ class ProtocolLoader(grailbase.extloader.ExtensionLoader):
         if mod:
             classname = name + "_access"
             joinername = name + "_join"
-            if hasattr(mod, classname):
-                access = getattr(mod, classname)
-            else:
-                access = None
+            access = getattr(mod, classname, None)
             if hasattr(mod, joinername):
                 join = getattr(mod, joinername)
             else:

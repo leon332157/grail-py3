@@ -108,7 +108,4 @@ def __get_search_module(which):
 def __get_component_class(which, name):
     m = __get_search_module(which)
     if m is not None:
-        try:
-            return getattr(m, which + name)
-        except AttributeError:
-            return None
+        return getattr(m, which + name, None)

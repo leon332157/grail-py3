@@ -22,17 +22,14 @@ report = 'stats'
 if sys.argv[1:]:
     args = sys.argv[1:]
     if os.path.exists(args[0]):
-        fileName = args[0]
-        del args[0]
+        fileName = args.pop(0)
     if args:
         args = ','.join(args).split(',')
         if args and args[0] in legal_reports:
-            report = args[0]
-            del args[0]
+            report = args.pop(0)
         new_sorts = []
         while args and args[0] in legal_sorts:
-            new_sorts.append(args[0])
-            del args[0]
+            new_sorts.append(args.pop(0))
         if new_sorts:
             sorts = tuple(new_sorts)
         for i in range(len(args)):

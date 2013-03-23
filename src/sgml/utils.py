@@ -78,8 +78,7 @@ def conv_enumeration(val, mapping_or_list):
         if val in mapping_or_list: return val
         else: return None
     else:
-        if mapping_or_list.has_key(val): return mapping_or_list[val]
-        else: return None
+        return mapping_or_list.get(val)
 
 
 def conv_normwhitespace(val):

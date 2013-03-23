@@ -204,9 +204,7 @@ class SocketQueue:
             for i in range(0,min(new_max-old_max, len(self.blocked))):
                 # run wild free sockets
                 self.open = self.open + 1
-                self.callbacks[self.blocked[0]]()
-                del self.callbacks[self.blocked[0]]
-                del self.blocked[0]
+                self.callbacks.pop(self.blocked.pop(0))()
             
 
     def request_socket(self, requestor, callback):
@@ -223,9 +221,7 @@ class SocketQueue:
             self.blocked.remove(owner)
             del self.callbacks[owner]
         elif len(self.blocked) > 0:
-            self.callbacks[self.blocked[0]]()  # apply callback
-            del self.callbacks[self.blocked[0]]
-            del self.blocked[0]
+            self.callbacks.pop(self.blocked.pop(0))()  # apply callback
         else:
             self.open = self.open - 1
 
@@ -417,8 +413,7 @@ class Application(BaseApplication.BaseApplication):
                      }
 
     def clear_dingbat(self, entname):
-        if self.dingbatimages.has_key(entname):
-            del self.dingbatimages[entname]
+        self.dingbatimages.pop(entname, None)
 
     def set_dingbat(self, entname, entity):
         self.dingbatimages[entname] = entity
@@ -437,8 +432,7 @@ class Application(BaseApplication.BaseApplication):
 
 if __name__ == "__main__":
     if sys.argv[1:] and sys.argv[1][:2] == '-p':
-        p = sys.argv[1]
-        del sys.argv[1]
+        p = sys.argv.pop(1)
         if p[2:]: n = eval(p[2:])
         else: n = 20
         KEEPALIVE_TIMER = 50000

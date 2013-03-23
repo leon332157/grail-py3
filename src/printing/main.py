@@ -161,10 +161,7 @@ def run(app):
         if args[1:]:
             multi = 1
         infp, outfn = open_source(infile)
-        try:
-            infile = infp.url
-        except AttributeError:
-            pass
+        infile = getattr(infp, "url", infile)
         if not outfile:
             outfile = (os.path.splitext(outfn)[0] or 'index') + '.ps'
     else:
@@ -335,13 +332,10 @@ def open_source(infile):
     except IOError:
         # derive file object via URL; still needs to be HTML.
         infp = urllib.urlopen(infile)
+        infile = getattr(infp, "url", infile)
         # use posixpath since URLs are expected to be POSIX-like; don't risk
         # that we're running on NT and os.path.basename() doesn't "do the
         # right thing."
-        try:
-            infile = infp.url
-        except AttributeError:
-            pass
         fn = posixpath.basename(urlparse.urlparse(infile)[2])
     else:
         fn = posixpath.basename(infile)
@@ -387,9 +381,7 @@ class multi_transform:
 
     __base_index = None
     def set_basedoc(self, url):
-        level = 1
-        if self.__docs.has_key(url):
-            level = self.__docs[url]
+        level = self.__docs.get(url, 1)
         self.__level = level
         self.__current_base = url
         try:

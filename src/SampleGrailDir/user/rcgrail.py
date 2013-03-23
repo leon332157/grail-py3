@@ -37,10 +37,7 @@ import re
 RCDIR = '.grail-unix'
 GRAILCMD = 'grail'
 
-try:
-    FILENAME = os.environ['GRAIL_REMOTE']
-except KeyError:
-    FILENAME = ''
+FILENAME = os.environ.get('GRAIL_REMOTE', '')
 GRAIL_CMD = '/bin/sh'
 GRAIL_ARGS = ('-c', GRAILCMD)
 

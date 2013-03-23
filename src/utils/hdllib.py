@@ -1119,10 +1119,7 @@ def test(defargs = testsets[0]):
         print "flags:", hex(bits),
         for i in range(8 * len(replyflags)):
             if bits & (1L<<i):
-                if flags_map.has_key(i):
-                    print flags_map[i],
-                else:
-                    print i,
+                print flags_map.get(i, i),
         print
 
         if bits & (1L<<HDL_NONMUTABLE): print "\tSTATIC"

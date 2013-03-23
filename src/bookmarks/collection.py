@@ -55,8 +55,7 @@ class Collection:
         count_map = {}
         queue = root.children()
         while queue:
-            node = queue[0]
-            del queue[0]
+            node = queue.pop(0)
             nodetype = node.get_nodetype()
             count_map[nodetype] = count_map.get(nodetype, 0) + 1
             if nodetype == "Folder":
@@ -105,8 +104,7 @@ class Collection:
                     del id_map[id]
                     id_map[new_id] = node
                     if ref_map.has_key(id):
-                        ref_map[new_id] = ref_map[id]
-                        del ref_map[id]
+                        ref_map[new_id] = ref_map.pop(id)
             if hasattr(node, "children"):
                 queue[len(queue):] = node.children()
         return id_map, ref_map
@@ -130,8 +128,7 @@ class Collection:
         need_ids = []
         queue = [node]
         while queue:
-            node = queue[0]
-            del queue[0]
+            node = queue.pop(0)
             nodetype = node.get_nodetype()
             if nodetype == "Bookmark":
                 id = node.id()
@@ -195,10 +192,7 @@ class Collection:
             pass
 
     def get_node_by_id(self, id):
-        try:
-            return self.__id_map[id]
-        except KeyError:
-            return None
+        return self.__id_map.get(id, None)
 
     def get_bookmarks_by_uri(self, uri):
         parsed = _parse_uri(uri)

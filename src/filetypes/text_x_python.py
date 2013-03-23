@@ -89,8 +89,7 @@ class parse_text_x_python:
         while nodes:
             steps = steps + 1
             if not (steps % 2000): self.show()
-            node = nodes[0]
-            del nodes[0]
+            node = nodes.pop(0)
             if isinstance(node, list):
                 ntype = node[0]
                 if wanted(ntype):

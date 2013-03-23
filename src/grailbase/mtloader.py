@@ -52,8 +52,5 @@ class MIMETypeExtension:
 
     def __load_attr(self, mod, name, load_as=None):
         load_as = load_as or name
-        if hasattr(mod, name):
-            v = getattr(mod, name)
-        else:
-            v = None
+        v = getattr(mod, name, None)
         setattr(self, load_as, v)

@@ -649,15 +649,14 @@ class Reader(BaseReader):
             TransferDisplay(context, fn, self)
             return
 
-        if headers.has_key('window-target'):
-            target = headers['window-target']
-            if target:
-                context = self.context.find_window_target(target)
-                if context is not self.context:
-                    self.context.rmreader(self)
-                    self.context = self.last_context = context
-                    self.context.addreader(self)
-                    self.viewer = self.context.viewer
+        target = headers.get('window-target')
+        if target:
+            context = self.context.find_window_target(target)
+            if context is not self.context:
+                self.context.rmreader(self)
+                self.context = self.last_context = context
+                self.context.addreader(self)
+                self.viewer = self.context.viewer
         self.context.clear_reset()
         self.context.set_headers(headers)
         self.context.set_url(self.url)
@@ -676,8 +675,8 @@ class Reader(BaseReader):
             return
 
         cred_headers = {}
-        for k in headers.keys():
-            cred_headers[k.lower()] = headers[k]
+        for k,v in headers.items():
+            cred_headers[k.lower()] = v
         cred_headers['request-uri'] = self.url
 
         if self.params.has_key('Authorization'):
