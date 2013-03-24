@@ -12,6 +12,8 @@ import copy
 import re
 import time
 from io import IncrementalNewlineDecoder
+from codecs import getincrementaldecoder
+from functools import partial
 
 # mailcap dictionary
 caps = None
@@ -61,7 +63,7 @@ class DecoderWrapper:
 
     def __init__(self, decoder, parser):
         self.__parser = parser
-        self.__decoder = decoder
+        self.__decoder = decoder()
         self.__null = None
 
     def feed(self, data):
@@ -83,6 +85,8 @@ _hex_digit_values = {
     'A': 10, 'B': 11, 'C': 12, 'D': 13, 'E': 14, 'F': 15,
     }
 
+# Cannot use the incremental decoder from the codec registry because it
+# does not store any state between calls
 class QuotedPrintableWrapper:
     """Wrap a parser object with a quoted-printable decoder.  Conforms to
     parser protocol."""
@@ -150,6 +154,8 @@ class QuotedPrintableWrapper:
         self.__parser.close()
 
 
+# Cannot use the base-64 decoder in the codec registry because it seems to
+# raise an exception for incomplete data rather than saving state
 class Base64Wrapper:
     """Decode base64-encoded data on the fly, and pass it on to the real
     type-specific parser."""
@@ -203,26 +209,8 @@ class Base64Wrapper:
         self.__parser.close()
 
 
-class DeflateWrapper:
-    """Decompress deflated data incrementally and pass is on to the real
-    type-specific handler."""
-
-    def __init__(self, parser):
-        import zlib
-        self.__parser = parser
-        self.__decompressor = zlib.decompressobj(-zlib.MAX_WBITS)
-
-    def feed(self, data):
-        data = self.__decompressor.decompress(data)
-        self.__parser.feed(data)
-
-    def close(self):
-        data = self.__decompressor.flush()
-        if data:
-            self.__parser.feed(data)
-        self.__parser.close()
-
-
+# Cannot use built-in "gzip" module because it only provides a file reader
+# interface with blocking reads
 class GzipWrapper:
     """Decompress gzipped data incrementally and pass it on to the real
     type-specific handler."""
@@ -360,13 +348,20 @@ else:
 # push comes to shove, but we'll ignore that for the moment.
 #
 content_decoding_wrappers = {}
+
+try:
+    decoder = getincrementaldecoder("zlib-codec")
+except LookupError:
+    pass
+else:
+    content_decoding_wrappers["deflate"] = partial(DecoderWrapper, decoder)
+
 try:
     import zlib
     import gzip
 except ImportError, error:
     pass
 else:
-    content_decoding_wrappers["deflate"] = DeflateWrapper
     content_decoding_wrappers["gzip"] = GzipWrapper
     content_decoding_wrappers["x-gzip"] = GzipWrapper
 
@@ -382,7 +377,8 @@ def get_encodings(headers):
 
 def wrap_parser(parser, ctype, content_encoding=None, transfer_encoding=None):
     if ctype.startswith("text/"):
-        decoder = IncrementalNewlineDecoder(decoder=None, translate=True)
+        decoder = partial(IncrementalNewlineDecoder,
+            decoder=None, translate=True)
         parser = DecoderWrapper(decoder, parser)
     if content_encoding:
         parser = content_decoding_wrappers[content_encoding](parser)
