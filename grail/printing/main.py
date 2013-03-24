@@ -18,6 +18,7 @@ import traceback
 import urllib
 import urlparse
 import pkgutil
+from io import TextIOWrapper
 
 # local modules:
 from . import epstools
@@ -160,8 +161,7 @@ def run(app):
         infile = args[0]
         if args[1:]:
             multi = True
-        infp, outfn = open_source(infile)
-        infile = getattr(infp, "url", infile)
+        infp, infile, outfn = open_source(infile)
         if not outfile:
             outfile = (os.path.splitext(outfn)[0] or 'index') + '.ps'
     else:
@@ -226,7 +226,7 @@ def run(app):
                 while p.sgml_parser.get_depth():
                     p.sgml_parser.lex_endtag(p.sgml_parser.get_stack()[0])
                 try:
-                    infp, fn = open_source(url)
+                    infp, url, fn = open_source(url)
                 except IOError as err:
                     if verbose and outfp is not sys.stdout:
                         print("Error opening subdocument", url)
@@ -333,13 +333,14 @@ def open_source(infile):
         # derive file object via URL; still needs to be HTML.
         infp = urllib.urlopen(infile)
         infile = getattr(infp, "url", infile)
+        infp = TextIOWrapper(infp, 'latin-1')
         # use posixpath since URLs are expected to be POSIX-like; don't risk
         # that we're running on NT and os.path.basename() doesn't "do the
         # right thing."
         fn = posixpath.basename(urlparse.urlparse(infile).path)
     else:
         fn = posixpath.basename(infile)
-    return infp, fn
+    return infp, infile, fn
 
 
 class multi_transform:
