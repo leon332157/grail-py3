@@ -97,6 +97,7 @@ class QuotedPrintableWrapper:
         self.__last_was_cr = data.endswith(b'\r')
         data = data.replace(b'\r\n', b'\n')
         data = data.replace(b'\r', b'\n')
+        data = data.replace(b'\n', b'\r\n')
 
         # now get the real buffer
         data = self.__buffer + data
@@ -109,10 +110,9 @@ class QuotedPrintableWrapper:
                 break
             s.extend(data[:pos])
             data = data[pos:]
-            xx = data[:2]
-            if xx == b'=\n':
-                data = data[2:]
-            elif xx == b'==':
+            if data.startswith(b'=\r\n'):
+                data = data[3:]
+            elif data.startswith(b'=='):
                 s.extend(b'=')
                 data = data[2:]
             elif len(data) >= 3:
@@ -131,10 +131,8 @@ class QuotedPrintableWrapper:
         self.__parser.feed(s)
 
     def close(self):
-        """Flush any remaining encoded data and feed it to the parser; there's
-        no way to properly decode it.  Close the parser afterwards."""
-        # just ignore that we couldn't parse it!
-        self.__parser.feed(self.__buffer)
+        """Drop any leftover data that could not be decoded.  Close the
+        wrapped parser."""
         self.__parser.close()
 
 
