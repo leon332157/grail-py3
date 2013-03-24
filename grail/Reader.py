@@ -78,13 +78,6 @@ class DecoderWrapper:
         self.__parser.close()
 
 
-_hex_digit_values = {
-    '0': 0, '1': 1, '2': 2, '3': 3, '4': 4,
-    '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
-    'a': 10, 'b': 11, 'c': 12, 'd': 13, 'e': 14, 'f': 15,
-    'A': 10, 'B': 11, 'C': 12, 'D': 13, 'E': 14, 'F': 15,
-    }
-
 # Cannot use the incremental decoder from the codec registry because it
 # does not store any state between calls
 class QuotedPrintableWrapper:
@@ -93,58 +86,49 @@ class QuotedPrintableWrapper:
     def __init__(self, parser):
         """Initialize the decoder.  Pass in the real parser as a parameter."""
         self.__parser = parser
-        self.__buffer = ''
+        self.__buffer = b''
         self.__last_was_cr = False
 
     def feed(self, data):
         """Decode data and feed as much as possible to the real parser."""
         # handle lineend translation inline
-        if self.__last_was_cr and data[0:1] == '\n':
+        if self.__last_was_cr and data[0:1] == b'\n':
             data = data[1:]
-        self.__last_was_cr = data[-1:] == '\r'
-        data = data.replace('\r\n', '\n')
-        data = data.replace('\r', '\n')
+        self.__last_was_cr = data.endswith(b'\r')
+        data = data.replace(b'\r\n', b'\n')
+        data = data.replace(b'\r', b'\n')
 
         # now get the real buffer
         data = self.__buffer + data
-        pos = data.find('=')
-        if pos == -1:
-            self.__parser.feed(data)
-            self.__buffer = ''
-            return
-        s = data[:pos]
-        data = data[pos:]
+        s = bytearray()
         while True:
+            pos = data.find(b'=')
+            if pos < 0:
+                s.extend(data)
+                self.__buffer = b''
+                break
+            s.extend(data[:pos])
+            data = data[pos:]
             xx = data[:2]
-            if xx == '=\n':
+            if xx == b'=\n':
                 data = data[2:]
-            elif xx == '==':
-                s = s + '='
+            elif xx == b'==':
+                s.extend(b'=')
                 data = data[2:]
             elif len(data) >= 3:
                 try:
-                    v = _hex_digit_values[data[1]] << 4
-                    v = v | _hex_digit_values[data[2]]
-                except KeyError:
-                    s = s + '='
+                    s.append(int(data[1:3], 16))
+                except ValueError:
+                    s.extend(b'=')
                     data = data[1:]
                     print("invalid quoted-printable encoding -- skipping '='")
                 else:
-                    s = s + chr(v)
                     data = data[3:]
             else:
                 # wait for more data
+                self.__buffer = data
                 break
-            # now look for the next '=':
-            pos = data.find('=')
-            if pos == -1:
-                s = s + data
-                data = ''
-            else:
-                s = s + data[:pos]
-                data = data[pos:]
         self.__parser.feed(s)
-        self.__buffer = data
 
     def close(self):
         """Flush any remaining encoded data and feed it to the parser; there's
@@ -162,40 +146,26 @@ class Base64Wrapper:
 
     def __init__(self, parser):
         self.__parser = parser
-        self.__buffer = ''
+        self.__buffer = b''
         self.__app = parser.viewer.context.app
-        self.__last_was_cr = 0
 
     def feed(self, data):
-        # handle lineend translation inline
-        if self.__last_was_cr and data[0:1] == '\n':
-            data = data[1:]
-        self.__last_was_cr = data[-1:] == '\r'
-        data = data.replace('\r\n', '\n')
-        data = data.replace('\r', '\n')
-
         # now get the real buffer
         data = self.__buffer + data
-        lines = data.split('\n')
-        if len(lines) > 1:
-            data = lines[-1]
-            del lines[-1]
-            stuff = ''
-            # do it this way to handle as much of the data as possible
-            # before barfing on it
-            while lines:
-                try:
-                    bin = binascii.a2b_base64(lines[0])
-                except (binascii.Error, binascii.Incomplete):
-                    self.__app.exception_dialog("while decoding base64 data")
-                else:
-                    stuff = stuff + bin
-                del lines[0]
-            lines.append(data)
-            data = '\n'.join(lines)
-            if stuff:
-                self.__parser.feed(stuff)
-        self.__buffer = data
+        lines = data.splitlines()
+        stuff = bytearray()
+        # do it this way to handle as much of the data as possible
+        # before barfing on it
+        for line in lines[:-1]:
+            try:
+                bin = binascii.a2b_base64(line)
+            except (binascii.Error, binascii.Incomplete):
+                self.__app.exception_dialog("while decoding base64 data")
+            else:
+                stuff.append(bin)
+        if stuff:
+            self.__parser.feed(stuff)
+        self.__buffer = lines[-1]
 
     def close(self):
         if self.__buffer:
@@ -225,7 +195,7 @@ class GzipWrapper:
         self.__fcomment = False
         self.__fhcrc = False
         self.__in_data = False
-        self.__buffer = ''
+        self.__buffer = b''
 
     def feed(self, data):
         if not self.__in_data:
@@ -239,9 +209,9 @@ class GzipWrapper:
         data = self.__buffer + data
         if not self.__header:
             if len(data) >= self.BASE_HEADER_LENGTH:
-                if data[:3] != '\037\213\010':
+                if data[:3] != b'\037\213\010':
                     raise RuntimeError("invalid gzip header")
-                self.__flag = ord(data[3])
+                self.__flag = data[3]
                 self.__header = True
                 data = data[10:]
         if self.__header:
@@ -255,7 +225,7 @@ class GzipWrapper:
             if ok and not self.__fhcrc:
                 data, ok = self.__read_fhcrc(data)
             if ok:
-                self.__buffer = ''
+                del self.__buffer
                 self.__in_data = True
                 # Call the constructor exactly this way to get gzip-style
                 # compression.  Omitting the optional arg doesn't lead to
@@ -272,7 +242,7 @@ class GzipWrapper:
             return data, True
         if len(data) < 2:
             return data, False
-        length = ord(data[0]) + (256 * ord(data[1]))
+        length = int.from_bytes(data[:2], "little")
         if len(data) < (length + 2):
             return data, False
         self.__fextra = True
@@ -310,7 +280,7 @@ class GzipWrapper:
 
     def __read_zstring(self, data):
         """Attempt to read a null-terminated string."""
-        stuff, sep, data = data.partition('\0')
+        stuff, sep, data = data.partition(b'\0')
         if sep:
             return data, True, stuff
         return stuff, False, None
@@ -378,7 +348,7 @@ def get_encodings(headers):
 def wrap_parser(parser, ctype, content_encoding=None, transfer_encoding=None):
     if ctype.startswith("text/"):
         decoder = partial(IncrementalNewlineDecoder,
-            decoder=None, translate=True)
+            decoder=getincrementaldecoder("latin-1")(), translate=True)
         parser = DecoderWrapper(decoder, parser)
     if content_encoding:
         parser = content_decoding_wrappers[content_encoding](parser)
