@@ -36,6 +36,7 @@ from .CacheMgr import CacheManager
 from .ImageCache import ImageCache
 from .Authenticate import AuthenticationManager
 from . import GlobalHistory
+from io import RawIOBase
 
 # Milliseconds between interrupt checks
 KEEPALIVE_TIMER = 500
@@ -140,27 +141,13 @@ def main(args=None):
         app.go()
 
 
-class URLReadWrapper:
+class URLReadWrapper(RawIOBase):
 
     def __init__(self, api, meta):
         self.api = api
         self.meta = meta
-        self.eof = 0
-
-    def read(self, nbytes=-1):
-        buf = ''
-        BUFSIZ = 8*1024
-        while nbytes != 0 and not self.eof:
-            new = self.api.getdata(nbytes < 0 and BUFSIZ or nbytes)
-            if not new:
-                self.eof = 1
-                break
-            buf = buf + new
-            if nbytes > 0:
-                nbytes - nbytes - len(new)
-                if nbytes <= 0:
-                    break
-        return buf
+        self.eof = False
+        RawIOBase.__init__(self)
 
     def info(self):
         return self.meta
@@ -171,6 +158,21 @@ class URLReadWrapper:
         self.meta = None
         if api:
             api.close()
+        RawIOBase.close(self)
+
+    def readable(self):
+        return True
+    
+    def readinto(self, b):
+        if self.eof:
+            return 0
+        data = self.api.getdata(len(b))
+        if data:
+            b[:len(data)] = data
+            return len(data)
+        else:
+            self.eof = True
+            return 0
 
 class SocketQueue:
 
