@@ -14,7 +14,7 @@ class PaperInfo:
     TabStop = inch_to_pt(0.5)
 
     def __init__(self, size, rotation=None, margins=None):
-        if type(size) is type(''):
+        if isinstance(size, str):
             size = paper_sizes[size]
         paperwidth, paperheight, name = size
         self.PaperHeight = paperheight  # cannonical
@@ -27,7 +27,7 @@ class PaperInfo:
             self.set_margins(margins)
 
     def rotate(self, angle):
-        if type(angle) is type(''):
+        if isinstance(angle, str):
             angle = paper_rotations[angle]
         if angle % 90.0 != 0:
             raise ValueError, "Illegal page rotation: "  + repr(angle)

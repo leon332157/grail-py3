@@ -15,7 +15,6 @@ from . import SGMLLexer
 from . import SGMLParser
 
 from formatter import AS_IS
-from types import StringType
 from .utils import *
 
 
@@ -652,7 +651,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         [listtype, label, counter, compact, depth] = top = self.list_stack[-1]
         if attrs.has_key('type'):
             s = attrs['type']
-            if type(s) is StringType:
+            if isinstance(s, str):
                 label = top[1] = self.make_format(s, label, listtype=listtype)
             elif s:
                 label = s
@@ -676,11 +675,11 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         self.element_close_maybe('p', 'lh')
         self.formatter.end_paragraph(0)
         format = '*'
-        if attrs.has_key('type') and (type(attrs['type']) is StringType):
+        if attrs.has_key('type') and isinstance(attrs['type'], str):
             format = self.make_format(attrs['type'], format)
         else:
             format = self.make_format(format, 'disc', listtype='ul')
-        if type(format) is StringType:
+        if isinstance(format, str):
             data = self.formatter.format_counter(format, 1) + ' '
             self.formatter.add_flowing_data(data)
 
@@ -689,7 +688,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             format = default
         if format in ('1', 'a', 'A', 'i', 'I') and listtype == 'ol':
             format = format + '.'
-        elif type(format) is not StringType:
+        elif not isinstance(format, str):
             pass
         elif listtype == 'ul':
             format = '*'

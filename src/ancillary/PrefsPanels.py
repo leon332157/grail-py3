@@ -21,7 +21,6 @@ from Tkinter import *
 import tktools
 import grailutil
 import re
-from types import StringType
 
 
 PANEL_CLASS_NAME_SUFFIX = 'Panel'
@@ -425,7 +424,7 @@ class Framework:
         try:
             for (g, c), (type_nm, uiget, uiset) in self.collection.items():
                 val = uiget()
-                if (type(val) == StringType) and (type_nm != 'string'):
+                if isinstance(val, str) and (type_nm != 'string'):
                     val = typify(val, type_nm)
                 prefsset(g, c, val)
         except (TypeError, ValueError):
@@ -514,7 +513,7 @@ class Framework:
             for (g, c), (type_nm, uiget, uiset) in self.collection.items():
                 uival = uiget()
                 if type_nm != 'string':
-                    if type(uival) == StringType:
+                    if isinstance(uival, str):
                         uival = typify(uival, type_nm)
                     if uival != prefsgettyped(g, c, type_nm, factory):
                         return 1

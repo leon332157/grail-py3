@@ -132,7 +132,7 @@ class http_access:
             assert method=="POST"
         else:
             assert method in ("GET", "POST")
-        if type(resturl) == type(()):
+        if isinstance(resturl, tuple):
             host, selector = resturl    # For proxy interface
         else:
             host, selector = splithost(resturl)

@@ -170,14 +170,14 @@ class Writer(walker.TreeWalker):
         has_text = (tab is None) or (attrs.get("xml:space") == "preserve")
         if not has_text:
             for citem in content:
-                if type(citem) is type(""):
+                if isinstance(citem, str):
                     has_text = 1
                     break
         if has_text:
             # some plain text in the data; assume significant:
             append(">")
             for citem in content:
-                if type(citem) is type(""):
+                if isinstance(citem, str):
                     append(bookmarks._prepstring(citem))
                 else:
                     # element

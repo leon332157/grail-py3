@@ -4,6 +4,7 @@ from Tkinter import *
 import urllib
 import tktools
 import ImageWindow
+from collections import MutableSequence
 
 # ------ Forms
 
@@ -236,7 +237,7 @@ class FormInfo:
                 ### images need to return two different values
                 ### there doesn't seem to be an easy & elegant way to
                 ###do this
-                if type(v) == type(()):
+                if isinstance(v, tuple):
                     if None in v: continue
                     s = '&' + quote(i.name + '.x') + '=' + quote(str(v[0]))
                     data = data + s
@@ -260,7 +261,7 @@ class FormInfo:
             if not i.name: continue
             v = i.get()
             if not v: continue
-            if type(v) == type(()):
+            if isinstance(v, tuple):
                 # XXX Argh!  Have to do it twice, for each coordinate
                 if None in v: continue
                 disp = 'form-data; name="%s.x"' % i.name
@@ -413,9 +414,9 @@ class FormInfo:
 
         def set(self, value):
             text = ''
-            if type(value) == type(''):
+            if isinstance(value, str):
                 text = value
-            elif type(value) == type([]) and len(value) > 0:
+            elif isinstance(value, MutableSequence) and len(value) > 0:
                 text = value[0]
                 del value[0]
             self.entry.delete(0, END)

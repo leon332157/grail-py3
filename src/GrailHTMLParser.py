@@ -556,7 +556,7 @@ class GrailHTMLParser(HTMLParser):
 
     def make_format(self, format, default='disc', listtype=None):
         fmt = format or default
-        if type(fmt) is StringType:
+        if isinstance(fmt, str):
             fmt = fmt.lower()
         if fmt in ('disc', 'circle', 'square'):
             if listtype == 'ul':
@@ -579,7 +579,7 @@ class GrailHTMLParser(HTMLParser):
             return
         img = self.load_dingbat(entname)
         if img:
-            if type(img) is TupleType:
+            if isinstance(img, tuple):
                 s, tag = img
                 if tag:
                     if tag != "_ding":

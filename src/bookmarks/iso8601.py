@@ -45,7 +45,7 @@ def tostring(t, timezone=0):
     Some effort is made to avoid adding text for the 'seconds' field, but
     seconds are supported to the hundredths.
     """
-    if type(timezone) is type(''):
+    if isinstance(timezone, str):
         timezone = parse_timezone(timezone)
     else:
         timezone = int(timezone)

@@ -1,7 +1,6 @@
 """Assorted Tk-related subroutines."""
 
 
-from types import *
 from Tkinter import *
 
 def _clear_entry_widget(event):
@@ -367,10 +366,9 @@ def unify_button_widths(*buttons):
 
 def flatten(msg):
     """Turn a list or tuple into a single string -- recursively."""
-    t = type(msg)
-    if t in (ListType, TupleType):
+    if isinstance(msg, (list, tuple)):
         msg = " ".join(map(flatten, msg))
-    elif t is ClassType:
+    elif isinstance(t, type):
         msg = msg.__name__
     else:
         msg = str(msg)

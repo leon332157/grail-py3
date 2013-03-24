@@ -6,7 +6,7 @@ import tktools
 import formatter
 from Context import Context, SimpleContext
 from Cursors import *
-from types import StringType
+from collections import Iterable
 from urlparse import urljoin, urlparse
 from Stylesheet import UndefinedStyle
 
@@ -579,12 +579,11 @@ class Viewer(formatter.AbstractWriter):
     def send_label_data(self, data):
 ##      print "Label data:", repr(data)
         tags = self.flowingtags + ('label_%d' % self.marginlevel,)
-        data_type = type(data)
-        if data_type is StringType:
+        if isinstance(data, str):
             self.text.insert(END, self.pendingdata, self.flowingtags,
                              '\t%s\t' % data, tags)
             self.pendingdata = ''
-        elif data_type is TupleType:
+        elif isinstance(data, Iterable):
             #  (string, fonttag) pair
             data, fonttag = data
             if fonttag:
@@ -597,7 +596,7 @@ class Viewer(formatter.AbstractWriter):
                 self.text.insert(END, self.pendingdata, self.flowingtags,
                                  '\t%s\t' % data, tags)
                 self.pendingdata = ''
-        elif data_type is InstanceType:
+        else:
             #  Some sort of image specified by DINGBAT or SRC
             self.text.insert(END, self.pendingdata, self.flowingtags,
                              '\t', tags)

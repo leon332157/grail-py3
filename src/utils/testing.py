@@ -38,7 +38,7 @@ def exercise(stmt, env, purpose, expected_exception=None, verbose=0):
                                 % (stmt, purpose))
         return
     except:
-        if sys.exc_type == expected_exception:
+        if issubclass(sys.exc_type, expected_exception):
             return
         else:
             raise sys.exc_type, sys.exc_value, sys.exc_traceback

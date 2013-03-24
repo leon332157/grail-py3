@@ -5,6 +5,7 @@ import time
 import ht_time
 import grailutil
 import re
+from numbers import Real
 
 META, DATA, DONE = 'META', 'DATA', 'DONE' # Three stages
 
@@ -239,7 +240,7 @@ class CacheManager:
         self.items[key].evict()
 
     def delete(self, keys, evict=1):
-        if type(keys) != type([]):
+        if not isinstance(keys, list):
             keys = [keys]
 
         if evict:
@@ -951,9 +952,9 @@ class HTTime:
 
     def __init__(self,any=None,str=None,secs=None):
         if any:
-            if type(any) == type(''):
+            if isinstance(any, type('')):
                 str = any
-            elif type(any) in [type(1), type(.1)]:
+            elif isinstance(any, Real):
                 secs = any
         if str:
             self.str = str

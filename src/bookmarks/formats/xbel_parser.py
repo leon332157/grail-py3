@@ -49,7 +49,7 @@ class CaptureMixin:
         if not self.__capturing:
             raise CaptureError("capturing not active")
         # create the smallest number of text nodes possible
-        if self.__context[-1] and type(self.__context[-1][-1]) is type(""):
+        if self.__context[-1] and isinstance(self.__context[-1][-1], str):
             self.__context[-1][-1] = self.__context[-1][-1] + data
         else:
             self.__context[-1].append(data)
@@ -70,7 +70,7 @@ class CaptureMixin:
         return self.__capturing
 
 
-def normalize_capture(data, preserve=0, StringType=type("")):
+def normalize_capture(data, preserve=0):
     queue = [(data, preserve)]
     while queue:
         (tag, attrs, content), preserve = queue[0]
@@ -80,7 +80,7 @@ def normalize_capture(data, preserve=0, StringType=type("")):
         #
         if not preserve:
             # remove leading blanks:
-            while (content and type(content[0]) is StringType
+            while (content and isinstance(content[0], str)
                    and content[0].strip() == ""):
                 del content[0]
             # remove trailing blanks
@@ -88,14 +88,14 @@ def normalize_capture(data, preserve=0, StringType=type("")):
             cindexes.reverse()
             for ci in cindexes:
                 citem = content[ci]
-                if type(citem) is StringType and not citem.strip():
+                if isinstance(citem, str) and not citem.strip():
                     del content[ci]
                 else:
                     break
             # now, if all remaining strings are blank,
             # assume this is element-only:
             for citem in content:
-                if type(citem) is StringType:
+                if isinstance(citem, str):
                     if citem.strip():
                         preserve = 1
         if not preserve:
@@ -103,10 +103,10 @@ def normalize_capture(data, preserve=0, StringType=type("")):
             cindexes = range(len(content))
             cindexes.reverse()
             for ci in cindexes:
-                if type(content[ci]) is StringType:
+                if isinstance(content[ci], str):
                     del content[ci]
         for citem in content:
-            if type(citem) is not StringType:
+            if not isinstance(citem, str):
                 queue.append((citem, preserve))
     return data
 

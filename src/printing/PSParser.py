@@ -3,7 +3,6 @@
 __version__ = '$Revision: 1.13 $'
 
 import os
-import types
 import urlparse
 
 from formatter import AbstractFormatter
@@ -492,7 +491,7 @@ class PrintingHTMLParser(HTMLParser):
 
     def unknown_entityref(self, entname, terminator):
         dingbat = self.load_dingbat(entname)
-        if type(dingbat) is types.TupleType:
+        if isinstance(dingbat, tuple):
             apply(self.formatter.writer.ps.push_font_string, dingbat)
             self.formatter.assert_line_data()
         elif dingbat:

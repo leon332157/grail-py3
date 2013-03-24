@@ -77,7 +77,6 @@ class parse_text_x_python:
                 "Syntax error in Python source: %s" % err)
             return
         self.setup_tags()
-        from types import ListType
         ISTERMINAL = token.ISTERMINAL
         wanted = self.__wanted_terminals.has_key
         tag_add = self.tag_add = self.__viewer.text.tag_add
@@ -92,7 +91,7 @@ class parse_text_x_python:
             if not (steps % 2000): self.show()
             node = nodes[0]
             del nodes[0]
-            if type(node) is ListType:
+            if isinstance(node, list):
                 ntype = node[0]
                 if wanted(ntype):
                    [ntype, nstr, lineno] = node

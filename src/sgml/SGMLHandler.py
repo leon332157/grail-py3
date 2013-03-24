@@ -151,8 +151,6 @@ class CompositeHandler:
         self.__tagmap[tag].handle_endtag(tag, method)
 
 
-from types import StringType
-
 class TagInfo:
     container = 1
 
@@ -168,9 +166,9 @@ class TagInfo:
 
     def __cmp__(self, other):
         # why is this needed???
-        if type(other) is StringType:
+        if isinstance(other, str):
             return cmp(self.tag, other)
-        if type(other) is type(self):
+        if isinstance(other, TagInfo):
             return cmp(self.tag, other.tag)
         raise TypeError, "incomparable values"
 

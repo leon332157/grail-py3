@@ -1150,7 +1150,7 @@ class BookmarksController(OutlinerController):
         headers = browser.context.get_headers()
         if headers.has_key("last-modified"):
             modified = headers["last-modified"]
-            if type(modified) is type(''):
+            if isinstance(modified, str):
                 import ht_time
                 try:
                     modified = ht_time.parse(modified)

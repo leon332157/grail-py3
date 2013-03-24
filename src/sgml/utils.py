@@ -7,6 +7,7 @@ __version__ = '$Revision: 1.4 $'
 
 
 import string as _string
+from collections import Mapping
 
 
 def extract_attribute(key, dict, default=None, conv=None, delete=1):
@@ -73,7 +74,7 @@ def conv_normstring(val):
 
 def conv_enumeration(val, mapping_or_list):
     val = conv_normstring(val)
-    if type(mapping_or_list) == type([]):
+    if not isinstance(mapping_or_list, Mapping):
         if val in mapping_or_list: return val
         else: return None
     else:

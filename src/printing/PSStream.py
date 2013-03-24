@@ -8,8 +8,9 @@ from . import settings
 import sys
 import time
 import urlparse
+from numbers import Real
 from io import StringIO
-from types import StringType, TupleType
+from collections import Iterable
 
 
 RECT_DEBUG = 0
@@ -158,7 +159,7 @@ class PSStream:
                       % (docfont, docfonts[docfont])
             # finish out the prolog with paper information:
             for name, value in vars(self._paper).items():
-                if type(value) is type(''):
+                if isinstance(value, str):
                     print "/Gr%s (%s) D" % (name, value)
                 else:
                     print "/Gr%s %s D" % (name, value)
@@ -360,7 +361,7 @@ class PSStream:
 
     def push_horiz_rule(self, abswidth=None, percentwidth=None,
                         height=None, align=None):
-        if type(height) is type(0):
+        if isinstance(height, Real):
             height = 0.5 * max(height, 1)       # each unit is 0.5pts
         else:
             height = 1                          # 2 "units"
@@ -420,12 +421,12 @@ class PSStream:
     def push_label(self, bullet):
         if self._linestr:
             self.close_string()
-        if type(bullet) is StringType:
+        if isinstance(bullet, str):
             #  Simple textual bullet:
             distance = self._font.text_width(bullet) + LABEL_TAB
             self._linefp.write('gsave CR -%s 0 R (%s) S grestore\n' %
                                (distance, cook(bullet)))
-        elif type(bullet) is TupleType:
+        elif isinstance(bullet, Iterable):
             #  Font-based dingbats:
             string, font = bullet
             self._linefp.write('gsave\n CR %s %d SF\n'

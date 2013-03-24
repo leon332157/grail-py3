@@ -13,7 +13,6 @@ conform to the following interface:
 """
 
 import sys
-from types import DictType
 import marshal
 
 class Switchboard:
@@ -33,7 +32,7 @@ class Switchboard:
                 try:
                     fp = open(initfile)
                     self.__optiondb = marshal.load(fp)
-                    if type(self.__optiondb) <> DictType:
+                    if not isinstance(self.__optiondb, dict):
                         sys.stderr.write(
                             'Problem reading options from file: %s\n' %
                             initfile)

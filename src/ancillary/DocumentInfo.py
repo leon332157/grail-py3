@@ -6,6 +6,7 @@ import re
 import Tkinter
 import tktools
 import urlparse
+from . import CacheMgr
 
 FIELD_BREAKER = str.maketrans("&", "\n")
 MAX_TEXT_FIELD_LINES = 10
@@ -36,13 +37,14 @@ class DocumentInfoDialog:
         if fragment:
             self.add_label_field("Fragment", fragment, "fragment")
         headers = context.get_headers()
-        if headers.has_key("date") and type(headers["date"]) is type(self):
+        if headers.has_key("date") and \
+        isinstance(headers["date"], CacheMgr.HTTime):
             self.add_label_field("", "(Loaded from local cache.)", "cached")
         items = headers.items()
         items.sort()
         s = ""
         for k, v in items:
-            if k == 'date' and type(v) is type(self):
+            if k == 'date' and isinstance(v, CacheMgr.HTTime):
                 import ht_time
                 v = ht_time.unparse(v.get_secs())
             s = "%s%s:\t%s\n" % (s, k, v)

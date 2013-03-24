@@ -6,6 +6,7 @@ __version__ = '$Revision: 1.4 $'
 
 from . import fonts                            # package
 from . import utils
+from numbers import Real
 
 
 # This dictionary maps PostScript font names to the normal, bold and
@@ -199,7 +200,7 @@ class PSFont:
         if not font_tuple:
             return self._fontsize
         tuple_sz = font_tuple[0]
-        if type(tuple_sz) is type(1.0):
+        if isinstance(tuple_sz, Real):
             return tuple_sz
         try:
             return font_sizes[tuple_sz] * self.base_size
