@@ -571,7 +571,7 @@ class DiskCache:
             return
 
         with log:
-            for line in log.readlines():
+            for line in log:
                 try:
                     kind = line[0:1]        
                     if kind == '2': # use update

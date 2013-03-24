@@ -79,12 +79,7 @@ class CookieDB:
             self.load_ns(fp)
 
     def load_ns(self, fp=None):
-        lineno = 0
-        while True:
-            line = fp.readline()
-            if not line:
-                break
-            lineno = lineno + 1
+        for (lineno, line) in enumerate(fp, 1):
             if line[0] == '#':
                 continue
             line = line.strip()

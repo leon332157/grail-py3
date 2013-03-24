@@ -31,12 +31,7 @@ def parseprefs(fp):
     """Parse a Grail preferences file.  See module docstring."""
     groups = defaultdict(dict)
     group = None                        # used for continuation line
-    lineno = 0
-    while True:
-        line = fp.readline()
-        if not line:
-            break
-        lineno = lineno + 1
+    for (lineno, line) in enumerate(fp, 1):
         if line[0] == '#':
             continue
         match = None

@@ -47,10 +47,7 @@ def splitline(line):
 def read_unicode_mapping(filename, dict=None):
     result = dict or {}
     with open(filename) as fp:
-        while True:
-            line = fp.readline()
-            if not line:
-                break
+        for line in fp:
             line = line.strip()
             if line and line[0] == "#":
                 continue
@@ -99,11 +96,7 @@ def parse(filename, outdir):
              }
 
     infp = open(filename, 'r')
-    while True:
-        line = infp.readline()
-        if line == '':
-            print 'No character metrics found in file:', filename
-            sys.exit(1)
+    for line in infp:
         keyword, rest = splitline(line)
         if keyword in ('fontname', 'fullname', 'notice'):
             tdict[keyword] = rest
@@ -118,10 +111,7 @@ def parse(filename, outdir):
         '_'.join(['PSFont'] + tdict['fontname'].split('-')) + '.py')
 
     # read the character metrics into the list
-    while True:
-        line = infp.readline()
-        if line == '':
-            break
+    for line in infp:
         keyword, rest = splitline(line)
         if keyword == 'c':
             info = rest.split()
