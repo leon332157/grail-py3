@@ -25,9 +25,8 @@ class data_access(nullAPI.null_access):
 
     def getdata(self, maxbytes):
         assert self.state == nullAPI.DATA
-        split_pos = min(maxbytes, len(self.__data))
-        data = self.__data[:split_pos]
-        self.__data = self.__data[split_pos:]
+        data = self.__data[:maxbytes]
+        self.__data = self.__data[maxbytes:]
         if not data:
             self.state = nullAPI.DONE
         return data

@@ -983,7 +983,7 @@ class ViewerMenu:
     def __selection_handler(self, offset, maxbytes):
         offset = int(offset)
         maxbytes = int(maxbytes)
-        endpos = min(maxbytes + offset, len(self.__selection))
+        endpos = maxbytes + offset
         return self.__selection[offset:endpos]
 
     def __bkmark_link(self, event=None):

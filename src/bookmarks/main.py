@@ -58,7 +58,7 @@ class Options:
 
     def __init__(self, args):
         s, _ = os.path.splitext(os.path.basename(sys.argv[0]))
-        if s[:len(SCRIPT_PREFIX)] == SCRIPT_PREFIX:
+        if s.startswith(SCRIPT_PREFIX):
             s = s[len(SCRIPT_PREFIX):]
             if valid_output_format(s):
                 self.output_format = s

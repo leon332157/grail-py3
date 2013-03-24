@@ -1161,5 +1161,5 @@ if __name__ == '__main__':
 else:
     tparser = TableSubParser()
     for attr in dir(TableSubParser):
-        if attr[0] != '_':
+        if not attr.startswith('_'):
             globals()[attr] = getattr(tparser, attr)

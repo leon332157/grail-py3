@@ -102,7 +102,7 @@ class ftp_access:
             self.content_type, self.content_encoding = app.guess_type(file)
             if self.content_encoding:
                 type = 'i'
-            elif self.content_type and self.content_type[:5] == 'text/':
+            elif self.content_type and self.content_type.startswith('text/'):
                 type = 'a'
             elif file[-1] == '/':
                 type = 'd'
@@ -147,7 +147,7 @@ class ftp_access:
         self.state = DATA
         headers = {}
         if self.isdir:
-            if self.url and self.url[-1:] != '/':
+            if self.url and not self.url.endswith('/'):
                 self.url = self.url + '/'
             self.content_type = 'text/html'
             self.content_encoding = None
@@ -220,10 +220,10 @@ class ftp_access:
             rawname = name
             [mode, middle, name] = map(saxutils.escape, [mode, middle, name])
             href = urljoin(self.url, quote(rawname))
-            if len(mode) == 10 and mode[0] == 'd' or name[-1:] == '/':
-                if name[-1:] != '/':
+            if len(mode) == 10 and mode[0] == 'd' or name.endswith('/'):
+                if not name.endswith('/'):
                     name = name + '/'
-                if href[-1:] != '/':
+                if not href.endswith('/'):
                     href = href + '/'
             line = '%s%s<A HREF=%s>%s</A>%s\n' % (
                 mode, middle, saxutils.quoteattr(href), name,
@@ -310,7 +310,7 @@ class ftpwrapper:
                 cmd = 'RETR ' + unquote(file)
                 conn, self.content_length = self.ftp.ntransfercmd(cmd)
             except ftplib.error_perm, reason:
-                if str(reason)[:3] != '550':
+                if not str(reason).startswith('550'):
                     raise IOError, ('ftp error', reason)
         if not conn:
             # Try a directory listing

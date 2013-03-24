@@ -6,7 +6,7 @@ class doc_access(null_access):
 
     def __init__(self, url, method, params):
         null_access.__init__(self, url, method, params)
-        if url[:1] != '/': url = '/' + url
+        if not url.startswith('/'): url = '/' + url
         self.url = "http://monty.cnri.reston.va.us/grail-0.3" + url
 
     def getmeta(self):

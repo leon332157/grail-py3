@@ -136,10 +136,10 @@ class file_access:
             rawname = name
             [mode, middle, name] = map(saxutils.escape, [mode, middle, name])
             href = urljoin(self.url, quote(rawname))
-            if len(mode) == 10 and mode[0] == 'd' or name[-1:] == '/':
-                if name[-1:] != '/':
+            if len(mode) == 10 and mode[0] == 'd' or name.endswith('/'):
+                if not name.endswith('/'):
                     name = name + '/'
-                if href[-1:] != '/':
+                if not href.endswith('/'):
                     href = href + '/'
             line = '%s%s<A HREF=%s>%s</A>\n' % (
                 mode, middle, saxutils.quoteattr(href), name)

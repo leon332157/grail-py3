@@ -253,7 +253,7 @@ class Browser:
                 self.mbar.delete(last)
         for b in self.user_menus:
             b.destroy()
-        self.user_menus[:] = []
+        del self.user_menus[:]
 
     def set_url(self, url):
         self.set_entry(url)

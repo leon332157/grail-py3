@@ -378,7 +378,7 @@ class Context(URIContext):
     
     def set_local_api(self, name, klass):
         """Install a local protocol handler"""
-        if name[-3:] != "API":
+        if not name.endswith("API"):
             raise IOError, "Invalid name (%s) for protocol handler" % name
         self.local_api_handlers[name] = klass
 

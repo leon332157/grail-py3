@@ -447,7 +447,7 @@ class SGMLLexer(SGMLLexerBase):
     def parse_comment(self, i, end):
         #print "parse comment"
         rawdata = self.rawdata
-        if rawdata[i:i+4] != (MDO + COM):
+        if not rawdata.startswith(MDO + COM, i):
             raise RuntimeError, 'unexpected call to parse_comment'
         if self._strict:
             # stricter parsing; this requires legal SGML:

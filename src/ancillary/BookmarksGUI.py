@@ -149,7 +149,7 @@ class BMSaveDialog(FileDialog.SaveFileDialog, FileDialogExtras):
 
     def set_filetype(self, filetype):
         dir, oldpat = self.get_filter()
-        if filetype[:4] == "html":
+        if filetype.startswith("html"):
             filetype = "HTML"
             pat = "*.html"
         elif filetype == "XBEL":
@@ -1519,8 +1519,7 @@ class BookmarksMenuViewer(OutlinerViewer):
     def _insert(self, node, index=None):
         depth = node.depth()
         # this is the best way to pop the stack.  kinda kludgy...
-        if depth < len(self._menustack):
-            del self._menustack[depth:]
+        del self._menustack[depth:]
         # get the current menu we're building
         menu = self._menustack[depth-1]
         nodetype = node.get_nodetype()

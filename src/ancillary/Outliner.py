@@ -254,10 +254,9 @@ class OutlinerController:
         # later siblings become the node's children
         parent.del_child(node)
         grandparent.insert_child(node, parenti+1)
-        if sibi < len(sibs):
-            for sib in sibs[sibi:]:
-                parent.del_child(sib)
-                node.append_child(sib)
+        for sib in sibs[sibi:]:
+            parent.del_child(sib)
+            node.append_child(sib)
         self.root_redisplay()
 
     def shift_right(self, node):

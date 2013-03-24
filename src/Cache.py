@@ -167,10 +167,7 @@ class SharedItem:
         try:
             # the common case
             chunk = self.data[self.datamap[offset]]
-            if len(chunk) > maxbytes:
-                return chunk[0:maxbytes]
-            else:
-                return chunk
+            return chunk[0:maxbytes]
         except KeyError:
             if self.stage == META:
                 self.meta = self.api.getmeta()

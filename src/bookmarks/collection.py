@@ -60,7 +60,7 @@ class Collection:
             nodetype = node.get_nodetype()
             count_map[nodetype] = count_map.get(nodetype, 0) + 1
             if nodetype == "Folder":
-                queue[len(queue):] = node.children()
+                queue.extend(node.children())
         return count_map
 
     def copytree(self, startnode=None):
@@ -107,7 +107,7 @@ class Collection:
                     if id in ref_map:
                         ref_map[new_id] = ref_map.pop(id)
             if hasattr(node, "children"):
-                queue[len(queue):] = node.children()
+                queue.extend(node.children())
         return id_map, ref_map
 
     __next_id = 1
@@ -150,8 +150,7 @@ class Collection:
                     id_map[id] = node
                     if id in need_ids:
                         need_ids.remove(id)
-                # add child nodes to the end of the queue
-                queue[len(queue):] = node.children()
+                queue.extend(node.children())
             elif nodetype == "Alias":
                 idref = node.idref()
                 if idref not in id_map:

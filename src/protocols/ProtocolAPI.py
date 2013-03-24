@@ -183,11 +183,8 @@ def proxy_exception(host, list):
     for exception in list:
         if host == exception:
             return True
-        try:
-            if exception[0] == '.' and host[-len(exception):] == exception:
-                return True
-        except IndexError:
-            pass
+        if exception.startswith('.') and host.endswith(exception):
+            return True
     return False
 
 def valid_proxy(proxy):

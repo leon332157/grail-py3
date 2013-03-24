@@ -400,10 +400,8 @@ def _get_key(context):
         if netloc in groups:
             return netloc               # Exact match
         for group in groups:            # Look for longest match
-            if group[:1] == '.':
-                n = len(group)
-                if netloc[-n:] == group:
-                    return group
+            if group.startswith('.') and netloc.endswith(group):
+                return group
             if netloc == group[1:]:     # Exact match on domain name
                 return group
         return netloc                   # No match, return full netloc

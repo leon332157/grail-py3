@@ -158,7 +158,7 @@ class http_access:
                 encodings.sort()
                 self.h.putheader('Accept-Encoding', ", ".join(encodings))
         for key, value in params.items():
-            if key[:1] != '.':
+            if not key.startswith('.'):
                 self.h.putheader(key, value)
         self.h.putheader('Accept', '*/*')
         self.h.endheaders()

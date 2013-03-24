@@ -34,9 +34,9 @@ COMMON_HEADERS = (
     (21, "x-url"),
     )
 
-if os.sys.platform[:3] == 'sco': 
+if os.sys.platform.startswith('sco'):
     # Use MMDF instead of sendmail
-    SENDMAIL = "/usr/mmdf/bin/submit -mtlrxto,cc\'*\'s"
+    SENDMAIL = "/usr/mmdf/bin/submit -mtlrxto,cc'*'s"
     # submit needs a Date: field or it will not include it
     COMMON_HEADERS = tuple(map(None, COMMON_HEADERS) + [(2, "date")])
     TEMPLATE ="""\

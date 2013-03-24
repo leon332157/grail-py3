@@ -73,7 +73,7 @@ class CookieDB:
             line = fp.readline()
         finally:
             fp.seek(pos)
-        if line[:5] == "<?XML":
+        if line.startswith("<?XML"):
             self.load_xml(fp)
         else:
             self.load_ns(fp)
@@ -171,7 +171,7 @@ class CookieDB:
         while len(hostparts) > minparts:
             del hostparts[0]
             key = '.'.join([''] + hostparts)
-            results[len(results):] = self.__match_path(key, path)
+            results.extend(self.__match_path(key, path))
         if not secure:
             results = filter(lambda c: not c.secure, results)
         return results
@@ -231,8 +231,7 @@ class CookieDB:
                 self.__expire_cookies(cookies)
             if cookies:
                 for cookie in cookies:
-                    if len(path) >= len(cookie.path) \
-                       and cookie.path == path[:len(cookie.path)]:
+                    if path.startswith(cookie.path):
                         results.append(cookie)
             else:
                 # nothing left in domain
@@ -251,7 +250,7 @@ class CookieDB:
             cookies = self.__cookies[d]
             self.__expire_cookies(cookies)
             if cookies:
-                results[len(results):] = cookies
+                results.extend(cookies)
             else:
                 # nothing left; remove the domain
                 del self.__cookies[d]

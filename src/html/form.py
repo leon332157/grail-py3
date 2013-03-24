@@ -163,7 +163,7 @@ class FormInfo:
 
     def do_input(self, type, options, bgcolor):
         type = type.lower() or 'text'
-        classname = 'Input' + type[0].upper() + type[1:]
+        classname = 'Input' + type.capitalize()
         if hasattr(self, classname):
             klass = getattr(self, classname)
             instance = klass(self, options, bgcolor)

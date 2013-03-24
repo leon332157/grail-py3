@@ -366,9 +366,7 @@ class multi_transform:
         stored_url = urlparse.urlunparse((scheme, netloc, path, '', '', ''))
         if stored_url in self.__docs:
             return url
-        if len(path) < len(self.__path):
-            return url
-        if path[:len(self.__path)] != self.__path:
+        if not path.startswith(self.__path):
             return url
         if (not self.__max_levels) \
            or (self.__max_levels and self.__level < self.__max_levels):

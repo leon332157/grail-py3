@@ -167,7 +167,7 @@ class parse_text_x_python:
         }
     import types
     for name in dir(types):
-        if len(name) > 4 and name[-4:] == "Type":
+        if name.endswith("Type"):
             __keywords[name] = ('python:special', None)
 
     __next_tag = None

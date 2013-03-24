@@ -379,7 +379,7 @@ def get_encodings(headers):
 
 
 def wrap_parser(parser, ctype, content_encoding=None, transfer_encoding=None):
-    if ctype[:5] == "text/":
+    if ctype.startswith("text/"):
         parser = TextLineendWrapper(parser)
     if content_encoding:
         parser = content_decoding_wrappers[content_encoding](parser)
@@ -573,7 +573,7 @@ class Reader(BaseReader):
         if not content_type:
             content_type = "text/plain" # Last resort guess only
 
-        istext = content_type and content_type[:5] == 'text/' \
+        istext = content_type and content_type.startswith('text/') \
                  and not (content_encoding or transfer_encoding)
         if self.show_source and istext:
             content_type = 'text/plain'
