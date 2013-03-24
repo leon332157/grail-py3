@@ -11,6 +11,7 @@ from .BaseReader import BaseReader
 import copy
 import re
 import time
+from io import IncrementalNewlineDecoder
 
 # mailcap dictionary
 caps = None
@@ -54,23 +55,24 @@ class ParserWrapper:
             self.__closed = True
 
 
-class TextLineendWrapper:
-    """Perform lineend translation so text data always looks like text (using
-    '\n' for lineends)."""
+class DecoderWrapper:
+    """Feed data through an IncrementalDecoder() object before feeding it to
+    a parser."""
 
-    def __init__(self, parser):
+    def __init__(self, decoder, parser):
         self.__parser = parser
-        self.__last_was_cr = 0
+        self.__decoder = decoder
+        self.__null = None
 
     def feed(self, data):
-        if self.__last_was_cr and data[0:1] == '\n':
-            data = data[1:]
-        self.__last_was_cr = data[-1:] == '\r'
-        data = data.replace('\r\n', '\n')
-        data = data.replace('\r', '\n')
-        self.__parser.feed(data)
+        self.__null = data * 0  # Get a null string of the correct type
+        self.__parser.feed(self.__decoder.decode(data))
 
     def close(self):
+        # Will not flush the decoder if no data was ever fed in!
+        if self.__null is not None:
+            data = self.__decoder.decode(self.__null, final=True)
+            self.__parser.feed(data)
         self.__parser.close()
 
 
@@ -380,7 +382,8 @@ def get_encodings(headers):
 
 def wrap_parser(parser, ctype, content_encoding=None, transfer_encoding=None):
     if ctype.startswith("text/"):
-        parser = TextLineendWrapper(parser)
+        decoder = IncrementalNewlineDecoder(decoder=None, translate=True)
+        parser = DecoderWrapper(decoder, parser)
     if content_encoding:
         parser = content_decoding_wrappers[content_encoding](parser)
     if transfer_encoding:
