@@ -51,7 +51,7 @@ def load_eps_object(parser, imageurl):
         return None
     if not image:
         return None
-    lines = image.split('\n')
+    lines = image.decode('latin-1').split('\n')
     try: lines.remove('showpage')
     except ValueError: pass             # o.k. if not found
     bbox = epstools.load_bounding_box(lines)

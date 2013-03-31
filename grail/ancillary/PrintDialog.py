@@ -38,6 +38,7 @@ from .printing import settings as printing_settings
 from . import Reader
 from . import tktools
 from functools import reduce
+from io import TextIOWrapper
 
 
 USER_DATA_DIR = os.path.abspath(
@@ -258,6 +259,7 @@ class RealPrintDialog:
             self.cmd_entry.focus_set()
 
     def ok_command(self):
+        proc = None
         if self.printtofile.get():
             filename = self.file_entry.get()
             if not filename:
@@ -265,7 +267,7 @@ class RealPrintDialog:
                                           "Please enter a filename")
                 return
             try:
-                fp = open(filename, "w")
+                fp = open(filename, "wb")
             except IOError as msg:
                 self.context.error_dialog(IOError, str(msg))
                 return
@@ -280,9 +282,12 @@ class RealPrintDialog:
                 use_temp = '%s' in cmd
                 if use_temp:
                     import tempfile
-                    fp = tempfile.NamedTemporaryFile("wt", delete=False)
+                    fp = tempfile.NamedTemporaryFile("wb", delete=False)
                 else:
-                    fp = os.popen(cmd, "w")
+                    import subprocess
+                    proc = subprocess.Popen(cmd, shell=True,
+                        stdin=subprocess.PIPE, bufsize=-1)
+                    fp = proc.stdin
             except IOError as msg:
                 self.context.error_dialog(IOError, str(msg))
                 return
@@ -296,12 +301,15 @@ class RealPrintDialog:
             # execute unless we received an error
             for e in self.cursor_widgets: e['cursor'] = ''
             raise
-        sts = fp.close()
+        fp.close()
+        sts = None
         if use_temp:
             cmd_parts = cmd.split('%s')
             cmd = fp.name.join(cmd_parts)
             sts = os.system(cmd)
             os.unlink(fp.name)
+        if proc:
+            sts = proc.wait()
         if sts:
             self.context.error_dialog("Exit",
                                       "Print command exit status %r" % sts)
@@ -326,6 +334,7 @@ class RealPrintDialog:
             parser.close()
             self.infp.close()
             return
+        fp = TextIOWrapper(fp, "latin-1", "replace")
         self.settings.set_scaling(*get_scaling_adjustments(self.root))
         paper = paper.PaperInfo(self.settings.papersize,
                                 margins=self.settings.margins,
@@ -339,6 +348,7 @@ class RealPrintDialog:
         self.infp.close()
         p.close()
         w.close()
+        fp.detach()
 
     def wrap_parser(self, parser):
         # handle the content-encoding and content-transfer-encoding headers

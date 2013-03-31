@@ -18,6 +18,7 @@ import traceback
 import urllib
 import urlparse
 import pkgutil
+import subprocess
 from io import TextIOWrapper
 
 # local modules:
@@ -171,15 +172,20 @@ def run(app):
     #
     # open the output file
     #
-    if outfile[0] == '|':
-        cmd = outfile[1:].strip()
-        outfile = '|' + cmd
-        outfp = os.popen(cmd, 'w')
-    elif outfile == '-':
-        outfp = sys.stdout
-    else:
-        outfp = open(outfile, 'w')
-    with outfp:
+    outfp = None
+    proc = None
+    try:
+        if outfile[0] == '|':
+            cmd = outfile[1:].strip()
+            outfile = '|' + cmd
+            proc = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
+                bufsize=-1)
+            outfp = proc.stdin
+        elif outfile == '-':
+            outfp = sys.stdout.buffer
+        else:
+            outfp = open(outfile, 'wb')
+        outfp = TextIOWrapper(outfp, 'latin-1', 'replace')
         if outfile != '-':
             print('Outputting PostScript to', outfile)
 
@@ -228,7 +234,7 @@ def run(app):
                 try:
                     infp, url, fn = open_source(url)
                 except IOError as err:
-                    if verbose and outfp is not sys.stdout:
+                    if verbose and outfile != '-':
                         print("Error opening subdocument", url)
                         print("   ", err)
                 else:
@@ -238,7 +244,7 @@ def run(app):
                             print("skipping", url)
                             print("  wrong content type:", new_ctype)
                         continue
-                    if verbose and outfp is not sys.stdout:
+                    if verbose and outfile != '-':
                         print("Subdocument", url)
                     w.ps.close_line()
                     # must be true for now, not sure why
@@ -262,6 +268,11 @@ def run(app):
             p.feed(infp.read())
         p.close()
         w.close()
+    finally:
+        if outfp:
+            outfp.close()
+        if proc:
+            proc.wait()
 
 
 
