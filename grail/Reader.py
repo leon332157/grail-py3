@@ -29,19 +29,19 @@ class ParserWrapper:
     def __init__(self, parser, viewer):
         self.__parser = parser
         self.__viewer = viewer
-        self.__pendingdata = ''
+        self.__pendingdata = bytearray()
         self.__closed = False
         self.__closing = False
         self.__level = 0
 
     def feed(self, data):
-        self.__pendingdata = self.__pendingdata + data
+        self.__pendingdata.extend(data)
         self.__level = self.__level + 1
         if self.__level == 1:
             self.__viewer.unfreeze()
             while self.__pendingdata:
                 data = self.__pendingdata
-                self.__pendingdata = ''
+                self.__pendingdata = bytearray()
                 self.__parser.feed(data)
             if self.__closing and not self.__closed:
                 self.__parser.close()

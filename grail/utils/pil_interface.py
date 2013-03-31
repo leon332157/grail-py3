@@ -29,7 +29,7 @@ as well.
 
 from PIL import Image, ImageTk
 import tkinter
-import StringIO
+import io
 from . import grailutil
 import os.path
 
@@ -52,23 +52,23 @@ class pil_interface:
                                    background=viewer.text.cget("background"),
                                    highlightthickness=0)
         self.viewer.add_subwindow(self.label)
-        self.buf = []
+        self.buf = io.BytesIO()
 
     def feed(self, data):
         try:
-            self.buf.append(data)
+            self.buf.write(data)
             # FIXME: try to identify the file; as soon as this succeeds,
             # start decoding data as it arrives
         except IOError:
-            self.buf = []
+            self.buf = io.BytesIO()
             self.broken = True
             raise
 
     def close(self):
-        if self.buf:
+        if self.buf.tell():
             try:
-                self.buf = "".join(self.buf)
-                im = Image.open(StringIO.StringIO(self.buf))
+                self.buf.seek(0)
+                im = Image.open(self.buf)
                 im.load() # benchmark decoding
                 tkim = ImageTk.PhotoImage(im.mode, im.size)
                 tkim.paste(im)

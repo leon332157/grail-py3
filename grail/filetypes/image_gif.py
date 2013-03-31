@@ -20,11 +20,7 @@ import tempfile
 import tkinter
 
 from formatter import AS_IS
-
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
+from io import BytesIO
 
 
 ERROR_FILE = os.path.join("icons", "sadsmiley.gif")
@@ -52,13 +48,14 @@ class PILGifParser(pil_interface):
     loop = False
 
     def close(self):
-        if self.buf:
+        if self.buf.tell():
             self.label.config(text="<decoding>")
             self.label.update_idletasks()
-            data = "".join(self.buf)
+            data = self.buf
+            data.seek(0)
             self.buf = None             # free lots of memory!
             try:
-                self.im = im = Image.open(StringIO(data))
+                self.im = im = Image.open(data)
                 im.load()
                 self.tkim = tkim = ImageTk.PhotoImage(im.mode, im.size)
                 tkim.paste(im)
@@ -104,7 +101,8 @@ class PILGifParser(pil_interface):
         self.after_id = self.label.after(self.duration, self.next_image)
 
     def reset_loop(self):
-        im = Image.open(StringIO(self.data))
+        self.data.seek(0)
+        im = Image.open(self.data)
         im.load()
         self.tkim.paste(im)
         self.im = im
