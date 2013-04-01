@@ -11,17 +11,18 @@ import pickle
 
 
 class Parser:
-    __data = ''
+    mode = "b"
+    __data = bytearray()
     __old_root = None
     __root = None
 
-    __header_rx = re.compile(r'#.*GRAIL-Bookmark-file-([234])')
+    __header_rx = re.compile(br'#.*GRAIL-Bookmark-file-([234])')
 
     def __init__(self, filename):
         self._filename = filename
 
     def feed(self, data):
-        self.__data = self.__data + data
+        self.__data.extend(data)
 
     def close(self):
         data = self.__data
@@ -29,13 +30,13 @@ class Parser:
         header, data = self.__split_line(data)
         m = self.__header_rx.match(header)
         self.version = m.group(1)
-        if self.version == "4":
+        if self.version == b"4":
             orig_fname, data = self.__split_line(data)
             orig_mtime, data = self.__split_line(data)
-            self.original_filename = orig_fname.strip()
+            self.original_filename = orig_fname.decode().strip()
             self.original_mtime = float(orig_mtime)
         self.__root = pickle.loads(data)
-        if self.version != "4":
+        if self.version != b"4":
             # re-write as new version:
             self.__old_root = self.__root
             walker = CopyWalker(self.__root)
@@ -51,7 +52,7 @@ class Parser:
         return self.__old_root
 
     def __split_line(self, data):
-        header, newline, data = data.partition('\n')
+        header, newline, data = data.partition(b'\n')
         if not newline:
             raise BookmarkFormatError(self._filename,
                                                 "incomplete file header")

@@ -31,7 +31,7 @@ omitted, the appropriate standard stream is used.
 
 __version__ = '$Revision: 1.5 $'
 
-from . import get_writer_class, get_format, get_parser_class
+from . import get_writer_class, get_format, get_parser_class, BookmarkReader
 import errno
 import getopt
 import os
@@ -122,9 +122,10 @@ def main():
     [ifn, ofn] = args
     if ifn == '-':
         infile = sys.stdin
+        inbuf = infile.buffer
     else:
         try:
-            infile = open(ifn, 'rb')    # binary in case it's a binary pickle
+            infile = open(ifn, 'rb')
         except IOError as err:
             if options.scrape_links:
                 # try to open as URL
@@ -135,6 +136,7 @@ def main():
                 error(1, "could not open {}: {}".format(ifn, err.strerror))
         else:
             baseurl = "file:" + os.path.join(os.getcwd(), ifn)
+        inbuf = infile
     with infile:
         #
         # get the parser class, bypassing completely if the formats are the
@@ -145,7 +147,7 @@ def main():
             parser = html_scraper.Parser(ifn)
             parser.set_baseurl(baseurl)
         else:
-            format = get_format(infile)
+            format = get_format(inbuf)
             if not format:
                 error(1, "could not identify input file format")
             parser_class = get_parser_class(format)
@@ -154,9 +156,7 @@ def main():
         # do the real work
         #
         writer_class = get_writer_class(options.output_format)
-        parser.feed(infile.read())
-        parser.close()
-    root = parser.get_root()
+        root = BookmarkReader(parser).read_file(infile)
     if options.search:
         from . import search
         from .search import KeywordSearch
@@ -199,9 +199,9 @@ def report_info(root):
 
 def guess_bookmarks_type(filename, verbose=False):
     if filename == "-":
-        type = get_format(sys.stdin)
+        type = get_format(sys.stdin.buffer)
     else:
-        with open(filename) as fp:
+        with open(filename, "rb") as fp:
             type = get_format(fp)
     if verbose:
         print("{}: {}".format(filename, type))

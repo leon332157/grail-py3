@@ -22,6 +22,7 @@ class Parser(SGMLHandler.BaseSGMLHandler):
         self.__root = nodes.Folder()
         self.__root.expand()
 
+    mode = "t"
     def feed(self, data):
         self.sgml_parser.feed(data)
 

@@ -245,6 +245,8 @@ from xml.etree.ElementTree import XMLParser
 
 
 class Parser(XMLParser):
+    mode = "b"
+    
     def __init__(self, filename):
         XMLParser.__init__(self, target=DocumentHandler(filename))
     

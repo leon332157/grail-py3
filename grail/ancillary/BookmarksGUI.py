@@ -194,7 +194,7 @@ class BookmarksIO:
     def __open_file_for_reading(self, filename):
         import errno
         try:
-            fp = open(filename, 'r')
+            fp = open(filename, 'rb')
             return fp, self.__choose_reader(fp)
         except IOError as error:
             if error.errno == errno.ENOENT:
@@ -204,14 +204,11 @@ class BookmarksIO:
 
     def __open_url_for_reading(self, url):
         import urllib.request
-        try:
-            from cStringIO import StringIO
-        except ImportError:
-            from StringIO import StringIO
+        from io import BytesIO
         try:
             with urllib.request.urlopen(url) as fp:
-                sio = StringIO(fp.read())
-            return sio, self.__choose_reader(sio)
+                bio = BytesIO(fp.read())
+            return bio, self.__choose_reader(bio)
         except IOError as error:
             raise bookmarks.BookmarkFormatError(url, error, what="URL")
 
@@ -233,7 +230,7 @@ class BookmarksIO:
             req_mtime = None
             mtime = 0
             try:
-                with open(cachename) as fp:
+                with open(cachename, "rb") as fp:
                     fp.readline()           # skip header
                     fp.readline()           # skip embedded file name
                     mtime = float(fp.readline())
@@ -252,7 +249,7 @@ class BookmarksIO:
                     pass
                 else:
                     # get format of the original file:
-                    with open(filename) as fp:
+                    with open(filename, "rb") as fp:
                         format = bookmarks.get_format(fp)
                     self.set_filename(filename)
                     self.set_format(format)

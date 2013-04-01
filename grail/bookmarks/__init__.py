@@ -1,5 +1,6 @@
 import os
 import sys
+from io import TextIOBase, TextIOWrapper
 
 
 class Error(Exception):
@@ -35,8 +36,21 @@ class BookmarkReader:
         self.__parser = parser
 
     def read_file(self, fp):
-        self.__parser.feed(fp.read())
-        self.__parser.close()
+        wrapper = None
+        try:
+            if "t" in self.__parser.mode:
+                if not isinstance(fp, TextIOBase):
+                    wrapper = TextIOWrapper(fp)
+                    fp = wrapper
+            else:
+                if isinstance(fp, TextIOWrapper):
+                    keep_open = fp
+                    fp = fp.buffer
+            self.__parser.feed(fp.read())
+            self.__parser.close()
+        finally:
+            if wrapper:
+                wrapper.detach()
         return self.__parser.get_root()
 
 
@@ -85,11 +99,11 @@ def check_xml_format(buffer):
 __formats = {
     # format-name     first-line-magic
     #                  short-name   extension
-    "html":          (r'<!DOCTYPE\s+(GRAIL|NETSCAPE)-Bookmark-file-1',
+    "html":          (br'<!DOCTYPE\s+(GRAIL|NETSCAPE)-Bookmark-file-1',
                       "html",      ".html",	"html"),
-    "pickle":        (r'#.*GRAIL-Bookmark-file-[234]',
+    "pickle":        (br'#.*GRAIL-Bookmark-file-[234]',
                       "pickle",    ".pkl",	"xbel"),
-    "xbel":          (r'<(\?xml|!DOCTYPE)\s+xbel',
+    "xbel":          (br'<(\?xml|!DOCTYPE)\s+xbel',
                       "xbel",      ".xml",	"xbel"),
     }
 

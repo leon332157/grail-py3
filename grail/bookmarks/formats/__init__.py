@@ -11,9 +11,11 @@ letter capitalized.
 The `Parser' callables must accept a single argument, the filename of
 the storage object.  The filename should be used to create error
 messages for exceptions as appropriate.  The objects returned by the
-callable must be parser objects which offer the methods get_root(),
-feed(), and close().  feed() is used to provide data to the parser; it
-may be called more than once.  After all data has been provided via
+callable must be parser objects which offer a "mode" property and the methods
+get_root(), feed(), and close().  The "mode" property should either be "b" or
+"t", indicating whether the parser accepts byte or character data
+respectively.  The feed() method is used to provide this data to the parser;
+it may be called more than once.  After all data has been provided via
 feed(), close() will be called to inform the object that there is no
 more data available; any additional parsing or structure-building must
 be completed.  The get_root() method should return the root of the
@@ -29,7 +31,7 @@ parsed by using the parser object defined in the sister module for the
 same format.
 
 An additional module, html_scraper, provides a Parser callable that
-builds a boookmarks structure from a general HTML file.
+builds a bookmarks structure from a general HTML file.
 
 """
 
