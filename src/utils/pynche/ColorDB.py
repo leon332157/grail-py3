@@ -140,12 +140,10 @@ X_RGB_TXT = re.compile('XConsortium'), 1, RGBColorDB
 
 def get_colordb(file, filetype=X_RGB_TXT):
     colordb = None
-    fp = None
     typere, scanlines, class_ = filetype
     try:
-        try:
-            lineno = 0
-            fp = open(file)
+        lineno = 0
+        with open(file) as fp:
             while lineno < scanlines:
                 line = fp.readline()
                 if not line:
@@ -155,11 +153,8 @@ def get_colordb(file, filetype=X_RGB_TXT):
                     colordb = class_(fp, lineno)
                     break
                 lineno = lineno + 1
-        except IOError:
-            pass
-    finally:
-        if fp:
-            fp.close()
+    except IOError:
+        pass
     # save a global copy
     global DEFAULT_DB
     DEFAULT_DB = colordb

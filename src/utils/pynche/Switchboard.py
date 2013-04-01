@@ -26,22 +26,17 @@ class Switchboard:
         self.__blue = 0
         self.__canceled = False
         # read the initialization file
-        fp = None
         if initfile:
             try:
-                try:
-                    fp = open(initfile)
+                with open(initfile, 'rb') as fp:
                     self.__optiondb = marshal.load(fp)
                     if not isinstance(self.__optiondb, dict):
                         sys.stderr.write(
                             'Problem reading options from file: %s\n' %
                             initfile)
                         self.__optiondb = {}
-                except (IOError, EOFError):
-                    pass
-            finally:
-                if fp:
-                    fp.close()
+            except (IOError, EOFError):
+                pass
 
     def add_view(self, view):
         self.__views.append(view)
@@ -75,13 +70,12 @@ class Switchboard:
                 v.save_options(self.__optiondb)
         fp = None
         try:
-            try:
-                fp = open(self.__initfile, 'w')
-            except IOError:
-                sys.stderr.write('Cannot write options to file: %s\n' %
-                                 self.__initfile)
-            else:
-                marshal.dump(self.__optiondb, fp)
+            fp = open(self.__initfile, 'wb')
+        except IOError:
+            sys.stderr.write('Cannot write options to file: %s\n' %
+                             self.__initfile)
+        else:
+            marshal.dump(self.__optiondb, fp)
         finally:
             if fp:
                 fp.close()

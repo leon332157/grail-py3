@@ -602,21 +602,19 @@ class PrefsPanelsMenu:
         modnm, dir, _ = entry
         try:
             sys.path.insert(0, dir)
-            try:
-                modnm = modnm.split('.', 1)[0]
-                mod = __import__(modnm)
-                if reloading:
-                    reload(mod)
-                class_name = (name.replace(" ", "")
-                              + PANEL_CLASS_NAME_SUFFIX)
-                # Instantiate it:
-                entry[2] = getattr(mod, class_name)(name, self.app)
-                return True
-            except:
-                # Whatever may go wrong in import or panel post
-                e, v, tb = sys.exc_type, sys.exc_value, sys.exc_traceback
-                self.app.root.report_callback_exception(e, v, tb)
-                return False
+            modnm = modnm.split('.', 1)[0]
+            mod = __import__(modnm)
+            if reloading:
+                reload(mod)
+            class_name = (name.replace(" ", "") + PANEL_CLASS_NAME_SUFFIX)
+            # Instantiate it:
+            entry[2] = getattr(mod, class_name)(name, self.app)
+            return True
+        except:
+            # Whatever may go wrong in import or panel post
+            e, v, tb = sys.exc_type, sys.exc_value, sys.exc_traceback
+            self.app.root.report_callback_exception(e, v, tb)
+            return False
         finally:
             try:
                 sys.path.remove(dir)

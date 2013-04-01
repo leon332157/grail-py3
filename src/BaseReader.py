@@ -56,14 +56,12 @@ class BaseReader:
             self.api.register_reader(self.start, self.checkapi)
         except AttributeError:
             # if the protocol doesn't do that
-            ok = False
             try:
                 self.start()
-                ok = True
-            finally:
-                if not ok:
-                    if self.context:
-                        self.context.rmreader(self)
+            except:
+                if self.context:
+                    self.context.rmreader(self)
+                raise
 
     def start(self):
         # when the protocol API is ready to go, it tells the reader

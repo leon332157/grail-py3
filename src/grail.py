@@ -305,13 +305,12 @@ class Application(BaseApplication.BaseApplication):
 
     def go(self):
         try:
-            try:
-                if ilu_tk:
-                    ilu_tk.RunMainLoop()
-                else:
-                    self.root.mainloop()
-            except KeyboardInterrupt:
-                pass
+            if ilu_tk:
+                ilu_tk.RunMainLoop()
+            else:
+                self.root.mainloop()
+        except KeyboardInterrupt:
+            pass
         finally:
             self.exit_notification()
 

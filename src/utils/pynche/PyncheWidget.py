@@ -209,17 +209,12 @@ class Helpwin:
         from . import __path__
         readmefile = os.path.join(__path__[0], 'README')
         try:
-            fp = None
-            try:
-                fp = open(readmefile)
+            with open(readmefile) as fp:
                 contents = fp.read()
                 # wax the last page, it contains Emacs cruft
                 i = contents.rfind('\f')
                 if i > 0:
                     contents = contents[:i].rstrip()
-            finally:
-                if fp:
-                    fp.close()
         except IOError:
             sys.stderr.write("Couldn't open Pynche's README, "
                              'using docstring instead.\n')
