@@ -70,13 +70,9 @@ class PILGifParser(pil_interface):
                 # XXX What was I trying to catch here?
                 # I think (EOFError, IOError).
                 self.broken = True
-                stdout = sys.stdout
-                try:
-                    sys.stdout = sys.stderr
-                    print("Error decoding image:")
-                    print(str(sys.exc_type) + ":", sys.exc_value)
-                finally:
-                    sys.stdout = stdout
+                print("Error decoding image:", file=sys.stderr)
+                print(str(sys.exc_type) + ":", sys.exc_value,
+                    file=sys.stderr)
             else:
                 self.label.config(image=tkim)
                 if "duration" in im.info:

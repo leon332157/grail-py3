@@ -68,9 +68,8 @@ def main(args=None):
         if len(args) > 1:
             raise getopt.error, "too many arguments"
     except getopt.error, msg:
-        sys.stdout = sys.stderr
-        print("Command line error:", msg)
-        print(USAGE)
+        print("Command line error:", msg, file=sys.stderr)
+        print(USAGE, file=sys.stderr)
         sys.exit(2)
 
     geometry = prefs.Get('browser', 'initial-geometry')

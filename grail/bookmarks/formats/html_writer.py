@@ -21,20 +21,18 @@ class Writer(walker.TreeWalker):
 
     def write_tree(self, fp):
         self.__id_map = {}
-        stdout = sys.stdout
         root = self.get_root()
         try:
-            sys.stdout = fp
+            self.__fp = fp
             self.walk()
-            print('</DL><p>')
+            print('</DL><p>', file=self.__fp)
         finally:
-            sys.stdout = stdout
             fp.close()
 
     # node-type handlers
 
     def start_Separator(self, node):
-        print('%s<HR>' % self.__tab())
+        print('%s<HR>' % self.__tab(), file=self.__fp)
 
     def start_Bookmark(self, node):
         alias = self.__compute_alias_info(node)
@@ -49,7 +47,8 @@ class Writer(walker.TreeWalker):
             last_visit = ' LAST_VISIT="%d"' % last_visit
         print('%s<DT><A HREF="%s"%s%s%s%s>%s</A>' %
               (self.__tab(), node.uri(), alias, add_date,
-               last_visit, modified, saxutils.escape(node.title())))
+               last_visit, modified, saxutils.escape(node.title())),
+              file=self.__fp)
         self.__write_description(node.description())
 
     def start_Alias(self, node):
@@ -68,7 +67,7 @@ class Writer(walker.TreeWalker):
             self.__need_header = False
             self.__write_header(node)
             self.__write_description(node.description())
-            print("<DL><p>")
+            print("<DL><p>", file=self.__fp)
             return
         tab = self.__tab()
         if node.expanded_p(): folded = ''
@@ -77,14 +76,14 @@ class Writer(walker.TreeWalker):
         if add_date:
             add_date = ' ADD_DATE="%d"' % add_date
         print('%s<DT><H3%s%s>%s</H3>' %
-              (tab, folded, add_date, node.title()))
+              (tab, folded, add_date, node.title()), file=self.__fp)
         self.__write_description(node.description())
-        print(tab + '<DL><p>')
+        print(tab + '<DL><p>', file=self.__fp)
         self.__depth = self.__depth + 1
 
     def end_Folder(self, node):
         self.__depth = self.__depth - 1
-        print(self.__tab() + '</DL><p>')
+        print(self.__tab() + '</DL><p>', file=self.__fp)
 
     # support methods
 
@@ -106,7 +105,7 @@ class Writer(walker.TreeWalker):
     def __write_description(self, desc):
         if not desc: return
         # write the description, sans leading and trailing whitespace
-        print('<DD>%s' % saxutils.escape(desc).strip())
+        print('<DD>%s' % saxutils.escape(desc).strip(), file=self.__fp)
 
     __header = """\
 <!DOCTYPE NETSCAPE-Bookmark-file-1>
@@ -117,4 +116,4 @@ class Writer(walker.TreeWalker):
 <H1>%(title)s</H1>"""
 
     def __write_header(self, root):
-        print(self.__header % {'title': root.title()})
+        print(self.__header % {'title': root.title()}, file=self.__fp)

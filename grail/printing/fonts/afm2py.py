@@ -127,18 +127,13 @@ def parse(filename, outdir):
                 break
 
     with open(outfile, 'w') as outfp:
-        oldstdout = sys.stdout
-        sys.stdout = outfp
-        try:
-            print(TEMPLATE % tdict, end='')
-            print('[', end=' ')
-            for i in range(0, 256, 8):
-                if i != 0:
-                    print(' ', end=' ')
-                print(FORMAT % tuple(cwidths[i:i+8]))
-            print('])')
-        finally:
-            sys.stdout = oldstdout
+        outfp.write(TEMPLATE % tdict)
+        outfp.write('[ ')
+        for i in range(0, 256, 8):
+            if i != 0:
+                outfp.write('  ')
+            print(FORMAT % tuple(cwidths[i:i+8]), file=outfp)
+        print('])', file=outfp)
 
 
 

@@ -169,11 +169,8 @@ class GlobalHistory:
         return self._history[:]
 
     def on_app_exit(self):
-        stdout = sys.stdout
-        try:
-            fp = open(DEFAULT_GRAIL_HIST_FILE, 'w')
-            sys.stdout = fp
-            print('GRAIL-global-history-file-1')
+        with open(DEFAULT_GRAIL_HIST_FILE, 'w') as fp:
+            print('GRAIL-global-history-file-1', file=fp)
             urls = self.urls()
             urls.reverse()
             expiration = EXPIRATION_SECS and (now() - EXPIRATION_SECS)
@@ -183,10 +180,7 @@ class GlobalHistory:
                 if expiration and expiration > timestamp:
                     continue
                 if not title or title == url:
-                    print('%s\t%d' % (url, timestamp))
+                    print('%s\t%d' % (url, timestamp), file=fp)
                 else:
-                    print('%s\t%d\t%s' % (url, timestamp, title))
-        finally:
-            sys.stdout = stdout
-            fp.close()
+                    print('%s\t%d\t%s' % (url, timestamp, title), file=fp)
         self._app.unregister_on_exit(self.on_app_exit)

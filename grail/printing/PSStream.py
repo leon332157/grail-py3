@@ -138,49 +138,47 @@ class PSStream:
 
     def start(self):
         # print document preamble
-        oldstdout = sys.stdout
-        try:
-            sys.stdout = self._ofp
-            print("%!PS-Adobe-1.0")
-            if self.get_title():
-                print("%%Title:", self.get_title())
-            # output font prolog
-            print("%%DocumentPaperSizes:", self._paper.PaperName)
-            print("%%DocumentFonts: Symbol ZapfDingbats", end="")
-            docfonts = self._font.docfonts
-            for dfv in docfonts.values(): print("", dfv, end="")
-            print()
-            # spew out the contents of the header PostScript file
-            print(get_systemheader())
-            # define the fonts
-            print("/scalfac", self._font.points_per_pixel, "D")
-            for key, value in docfonts.items():
-                print("/%s /%s dup reencodeISO D findfont D" % (key, value))
-            # finish out the prolog with paper information:
-            for name, value in vars(self._paper).items():
-                if isinstance(value, str):
-                    print("/Gr%s (%s) D" % (name, value))
-                else:
-                    print("/Gr%s %s D" % (name, value))
-            # Add time information to allow the printing functions to include
-            # 'date printed' to the footers if desired.  We need a way to get
-            # the last-modified time of the document from the context headers,
-            # but these are not available to us at this point.
-            print("%%\n%% time values for use by page decorating functions:")
-            names = ("Year", "Month", "Day", "Hour", "Minute", "Second",
-                     "Weekday", "Julian", "DST")
-            t = time.time()
-            local = time.localtime(t)
-            utc = time.gmtime(t)
-            for name, local, utc in zip(names, local, utc):
-                print("/Gr%s %s D /GrUTC%s %s D" % (name, local, name, utc))
-            # add per-user customization:
-            user_template = get_userheader()
-            if user_template:
-                print(user_template)
-            print("%%EndProlog")
-        finally:
-            sys.stdout = oldstdout
+        print("%!PS-Adobe-1.0", file=self._ofp)
+        if self.get_title():
+            print("%%Title:", self.get_title(), file=self._ofp)
+        # output font prolog
+        print("%%DocumentPaperSizes:", self._paper.PaperName, file=self._ofp)
+        self._ofp.write("%%DocumentFonts: Symbol ZapfDingbats")
+        docfonts = self._font.docfonts
+        for dfv in docfonts.values(): self._ofp.write(" " + dfv)
+        self._ofp.write("\n")
+        # spew out the contents of the header PostScript file
+        print(get_systemheader(), file=self._ofp)
+        # define the fonts
+        print("/scalfac", self._font.points_per_pixel, "D", file=self._ofp)
+        for key, value in docfonts.items():
+            print("/%s /%s dup reencodeISO D findfont D" % (key, value),
+                file=self._ofp)
+        # finish out the prolog with paper information:
+        for name, value in vars(self._paper).items():
+            if isinstance(value, str):
+                print("/Gr%s (%s) D" % (name, value), file=self._ofp)
+            else:
+                print("/Gr%s %s D" % (name, value), file=self._ofp)
+        # Add time information to allow the printing functions to include
+        # 'date printed' to the footers if desired.  We need a way to get
+        # the last-modified time of the document from the context headers,
+        # but these are not available to us at this point.
+        print("%%\n%% time values for use by page decorating functions:",
+            file=self._ofp)
+        names = ("Year", "Month", "Day", "Hour", "Minute", "Second",
+                 "Weekday", "Julian", "DST")
+        t = time.time()
+        local = time.localtime(t)
+        utc = time.gmtime(t)
+        for name, local, utc in zip(names, local, utc):
+            print("/Gr%s %s D /GrUTC%s %s D" % (name, local, name, utc),
+                file=self._ofp)
+        # add per-user customization:
+        user_template = get_userheader()
+        if user_template:
+            print(user_template, file=self._ofp)
+        print("%%EndProlog", file=self._ofp)
         self.print_page_preamble()
         self.push_font_change(None)     # ??? why ???
 
@@ -246,23 +244,18 @@ class PSStream:
         ll_x, ll_y, ur_x, ur_y = img.bbox
         #
         xscale, yscale = img.get_scale()
-        oldstdout = sys.stdout
-        try:
-            sys.stdout = self._linefp
-            # Translate & scale for image origin (maybe should add
-            # some cropping?  just assuming image is reasonable):
-            print('gsave\n currentpoint %s sub translate %s %s scale'
-                  % (below, xscale, yscale))
-            if ll_x or ll_y:
-                #  Have to translate again to make image happy:
-                print(' %d %d translate' % (-ll_x, -ll_y))
-            if img.data[-1] == '\n':
-                img.data = img.data[:-1]
-            print(img.data)
-            #  Restore context, move to right of image:
-            print('grestore %s 0 R' % width)
-        finally:
-            sys.stdout = oldstdout
+        # Translate & scale for image origin (maybe should add
+        # some cropping?  just assuming image is reasonable):
+        print('gsave\n currentpoint %s sub translate %s %s scale'
+              % (below, xscale, yscale), file=self._linefp)
+        if ll_x or ll_y:
+            #  Have to translate again to make image happy:
+            print(' %d %d translate' % (-ll_x, -ll_y), file=self._linefp)
+        if img.data[-1] == '\n':
+            img.data = img.data[:-1]
+        print(img.data, file=self._linefp)
+        #  Restore context, move to right of image:
+        print('grestore %s 0 R' % width, file=self._linefp)
 
     def push_font_string(self, s, font):
         if not font:
@@ -326,14 +319,9 @@ class PSStream:
     def push_end(self):
         self.close_line()
         self.print_page_postamble()
-        oldstdout = sys.stdout
-        try:
-            sys.stdout = self._ofp
-            print("%%Trailer")
-            print("%%Pages:", self.get_pageno())
-            print("%%EOF")
-        finally:
-            sys.stdout = oldstdout
+        print("%%Trailer", file=self._ofp)
+        print("%%Pages:", self.get_pageno(), file=self._ofp)
+        print("%%EOF", file=self._ofp)
 
     def push_font_change(self, font):
         if self._linestr:
@@ -577,24 +565,21 @@ class PSStream:
             linecnt = linecnt - 1
 
     def print_page_preamble(self):
-        oldstdout = sys.stdout
-        try:
-            sys.stdout = self._ofp
-            # write the structure page convention
-            pageno = self.get_pageno()
-            print('%%Page:', pageno, pageno)
-            print('%%BeginPageProlog')
-            psfontname, size = self._line_start_font
-            print("save", self._margin, psfontname, size, pageno, "NP")
-            print('%%EndPageProlog')
-            if RECT_DEBUG:
-                print('gsave', 0, 0, "M")
-                print(self._paper.ImageWidth, 0, "RL")
-                print(0, -self._paper.ImageHeight, "RL")
-                print(-self._paper.ImageWidth, 0, "RL closepath stroke newpath")
-                print('grestore')
-        finally:
-            sys.stdout = oldstdout
+        # write the structure page convention
+        pageno = self.get_pageno()
+        print('%%Page:', pageno, pageno, file=self._ofp)
+        print('%%BeginPageProlog', file=self._ofp)
+        psfontname, size = self._line_start_font
+        print("save", self._margin, psfontname, size, pageno, "NP",
+            file=self._ofp)
+        print('%%EndPageProlog', file=self._ofp)
+        if RECT_DEBUG:
+            print('gsave', 0, 0, "M", file=self._ofp)
+            print(self._paper.ImageWidth, 0, "RL", file=self._ofp)
+            print(0, -self._paper.ImageHeight, "RL", file=self._ofp)
+            print(-self._paper.ImageWidth, 0, "RL closepath stroke newpath",
+                file=self._ofp)
+            print('grestore', file=self._ofp)
 
     def print_page_postamble(self):
         title = ''

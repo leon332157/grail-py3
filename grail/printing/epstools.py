@@ -148,13 +148,9 @@ def load_image_pil(img_fn, greyscale, eps_fn):
         im.save(eps_fn, "EPS")
     except:
         e, v, tb = sys.exc_type, sys.exc_value, sys.exc_traceback
-        stdout = sys.stdout
-        try:
-            sys.stdout = sys.stderr
-            traceback.print_exc()
-            print("Exception printed from printing.epstools.load_image_pil()")
-        finally:
-            sys.stdout = stdout
+        traceback.print_exc()
+        print("Exception printed from printing.epstools.load_image_pil()",
+            file=sys.stderr)
         raise e, v, tb
 
 
