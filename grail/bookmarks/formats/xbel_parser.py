@@ -74,23 +74,20 @@ class CaptureMixin:
 def normalize_capture(data, preserve=False):
     queue = [(data, preserve)]
     while queue:
-        (tag, attrs, content), preserve = queue[0]
-        del queue[0]
+        (tag, attrs, content), preserve = queue.pop(0)
         #
         preserve = preserve or attrs.get("xml:space") == "preserve"
         #
         if not preserve:
-            # remove leading blanks:
-            while (content and isinstance(content[0], str)
-                   and content[0].strip() == ""):
+            # remove leading blank:
+            if (content and isinstance(content[0], str)
+                   and not content[0].strip()):
                 del content[0]
-            # remove trailing blanks
-            for ci in reversed(range(len(content))):
-                citem = content[ci]
+            # remove trailing blank
+            if content:
+                citem = content[-1]
                 if isinstance(citem, str) and not citem.strip():
-                    del content[ci]
-                else:
-                    break
+                    del content[-1]
             # now, if all remaining strings are blank,
             # assume this is element-only:
             for citem in content:
@@ -133,8 +130,7 @@ class DocumentHandler:
         self.new_folder(attrs)
     def end_folder(self):
         self.__store_node = None
-        self.__folder = self.__context[-1]
-        del self.__context[-1]
+        self.__folder = self.__context.pop()
 
     def start_title(self, attrs):
         self.save_bgn()
