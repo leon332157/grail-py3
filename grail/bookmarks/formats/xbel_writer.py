@@ -7,6 +7,7 @@ from xml.sax import saxutils
 from .. import iso8601
 from .. import walker
 import sys
+from io import TextIOWrapper
 
 
 class Writer(walker.TreeWalker):
@@ -26,15 +27,20 @@ class Writer(walker.TreeWalker):
         self.__close_folders = []
 
     def write_tree(self, fp):
-        root = self.get_root()
-        root_type = root.get_nodetype().lower()
-        if root_type == "folder":
-            root_type = "xbel"
-        fp.write(self.__header.format(
-            root_type, self.PUBLIC_ID, self.SYSTEM_ID))
-        self.__fp = fp
-        self.write = fp.write
-        self.walk()
+        try:
+            fp = TextIOWrapper(fp, "latin-1", "xmlcharrefreplace")
+            root = self.get_root()
+            root_type = root.get_nodetype().lower()
+            if root_type == "folder":
+                root_type = "xbel"
+            fp.write(self.__header.format(
+                root_type, self.PUBLIC_ID, self.SYSTEM_ID))
+            self.__fp = fp
+            self.write = fp.write
+            self.walk()
+        finally:
+            if isinstance(fp, TextIOWrapper):
+                fp.detach()
 
     def get_filetype(self):
         return "xbel"

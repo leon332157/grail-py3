@@ -25,7 +25,7 @@ bookmarks.node.Folder instance.
 The `Writer' callables receive no arguments, but must return an object
 which supports a method write_tree().  This method must accept two
 arguments: a bookmarks.nodes.Folder instance which is the root of the
-bookmarks tree, and a file object to which output should be directed.
+bookmarks tree, and a binary file object to which output should be directed.
 This method should output a complete storage object which can later be
 parsed by using the parser object defined in the sister module for the
 same format.

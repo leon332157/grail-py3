@@ -5,6 +5,7 @@ __version__ = '$Revision: 1.4 $'
 
 from .. import BookmarkWriter                        # from parent
 import pickle
+from io import TextIOWrapper
 
 
 class Writer(BookmarkWriter):
@@ -25,9 +26,11 @@ class Writer(BookmarkWriter):
 
     def write_tree(self, fp):
         try:
+            fp = TextIOWrapper(fp, "utf-8")
             fp.write(self.HEADER_STRING)
             fp.write(self.__filename + "\n")
             fp.write("{}\n".format(self.__mtime))
-            pickle.dump(self.__root, fp, 1)
         finally:
-            fp.close()
+            if isinstance(fp, TextIOWrapper):
+                fp = fp.detach()
+        pickle.dump(self.__root, fp, 1)

@@ -276,7 +276,7 @@ class BookmarksIO:
         except os.error: pass # no file to backup
         format = self.format()
         writer = bookmarks.get_writer_class(format)(root)
-        with open(filename, 'w') as fp:
+        with open(filename, 'wb') as fp:
             writer.write_tree(fp)
         # now save a cached copy:
         if format != CACHE_FORMAT:

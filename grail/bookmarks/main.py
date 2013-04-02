@@ -178,12 +178,17 @@ def main():
     if options.info:
         report_info(root)
     else:
+        file = None
         try:
-            writer.write_tree(get_outfile(ofn))
+            file = get_outfile(ofn)
+            writer.write_tree(file)
         except IOError as err:
             # Ignore the error if we lost a pipe into another process.
             if err.errno != errno.EPIPE:
                 raise
+        finally:
+            if file and ofn != "-":
+                file.close()
 
 
 def report_info(root):
@@ -211,10 +216,10 @@ def guess_bookmarks_type(filename, verbose=False):
 
 def get_outfile(ofn):
     if ofn == '-':
-        outfile = sys.stdout
+        outfile = sys.stdout.buffer
     else:
         try:
-            outfile = open(ofn, 'w')
+            outfile = open(ofn, 'wb')
         except IOError as err:
             error(1, "could not open {}: {}".format(ofn, err.strerror))
         print("Writing output to", ofn)

@@ -6,6 +6,7 @@ __version__ = '$Revision: 1.4 $'
 from xml.sax import saxutils
 from .. import walker
 import sys
+from io import TextIOWrapper
 
 
 class Writer(walker.TreeWalker):
@@ -22,12 +23,13 @@ class Writer(walker.TreeWalker):
     def write_tree(self, fp):
         self.__id_map = {}
         root = self.get_root()
+        fp = TextIOWrapper(fp, "ascii", "xmlcharrefreplace")
         try:
             self.__fp = fp
             self.walk()
             print('</DL><p>', file=self.__fp)
         finally:
-            fp.close()
+            fp.detach()
 
     # node-type handlers
 
