@@ -195,7 +195,11 @@ class BookmarksIO:
         import errno
         try:
             fp = open(filename, 'rb')
-            return fp, self.__choose_reader(fp)
+            try:
+                return fp, self.__choose_reader(fp)
+            except:
+                fp.close()
+                raise
         except IOError as error:
             if error.errno == errno.ENOENT:
                 # 'No such file or directory'
