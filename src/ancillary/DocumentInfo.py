@@ -67,7 +67,7 @@ class DocumentInfoDialog:
         btn.pack(padx='2m', pady='2m')
         btn.focus_set()
         #
-        del self.__topfr                # loose the reference
+        del self.__topfr                # lose the reference
         tktools.set_transient(root, master)
         root.update_idletasks()
         reqwidth = root.winfo_reqwidth()

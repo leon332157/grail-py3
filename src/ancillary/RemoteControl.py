@@ -63,7 +63,7 @@ NoHandlerError  - no handler for the received command has been registered
 
 Example (put this in your grailrc.py file):
 
-# Turn on remote control.  Ignore error that get's raised if some
+# Turn on remote control.  Ignore error that gets raised if some
 # other Grail is being remote controlled.
 import RemoteControl
 RemoteControl.register_loads()

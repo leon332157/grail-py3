@@ -488,7 +488,7 @@ class DiskCacheEntry:
         Calls cache.get() to update the LRU information.
 
         Also checks to see if a page with an explicit Expire date has
-        expired; raises a CacheReadFaile if it has.
+        expired; raises a CacheReadFailed if it has.
         """
         if self.expires:
             if self.expires and self.expires.get_secs() < time.time():
@@ -898,7 +898,7 @@ class DiskCache:
         try:
             os.unlink(self.get_file_path(evictee.file))
         except (os.error, IOError), err:
-            # print "error deleteing %s from cache: %s" % (key, err)
+            # print "error deleting %s from cache: %s" % (key, err)
             pass
         self.log_entry(evictee,1) # 1 indicates delete entry
         evictee.delete()

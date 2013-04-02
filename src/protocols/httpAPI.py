@@ -1,6 +1,6 @@
 """Provisional HTTP interface using the new protocol API.
 
-XXX This was hacked together in an hour si I would have something to
+XXX This was hacked together in an hour so I would have something to
 test ProtocolAPI.py.  Especially the way it uses knowledge about the
 internals of httplib.HTTP is disgusting (but then, so would editing
 the source of httplib.py be :-).

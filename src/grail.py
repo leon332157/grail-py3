@@ -138,8 +138,8 @@ def main(args=None):
     if user_init:
         try: import grailrc
         except ImportError, e:
-            # Only catch this is grailrc itself doesn't import,
-            # otherwise propogate.
+            # Only catch this if grailrc itself doesn't import,
+            # otherwise propagate.
             if string.split(e.args[0])[-1] != "grailrc":
                 raise
         except:

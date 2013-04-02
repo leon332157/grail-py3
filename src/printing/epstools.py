@@ -9,7 +9,7 @@ import sys
 import utils
 
 
-#  Exception which should not propogate outside printing support.
+#  Exception which should not propagate outside printing support.
 class EPSError:
     def __init__(self, message):
         self.message = message

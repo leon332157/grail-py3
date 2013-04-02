@@ -11,7 +11,7 @@ protocol_access(url, mode, params, data=None)
 
 protocol_joiner(scheme)
         return a function to implement relative URL joining according
-        to the scheme; or None if no such function exist.
+        to the scheme; or None if no such function exists.
 
 """
 

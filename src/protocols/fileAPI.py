@@ -87,7 +87,7 @@ class file_access:
         
     def fileno(self):
         # TODO - Fix sockets under Windows.
-        # We fall back to the polling method of ansyc I/O automatically
+        # We fall back to the polling method of async I/O automatically
         # for http requests under windows because dup fails for socket
         # objects and returns -1 to BaseReader which kicks in the
         # checkapi_regularly form of async I/O (Which is a hack, but it

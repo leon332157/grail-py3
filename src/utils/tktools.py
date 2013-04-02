@@ -264,7 +264,7 @@ def make_form_entry(parent, label, borderwidth=None, name=None):
     return entry, frame
 
 # This is a slightly modified version of the function above.  This
-# version does the proper alighnment of labels with their fields.  It
+# version does the proper alignment of labels with their fields.  It
 # should probably eventually replace make_form_entry altogether.
 #
 # The one annoying bug is that the text entry field should be

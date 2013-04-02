@@ -159,7 +159,7 @@ class ftp_access:
             headers['content-encoding'] = self.content_encoding
         if self.content_length:
             headers['content-length'] = `self.content_length`
-        self.lines = []                 # Only used of self.isdir
+        self.lines = []                 # Only used if self.isdir
         return 200, "OK", headers
 
     def polldata(self):
