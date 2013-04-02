@@ -5,12 +5,8 @@ from .. import grailutil
 
 grail_root = grailutil.get_grailroot()
 
-# User's panels dirs should come first, so they take precedence.
+# User's panels dir should come first, so it takes precedence.
 panels_dirs = [
-               # These two for backwards compat with beta versions:
-               os.path.expanduser("~/.grail/prefspanels"),
-               os.path.join(grail_root, 'prefspanels'),
-               
                os.path.expanduser("~/.grail/prefpanels"),
 ]
 

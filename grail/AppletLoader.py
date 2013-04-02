@@ -284,7 +284,6 @@ class AppletLoader:
             code = compile(data, filename, 'exec')
             m = rexec.hooks.add_module(mod)
             m.__file__ = filename
-            m.__filename__ = filename
             exec(code, m.__dict__)
         elif type == imp.C_BUILTIN:
             m = imp.init_builtin(mod)

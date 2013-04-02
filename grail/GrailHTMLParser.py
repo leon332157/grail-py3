@@ -13,7 +13,7 @@ import formatter
 from . import Viewer
 from . import grailutil
 
-from .grailutil import extract_attribute, extract_keyword
+from .grailutil import extract_keyword
 from .sgml.HTMLParser import HTMLParser, HeaderNumber
 from ast import literal_eval
 
@@ -463,40 +463,6 @@ class GrailHTMLParser(HTMLParser):
 
     def end_applet(self):
         self.end_object()
-
-    # New tag: <APP> (for Grail 0.2 compatibility)
-
-    def do_app(self, attrs):
-        mod, cls, src = self.get_mod_class_src(attrs)
-        if not (mod and cls): return
-        width = extract_attribute('width', attrs, conv=string.atoi, delete=1)
-        height = extract_attribute('height', attrs, conv=string.atoi, delete=1)
-        menu = extract_attribute('menu', attrs, delete=1)
-        mod = mod + ".py"
-        import AppletLoader
-        apploader = AppletLoader.AppletLoader(
-            self, code=mod, name=cls, codebase=src,
-            width=width, height=height, menu=menu,
-            reload=self.reload1)
-        if apploader.feasible():
-            for name, value in attrs.items():
-                apploader.set_param(name, value)
-            apploader.go_for_it()
-        else:
-            apploader.close()
-
-    # Subroutines for <APP> tag parsing
-
-    def get_mod_class_src(self, keywords):
-        cls = extract_attribute('class', keywords, '', delete=1)
-        src = extract_attribute('src', keywords, delete=1)
-        if '.' in cls:
-            i = string.rfind(cls, '.')
-            mod = cls[:i]
-            cls = cls[i+1:]
-        else:
-            mod = cls
-        return mod, cls, src
 
     # Heading support for dingbats (iconic entities):
 

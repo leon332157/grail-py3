@@ -33,4 +33,4 @@ class Writer(BookmarkWriter):
         finally:
             if isinstance(fp, TextIOWrapper):
                 fp = fp.detach()
-        pickle.dump(self.__root, fp, 1)
+        pickle.dump(self.__root, fp, protocol=3)

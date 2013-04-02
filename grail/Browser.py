@@ -109,7 +109,6 @@ class Browser:
         # Create the menus
         self.create_menu("file")
         self.create_menu("go")
-        self.histmenu = self.gomenu     # backward compatibility for Ping
         self.create_menu("search")
         self.create_menu("bookmarks")
         self.create_menu("preferences")
