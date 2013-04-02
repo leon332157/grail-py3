@@ -842,7 +842,7 @@ class BookmarksController(OutlinerController):
 
     def __get_boolean_pref(self, option, default=False):
         try:
-            return self._app.prefs.GetBoolean(BMPREFGROUP, option) and 1 or 0
+            return self._app.prefs.GetBoolean(BMPREFGROUP, option)
         except (TypeError, KeyError):
             return bool(default)
 

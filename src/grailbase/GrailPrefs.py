@@ -47,7 +47,11 @@ class Preferences:
             raise KeyError, "Preference %s not found" % ((group, cmpnt),)
 
     def Set(self, group, cmpnt, val):
-        self.mods[group][cmpnt] = str(val)
+        if isinstance(val, bool):
+            val = format(val, "d")
+        else:
+            val = format(val)
+        self.mods[group][cmpnt] = val
         # Undelete.
         self.deleted[group].discard(cmpnt)
 
@@ -258,7 +262,7 @@ def typify(val, type_name):
             i = int(val)
             if i not in (0, 1):
                 raise TypeError, '%r should be Boolean' % val
-            return i
+            return bool(i)
     except ValueError:
             raise TypeError, '%r should be %s' % (val, type_name)
     
