@@ -600,10 +600,11 @@ class Reader(BaseReader):
                     # Retrieve to temporary file.
                     import tempfile
                     self.save_mailcap = command
-                    self.save_filename = tempfile.mktemp()
+                    self.save_file = tempfile.NamedTemporaryFile("wb",
+                        delete=False)
+                    self.save_filename = self.save_file.name
                     self.save_content_type = content_type
                     self.save_plist = plist
-                    self.save_file = open(self.save_filename, "wb")
                     # remember the original click location
                     self.app.global_history.remember_url(self.url)
                     self.viewer.remove_temp_tag(histify=True)

@@ -271,6 +271,7 @@ class RealPrintDialog:
             except IOError, msg:
                 self.context.error_dialog(IOError, str(msg))
                 return
+            use_temp = False
         else:
             cmd = self.cmd_entry.get()
             if not cmd:
@@ -278,10 +279,10 @@ class RealPrintDialog:
                                           "Please enter a print command")
                 return
             try:
-                if '%s' in cmd:
+                use_temp = '%s' in cmd
+                if use_temp:
                     import tempfile
-                    tempname = tempfile.mktemp()
-                    fp = open(tempname, 'w')
+                    fp = tempfile.NamedTemporaryFile("wt", delete=False)
                 else:
                     fp = os.popen(cmd, "w")
             except IOError, msg:
@@ -298,14 +299,11 @@ class RealPrintDialog:
             for e in self.cursor_widgets: e['cursor'] = ''
             raise sys.exc_type, sys.exc_value, sys.exc_traceback
         sts = fp.close()
-        if not sts:
-            try:
-                cmd_parts = cmd.split('%s')
-                cmd = tempname.join(cmd_parts)
-                sts = os.system(cmd)
-                os.unlink(tempname)
-            except NameError:           # expected on tempname except on NT
-                pass
+        if use_temp:
+            cmd_parts = cmd.split('%s')
+            cmd = fp.name.join(cmd_parts)
+            sts = os.system(cmd)
+            os.unlink(fp.name)
         if sts:
             self.context.error_dialog("Exit",
                                       "Print command exit status %r" % sts)

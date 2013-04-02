@@ -582,14 +582,13 @@ class PrintingHTMLParser(HTMLParser):
         if not image:
             raise epstools.EPSError('Image could not be loaded.')
         import tempfile
-        img_fn = tempfile.mktemp()
-        with open(img_fn, 'wb') as fp:
+        with tempfile.NamedTemporaryFile('wb', delete=False) as fp:
             try:
                 fp.write(image)
             except:
                 raise epstools.EPSError(
                     'Failed to write image to external file.')
-        return epstools.load_image_file(img_fn, self.settings.greyscale)
+        return epstools.load_image_file(fp.name, self.settings.greyscale)
 
 
 # These functions and classes are "filters" which can be used as anchor

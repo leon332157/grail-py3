@@ -132,12 +132,11 @@ class TkGifParser:
     """
 
     def __init__(self, viewer, reload=False):
-        self.tf = self.tfname = None
+        self.tf = None
         self.viewer = viewer
         self.viewer.new_font((AS_IS, AS_IS, AS_IS, True))
-        self.tfname = tempfile.mktemp()
-        self.tf = open(self.tfname, 'wb')
-        self.label = Tkinter.Label(self.viewer.text, text=self.tfname,
+        self.tf = tempfile.NamedTemporaryFile("wb", delete=False)
+        self.label = Tkinter.Label(self.viewer.text, text=self.tf.name,
                                    highlightthickness=0, borderwidth=0)
         self.viewer.add_subwindow(self.label)
 
@@ -147,13 +146,13 @@ class TkGifParser:
     def close(self):
         if self.tf:
             self.tf.close()
-            self.tf = None
-            self.label.image = Tkinter.PhotoImage(file=self.tfname)
+            self.label.image = Tkinter.PhotoImage(file=self.tf.name)
             self.label.config(image=self.label.image)
             try:
-                os.unlink(self.tfname)
+                os.unlink(self.tf.name)
             except os.error:
                 pass
+            self.tf = None
 
 
 def parse_image_gif(*args, **kw):
