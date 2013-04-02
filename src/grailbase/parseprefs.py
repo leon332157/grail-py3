@@ -79,11 +79,10 @@ def test():
         fn = sys.argv[1]
     else:
         fn = "../data/grail-defaults"
-    fp = open(fn)
-    t0 = time.time()
-    groups = parseprefs(fp)
-    t1 = time.time()
-    fp.close()
+    with open(fn) as fp:
+        t0 = time.time()
+        groups = parseprefs(fp)
+        t1 = time.time()
     print "Parsing time", round(t1-t0, 3)
     groupnames = groups.keys()
     groupnames.sort()

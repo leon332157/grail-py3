@@ -558,9 +558,8 @@ class HashTable:
 
         """
         if self.debug: print "Opening hash table:", repr(filename)
-        fp = open(filename, 'rb')
-        data = fp.read()
-        fp.close()
+        with open(filename, 'rb') as fp:
+            data = fp.read()
         self._parse_hash_table(data)
 
 

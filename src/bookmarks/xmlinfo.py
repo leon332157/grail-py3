@@ -120,8 +120,8 @@ def main():
     else:
         fp = sys.stdin.detach()
     #
-    buffer = fp.read(10240)
-    fp.close()
+    with fp:
+        buffer = fp.read(10240)
     try:
         values = get_xml_info(buffer)
     except Error, e:

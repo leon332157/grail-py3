@@ -583,12 +583,12 @@ class PrintingHTMLParser(HTMLParser):
             raise epstools.EPSError('Image could not be loaded.')
         import tempfile
         img_fn = tempfile.mktemp()
-        fp = open(img_fn, 'wb')
-        try:
-            fp.write(image)
-        except:
-            raise epstools.EPSError('Failed to write image to external file.')
-        fp.close()
+        with open(img_fn, 'wb') as fp:
+            try:
+                fp.write(image)
+            except:
+                raise epstools.EPSError(
+                    'Failed to write image to external file.')
         return epstools.load_image_file(img_fn, self.settings.greyscale)
 
 

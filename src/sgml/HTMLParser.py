@@ -1250,9 +1250,8 @@ def test():
     import sys
     file = 'test.html'
     if sys.argv[1:]: file = sys.argv[1]
-    fp = open(file, 'r')
-    data = fp.read()
-    fp.close()
+    with open(file, 'r') as fp:
+        data = fp.read()
     from formatter import NullWriter, AbstractFormatter
     w = NullWriter()
     f = AbstractFormatter(w)

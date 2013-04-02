@@ -165,9 +165,8 @@ def load_eps(eps_fn):
     EPSImage object.  If a PostScript `showpage' command is obvious in the
     file, it is removed.
     """
-    fp = open(eps_fn)
-    lines = fp.readlines()
-    fp.close()
+    with open(eps_fn) as fp:
+        lines = fp.readlines()
     try: lines.remove('showpage\n')
     except: pass                        # o.k. if not found
     bbox = load_bounding_box(lines)

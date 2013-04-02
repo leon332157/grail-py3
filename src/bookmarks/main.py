@@ -135,26 +135,27 @@ def main():
                 error(1, "could not open %s: %s" % (ifn, err.strerror))
         else:
             baseurl = "file:" + os.path.join(os.getcwd(), ifn)
-    #
-    # get the parser class, bypassing completely if the formats are the same
-    #
-    if options.scrape_links:
-        from .formats import html_scraper
-        parser = html_scraper.Parser(ifn)
-        parser.set_baseurl(baseurl)
-    else:
-        format = bookmarks.get_format(infile)
-        if not format:
-            error(1, "could not identify input file format")
-        parser_class = bookmarks.get_parser_class(format)
-        parser = parser_class(ifn)
-    #
-    # do the real work
-    #
-    writer_class = bookmarks.get_writer_class(options.output_format)
-    parser.feed(infile.read())
-    parser.close()
-    infile.close()
+    with infile:
+        #
+        # get the parser class, bypassing completely if the formats are the
+        # same
+        #
+        if options.scrape_links:
+            from .formats import html_scraper
+            parser = html_scraper.Parser(ifn)
+            parser.set_baseurl(baseurl)
+        else:
+            format = bookmarks.get_format(infile)
+            if not format:
+                error(1, "could not identify input file format")
+            parser_class = bookmarks.get_parser_class(format)
+            parser = parser_class(ifn)
+        #
+        # do the real work
+        #
+        writer_class = bookmarks.get_writer_class(options.output_format)
+        parser.feed(infile.read())
+        parser.close()
     root = parser.get_root()
     if options.search:
         from . import search

@@ -623,13 +623,13 @@ class DiskCache:
         try:
             newpath = os.path.join(self.directory, 'CHECKPOINT')
 
-            newlog = open(newpath, 'w')
-            newlog.write('3 ' + self.log_version + '\n')
-            for key in self.use_order:
-                self.log_entry(self.items[key],alt_log=newlog,flush=False)
-                # don't flush writes during the checkpoint, because if
-                # we crash it won't matter
-            newlog.close()
+            with open(newpath, 'w') as newlog:
+                newlog.write('3 ' + self.log_version + '\n')
+                for key in self.use_order:
+                    self.log_entry(self.items[key],alt_log=newlog,
+                        flush=False)
+                    # don't flush writes during the checkpoint, because if
+                    # we crash it won't matter
             logpath = os.path.join(self.directory, 'LOG')
             os.unlink(logpath)
             os.rename(newpath, logpath)
@@ -786,9 +786,8 @@ class DiskCache:
         """Write the object's data to disk."""
         path = self.get_file_path(entry.file)
         try:
-            f = open(path, 'wb')
-            f.writelines(object.data)
-            f.close()
+            with open(path, 'wb') as f:
+                f.writelines(object.data)
         except IOError, err:
             raise CacheFileError, (path, err)
 

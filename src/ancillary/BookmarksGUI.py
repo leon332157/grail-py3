@@ -210,9 +210,8 @@ class BookmarksIO:
         except ImportError:
             from StringIO import StringIO
         try:
-            fp = urllib.urlopen(url)
-            sio = StringIO(fp.read())
-            fp.close()
+            with urllib.urlopen(url) as fp:
+                sio = StringIO(fp.read())
             return sio, self.__choose_reader(sio)
         except IOError, error:
             raise bookmarks.BookmarkFormatError(url, error, what="URL")
@@ -233,11 +232,10 @@ class BookmarksIO:
             req_mtime = None
             mtime = 0
             try:
-                fp = open(cachename)
-                fp.readline()           # skip header
-                fp.readline()           # skip embedded file name
-                mtime = int(fp.readline())
-                fp.close()
+                with open(cachename) as fp:
+                    fp.readline()           # skip header
+                    fp.readline()           # skip embedded file name
+                    mtime = int(fp.readline())
             except IOError:
                 pass
             else:
@@ -253,9 +251,8 @@ class BookmarksIO:
                     pass
                 else:
                     # get format of the original file:
-                    fp = open(filename)
-                    format = bookmarks.get_format(fp)
-                    fp.close()
+                    with open(filename) as fp:
+                        format = bookmarks.get_format(fp)
                     self.set_filename(filename)
                     self.set_format(format)
                     return root, reader
@@ -267,8 +264,8 @@ class BookmarksIO:
             except IOError, error:
                 # only ENOENT is passed through like this
                 fp, reader = self.__open_url_for_reading(filename)
-            root = reader.read_file(fp)
-            fp.close()
+            with fp:
+                root = reader.read_file(fp)
             if not req_filename:
                 # only set this if the filename wasn't passed in:
                 self.set_filename(filename)
@@ -279,9 +276,8 @@ class BookmarksIO:
         except os.error: pass # no file to backup
         format = self.format()
         writer = bookmarks.get_writer_class(format)(root)
-        fp = open(filename, 'w')
-        writer.write_tree(fp)
-        fp.close()
+        with open(filename, 'w') as fp:
+            writer.write_tree(fp)
         # now save a cached copy:
         if format != CACHE_FORMAT:
             cachename = (os.path.splitext(filename)[0]
@@ -293,9 +289,8 @@ class BookmarksIO:
             writer.set_original_mtime(mtime)
             # now write the cache, but just discard it on errors:
             try:
-                fp = open(cachename, "wb")
-                writer.write_tree(fp)
-                fp.close()
+                with open(cachename, "wb") as fp:
+                    writer.write_tree(fp)
             except IOError:
                 try: os.unlink(cachename)
                 except: pass

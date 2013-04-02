@@ -32,9 +32,8 @@ class Preferences:
         # Settings overridden, not yet saved.
         self.deleted = defaultdict(set)
         try:
-            f = open(filename)
-            self.saved = parseprefs.parseprefs(f)
-            f.close()
+            with open(filename) as f:
+                self.saved = parseprefs.parseprefs(f)
         except IOError:
             self.saved = defaultdict(dict)
 
@@ -87,16 +86,15 @@ class Preferences:
         try: os.rename(self.filename, self.filename + '.bak')
         except os.error: pass           # No file to backup.
 
-        fp = open(self.filename, 'w')
-        items = self.items()
-        items.sort()
-        prevgroup = None
-        for (g, c), v in items:
-            if prevgroup and g != prevgroup:
-                fp.write('\n')
-            fp.write(make_key(g, c) + ': ' + v + '\n')
-            prevgroup = g
-        fp.close()
+        with open(self.filename, 'w') as fp:
+            items = self.items()
+            items.sort()
+            prevgroup = None
+            for (g, c), v in items:
+                if prevgroup and g != prevgroup:
+                    fp.write('\n')
+                fp.write(make_key(g, c) + ': ' + v + '\n')
+                prevgroup = g
         # Register that modifications are now saved:
         deleted = self.deleted
         for g, comps in self.mods.items():

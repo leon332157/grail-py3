@@ -95,54 +95,50 @@ def parse(filename, outdir):
              'notice':   '',
              }
 
-    infp = open(filename, 'r')
-    for line in infp:
-        keyword, rest = splitline(line)
-        if keyword in ('fontname', 'fullname', 'notice'):
-            tdict[keyword] = rest
-        if keyword == 'startcharmetrics':
-            break
-    else:
-        print 'No character metrics found in file:', filename
-        sys.exit(1)
+    with open(filename, 'r') as infp:
+        for line in infp:
+            keyword, rest = splitline(line)
+            if keyword in ('fontname', 'fullname', 'notice'):
+                tdict[keyword] = rest
+            if keyword == 'startcharmetrics':
+                break
+        else:
+            print 'No character metrics found in file:', filename
+            sys.exit(1)
 
-    outfile = os.path.join(
-        outdir,
-        '_'.join(['PSFont'] + tdict['fontname'].split('-')) + '.py')
+        outfile = os.path.join(
+            outdir,
+            '_'.join(['PSFont'] + tdict['fontname'].split('-')) + '.py')
 
-    # read the character metrics into the list
-    for line in infp:
-        keyword, rest = splitline(line)
-        if keyword == 'c':
-            info = rest.split()
-            charnum = int(info[0])
-            charname = info[6]
-            width = int(info[3])
-            if charname in charset:
-                cwidths[charset[charname]] = width
-            elif 0 <= charnum < 256:
-                cwidths[charnum] = width
+        # read the character metrics into the list
+        for line in infp:
+            keyword, rest = splitline(line)
+            if keyword == 'c':
+                info = rest.split()
+                charnum = int(info[0])
+                charname = info[6]
+                width = int(info[3])
+                if charname in charset:
+                    cwidths[charset[charname]] = width
+                elif 0 <= charnum < 256:
+                    cwidths[charnum] = width
 
-        if keyword == 'endcharmetrics':
-            break
+            if keyword == 'endcharmetrics':
+                break
 
-    infp.close()
-
-    outfp = open(outfile, 'w')
-    oldstdout = sys.stdout
-    sys.stdout = outfp
-    try:
-        print TEMPLATE % tdict,
-        print '[',
-        for i in range(0, 256, 8):
-            if i != 0:
-                print ' ',
-            print FORMAT % tuple(cwidths[i:i+8])
-        print '])'
-    finally:
-        sys.stdout = oldstdout
-
-    outfp.close()
+    with open(outfile, 'w') as outfp:
+        oldstdout = sys.stdout
+        sys.stdout = outfp
+        try:
+            print TEMPLATE % tdict,
+            print '[',
+            for i in range(0, 256, 8):
+                if i != 0:
+                    print ' ',
+                print FORMAT % tuple(cwidths[i:i+8])
+            print '])'
+        finally:
+            sys.stdout = oldstdout
 
 
 

@@ -249,9 +249,8 @@ class FormInfo:
             data = None
             if i.__class__.__name__ == 'InputFile':
                 try:
-                    f = open(v)
-                    data = f.read()
-                    f.close()
+                    with open(v) as f:
+                        data = f.read()
                 except IOError, msg:
                     print "IOError:", msg
                 else:

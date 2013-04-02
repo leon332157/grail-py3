@@ -1052,9 +1052,8 @@ def test():
     import sys
     file = "Viewer.py"
     if sys.argv[1:]: file = sys.argv[1]
-    f = open(file)
-    data = f.read()
-    f.close()
+    with open(file, "rb") as f:
+        data = f.read()
     root = Tk()
     v = Viewer(root, None)
     v.handle_data(data)

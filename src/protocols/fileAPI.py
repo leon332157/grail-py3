@@ -113,9 +113,8 @@ class file_access:
         # XXX Unixism
         if self.url and self.url[-1] != '/':
             self.url = self.url + '/'
-        fp = os.popen("ls -l -a %s/. 2>&1" % self.pathname, "r")
-        lines = fp.readlines()
-        fp.close()
+        with os.popen("ls -l -a %s/. 2>&1" % self.pathname, "r") as fp:
+            lines = fp.readlines()
         import StringIO
         import re
         from urllib import quote
