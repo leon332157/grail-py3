@@ -9,7 +9,6 @@ import os
 class ExtensionLoader:
     def __init__(self, package):
         self.__package = package
-        self.__name = package.__name__
         self.__extensions = {}
 
     def get(self, name):
@@ -25,15 +24,10 @@ class ExtensionLoader:
         return self.find_module(name)
 
     def find_module(self, name):
-        realname = "%s.%s" % (self.__name, name)
-        d = {}
-        s = "import %s; mod = %s" % (realname, realname)
         try:
-            exec s in d
+            mod = __import__(name, vars(self.__package), level=1)
         except ImportError:
             mod = None
-        else:
-            mod = d["mod"]
         return mod
 
     def add_directory(self, path):

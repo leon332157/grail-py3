@@ -99,15 +99,9 @@ class MatcherInterface:
 # Internal helpers:
 
 def __get_search_module(which):
-    d = {}
-    s = "from bookmarks.search import %sSearch" % which
     try:
-        exec s in d
+        return __import__(which + "Search", globals(), level=1)
     except ImportError:
-        return None
-    try:
-        return d[which + "Search"]
-    except KeyError:
         return None
 
 

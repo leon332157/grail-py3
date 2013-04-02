@@ -146,12 +146,14 @@ def get_default_extension(format):
 
 
 def get_parser_class(format):
-    exec "from formats.%s_parser import Parser" % get_short_name(format)
-    return Parser
+    from . import formats
+    name = "%s_parser" % get_short_name(format)
+    return __import__(name, vars(formats), level=1).Parser
 
 def get_writer_class(format):
-    exec "from formats.%s_writer import Writer" % get_short_name(format)
-    return Writer
+    from . import formats
+    name = "%s_writer" % get_short_name(format)
+    return __import__(name, vars(formats), level=1).Writer
 
 def get_output_format(format):
     return __formats[format][3]

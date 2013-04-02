@@ -18,6 +18,7 @@ import string
 import traceback
 import urllib
 import urlparse
+import pkgutil
 
 # local modules:
 from . import epstools
@@ -283,13 +284,11 @@ def load_tag_handler(app, arg):
             print
             return 0
         dirname, modname = os.path.split(basename)
-        oldpath = sys.path
-        try:
-            sys.path = [dirname] + oldpath
-            exec "import %s ; mod = %s" % (modname, modname)
-            loader.load_tag_handlers(mod)
-        finally:
-            sys.path = oldpath
+        mloader = pkgutil.get_importer(dirname).find_module(modname)
+        if not mloader:
+            raise ImportError("Cannot load {!r}".format(narg))
+        mod = mloader.load_module(modname)
+        loader.load_tag_handlers(mod)
     else:
         sys.stdout = sys.stderr
         print "Could not locate tag handler", arg
