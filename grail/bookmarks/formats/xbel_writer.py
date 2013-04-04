@@ -147,50 +147,46 @@ class Writer(walker.TreeWalker):
         tab = "  " * (self._depth + 1)
         L = [tab, "<info>\n"]
         append = L.append
-        for tag, attrs, content in info:
+        for element in info:
             append(tab)
             append("  ")
-            self.__dump_xml(["metadata", attrs, content], L, tab + "    ")
+            self.__dump_xml(element, L, tab + "    ")
             append("\n")
         append(tab)
         append("  </info>\n")
         self.write("".join(L))
 
-    def __dump_xml(self, stuff, L, tab):
-        tag, attrs, content = stuff
+    def __dump_xml(self, element, L, tab):
         append = L.append
         append("<")
-        append(tag)
+        append(element.tag)
         space = " "
-        for attr, value in attrs.items():
+        for attr, value in element.items():
             append('%s%s=%s' % (space, attr, saxutils.quoteattr(value)))
             space = "\n%s%s" % (tab, " "*len(tag))
-        if not content:
+        if not element.text and not len(element):
             append("/>")
             return
         has_text = (tab is None) or (attrs.get("xml:space") == "preserve")
         if not has_text:
-            for citem in content:
-                if isinstance(citem, str):
-                    has_text = 1
-                    break
+            has_text = element.text or any(citem.tail for citem in element)
         if has_text:
             # some plain text in the data; assume significant:
             append(">")
-            for citem in content:
-                if isinstance(citem, str):
-                    append(saxutils.escape(citem))
-                else:
-                    # element
-                    self.__dump_xml(citem, L, None)
+            if element.text:
+                append(saxutils.escape(element.text))
+            for citem in element:
+                self.__dump_xml(citem, L, None)
+                if citem.tail:
+                    append(saxutils.escape(citem.tail))
         else:
             append(">\n")
-            for citem in content:
+            for citem in element:
                 append(tab)
                 self.__dump_xml(citem, L, tab + "  ")
                 append("\n")
             append(tab)
-        append("</%s>" % tag)
+        append("</%s>" % element.tag)
 
 
 def _fmt_date_attr(date, attrname):

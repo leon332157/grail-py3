@@ -5,67 +5,47 @@ __version__ = '$Revision: 1.10 $'
 
 from .. import iso8601
 from .. import nodes
+from xml.etree.ElementTree import TreeBuilder
 from collections import defaultdict
 
 
-class Capture:
+class Capture(TreeBuilder):
     def __init__(self, tag, attrs):
-        self.__capture = [tag, attrs, []]
-        self.__context = [self.__capture[-1]]
-        self.__capturing = 1
-
-    def close(self):
-        return self.__capture
-
-    def data(self, data):
-        # create the smallest number of text nodes possible
-        if self.__context[-1] and isinstance(self.__context[-1][-1], str):
-            self.__context[-1][-1] = self.__context[-1][-1] + data
-        else:
-            self.__context[-1].append(data)
-
-    def start(self, tag, attrs):
-        element = [tag, attrs, []]
-        self.__context[-1].append(element)
-        self.__context.append(element[-1])
-        self.__capturing = self.__capturing + 1
+        TreeBuilder.__init__(self)
+        self.__root = self.start(tag, attrs)
 
     def end(self, tag):
         """Returns True unless this tag marks the end of the captured
         section"""
-        self.__capturing = self.__capturing - 1
-        del self.__context[-1]
-        return self.__capturing
+        element = TreeBuilder.end(self, tag)
+        return element is not self.__root
 
 
 def normalize_capture(data):
     queue = [(data, False)]
     while queue:
-        (tag, attrs, content), preserve = queue.pop(0)
+        element, preserve = queue.pop(0)
         #
-        preserve = preserve or attrs.get("xml:space") == "preserve"
+        preserve = preserve or element.get("xml:space") == "preserve"
         #
         if not preserve:
             # remove leading blank:
-            if (content and isinstance(content[0], str)
-                   and not content[0].strip()):
-                del content[0]
+            if element.text and not element.text.strip():
+                element.text = None
             # remove trailing blank
-            if content:
-                citem = content[-1]
-                if isinstance(citem, str) and not citem.strip():
-                    del content[-1]
+            if len(element):
+                text = element[-1].tail
+                if text is not None and not text.strip():
+                    element[-1].tail = None
             # now, if all remaining strings are blank,
             # assume this is element-only:
-            for citem in content:
-                if isinstance(citem, str):
-                    if citem.strip():
-                        preserve = 1
+            preserve = (element.text is not None and element.text.strip() and
+                any(child.tail is not None and child.tail.strip()
+                for child in element))
         if not preserve:
             # All internal strings are blank; remove them.
-            for ci in reversed(range(len(content))):
-                if isinstance(content[ci], str):
-                    del content[ci]
+            for child in element:
+                child.tail = None
         for citem in content:
             if not isinstance(citem, str):
                 queue.append((citem, preserve))
