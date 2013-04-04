@@ -8,71 +8,38 @@ from .. import nodes
 from collections import defaultdict
 
 
-class CaptureError(Exception):
-    def __init__(self, msg):
-        self.msg = msg
-        Exception.__init__(self)
-
-
-class CaptureMixin:
-    def __init__(self):
-        pass
-
-    def unknown_starttag(self, tag, attrs):
-        if self.__capturing:
-            self.capture_starttag(tag, attrs)
-
-    def unknown_endtag(self, tag):
-        if self.__capturing:
-            self.capture_endtag(tag)
-
-    __capturing = 0
-
-    def capturing(self):
-        return bool(self.__capturing)
-
-    def capture_bgn(self, tag, attrs):
-        if self.__capturing:
-            raise CaptureError("capturing already in progress")
+class Capture:
+    def __init__(self, tag, attrs):
         self.__capture = [tag, attrs, []]
         self.__context = [self.__capture[-1]]
         self.__capturing = 1
 
-    def capture_end(self, normalize=False):
-        if self.__capturing:
-            raise CaptureError("capturing not complete")
-        if normalize:
-            return normalize_capture(self.__capture)
-        else:
-            return self.__capture
+    def close(self):
+        return self.__capture
 
-    def capture_data(self, data):
-        if not self.__capturing:
-            raise CaptureError("capturing not active")
+    def data(self, data):
         # create the smallest number of text nodes possible
         if self.__context[-1] and isinstance(self.__context[-1][-1], str):
             self.__context[-1][-1] = self.__context[-1][-1] + data
         else:
             self.__context[-1].append(data)
 
-    def capture_starttag(self, tag, attrs):
-        if not self.__capturing:
-            raise CaptureError("capturing not active")
+    def start(self, tag, attrs):
         element = [tag, attrs, []]
         self.__context[-1].append(element)
         self.__context.append(element[-1])
         self.__capturing = self.__capturing + 1
 
-    def capture_endtag(self, tag):
-        if not self.__capturing:
-            raise CaptureError("capturing not active")
+    def end(self, tag):
+        """Returns True unless this tag marks the end of the captured
+        section"""
         self.__capturing = self.__capturing - 1
         del self.__context[-1]
         return self.__capturing
 
 
-def normalize_capture(data, preserve=False):
-    queue = [(data, preserve)]
+def normalize_capture(data):
+    queue = [(data, False)]
     while queue:
         (tag, attrs, content), preserve = queue.pop(0)
         #
@@ -102,7 +69,6 @@ def normalize_capture(data, preserve=False):
         for citem in content:
             if not isinstance(citem, str):
                 queue.append((citem, preserve))
-    return data
 
 
 class DocumentHandler:
@@ -182,7 +148,8 @@ class DocumentHandler:
     def start_metadata(self, attrs):
         self.capture_bgn("metadata", attrs)
     def end_metadata(self):
-        metadata = self.capture_end(normalize=1)
+        metadata = self.capture_end()
+        normalize_capture(metadata)
         if not metadata[-1]:
             return
         info = self.__node.info()
@@ -261,23 +228,40 @@ class DocumentHandler:
     def save_end(self):
         s, self.__buffer = self.__buffer, ""
         return " ".join(s.split())
+    
+    __capture = None
+    def capture_bgn(self, tag, attrs):
+        self.__capture = Capture(tag, attrs)
+    
+    def capture_end(self):
+        capture = self.__capture.close()
+        self.__capture = None
+        return capture
 
     def handle_data(self, data):
-        if self.capturing():
-            self.capture_data(data)
+        if self.__capture:
+            self.__capture.data(data)
         else:
             self.__buffer = self.__buffer + data
 
     def handle_starttag(self, tag, method, attrs):
-        if self.capturing():
-            self.capture_starttag(tag, attrs)
+        if self.__capture:
+            self.__capture.start(tag, attrs)
             return
         method(attrs)
 
     def handle_endtag(self, tag, method):
-        if self.capturing() and self.capture_endtag(tag):
+        if self.__capture and self.__capture.end(tag):
             return
         method()
+
+    def unknown_starttag(self, tag, attrs):
+        if self.__capture:
+            self.__capture.start(tag, attrs)
+
+    def unknown_endtag(self, tag):
+        if self.__capture:
+            self.__capture.end(tag)
 
 
 try:
@@ -286,8 +270,7 @@ except ImportError:
     from xmllib import XMLParser
 
 
-class Parser(DocumentHandler, CaptureMixin, XMLParser):
+class Parser(DocumentHandler, XMLParser):
     def __init__(self, filename):
         DocumentHandler.__init__(self, filename)
-        CaptureMixin.__init__(self)
         XMLParser.__init__(self)
