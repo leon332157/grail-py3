@@ -52,6 +52,8 @@ def normalize_capture(data):
 
 
 class DocumentHandler:
+    """Implements Element Tree's parser TreeBuilder() target interface"""
+    
     __folder = None
     __store_node = None
 
@@ -62,13 +64,12 @@ class DocumentHandler:
         self.__missing_ids = defaultdict(list)
         self.__root = self.new_folder()
 
-    def get_root(self):
+    def close(self):
         return self.__root
 
     def start_xbel(self, attrs):
-        root = self.get_root()
-        self.__store_date(root, attrs, "added", "set_add_date")
-        self.handle_id(root, attrs)
+        self.__store_date(self.__root, attrs, "added", "set_add_date")
+        self.handle_id(self.__root, attrs)
     def end_xbel(self):
         pass
 
@@ -218,39 +219,37 @@ class DocumentHandler:
         self.__capture = None
         return capture
 
-    def handle_data(self, data):
+    def data(self, data):
         if self.__capture:
             self.__capture.data(data)
         else:
             self.__buffer = self.__buffer + data
 
-    def handle_starttag(self, tag, method, attrs):
+    def start(self, tag, attrs):
         if self.__capture:
             self.__capture.start(tag, attrs)
             return
-        method(attrs)
+        methodname = "start_" + tag
+        if hasattr(self, methodname):
+            getattr(self, methodname)(attrs)
 
-    def handle_endtag(self, tag, method):
+    def end(self, tag):
         if self.__capture and self.__capture.end(tag):
             return
-        method()
-
-    def unknown_starttag(self, tag, attrs):
-        if self.__capture:
-            self.__capture.start(tag, attrs)
-
-    def unknown_endtag(self, tag):
-        if self.__capture:
-            self.__capture.end(tag)
+        methodname = "end_" + tag
+        if hasattr(self, methodname):
+            getattr(self, methodname)()
 
 
-try:
-    from xml.parsers.xmllib import XMLParser
-except ImportError:
-    from xmllib import XMLParser
+from xml.etree.ElementTree import XMLParser
 
 
-class Parser(DocumentHandler, XMLParser):
+class Parser(XMLParser):
     def __init__(self, filename):
-        DocumentHandler.__init__(self, filename)
-        XMLParser.__init__(self)
+        XMLParser.__init__(self, target=DocumentHandler(filename))
+    
+    def close(self):
+        self.__root = XMLParser.close(self)
+    
+    def get_root(self):
+        return self.__root
