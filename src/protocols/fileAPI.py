@@ -120,12 +120,8 @@ class file_access:
         import re
         from urllib import quote
         from urlparse import urljoin
-        def escape(s):
-            if not s: return ""
-            s = s.replace('&', '&amp;') # Must be done first
-            s = s.replace('<', '&lt;')
-            s = s.replace('>', '&gt;')
-            return s
+        from html import escape
+        from xml.sax import saxutils
         prog = re.compile(self.listing_pattern)
         data = self.listing_header % {'url': self.url,
                                       'pathname': escape(self.pathname)}
@@ -133,20 +129,20 @@ class file_access:
             if line[-1] == '\n': line = line[:-1]
             m = prog.match(line)
             if not m:
-                line = escape(line) + '\n'
+                line = saxutils.escape(line) + '\n'
                 data = data + line
                 continue
             mode, middle, name = m.group(1, 2, 3)
             rawname = name
-            [mode, middle, name] = map(escape, [mode, middle, name])
+            [mode, middle, name] = map(saxutils.escape, [mode, middle, name])
             href = urljoin(self.url, quote(rawname))
             if len(mode) == 10 and mode[0] == 'd' or name[-1:] == '/':
                 if name[-1:] != '/':
                     name = name + '/'
                 if href[-1:] != '/':
                     href = href + '/'
-            line = '%s%s<A HREF="%s">%s</A>\n' % (
-                mode, middle, escape(href), name)
+            line = '%s%s<A HREF=%s>%s</A>\n' % (
+                mode, middle, saxutils.quoteattr(href), name)
             data = data + line
         data = data + self.listing_trailer
         self.fp = StringIO.StringIO(data)

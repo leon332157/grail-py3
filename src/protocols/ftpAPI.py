@@ -21,6 +21,8 @@ from urllib import unquote, splithost, splitport, splituser, \
 from urlparse import urljoin
 import grailutil
 import socket
+import html
+from xml.sax import saxutils
 
 app = grailutil.get_grailapp()          # app.guess_type(url)
 
@@ -206,25 +208,26 @@ class ftp_access:
                 print "*getl*", repr(line)
             if line is None:
                 data = data + self.listing_header % {'url':
-                                                     self.escape(self.url)}
+                                                     html.escape(self.url)}
                 continue
             if line[-1:] == '\r': line = line[:-1]
             m = prog.match(line) 
             if not m:
-                line = self.escape(line) + '\n'
+                line = saxutils.escape(line) + '\n'
                 data = data + line
                 continue
             mode, middle, name, symlink = m.group(1, 2, 3, 5)
             rawname = name
-            [mode, middle, name] = map(self.escape, [mode, middle, name])
+            [mode, middle, name] = map(saxutils.escape, [mode, middle, name])
             href = urljoin(self.url, quote(rawname))
             if len(mode) == 10 and mode[0] == 'd' or name[-1:] == '/':
                 if name[-1:] != '/':
                     name = name + '/'
                 if href[-1:] != '/':
                     href = href + '/'
-            line = '%s%s<A HREF="%s">%s</A>%s\n' % (
-                mode, middle, self.escape(href), name, (symlink or ''))
+            line = '%s%s<A HREF=%s>%s</A>%s\n' % (
+                mode, middle, saxutils.quoteattr(href), name,
+                (symlink or ''))
             data = data + line
         if self.lines == [None]:
             data = data + self.listing_trailer
@@ -234,13 +237,6 @@ class ftp_access:
     listing_header = LISTING_HEADER
     listing_trailer = LISTING_TRAILER
     listing_pattern = LISTING_PATTERN
-
-    def escape(self, s):
-        if not s: return ""
-        s = s.replace('&', '&amp;') # Must be done first
-        s = s.replace('<', '&lt;')
-        s = s.replace('>', '&gt;')
-        return s
 
     def fileno(self):
         return self.sock.fileno()

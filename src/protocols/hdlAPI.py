@@ -30,6 +30,7 @@ import urllib
 import hdllib
 from . import nullAPI
 import grailutil
+from xml.sax import saxutils
 
 
 # We are currently only concerned with URL type handles.
@@ -85,14 +86,6 @@ def parse_handle(hdl):
                 value = urllib.unquote(value)
             d[key.lower()] = value
     return urllib.unquote(hdl), d
-
-def escape(s):
-    """Replace special characters '&', '<' and '>' by SGML entities."""
-    # From cgi.py
-    s = s.replace("&", "&amp;")    # Must be done first!
-    s = s.replace("<", "&lt;")
-    s = s.replace(">", "&gt;")
-    return s
 
 class hdl_access(nullAPI.null_access):
 
@@ -181,8 +174,8 @@ class hdl_access(nullAPI.null_access):
         data = HTML_HEADER % self._msgattrs
         for type, uri in self._items:
             if type == hdllib.HDL_TYPE_URL:
-                uri = escape(uri)
-                text = '<LI><A HREF="%s">%s</A>\n' % (uri, uri)
+                text = '<LI><A HREF=%s>%s</A>\n' % (
+                    saxutils.quoteattr(uri), saxutils.escape(uri))
             else:
                 if type in (hdllib.HDL_TYPE_SERVICE_POINTER,
                             hdllib.HDL_TYPE_SERVICE_HANDLE):

@@ -33,10 +33,5 @@ class IndexWidget:
         data = self.w.get()
         url = self.query_url or self.context.get_baseurl()
         url = url.split('?', 1)[0]
-        url = url + '?' + quote(data)
+        url = url + '?' + urllib.parse.quote_plus(data)
         self.context.load(url)
-
-def quote(s):
-    w = s.split(' ')
-    w = map(urllib.quote, w)
-    return '+'.join(w)

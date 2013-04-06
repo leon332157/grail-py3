@@ -3,6 +3,7 @@
 __version__ = '$Revision: 1.12 $'
 
 import bookmarks
+from xml.sax import saxutils
 from .. import iso8601
 from .. import walker
 import sys
@@ -55,7 +56,7 @@ class Writer(walker.TreeWalker):
             self.write('<xbel%s>\n' % attrs)
             if title:
                 self.write("%s  <title>%s</title>\n"
-                           % (tab, bookmarks._prepstring(title)))
+                           % (tab, saxutils.escape(title)))
             if info:
                 self.__write_info(info)
             if desc:
@@ -72,7 +73,7 @@ class Writer(walker.TreeWalker):
             self.write(tab + '<folder%s>\n' % attrs)
             if title:
                 self.write("%s  <title>%s</title>\n"
-                           % (tab, bookmarks._prepstring(title)))
+                           % (tab, saxutils.escape(title)))
             if info:
                 self.__write_info(info)
             if desc:
@@ -112,8 +113,8 @@ class Writer(walker.TreeWalker):
         idref = node.id() or ''
         if idref:
             idref = 'id="%s"' % idref
-        title = bookmarks._prepstring(node.title() or '')
-        uri = bookmarks._prepstring(node.uri() or '')
+        title = saxutils.escape(node.title() or '')
+        uri = saxutils.quoteattr(node.uri() or '')
         attrs = filter(None, (idref, added, modified, visited))
         #
         tab = "  " * self._depth
@@ -123,7 +124,7 @@ class Writer(walker.TreeWalker):
             attrs = " " + attrs
         else:
             sep = " "
-        self.write('%s<bookmark%s%shref="%s">\n' % (tab, attrs, sep, uri))
+        self.write('%s<bookmark%s%shref=%s>\n' % (tab, attrs, sep, uri))
         if title:
             self.write("%s  <title>%s</title>\n" % (tab, title))
         if node.info():
@@ -136,7 +137,7 @@ class Writer(walker.TreeWalker):
 
     def __write_description(self, desc, tab):
         w = 60 - len(tab)
-        desc = bookmarks._prepstring(desc)
+        desc = saxutils.escape(desc)
         if len(desc) > w:
             desc = _wrap_lines(desc, 70 - len(tab), indentation=len(tab) + 4)
             desc = "%s\n%s    " % (desc, tab)
@@ -162,7 +163,7 @@ class Writer(walker.TreeWalker):
         append(tag)
         space = " "
         for attr, value in attrs.items():
-            append('%s%s="%s"' % (space, attr, bookmarks._prepstring(value)))
+            append('%s%s=%s' % (space, attr, saxutils.quoteattr(value)))
             space = "\n%s%s" % (tab, " "*len(tag))
         if not content:
             append("/>")
@@ -178,7 +179,7 @@ class Writer(walker.TreeWalker):
             append(">")
             for citem in content:
                 if isinstance(citem, str):
-                    append(bookmarks._prepstring(citem))
+                    append(saxutils.escape(citem))
                 else:
                     # element
                     self.__dump_xml(citem, L, None)

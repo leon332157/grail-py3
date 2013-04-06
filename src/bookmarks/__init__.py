@@ -46,19 +46,6 @@ class BookmarkWriter:
         return self._filetype
 
 
-__tr_map = {}
-for c in map(chr, range(128)):
-    __tr_map[c] = c
-for i in range(128, 256):
-    __tr_map[chr(i)] = "&#%d;" % i
-for c in "<>&'\"":
-    __tr_map[c] = "&#%d;" % ord(c)
-
-def _prepstring(s):
-    """Return HTML/XML safe copy of a string."""
-    return ''.join(map(__tr_map.get, s))
-
-
 
 pubid_fmt = "+//IDN python.org//DTD XML Bookmark Exchange Language %s//EN"
 sysid_fmt = "http://www.python.org/topics/xml/dtds/xbel-%s.dtd"

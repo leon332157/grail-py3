@@ -3,7 +3,7 @@
 __version__ = '$Revision: 1.4 $'
 
 
-import bookmarks                        # parent
+from xml.sax import saxutils
 from .. import walker
 import sys
 
@@ -49,7 +49,7 @@ class Writer(walker.TreeWalker):
             last_visit = ' LAST_VISIT="%d"' % last_visit
         print '%s<DT><A HREF="%s"%s%s%s%s>%s</A>' % \
               (self.__tab(), node.uri(), alias, add_date,
-               last_visit, modified, bookmarks._prepstring(node.title()))
+               last_visit, modified, saxutils.escape(node.title()))
         self.__write_description(node.description())
 
     def start_Alias(self, node):
@@ -106,7 +106,7 @@ class Writer(walker.TreeWalker):
     def __write_description(self, desc):
         if not desc: return
         # write the description, sans leading and trailing whitespace
-        print '<DD>%s' % bookmarks._prepstring(desc).strip()
+        print '<DD>%s' % saxutils.escape(desc).strip()
 
     __header = """\
 <!DOCTYPE NETSCAPE-Bookmark-file-1>

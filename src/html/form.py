@@ -212,16 +212,13 @@ class FormInfo:
                 ###do this
                 if isinstance(v, tuple):
                     if None in v: continue
-                    s = '&' + quote(i.name + '.x') + '=' + quote(str(v[0]))
-                    data = data + s
-                    s = '&' + quote(i.name + '.y') + '=' + quote(str(v[1]))
-                    data = data + s
+                    data = data + '&' + urllib.parse.urlencode((
+                        (i.name + '.x', v[0]),
+                        (i.name + '.y', v[1]),
+                    ))
                 else:
-                    if type(v) != type([]):
-                        v = [v]
-                    for vv in v:
-                        s = '&' + quote(i.name) + '=' + quote(vv)
-                        data = data + s
+                    data = data + '&' + urllib.parse.urlencode(
+                        ((i.name, v),), doseq=True)
         return data[1:]
 
     def make_form_data(self):
@@ -753,11 +750,6 @@ class Textarea:
         if value[-1] == '\n': value = value[:-1]
         self.w.delete("1.0", END)
         self.w.insert(END, value)
-
-def quote(s):
-    w = s.split(' ')
-    w = map(urllib.quote, w)
-    return '+'.join(w)
 
 
 class InputImageWindow(Frame):
