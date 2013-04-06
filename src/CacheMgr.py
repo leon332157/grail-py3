@@ -590,46 +590,47 @@ class DiskCache:
             log.close()
             return
 
-        for line in log.readlines():
-            try:
-                kind = line[0:1]        
-                if kind == '2': # use update
-                    key = line[2:-1]
-                    self.use_order.remove(key)
-                    self.use_order.append(key)
-                elif kind == '1':           # delete
-                    key = line[2:-1]
-                    if self.items.has_key(key):
-                        self.size = self.size - self.items[key].size
-                        del self.items[key]
-                        del self.manager.items[key]
+        with log:
+            for line in log.readlines():
+                try:
+                    kind = line[0:1]        
+                    if kind == '2': # use update
+                        key = line[2:-1]
                         self.use_order.remove(key)
-                        assert key not in self.use_order
-                elif kind == '0': # add
-                    newentry = DiskCacheEntry(self)
-                    newentry.parse(line[2:-1])
-                    if not self.items.has_key(newentry.key):
-                        self.use_order.append(newentry.key)
-                    newentry.cache = self
-                    self.items[newentry.key] = newentry
-                    self.manager.items[newentry.key] = newentry
-                    self.size = self.size + newentry.size
-                elif kind == '3': # version (hopefully first)
-                    ver = line[2:-1]
-                    if ver not in self.log_ok_versions:
-                   ### clear out anything we might have read
-                   ### and bail. this is an old log file.
-                        if len(self.use_order) > 0:
-                            self.use_order = []
-                            for key in self.items.keys():
-                                del self.items[key]
-                                del self.manager.items[key]
-                                self.size = 0
-                            return
-                    assert ver in self.log_ok_versions
-            except IndexError:
-                # ignore this line
-                pass
+                        self.use_order.append(key)
+                    elif kind == '1':           # delete
+                        key = line[2:-1]
+                        if self.items.has_key(key):
+                            self.size = self.size - self.items[key].size
+                            del self.items[key]
+                            del self.manager.items[key]
+                            self.use_order.remove(key)
+                            assert key not in self.use_order
+                    elif kind == '0': # add
+                        newentry = DiskCacheEntry(self)
+                        newentry.parse(line[2:-1])
+                        if not self.items.has_key(newentry.key):
+                            self.use_order.append(newentry.key)
+                        newentry.cache = self
+                        self.items[newentry.key] = newentry
+                        self.manager.items[newentry.key] = newentry
+                        self.size = self.size + newentry.size
+                    elif kind == '3': # version (hopefully first)
+                        ver = line[2:-1]
+                        if ver not in self.log_ok_versions:
+                       ### clear out anything we might have read
+                       ### and bail. this is an old log file.
+                            if len(self.use_order) > 0:
+                                self.use_order = []
+                                for key in self.items.keys():
+                                    del self.items[key]
+                                    del self.manager.items[key]
+                                    self.size = 0
+                                return
+                        assert ver in self.log_ok_versions
+                except IndexError:
+                    # ignore this line
+                    pass
 
     def _checkpoint_metadata(self):
         """Checkpoint the transaction log.

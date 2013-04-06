@@ -48,24 +48,24 @@ def splitline(line):
 
 def read_unicode_mapping(filename, dict=None):
     result = dict or {}
-    fp = open(filename)
-    while 1:
-        line = fp.readline()
-        if not line:
-            break
-        line = string.strip(line)
-        if line and line[0] == "#":
-            continue
-        parts = string.splitfields(line, "#")
-        if len(parts) != 3:
-            continue
-        parts[0:1] = string.split(parts[0])
-        if len(parts) != 4:
-            continue
-        unicode = string.atoi(parts[0], 16)
-        adobe_name = string.strip(parts[3])
-        if unicode < 256 and not result.has_key(adobe_name):
-            result[adobe_name] = unicode
+    with open(filename) as fp:
+        while 1:
+            line = fp.readline()
+            if not line:
+                break
+            line = string.strip(line)
+            if line and line[0] == "#":
+                continue
+            parts = string.splitfields(line, "#")
+            if len(parts) != 3:
+                continue
+            parts[0:1] = string.split(parts[0])
+            if len(parts) != 4:
+                continue
+            unicode = string.atoi(parts[0], 16)
+            adobe_name = string.strip(parts[3])
+            if unicode < 256 and not result.has_key(adobe_name):
+                result[adobe_name] = unicode
     return result
 
 LATIN_1_MAPPING = {

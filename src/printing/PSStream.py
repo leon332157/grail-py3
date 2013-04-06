@@ -29,7 +29,8 @@ def get_systemheader():
     fn = utils.which(
         "header.ps", list(options.user_data_dirs) + [SYSTEM_DATA_DIR])
     if fn:
-        return open(fn).read()
+        with open(fn) as file:
+            return file.read()
     return "%%\%%  System header %s not found!\n%%" % fn
 
 
@@ -47,7 +48,8 @@ def get_userheader():
         filename = utils.which(fn, options.user_data_dirs)
         if filename:
             templates.append(USERHEADER_INFO % fn)
-            templates.append(open(filename).read())
+            with open(filename) as file:
+                templates.append(file.read())
     return string.join(templates, '\n')
 
 

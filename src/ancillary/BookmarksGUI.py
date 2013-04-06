@@ -248,10 +248,10 @@ class BookmarksIO:
                 parser = bookmarks.get_parser_class(CACHE_FORMAT)(cachename)
                 reader = bookmarks.BookmarkReader(parser)
                 try:
-                    fp = open(cachename, "rb")
-                    root = reader.read_file(fp)
+                    with open(cachename, "rb") as fp:
+                        root = reader.read_file(fp)
                 except (IOError, bookmarks.BookmarkFormatError):
-                    fp.close()
+                    pass
                 else:
                     # get format of the original file:
                     fp = open(filename)

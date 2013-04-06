@@ -183,87 +183,89 @@ def run(app):
         outfp = sys.stdout
     else:
         outfp = open(outfile, 'w')
-    if outfile != '-':
-        print 'Outputting PostScript to', outfile
+    with outfp:
+        if outfile != '-':
+            print 'Outputting PostScript to', outfile
 
-    if infile:
-        context = URIContext(infile)
-        if not url:
-            url = infile
-    else:
-        # BOGOSITY: reading from stdin
-        context = URIContext("file:/index.html")
-    context.app = app
-    paper = printing_paper.PaperInfo(settings.papersize,
-                                     margins=settings.margins,
-                                     rotation=settings.orientation)
-    if tabstop and tabstop > 0:
-        paper.TabStop = tabstop
-    if utils.get_debugging('paper'):
-        paper.dump()
-    # create the writer & parser
-    fontsize, leading = settings.get_fontsize()
-    w = PSWriter.PSWriter(outfp, title or None, url or '',
-                          #varifamily='Palatino',
-                          paper=paper, settings=settings)
-    ctype = "text/html"
-    mod = app.find_type_extension("printing.filetypes", ctype)
-    if not mod.parse:
-        sys.exit("cannot load printing support for " + ctype)
-    p = mod.parse(w, settings, context)
-    if multi:
-        if args[1:]:
-            xform = explicit_multi_transform(args[1:])
+        if infile:
+            context = URIContext(infile)
+            if not url:
+                url = infile
         else:
-            xform = multi_transform(context, levels)
-        p.add_anchor_transform(xform)
-        p.feed(infp.read())
-        docs = [(context.get_url(), 1, w.ps.get_title(), 1)]
-        #
-        # This relies on xform.get_subdocs() returning the list used
-        # internally to accumulate subdocs.  Make a copy to go only one
-        # level deep.
-        #
-        for url in xform.get_subdocs():
-            xform.set_basedoc(url)
-            while p.sgml_parser.get_depth():
-                p.sgml_parser.lex_endtag(p.sgml_parser.get_stack()[0])
-            try:
-                infp, fn = open_source(url)
-            except IOError, err:
-                if verbose and outfp is not sys.stdout:
-                    print "Error opening subdocument", url
-                    print "   ", err
+            # BOGOSITY: reading from stdin
+            context = URIContext("file:/index.html")
+        context.app = app
+        paper = printing_paper.PaperInfo(settings.papersize,
+                                         margins=settings.margins,
+                                         rotation=settings.orientation)
+        if tabstop and tabstop > 0:
+            paper.TabStop = tabstop
+        if utils.get_debugging('paper'):
+            paper.dump()
+        # create the writer & parser
+        fontsize, leading = settings.get_fontsize()
+        w = PSWriter.PSWriter(outfp, title or None, url or '',
+                              #varifamily='Palatino',
+                              paper=paper, settings=settings)
+        ctype = "text/html"
+        mod = app.find_type_extension("printing.filetypes", ctype)
+        if not mod.parse:
+            sys.exit("cannot load printing support for " + ctype)
+        p = mod.parse(w, settings, context)
+        if multi:
+            if args[1:]:
+                xform = explicit_multi_transform(args[1:])
             else:
-                new_ctype = get_ctype(app, url, infp)
-                if new_ctype != ctype:
-                    if verbose:
-                        print "skipping", url
-                        print "  wrong content type:", new_ctype
-                    continue
-                if verbose and outfp is not sys.stdout:
-                    print "Subdocument", url
-                w.ps.close_line()
-                if MULTI_DO_PAGE_BREAK: # must be true for now, not sure why
-                    pageend = w.ps.push_page_end()
-                    context.set_url(url)
-                    w.ps.set_pageno(w.ps.get_pageno() + 1)
-                    w.ps.set_url(url)
-                    w.ps.push_page_start(pageend)
+                xform = multi_transform(context, levels)
+            p.add_anchor_transform(xform)
+            p.feed(infp.read())
+            docs = [(context.get_url(), 1, w.ps.get_title(), 1)]
+            #
+            # This relies on xform.get_subdocs() returning the list used
+            # internally to accumulate subdocs.  Make a copy to go only one
+            # level deep.
+            #
+            for url in xform.get_subdocs():
+                xform.set_basedoc(url)
+                while p.sgml_parser.get_depth():
+                    p.sgml_parser.lex_endtag(p.sgml_parser.get_stack()[0])
+                try:
+                    infp, fn = open_source(url)
+                except IOError, err:
+                    if verbose and outfp is not sys.stdout:
+                        print "Error opening subdocument", url
+                        print "   ", err
                 else:
-                    context.set_url(url)
-                    w.ps.set_url(url)
-                pageno = w.ps.get_pageno()
-                p.feed(infp.read())
-                infp.close()
-                title = w.ps.get_title()
-                p._set_docinfo(url, pageno, title)
-                spec = (url, pageno, title, xform.get_level(url))
-                docs.append(spec)
-    else:
-        p.feed(infp.read())
-    p.close()
-    w.close()
+                    new_ctype = get_ctype(app, url, infp)
+                    if new_ctype != ctype:
+                        if verbose:
+                            print "skipping", url
+                            print "  wrong content type:", new_ctype
+                        continue
+                    if verbose and outfp is not sys.stdout:
+                        print "Subdocument", url
+                    w.ps.close_line()
+                    # must be true for now, not sure why
+                    if MULTI_DO_PAGE_BREAK:
+                        pageend = w.ps.push_page_end()
+                        context.set_url(url)
+                        w.ps.set_pageno(w.ps.get_pageno() + 1)
+                        w.ps.set_url(url)
+                        w.ps.push_page_start(pageend)
+                    else:
+                        context.set_url(url)
+                        w.ps.set_url(url)
+                    pageno = w.ps.get_pageno()
+                    p.feed(infp.read())
+                    infp.close()
+                    title = w.ps.get_title()
+                    p._set_docinfo(url, pageno, title)
+                    spec = (url, pageno, title, xform.get_level(url))
+                    docs.append(spec)
+        else:
+            p.feed(infp.read())
+        p.close()
+        w.close()
 
 
 

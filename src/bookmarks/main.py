@@ -201,10 +201,10 @@ def report_info(root):
 
 def guess_bookmarks_type(filename, verbose=0):
     if filename == "-":
-        fp = sys.stdin
+        type = bookmarks.get_format(sys.stdin)
     else:
-        fp = open(filename)
-    type = bookmarks.get_format(fp)
+        with open(filename) as fp:
+            type = bookmarks.get_format(fp)
     if verbose:
         print "%s: %s" % (filename, type)
     else:

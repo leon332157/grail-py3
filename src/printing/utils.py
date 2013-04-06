@@ -85,7 +85,8 @@ def image_loader(url):
         imgfp = urlopen(url)
     except IOError, msg:
         return None
-    return imgfp.read()
+    with imgfp:
+        return imgfp.read()
 
 
 def which(filename, path=()):

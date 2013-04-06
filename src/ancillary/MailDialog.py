@@ -148,7 +148,8 @@ class MailDialog:
         fn = os.path.join(grailutil.getgraildir(), "mail-signature")
         if os.path.isfile(fn):
             index = self.text.index('end - 1 char')
-            self.text.insert(END, open(fn).read())
+            with open(fn) as file:
+                self.text.insert(END, file.read())
             self.text.mark_set('insert', index)
 
     def load_user_headers(self):
