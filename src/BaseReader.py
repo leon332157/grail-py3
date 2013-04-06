@@ -97,7 +97,7 @@ class BaseReader:
             status = status + " (cached)"
         if self.api and not self.shorturl:
             tuple = urlparse.urlparse(self.api._url_)
-            path = tuple[2]
+            path = tuple.path
             i = path.rfind('/', 0, -1)
             if i >= 0:
                 path = path[i+1:]

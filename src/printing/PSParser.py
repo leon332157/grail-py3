@@ -598,7 +598,7 @@ class PrintingHTMLParser(HTMLParser):
 
 def disallow_data_scheme(href, attrs):
     """Cancel data: URLs."""
-    if urlparse.urlparse(href)[0] == 'data':
+    if urlparse.urlparse(href).scheme == 'data':
         href = None
     return href
 

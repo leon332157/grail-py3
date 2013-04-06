@@ -2,8 +2,6 @@ import grailutil
 import ht_time
 import os
 
-from stat import ST_MTIME, ST_SIZE
-
 
 META, DATA, DONE = 'META', 'DATA', 'DONE'
 
@@ -50,8 +48,8 @@ class file_access:
         except (IOError, os.error, AttributeError):
             pass
         else:
-            self.headers['content-length'] = str(stats[ST_SIZE])
-            self.headers['last-modified'] = ht_time.unparse(stats[ST_MTIME])
+            self.headers['content-length'] = str(stats.st_size)
+            self.headers['last-modified'] = ht_time.unparse(stats.st_mtime)
         if os.path.isdir(self.pathname):
             self.format_directory()
         else:

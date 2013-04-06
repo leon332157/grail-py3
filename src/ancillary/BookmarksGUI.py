@@ -4,7 +4,6 @@ import bookmarks.nodes
 
 import FileDialog
 import os
-import stat
 import string
 import sys
 import time
@@ -235,11 +234,11 @@ class BookmarksIO:
                 with open(cachename) as fp:
                     fp.readline()           # skip header
                     fp.readline()           # skip embedded file name
-                    mtime = int(fp.readline())
+                    mtime = float(fp.readline())
             except IOError:
                 pass
             else:
-                req_mtime = os.stat(filename)[stat.ST_MTIME]
+                req_mtime = os.stat(filename).st_mtime
             if mtime == req_mtime:
                 # ok, the mtimes match; load the cache
                 parser = bookmarks.get_parser_class(CACHE_FORMAT)(cachename)
@@ -282,7 +281,7 @@ class BookmarksIO:
         if format != CACHE_FORMAT:
             cachename = (os.path.splitext(filename)[0]
                          + bookmarks.get_default_extension(CACHE_FORMAT))
-            mtime = os.stat(filename)[stat.ST_MTIME]
+            mtime = os.stat(filename).st_mtime
             writer = bookmarks.get_writer_class(CACHE_FORMAT)(root)
             # these only work on the cache format:
             writer.set_original_filename(filename)

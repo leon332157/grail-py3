@@ -172,7 +172,7 @@ def __find_julian(year, julian):
     jday = None
     while jday != julian:
         t = time.mktime((year, month, day, 0, 0, 0, 0, 0, 0))
-        jday = time.gmtime(t)[-2]
+        jday = time.gmtime(t).tm_yday
         diff = abs(jday - julian)
         if jday > julian:
             if diff < day:

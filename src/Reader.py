@@ -457,12 +457,12 @@ class Reader(BaseReader):
         # relative URL.  if there's no scheme or netloc in the
         # returned tuple, try joining the URL with the previous URL
         # and retry parsing it.
-        if not (tuple[0] and tuple[1]):
+        if not (tuple.scheme and tuple.netloc):
             url = urlparse.urljoin(self.url, url)
             tuple = urlparse.urlparse(url)
         self.url = url
 
-        self.fragment = tuple[-1]
+        self.fragment = tuple.fragment
         tuple = tuple[:-1] + ("",)
         if self.user_passwd:
             netloc = tuple[1]

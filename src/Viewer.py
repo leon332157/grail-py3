@@ -941,7 +941,7 @@ class ViewerMenu:
         url = self.__context.get_baseurl(url)
         if len(url) < 5 or url[:5].lower() != "data:":
             from posixpath import basename
-            self.__image_file = basename(urlparse(url)[2])
+            self.__image_file = basename(urlparse(url).path)
         else:
             self.__image_file = ""
 

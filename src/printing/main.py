@@ -336,7 +336,7 @@ def open_source(infile):
         # use posixpath since URLs are expected to be POSIX-like; don't risk
         # that we're running on NT and os.path.basename() doesn't "do the
         # right thing."
-        fn = posixpath.basename(urlparse.urlparse(infile)[2])
+        fn = posixpath.basename(urlparse.urlparse(infile).path)
     else:
         fn = posixpath.basename(infile)
     return infp, fn

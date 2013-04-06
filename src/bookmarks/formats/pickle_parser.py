@@ -33,7 +33,7 @@ class Parser:
             orig_fname, data = self.__split_line(data)
             orig_mtime, data = self.__split_line(data)
             self.original_filename = orig_fname.strip()
-            self.original_mtime = int(orig_mtime)
+            self.original_mtime = float(orig_mtime)
         self.__root = pickle.loads(data)
         if self.version != "4":
             # re-write as new version:
