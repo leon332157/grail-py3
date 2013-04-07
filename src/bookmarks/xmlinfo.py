@@ -40,7 +40,7 @@ class Record:
             self.system_id = systemId
 
 
-FieldLabels = Record(
+FieldLabels = dict(
     system_id="System ID",
     public_id="Public ID",
     doc_elem="Document Element",
@@ -50,10 +50,7 @@ FieldLabels = Record(
     )
 
 
-FieldNames = dir(Record)
-for _name in FieldNames[:]:
-    if _name[:2] == "__":
-        FieldNames.remove(_name)
+FieldNames = sorted(FieldLabels.keys())
 
 
 def get_xml_info(buffer):
@@ -66,10 +63,10 @@ def get_xml_info(buffer):
 
 
 def dump_info(values):
-    width = max(map(len, FieldLabels.__dict__.values()))
+    width = max(map(len, FieldLabels.values()))
     for field_name in FieldNames:
         value = getattr(values, field_name)
-        label = getattr(FieldLabels, field_name)
+        label = FieldLabels[field_name]
         if value is not None:
             print "%*s: %s" % (width, label, value)
 
