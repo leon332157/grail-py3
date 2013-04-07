@@ -4,14 +4,14 @@ class parse_audio_basic:
 
     def __init__(self, viewer, reload=False):
         viewer.send_flowing_data("(Listen to the audio!)\n")
-        import audiodev
-        self.device = p = audiodev.AudioDev()
-        p.setoutrate(8000)
-        p.setsampwidth(0)               # Special: U-LAW
-        p.setnchannels(1)
+        import ossaudiodev
+        self.device = p = ossaudiodev.open("w")
+        
+        # strict=True not accepted as keyword argument
+        p.setparameters(ossaudiodev.AFMT_MU_LAW, 1, 8000, True)
 
     def feed(self, buf):
-        self.device.writeframes(buf)
+        self.device.write(bytes(buf))  # Requires an immutable buffer
 
     def close(self):
-        self.device.wait()
+        self.device.close()
