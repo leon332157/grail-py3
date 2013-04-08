@@ -95,3 +95,14 @@ def pref_or_getenv(name, group='proxies', type_name='string',
     app.prefs.Set(group, name, component)
     return component
 
+
+def close_subprocess(proc):
+    """Close a process opened by the "subprocess" module
+    
+    Ignores broken pipe error when flushing and closing the process's input
+    pipe and the stream is buffered."""
+    try:
+        proc.stdin.close()
+    except BrokenPipeError:
+        pass
+    return proc.wait()

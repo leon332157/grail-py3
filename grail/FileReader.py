@@ -1,6 +1,7 @@
 """File reader class -- read from a URL to a file in the background."""
 
 from .BaseReader import BaseReader
+from .grailutil import close_subprocess
 
 class FileReader(BaseReader):
 
@@ -53,9 +54,21 @@ class TempFileReader(FileReader):
 
     def __init__(self, context, api):
         self.pipeline = None
+        self.proc = None
         import tempfile
-        filename = tempfile.mktemp()
-        FileReader.__init__(self, context, api, filename)
+        import os
+        tf = tempfile.NamedTemporaryFile("wb", delete=False)
+        try:
+            FileReader.__init__(self, context, api, tf.name)
+            self.tf = tf
+        except:
+            tf.close()
+            os.unlink(tf.name)
+            raise
+    
+    def stop(self):
+        self.tf.close()
+        return FileReader.stop(self)
 
     def set_pipeline(self, pipeline):
         """New method to select the filter pipeline."""
@@ -63,13 +76,19 @@ class TempFileReader(FileReader):
 
     def getfilename(self):
         """New method to return the file name chosen."""
-        return self.filename
+        return self.tf.name
 
     def open_file(self):
         if not self.pipeline:
-            return FileReader.open_file(self)
+            return self.tf
         else:
-            import os
-            if not hasattr(os, 'popen'):
-                raise EnvironmentError("pipelines not supported")
-            return os.popen(self.pipeline + ">" + self.filename, "wb")
+            import subprocess
+            self.proc = subprocess.Popen(self.pipeline, shell=True,
+                stdin=subprocess.PIPE, stdout=self.tf, bufsize=-1)
+            self.tf.close()
+            return self.proc.stdin
+    
+    def handle_eof(self):
+        if self.proc:
+            close_subprocess(self.proc)
+        return FileReader.handle_eof(self)
