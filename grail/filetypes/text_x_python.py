@@ -136,8 +136,12 @@ class parse_text_x_python:
     # should be marked with (or None).
     #
     __keywords = {
-        # real keywords
+        'False': ('python:special', None),
+        'None': ('python:special', None),
+        'True': ('python:special', None),
         'and': ('python:operator', None),
+        'as': ('python:statement', None),
+        'assert': ('python:statement', None),
         'break': ('python:control', None),
         'class': ('python:define', 'python:class'),
         'continue': ('python:control', None),
@@ -155,16 +159,16 @@ class parse_text_x_python:
         'in': ('python:operator', None),
         'is': ('python:operator', None),
         'lambda': ('python:operator', None),
+        'nonlocal': ('python:statement', None),
         'not': ('python:operator', None),
         'or': ('python:operator', None),
         'pass': ('python:statement', None),
-        'print': ('python:statement', None),
         'raise': ('python:control', None),
         'return': ('python:control', None),
         'try': ('python:control', None),
         'while': ('python:control', None),
-        # others I'd like made special
-        'None': ('python:special', None),
+        'with': ('python:control', None),
+        'yield': ('python:control', None),
         }
     import types
     for name in dir(types):
