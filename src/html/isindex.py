@@ -3,8 +3,6 @@ from grailutil import extract_keyword
 import string
 import urllib
 
-ATTRIBUTES_AS_KEYWORDS = 1
-
 def do_isindex(parser, attrs):
     prompt = extract_keyword(
         'prompt', attrs,

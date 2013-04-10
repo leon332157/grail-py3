@@ -6,9 +6,6 @@ This supports the <FN ID=name> form of the footnote tag.
 __version__ = '$Revision: 2.9 $'
 
 
-ATTRIBUTES_AS_KEYWORDS = 1
-
-
 def writer_start_fn(parser, attrs):
     if 'p' in parser.stack:
         parser.lex_endtag('p')

@@ -10,11 +10,8 @@ def start_frameset(parser, attrs):
     tags = parser.object_aware_tags
     if 'frameset' not in tags:
         tags.append('noframes')
-    rows = ""
-    cols = ""
-    for name, value in attrs:
-        if name == "rows": rows = value
-        if name == "cols": cols = value
+    rows = attrs.get("rows", "")
+    cols = attrs.get("cols", "")
     if not hasattr(parser, "frameset"):
         parent = None
     else:
@@ -29,26 +26,19 @@ def end_frameset(parser):
 def do_frame(parser, attrs):
     if not (hasattr(parser, "frameset") and parser.frameset):
         return
-    src = ""
-    fname = ""
-    marginwidth = ""
-    marginheight = ""
-    scrolling = "auto"
-    noresize = ""
-    for name, value in attrs:
-        if name == "src": src = value
-        if name == "name": fname = value
-        if name == "marginheight": marginheight = value
-        if name == "marginwidth": marginwidth = value
-        if name == "scrolling": scrolling = value
-        if name == "noresize": noresize = value
+    src = attrs.get("src", "")
+    name = attrs.get("name", "")
+    marginwidth = attrs.get("marginwidth", "")
+    marginheight = attrs.get("marginheight", "")
+    scrolling = attrs.get("scrolling", "auto")
+    noresize = attrs.get("noresize", "")
     scrolling = string.lower(scrolling)
     # Make scrolling either "auto" or a boolean
     if scrolling in ("a", "au", "aut", "auto"):
         scrolling = "auto"
     else:
         scrolling = scrolling in ("yes", "on", "true", "1")
-    parser.frameset.add_frame(src, fname, marginwidth, marginheight,
+    parser.frameset.add_frame(src, name, marginwidth, marginheight,
                               scrolling, noresize)
 
 def start_noframes(parser, attrs):

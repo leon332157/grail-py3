@@ -1,8 +1,6 @@
 """HTML 3.0 <TABLE> tag support."""
 __version__ = '$Id: table.py,v 2.62 1999/03/05 21:55:36 fdrake Exp $'
 
-ATTRIBUTES_AS_KEYWORDS = 1
-
 import string
 import re
 import grailutil
@@ -818,7 +816,7 @@ class Col(ColumnarElem):
 class HeadFootBody(AttrElem):
     """A generic THEAD, TFOOT, or TBODY."""
 
-    def __init__(self, attrs=[]):
+    def __init__(self, attrs={}):
         AttrElem.__init__(self, attrs)
         self.trows = []
         self.lastrow = None
@@ -1123,7 +1121,7 @@ class Cell(ContainedText):
             except TclError: self.Abgcolor = None       # color name error
         self.layout = table.layout
         # dig out useful attributes
-        self.cellpadding = table.attribute('cellpadding', 0)
+        self.cellpadding = table.attribute('cellpadding', default=0)
         self.rowspan = self.attribute('rowspan', default=1)
         self.colspan = self.attribute('colspan', default=1)
         if self.cellpadding < 0:

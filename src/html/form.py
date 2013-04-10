@@ -1,7 +1,5 @@
 """HTML <FORM> tag support (and <INPUT>, etc.)."""
 
-ATTRIBUTES_AS_KEYWORDS = 1
-
 import string
 from Tkinter import *
 import urllib
