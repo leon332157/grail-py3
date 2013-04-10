@@ -32,8 +32,8 @@ if sys.argv[1:]:
             new_sorts.append(args.pop(0))
         if new_sorts:
             sorts = tuple(new_sorts)
-        for i in range(len(args)):
-            try: args[i] = int(args[i])
+        for i, arg in enumerate(args):
+            try: args[i] = int(arg)
             except: pass
         restrictions = filter(None, args)
 

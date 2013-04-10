@@ -106,8 +106,8 @@ class SGMLParser(SGMLLexer.SGMLLexer):
         else:
             # no such context
             return None
-        for i in range(len(context)):
-            context[i] = context[i][0].tag
+        for i, entry in enumerate(context):
+            context[i] = entry[0].tag
         return context
 
     def has_context(self, gi):
@@ -170,8 +170,8 @@ class SGMLParser(SGMLLexer.SGMLLexer):
         stack = self.stack
         if tag:
             found = None
-            for i in range(len(stack)):
-                if stack[i][0].tag == tag:
+            for i, entry in enumerate(stack):
+                if entry[0].tag == tag:
                     found = i
             if found is None:
                 self.__handler.report_unbalanced(tag)

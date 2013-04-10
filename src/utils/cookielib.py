@@ -126,8 +126,7 @@ class CookieDB:
             self.__cookies[cookie.domain] = [cookie]
             self.__num_cookies = self.__num_cookies + 1
         else:
-            for i in range(len(cookies)):
-                c = cookies[i]
+            for i, c in enumerate(cookies):
                 if c.name == cookie.name and c.path == cookie.path:
                     cookies[i] = cookie
                     break

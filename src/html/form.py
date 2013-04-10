@@ -647,8 +647,7 @@ class Select:
 
     def reset_list(self):
         self.w.select_clear(0, END)
-        for i in range(len(self.options)):
-            v, s, t = self.options[i]
+        for i, (v, s, t) in enumerate(self.options):
             if s:
                 self.w.select_set(i)
 
@@ -669,8 +668,7 @@ class Select:
 
     def get_list(self):
         list = []
-        for i in range(len(self.options)):
-            v, s, t = self.options[i]
+        for i, (v, s, t) in enumerate(self.options):
             if self.w.select_includes(i):
                 list.append(v or t)
         return list
@@ -689,8 +687,7 @@ class Select:
 
     def set_list(self, value):
         self.w.select_clear(0, END)
-        for i in range(len(self.options)):
-            v, s, t = self.options[i]
+        for i, (v, s, t) in enumerate(self.options):
             if (v or t) in value:
                 self.w.select_set(i)
 

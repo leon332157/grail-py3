@@ -365,8 +365,8 @@ class Viewer(formatter.AbstractWriter):
 
     def unregister_interest(self, interests, func):
         found = -1
-        for i in range(len(interests)):
-            if interests[i] == func:
+        for i, v in enumerate(interests):
+            if v == func:
                 found = i
         if found < 0:
             print "resize interest", func, "not registered"

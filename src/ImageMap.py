@@ -47,8 +47,7 @@ class Shape:
 
         counter = 0
         p1 = self.coords[0]
-        for i in range(1,len(self.coords)):
-            p2 = self.coords[i]
+        for i, p2 in enumerate(self.coords[1:], 1):
             if y > min(p1[1], p2[1]):
                 if y <= max(p1[1], p2[1]):
                     if x <= max (p1[0], p2[0]):
