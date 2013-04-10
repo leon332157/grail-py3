@@ -4,7 +4,6 @@ __version__ = "$Revision: 1.1 $"
 # $Source: /cvsroot/grail/grail/src/sgml/SGMLHandler.py,v $
 
 import SGMLLexer
-import SGMLParser
 
 
 class ElementHandler:
@@ -21,7 +20,7 @@ class ElementHandler:
         elif hasattr(klass, "do_" + tag):
             do = getattr(klass, "do_" + tag)
         if start or do:
-            return SGMLParser.TagInfo(tag, start, do, end)
+            return TagInfo(tag, start, do, end)
 
     def handle_endtag(self, tag, method):
         """
@@ -150,3 +149,34 @@ class CompositeHandler:
 
     def handle_endtag(self, tag, method):
         self.__tagmap[tag].handle_endtag(tag, method)
+
+
+from types import StringType
+
+class TagInfo:
+    as_dict = 1
+    container = 1
+
+    def __init__(self, tag, start, do, end):
+        self.tag = tag
+        if start:
+            self.start = start
+            self.end = end or _nullfunc
+        else:
+            self.container = 0
+            self.start = do or _nullfunc
+            self.end = _nullfunc
+
+    def __cmp__(self, other):
+        # why is this needed???
+        if type(other) is StringType:
+            return cmp(self.tag, other)
+        if type(other) is type(self):
+            return cmp(self.tag, other.tag)
+        raise TypeError, "incomparable values"
+
+
+def _nullfunc(*args, **kw):
+    # Dummy end tag handler for situations where no handler is provided
+    # or allowed.
+    pass

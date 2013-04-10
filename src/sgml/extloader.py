@@ -6,7 +6,7 @@ __version__ = '$Revision: 1.4 $'
 import string
 
 import grailbase.extloader
-import SGMLParser
+import SGMLHandler
 
 
 class TagExtensionLoader(grailbase.extloader.ExtensionLoader):
@@ -47,7 +47,7 @@ class TagExtensionLoader(grailbase.extloader.ExtensionLoader):
             handlers[tag] = (start, do, end)
         for tag, (start, do, end) in handlers.items():
             if start or do:
-                taginfo = SGMLParser.TagInfo(tag, start, do, end)
+                taginfo = SGMLHandler.TagInfo(tag, start, do, end)
                 self.add_extension(tag, taginfo)
 
 

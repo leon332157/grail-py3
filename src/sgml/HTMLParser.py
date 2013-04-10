@@ -102,7 +102,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
     def close(self):
         self.sgml_parser.close()
         self.sgml_parser = None
-        self.handle_data = SGMLParser._nullfunc
+        self.handle_data = SGMLHandler._nullfunc
 
     # ------ Methods used internally; some may be overridden
 
@@ -1147,9 +1147,9 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             self.sgml_parser.lex_endtag('p')
 
 
-class DummyTagInfo(SGMLParser.TagInfo):
+class DummyTagInfo(SGMLHandler.TagInfo):
     def __init__(self, tag):
-        SGMLParser.TagInfo.__init__(self, tag, None, None, None)
+        SGMLHandler.TagInfo.__init__(self, tag, None, None, None)
 
 
 class NewlineScratcher:

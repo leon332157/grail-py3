@@ -36,7 +36,7 @@ class SGMLParser(SGMLLexer.SGMLLexer):
         while self.stack:
             self.lex_endtag(self.stack[-1][0].tag)
         self.__taginfo = {}
-        self.set_data_handler(_nullfunc)
+        self.set_data_handler(SGMLHandler._nullfunc)
         SGMLLexer.SGMLLexer.cleanup(self)
         self.__handler = None
 
@@ -211,34 +211,3 @@ class SGMLParser(SGMLLexer.SGMLLexer):
 
     def lex_entityref(self, name, terminator):
         self.__handler.handle_entityref(name, terminator)
-
-
-from types import StringType
-
-class TagInfo:
-    as_dict = 1
-    container = 1
-
-    def __init__(self, tag, start, do, end):
-        self.tag = tag
-        if start:
-            self.start = start
-            self.end = end or _nullfunc
-        else:
-            self.container = 0
-            self.start = do or _nullfunc
-            self.end = _nullfunc
-
-    def __cmp__(self, other):
-        # why is this needed???
-        if type(other) is StringType:
-            return cmp(self.tag, other)
-        if type(other) is type(self):
-            return cmp(self.tag, other.tag)
-        raise TypeError, "incomparable values"
-
-
-def _nullfunc(*args, **kw):
-    # Dummy end tag handler for situations where no handler is provided
-    # or allowed.
-    pass
