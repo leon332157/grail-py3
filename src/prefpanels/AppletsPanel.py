@@ -13,7 +13,7 @@ Enter applet group names (host names, or domain names with leading dot):"
 
 class AppletsPanel(PrefsPanels.Framework):
 
-    HELP_URL = "help/prefs/applets.html"        # Relative to grail-home-page
+    HELP_URL = "help/prefs/applets.html"        # Relative to grail-help-root
 
     def CreateLayout(self, name, frame):
         # Create GUI elements in order of preference (the ones created

@@ -12,7 +12,7 @@ class GeneralPanel(PrefsPanels.Framework):
     """Miscellaneous preferences relating to the browser, startup, and
     other behaviors that don't fit in specific preferences categories."""
 
-    # Class var for help button - relative to grail-home-page.
+    # Class var for help button - relative to grail-help-root.
     HELP_URL = "help/prefs/general.html"
 
     def CreateLayout(self, name, frame):

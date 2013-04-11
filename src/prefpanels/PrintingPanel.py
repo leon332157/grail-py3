@@ -35,7 +35,7 @@ class StringSetVar(Tkinter.StringVar):
 class PrintingPanel(PrefsPanels.Framework):
     """Printing preferences."""
 
-    # Class var for help button - relative to grail-home-page.
+    # Class var for help button - relative to grail-help-root.
     HELP_URL = "help/prefs/printing.html"
 
     def CreateLayout(self, name, frame):

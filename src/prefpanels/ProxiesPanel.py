@@ -11,7 +11,7 @@ import grailutil
 class ProxiesPanel(PrefsPanels.Framework):
     """Network preferences related to redirection of URL streams."""
     
-    # Class var for help button - relative to grail-home-page.
+    # Class var for help button - relative to grail-help-root.
     HELP_URL = "help/prefs/proxies.html"
 
     def CreateLayout(self, name, frame):

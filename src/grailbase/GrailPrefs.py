@@ -307,7 +307,7 @@ def test():
     exercise("prefs = AllPreferences()", env, "Suck in the prefs")
 
     # Getting values:
-    exercise("origin = prefs.Get('landmarks', 'grail-home-page')", env,
+    exercise("origin = prefs.Get('landmarks', 'grail-help-root')", env,
              "Get an existing plain component.")
     exercise("origheight = prefs.GetInt('browser', 'default-height')", env,
              "Get an existing int component.")
@@ -317,7 +317,7 @@ def test():
     # A few value errors:
     exercise("x = prefs.Get('grail', 'Never:no:way:no:how!')", env,
              "Ref to a non-existent component.", KeyError)
-    exercise("x = prefs.GetInt('landmarks', 'grail-home-page')", env,
+    exercise("x = prefs.GetInt('landmarks', 'grail-help-root')", env,
              "Typed ref to incorrect type.", TypeError)
     exercise("x = prefs.GetBoolean('browser', 'default-height')", env,
              "Invalid Boolean (which has complicated err handling) typed ref.",
