@@ -9,6 +9,7 @@ __version__ = "$Revision: 2.33 $"
 import os
 import sys
 from . import utils
+import unittest
 
 from . import parseprefs
 from collections import defaultdict
@@ -267,54 +268,48 @@ def typify(val, type_name):
                        % (type_name, ['string', 'int', 'float', 'Boolean']))
     
 
-def test():
-    """Exercise preferences mechanisms.
+class Test(unittest.TestCase):
+    def runTest(self):
+        """Exercise preferences mechanisms.
 
-    Note that this test alters and then restores a setting in the user's
-    prefs  file."""
-    sys.path.insert(0, "../utils")
-    from testing import exercise
-    
-    env = sys.modules[__name__].__dict__
+        Note that this test alters and then restores a setting in the user's
+        prefs  file."""
+        
+        # Reading the db:
+        prefs = AllPreferences()  # Suck in the prefs
 
-    # Reading the db:
-    exercise("prefs = AllPreferences()", env, "Suck in the prefs")
+        # Getting values:
+        # Get an existing plain component.
+        origin = prefs.Get("landmarks", "grail-help-root")
+        # Get an existing int component.
+        origheight = prefs.GetInt("browser", "default-height")
+        # Get an existing Boolean component.
+        self.assertTrue(prefs.GetBoolean("browser", "load-images"))
+        # A few value errors:
+        with self.assertRaises(KeyError):
+            # Ref to a non-existent component.
+            x = prefs.Get("grail", "Never:no:way:no:how!")
+        with self.assertRaises(TypeError):
+            # Typed ref to incorrect type.
+            x = prefs.GetInt("landmarks", "grail-help-root")
+        with self.assertRaises(TypeError):
+            # Invalid Boolean (which has complicated err handling) typed ref.
+            x = prefs.GetBoolean("browser", "default-height")
+        # Editing:
+        # Set a simple value
+        prefs.Set("browser", "default-height", origheight + 1)
+        # Get the new value.
+        self.assertEqual(origheight + 1,
+            prefs.GetInt("browser", "default-height"))
+        prefs.Save()
 
-    # Getting values:
-    exercise("origin = prefs.Get('landmarks', 'grail-help-root')", env,
-             "Get an existing plain component.")
-    exercise("origheight = prefs.GetInt('browser', 'default-height')", env,
-             "Get an existing int component.")
-    exercise("if prefs.GetBoolean('browser', 'load-images') != 1:"
-             + "raise SystemError, 'browser:load-images Boolean should be 1'",
-             env, "Get an existing Boolean component.")
-    # A few value errors:
-    exercise("x = prefs.Get('grail', 'Never:no:way:no:how!')", env,
-             "Ref to a non-existent component.", KeyError)
-    exercise("x = prefs.GetInt('landmarks', 'grail-help-root')", env,
-             "Typed ref to incorrect type.", TypeError)
-    exercise("x = prefs.GetBoolean('browser', 'default-height')", env,
-             "Invalid Boolean (which has complicated err handling) typed ref.",
-             TypeError)
-    # Editing:
-    exercise("prefs.Set('browser', 'default-height', origheight + 1)", env,
-             "Set a simple value")
-    exercise("if prefs.GetInt('browser', 'default-height') != origheight + 1:"
-             + "raise SystemError, 'Set of new height failed'", env,
-             "Get the new value.")
-    prefs.Save()
+        # Restore simple value
+        prefs.Set('browser', 'default-height', origheight)
 
-    exercise("prefs.Set('browser', 'default-height', origheight)", env,
-             "Restore simple value")
-
-    # Saving - should just rewrite existing user prefs file, sans comments
-    # and any lines duplicating system prefs.
-    exercise("prefs.Save()", env, "Save as it was originally.")
-    
-
-    print "GrailPrefs tests passed."
-    return prefs
+        # Saving - should just rewrite existing user prefs file, sans comments
+        # and any lines duplicating system prefs.
+        prefs.Save()  # Save as it was originally.
 
 if __name__ == "__main__":
 
-    prefs = test()
+    unittest.main()
