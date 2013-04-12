@@ -538,10 +538,10 @@ class PrefsPanelsMenu:
         else:
             self.panels = {}
             self.app.prefs_panels = self
-            for (nm, clnm, modnm, moddir) in self.discover_panel_modules():
+            for (nm, modnm, moddir) in self.discover_panel_modules():
                 if not self.panels.has_key(nm):
-                    # [module name, class name, directory, instance]
-                    self.panels[nm] = [modnm, clnm, moddir, None]
+                    # [module name, directory, instance]
+                    self.panels[nm] = [modnm, moddir, None]
         raworder = self.app.prefs.Get('preferences', 'panel-order')
         order = string.split(raworder)
         keys = self.panels.keys()
@@ -564,9 +564,9 @@ class PrefsPanelsMenu:
         Return list of tuples describing found panel modules: (name,
         modname, moddir).
 
-        Candidate modules must end in 'prefs.py' or 'prefs.pyc'.  The name
-        is formed by extracting the prefix and substituting spaces for
-        underscores (with leading and trailing spaces stripped).
+        Candidate module names must end in 'Panel'.  The name is formed by
+        extracting the prefix and substituting spaces for underscores (with
+        leading and trailing spaces stripped).
 
         For multiple panels with the same name, the last one found is used."""
         got = {}
@@ -581,16 +581,15 @@ class PrefsPanelsMenu:
                 match = modname_matcher.match(entry)
                 if match:
                     name = match.group(1).replace("_", " ")
-                    class_name = match.group(1).replace("_", "")
-                    got[name] = ((string.strip(name), class_name, entry, dir))
+                    got[name] = ((string.strip(name), entry, dir))
         return got.values()
                     
     def do_post(self, name):
         """Expose the panel, creating it if necessary."""
-        entry = self.panels[name]
-        if entry[3]:
+        _, _, inst = self.panels[name]
+        if inst:
             # Already loaded:
-            entry[3].post(self.browser)
+            inst.post(self.browser)
         else:
             # Needs to be loaded:
             if self.load(name):
@@ -601,17 +600,18 @@ class PrefsPanelsMenu:
 
         Returns 1 if successful, None otherwise."""
         entry = self.panels[name]
+        modnm, dir, _ = entry
         try:
-            sys.path.insert(0, entry[2])
+            sys.path.insert(0, dir)
             try:
-                modnm = entry[0][:string.index(entry[0], '.')]
+                modnm = modnm[:string.index(modnm, '.')]
                 mod = __import__(modnm)
-                if reload:
+                if reloading:
                     reload(mod)
                 class_name = (name.replace(" ", "")
                               + PANEL_CLASS_NAME_SUFFIX)
                 # Instantiate it:
-                entry[3] = getattr(mod, class_name)(name, self.app)
+                entry[2] = getattr(mod, class_name)(name, self.app)
                 return 1
             except:
                 # Whatever may go wrong in import or panel post
@@ -620,7 +620,7 @@ class PrefsPanelsMenu:
                 return None
         finally:
             try:
-                sys.path.remove(entry[1])
+                sys.path.remove(dir)
             except ValueError:
                 pass
 
