@@ -16,6 +16,8 @@ from Tkinter import *
 from . import tktools
 from . import grailutil
 import re
+import pkgutil
+from imp import reload
 
 
 PANEL_CLASS_NAME_SUFFIX = 'Panel'
@@ -29,7 +31,7 @@ panels_dirs = [os.path.join(grail_root, 'prefpanels'),
                os.path.join(grail_root, 'prefspanels'),
                os.path.expanduser("~/.grail/prefspanels")]
 
-modname_matcher = re.compile(r'^(.*)Panel.py[c]?$')
+modname_matcher = re.compile(r'^(.*)Panel$')
 
 # Framework
 
@@ -532,10 +534,10 @@ class PrefsPanelsMenu:
         else:
             self.panels = {}
             self.app.prefs_panels = self
-            for (nm, modnm, moddir) in self.discover_panel_modules():
+            for (nm, modnm, finder) in self.discover_panel_modules():
                 if nm not in self.panels:
-                    # [module name, directory, instance]
-                    self.panels[nm] = [modnm, moddir, None]
+                    # [module name, finder, instance]
+                    self.panels[nm] = [modnm, finder, None]
         raworder = self.app.prefs.Get('preferences', 'panel-order')
         order = raworder.split()
         keys = self.panels.keys()
@@ -556,7 +558,7 @@ class PrefsPanelsMenu:
         """Identify candidate panels.
 
         Return list of tuples describing found panel modules: (name,
-        modname, moddir).
+        modname, finder).
 
         Candidate module names must end in 'Panel'.  The name is formed by
         extracting the prefix and substituting spaces for underscores (with
@@ -564,18 +566,11 @@ class PrefsPanelsMenu:
 
         For multiple panels with the same name, the last one found is used."""
         got = {}
-        for dir in panels_dirs:
-            entries = []
-            try:
-                entries = os.listdir(dir)
-            except os.error:
-                # Optional dir not there.
-                pass
-            for entry in entries:
-                match = modname_matcher.match(entry)
-                if match:
-                    name = match.group(1).replace("_", " ")
-                    got[name] = ((name.strip(), entry, dir))
+        for finder, modname, _ in pkgutil.iter_modules(panels_dirs):
+            match = modname_matcher.match(modname)
+            if match:
+                name = match.group(1).replace("_", " ")
+                got[name] = ((name.strip(), modname, finder))
         return got.values()
                     
     def do_post(self, name):
@@ -594,11 +589,9 @@ class PrefsPanelsMenu:
 
         Returns True if successful, False otherwise."""
         entry = self.panels[name]
-        modnm, dir, _ = entry
+        modnm, finder, _ = entry
         try:
-            sys.path.insert(0, dir)
-            modnm = modnm.split('.', 1)[0]
-            mod = __import__(modnm)
+            mod = finder.find_module(modnm).load_module(modnm)
             if reloading:
                 reload(mod)
             class_name = (name.replace(" ", "") + PANEL_CLASS_NAME_SUFFIX)
