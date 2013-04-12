@@ -494,7 +494,7 @@ class Reader(BaseReader):
                 self.stop()
                 # Always do a "GET" on the redirected URL
                 self.method = 'GET'
-                self.data = ""
+                self.data = b""
                 self.restart(url)
                 return False
 

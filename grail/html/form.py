@@ -186,7 +186,6 @@ class FormInfo:
             print("*** Form with unknown enctype:", repr(enctype))
             print("Default to urlencoded")
             enctype = URLENCODED
-        data = ''
         if enctype == URLENCODED:
             data = self.make_urlencoded_data()
         elif enctype == FORM_DATA and method == 'post':
@@ -199,6 +198,7 @@ class FormInfo:
                 enctype = ctype
             params = {"Content-type": enctype}
             if enctype == URLENCODED:
+                data = data.encode()
                 params["Content-length"] = format(len(data))
             self.viewer.context.post(self.action, data, params, self.target)
 
@@ -216,18 +216,18 @@ class FormInfo:
                     data = data + '&' + urllib.parse.urlencode((
                         (i.name + '.x', v[0]),
                         (i.name + '.y', v[1]),
-                    ))
+                    ), encoding="latin-1")
                 else:
                     data = data + '&' + urllib.parse.urlencode(
-                        ((i.name, v),), doseq=True)
+                        ((i.name, v),), encoding="latin-1", doseq=True)
         return data[1:]
 
     def make_form_data(self):
-        import StringIO
-        import MimeWriter
-        fp = StringIO.StringIO()
-        mw = MimeWriter.MimeWriter(fp)
-        mw.startmultipartbody("form-data")
+        import io
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.nonmultipart import MIMENonMultipart
+        import email.generator
+        msg = MIMEMultipart("form-data")
         for i in self.inputs:
             if not i.name: continue
             v = i.get()
@@ -235,44 +235,42 @@ class FormInfo:
             if isinstance(v, tuple):
                 # XXX Argh!  Have to do it twice, for each coordinate
                 if None in v: continue
-                disp = 'form-data; name="{}.x"'.format(i.name)
-                sw = mw.nextpart()
-                sw.addheader("Content-Disposition", disp)
-                body = sw.startbody("text/plain")
-                body.write(str(v[0]))
-                disp = 'form-data; name="{}.y"'.format(i.name)
-                sw = mw.nextpart()
-                sw.addheader("Content-Disposition", disp)
-                body = sw.startbody("text/plain")
-                body.write(str(v[1]))
+                for sym, vv in zip("xy", v):
+                    part = MIMENonMultipart("text", "plain")
+                    part.add_header("Content-Disposition", "form-data",
+                        name="{}.{}".format(i.name, sym))
+                    part.set_payload(str(vv))
+                    msg.attach(part)
                 continue
-            disp = 'form-data; name="{}"'.format(i.name)
+            part = MIMENonMultipart("text", "plain")
+            part.add_header("Content-Disposition", "form-data", name=i.name)
             data = None
             if type(i).__name__ == 'InputFile':
                 try:
-                    with open(v) as f:
+                    with open(v, "rb") as f:
                         data = f.read()
                 except IOError as msg:
                     print("IOError:", msg)
                 else:
-                    disp = disp + '; filename="{}"'.format(v)
-            sw = mw.nextpart()
-            sw.addheader("Content-Disposition", disp)
+                    part.set_param("filename", v,
+                        header="Content-Disposition")
             if data is not None:
-                sw.addheader("Content-Length", str(len(data)))
-                body = sw.startbody("text/plain")
-                body.write(data)
+                part.add_header("Content-Length", str(len(data)))
+                part.set_payload(str(data, "ascii", "surrogateescape"))
             else:
-                body = sw.startbody("text/plain")
-                body.write(v)
-        mw.lastpart()
-        fp.seek(0)
-        import rfc822
-        headers = rfc822.Message(fp)
-        ctype = headers['content-type']
+                part.set_payload(v)
+            msg.attach(part)
+        msg.as_string()  # Force multipart boundary string to be generated
+        ctype = msg['content-type']
         ctype = ' '.join(ctype.split()) # Get rid of newlines
-        data = fp.read()
-        return ctype, data
+        fp = io.BytesIO()
+        gen = email.generator.BytesGenerator(fp, mangle_from_=False)
+        boundary = msg.get_boundary().encode("ascii")
+        for part in msg.get_payload():
+            fp.writelines((b"\r\n--", boundary, b"\r\n"))
+            gen.flatten(part)
+        fp.writelines((b"\r\n--", boundary, b"--\r\n"))
+        return ctype, fp.getvalue()
 
     def reset_command(self):
         for i in self.inputs:

@@ -53,7 +53,7 @@ class DocumentInfoDialog:
                       self.add_text_field("Query fields", query, "query")
         postdata = context.get_postdata()
         if postdata:
-            postdata = postdata.translate(FIELD_BREAKER)
+            postdata = postdata.decode().translate(FIELD_BREAKER)
             stretch = stretch or \
                       self.add_text_field("POST fields", postdata, "postdata")
         #

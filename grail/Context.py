@@ -537,7 +537,7 @@ class Context(URIContext):
             self.source = None
         return context or self
 
-    def post(self, url, data="", params={}, target=""):
+    def post(self, url, data=b"", params={}, target=""):
         # Post form data
         context = self.find_window_target(target)
         if context is not self:
