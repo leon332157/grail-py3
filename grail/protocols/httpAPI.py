@@ -141,7 +141,8 @@ class http_access:
         user_passwd, sep, host = host.partition('@')
         if sep:
             import base64
-            auth = base64.encodestring(user_passwd).strip()
+            user_passwd = user_passwd.encode("latin-1")
+            auth = base64.encodebytes(user_passwd).strip().decode("ascii")
         else:
             host = user_passwd
             auth = None

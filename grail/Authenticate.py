@@ -101,7 +101,9 @@ class AuthenticationManager:
         pass
 
     def basic_cookie(self, str):
-        return "Basic " + base64.encodestring(str).strip()
+        str = str.encode("latin-1")
+        str = base64.encodebytes(str).strip().decode("ascii")
+        return "Basic " + str
 
     def basic_user_dialog(self, data):
         scheme, netloc, path, \
