@@ -119,59 +119,53 @@ HP_HASH_RESPONSE = 3
 
 
 # Handle data types
-data_types = """
-HDL_TYPE_NULL = -1                      # Indicates End of Type List
-HDL_TYPE_URL = 0                        # Uniform Resource Locator
-HDL_TYPE_EMAIL_RFC822 = 1               # E-Mail Address Defined In RFC822
-HDL_TYPE_EMAIL_X400 = 2                 # E-Mail Address Defined By CCITT
-HDL_TYPE_X500_DN = 3                    # Distinguished Name Defined By CCITT
-HDL_TYPE_INET_HOST = 4                  # Internet host name or IP address
-HDL_TYPE_INET_SERVICE = 5               # "hostname":"tcp"|"udp":"port"
-HDL_TYPE_CONTACT_INFO = 6               # Same Syntax As EMAIL_RFC822
-HDL_TYPE_DLS = 7                        # To be determined
-HDL_TYPE_CACHE_PERIOD = 8               # Default caching period timeout
-HDL_TYPE_HANDLE_TYPE = 9                # For Handle Service internal use
-HDL_TYPE_SERVICE_HANDLE = 10            # Handle containing hash table info
-HDL_TYPE_SERVICE_POINTER  = 11          # Service's hash table info
-HDL_TYPE_URN = 12                       # Universal Resource Name
-HDL_TYPE_TRANS_ID = 13                  # Transaction Identifier
-# Non-registered types are > 65535
-"""
+data_map = dict(
+    HDL_TYPE_NULL=-1,                      # Indicates End of Type List
+    HDL_TYPE_URL=0,                        # Uniform Resource Locator
+    HDL_TYPE_EMAIL_RFC822=1,               # E-Mail Address Defined In RFC822
+    HDL_TYPE_EMAIL_X400=2,                 # E-Mail Address Defined By CCITT
+    HDL_TYPE_X500_DN=3,                    # Distinguished Name Defined By CCITT
+    HDL_TYPE_INET_HOST=4,                  # Internet host name or IP address
+    HDL_TYPE_INET_SERVICE=5,               # "hostname":"tcp"|"udp":"port"
+    HDL_TYPE_CONTACT_INFO=6,               # Same Syntax As EMAIL_RFC822
+    HDL_TYPE_DLS=7,                        # To be determined
+    HDL_TYPE_CACHE_PERIOD=8,               # Default caching period timeout
+    HDL_TYPE_HANDLE_TYPE=9,                # For Handle Service internal use
+    HDL_TYPE_SERVICE_HANDLE=10,            # Handle containing hash table info
+    HDL_TYPE_SERVICE_POINTER =11,          # Service's hash table info
+    HDL_TYPE_URN=12,                       # Universal Resource Name
+    HDL_TYPE_TRANS_ID=13,                  # Transaction Identifier
+    # Non-registered types are > 65535
+)
 
-# Put data_types mappings into the module's dictionary, and into the
-# data_map dictionary.  Also create an inverted mapping.
-exec data_types
-data_map = {}
-exec data_types in data_map
+# Put data_map mappings into the module's dictionary.  Also create an
+# inverted mapping.
+globals().update(data_map)
 for key, value in data_map.items():
-    if key != '__builtins__':
-        data_map[value] = key
+    data_map[value] = key
 
 
 
 # Handle protocol error codes
-error_codes = """
-HP_OK = 0
-HP_PARSING_FAILURE = 1
-HP_VERSION_MISMATCH = 2
-HP_ACCESS_TEMPORARILY_DENIED = 3
-HP_NOT_RESPONSIBLE_FOR_HANDLE = 4
-HP_HANDLE_NOT_FOUND = 5
-HP_FORWARDED = 6
-HP_INTERNAL_ERROR = 7
-HP_TYPES_NOT_FOUND = 8
-HP_REQUEST_TIMED_OUT = 9
-HP_HANDLE_DOES_NOT_EXIST = 10
-HP_FORWARD_ERROR = 11
-"""
+error_map = dict(
+    HP_OK=0,
+    HP_PARSING_FAILURE=1,
+    HP_VERSION_MISMATCH=2,
+    HP_ACCESS_TEMPORARILY_DENIED=3,
+    HP_NOT_RESPONSIBLE_FOR_HANDLE=4,
+    HP_HANDLE_NOT_FOUND=5,
+    HP_FORWARDED=6,
+    HP_INTERNAL_ERROR=7,
+    HP_TYPES_NOT_FOUND=8,
+    HP_REQUEST_TIMED_OUT=9,
+    HP_HANDLE_DOES_NOT_EXIST=10,
+    HP_FORWARD_ERROR=11,
+)
 
-# See data_types comment above
-exec error_codes
-error_map = {}
-exec error_codes in error_map
+# See data_map comment above
+globals().update(error_map)
 for key, value in error_map.items():
-    if key != '__builtins__':
-        error_map[value] = key
+    error_map[value] = key
 
 # Error code set by the parser
 HDL_ERR_INTERNAL_ERROR = HP_INTERNAL_ERROR

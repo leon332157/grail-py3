@@ -1165,4 +1165,4 @@ else:
     tparser = TableSubParser()
     for attr in dir(TableSubParser):
         if attr[0] <> '_':
-            exec '%s = tparser.%s' % (attr, attr)
+            globals()[attr] = getattr(tparser, attr)
