@@ -4,9 +4,14 @@ This module is safe for 'from sgml.utils import *'.
 
 """
 __version__ = '$Revision: 1.4 $'
+__all__ = (
+    'extract_attribute', 'extract_keyword',
+    'conv_integer', 'conv_float', 'conv_normstring', 'conv_enumeration',
+    'conv_normwhitespace', 'conv_exists',
+)
 
 
-import string as _string
+import string
 from collections import Mapping
 
 
@@ -56,7 +61,7 @@ def conv_integer(val, conv=int, otherlegal=''):
     start = 0
     if val[0] in '+-':
         start = 1
-    legalchars = _string.digits + otherlegal
+    legalchars = string.digits + otherlegal
     for i in range(start, l):
         if val[i] not in legalchars:
             val = val[:i]
