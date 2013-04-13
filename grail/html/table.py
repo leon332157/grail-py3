@@ -971,7 +971,7 @@ class ContainedText(AttrElem):
                 embedheight = max(embedheight, height)
             else:
                 # this is the best we can do
-##              print 'non-conformant embedded window:', sub.__class__
+##              print 'non-conformant embedded window:', type(sub)
 ##              print 'using generic method, which may be incorrect'
                 geom = sub.winfo_geometry()
                 match = CELLGEOM_RE.search(geom)

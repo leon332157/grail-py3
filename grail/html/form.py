@@ -135,7 +135,7 @@ class FormInfo:
         for i in self.inputs:
             value = i.getstate()
             name = getattr(i, 'name', '')
-            class_ = i.__class__
+            class_ = type(i)
             state.append((class_, name, value))
         return state
 
@@ -150,7 +150,7 @@ class FormInfo:
         if self.formdata and len(self.formdata) == len(self.inputs):
             for i in self.inputs:
                 class_, name, value = self.formdata.pop(0)
-                iclass = i.__class__
+                iclass = type(i)
                 iname = getattr(i, 'name', '')
                 if class_ == iclass and name == iname:
                     i.set(value)
@@ -247,7 +247,7 @@ class FormInfo:
                 continue
             disp = 'form-data; name="%s"' % i.name
             data = None
-            if i.__class__.__name__ == 'InputFile':
+            if type(i).__name__ == 'InputFile':
                 try:
                     with open(v) as f:
                         data = f.read()

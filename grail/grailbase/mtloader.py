@@ -37,8 +37,8 @@ class MIMETypeExtension:
         self.__load_attr(mod, "update_settings")
 
     def __repr__(self):
-        classname = self.__class__.__name__
-        modulename = self.__class__.__module__
+        classname = type(self).__name__
+        modulename = type(self).__module__
         if self.parse and self.embed:
             flags = " [displayable, embeddable]"
         elif self.embed:

@@ -12,7 +12,7 @@ class ElementHandler:
         pass
 
     def get_taginfo(self, tag):
-        klass = self.__class__
+        klass = type(self)
         start = getattr(klass, "start_" + tag, None)
         if start:
             end = getattr(klass, "end_" + tag, None)

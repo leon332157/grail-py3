@@ -55,7 +55,7 @@ class OpenURIDialog:
         self.__frame.destroy()
         if self.__uri:
             self.__uri = ''.join(self.__uri.split())
-            self.__class__.__lasturi = self.__uri
+            type(self).__lasturi = self.__uri
         return self.__uri, self.__new
 
     def okaycmd(self, event=None):

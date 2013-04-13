@@ -19,7 +19,7 @@ class TagExtensionLoader(grailbase_extloader.ExtensionLoader):
 
     def load_tag_handlers(self, mod):
         handlers = {}
-        for name, function in mod.__dict__.items():
+        for name, function in vars(mod).items():
             parts = name.split("_")
             if len(parts) != 2:
                 continue

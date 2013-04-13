@@ -105,7 +105,7 @@ class BaseReader:
         return "%s: %s" % (self.shorturl, status)
 
     def __repr__(self):
-        return "%s(...%s)" % (self.__class__.__name__, self.api)
+        return "%s(...%s)" % (type(self).__name__, self.api)
 
     def update_status(self):
         self.context.new_reader_status() # Will call our __str__() method

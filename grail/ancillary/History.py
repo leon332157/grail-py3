@@ -52,7 +52,7 @@ class PageInfo:
     def formdata(self): return self._formdata
 
     def clone(self):
-        return self.__class__(self._url, self._title,
+        return type(self)(self._url, self._title,
                               self._scrollpos, self._formdata[:])
 
 

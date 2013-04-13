@@ -6,7 +6,7 @@ class Error(Exception):
     def __init__(self, filename):
         self.filename = filename
     def __repr__(self):
-        C = self.__class__
+        C = type(self)
         return "<%s.%s for file %s>" \
                % (C.__module__, C.__name__, self.filename)
 
@@ -18,7 +18,7 @@ class BookmarkFormatError(Error):
         self.what = what
 
     def __repr__(self):
-        C = self.__class__
+        C = type(self)
         return "<%s.%s for %s %s>" \
                % (C.__module__, C.__name__, self.what, self.filename)
 

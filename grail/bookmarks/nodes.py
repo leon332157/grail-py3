@@ -44,7 +44,7 @@ class Node:
         pass
 
     def get_nodetype(self):
-        return self.__class__.__name__.split(".")[-1]
+        return type(self).__name__
 
     def clone(self):
         return copy.deepcopy(self)

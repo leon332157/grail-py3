@@ -96,8 +96,8 @@ class Viewer(formatter.AbstractWriter):
         self.subwindows = []
         self.rules = []
         self.subviewers = []
-        self.resize_interests = [self.__class__.resize_rules]
-        self.reset_interests = [self.__class__.clear_targets]
+        self.resize_interests = [type(self).resize_rules]
+        self.reset_interests = [type(self).clear_targets]
         self.current_cursor = CURSOR_NORMAL
         if not self.parent:
             # Avoid showing the widget until it's fully constructed:
