@@ -207,7 +207,7 @@ class http_access:
                 return "receiving server response", 0
             self.line1seen = 1
             line = self.readahead[:i+1]
-            if replyprog.match(line) < 0:
+            if not replyprog.match(line):
                 return "received non-HTTP/1.0 server response", 1
         m = endofheaders.search(self.readahead)
         if m and m.start() >= 0:

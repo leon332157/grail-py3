@@ -77,9 +77,9 @@ class HistoryReader:
         # we're looking at
         ghist = []
         line = fp.readline()
-        if re.match('GRAIL-global-history-file-1', line) >= 0:
+        if line.startswith('GRAIL-global-history-file-1'):
             linereader = GrailHistoryReader()
-        elif re.match('MCOM-Global-history-file-1', line) >= 0:
+        elif line.startswith('MCOM-Global-history-file-1'):
             linereader = NetscapeHistoryReader()
         else:
             return

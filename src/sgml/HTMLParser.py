@@ -1153,10 +1153,10 @@ class DummyTagInfo(SGMLHandler.TagInfo):
 
 
 class NewlineScratcher:
-    import re
-    __scratch_re = re.compile(r"[ \t]*\n")
-
     # for new version only:
+##    import re
+##    __scratch_re = re.compile(r"[ \t]*\n")
+##
 ##     __buffer = ''
 
     def __init__(self, parser, limit=-1):
@@ -1168,9 +1168,9 @@ class NewlineScratcher:
         # (hopefully fixable!)
 ##      data = self.__buffer + data
 ##      while "\n" in data and self.__limit != 0:
-##          length = self.__scratch_re.match(data)
-##          if length >= 0:
-##              data = data[length:]
+##          match = self.__scratch_re.match(data)
+##          if match:
+##              data = data[match.end():]
 ##              self.__limit = self.__limit - 1
 ##      if string.strip(data) or self.__limit == 0:
 ##          self.__parser.formatter.add_literal_data(data)

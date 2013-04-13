@@ -705,7 +705,7 @@ class DiskCache:
 
         def walk_erase(regexp,dir,files):
             for file in files:
-                if regexp.match(file) != -1:
+                if regexp.match(file):
                     path = os.path.join(dir,file)
                     if os.path.isfile(path):
                         os.unlink(path)
@@ -722,8 +722,7 @@ class DiskCache:
 
         def walk_erase_unknown(known,dir,files,regexp=self.cache_file):
             for file in files:
-                if not known.has_key(file) \
-                   and regexp.match(file) != -1:
+                if not known.has_key(file) and regexp.match(file):
                     path = os.path.join(dir,file)
                     if os.path.isfile(path):
                         os.unlink(path)
