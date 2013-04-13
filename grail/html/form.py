@@ -439,7 +439,7 @@ class FormInfo:
             # same liberal interpretation that those other browsers
             # employ.
             #
-            from __main__ import app
+            from .. import app
             strict = app.prefs.GetBoolean('parsing-html', 'strict')
             if strict and self.first:
                 self.var.set(self.value)
@@ -449,7 +449,7 @@ class FormInfo:
                                  highlightbackground=self.bgcolor)
 
         def reset(self):
-            from __main__ import app
+            from .. import app
             strict = app.prefs.GetBoolean('parsing-html', 'strict')
             if not strict and self.first:
                 self.var.set('')

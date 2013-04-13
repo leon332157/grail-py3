@@ -92,10 +92,6 @@ def main(args=None):
     global app
     app = Application(prefs=prefs, display=display)
     app.embedded = embedded
-    if __name__ != '__main__':
-        import __main__
-        __main__.app = app
-        __main__.GRAILVERSION = GRAILVERSION
 
     def load_images_vis_prefs(app=app):
         app.load_images = app.prefs.GetBoolean('browser', 'load-images')

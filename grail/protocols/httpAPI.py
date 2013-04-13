@@ -25,7 +25,7 @@ import re
 import StringIO
 import socket
 import sys
-from __main__ import GRAILVERSION
+from .. import GRAILVERSION
 
 
 httplib.HTTP_VERSIONS_ACCEPTED = r'HTTP/1\.[0-9.]+'

@@ -20,7 +20,7 @@ from . import tktools
 
 from Tkinter import *
 from urlparse import urlparse, urlunparse
-from __main__ import GRAILVERSION
+from . import GRAILVERSION
 from .Context import LAST_CONTEXT
 
 
