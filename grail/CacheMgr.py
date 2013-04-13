@@ -668,14 +668,12 @@ class DiskCache:
             self.manager.disk.erase_cache()
             return
 
-        def walk_erase(regexp,dir,files):
+        for dir,_,files in os.walk(self.directory):
             for file in files:
-                if regexp.match(file):
+                if self.cache_file.match(file):
                     path = os.path.join(dir,file)
-                    if os.path.isfile(path):
-                        os.unlink(path)
+                    os.unlink(path)
 
-        os.path.walk(self.directory, walk_erase, self.cache_file)
         self.manager.reset_disk_cache(flush_log=True)
 
     def erase_unlogged_files(self):
@@ -685,16 +683,14 @@ class DiskCache:
             self.manager.disk.erase_unlogged_files()
             return
 
-        def walk_erase_unknown(known,dir,files,regexp=self.cache_file):
-            for file in files:
-                if file not in known and regexp.match(file):
-                    path = os.path.join(dir,file)
-                    if os.path.isfile(path):
-                        os.unlink(path)
+        known = { 'LOG' }
+        known.update(entry.file for entry in self.items.values())
 
-        files = { 'LOG' }
-        files.update(entry.file for entry in self.items.values())
-        os.path.walk(self.directory, walk_erase_unknown, files)
+        for dir,_,files in os.walk(self.directory):
+            for file in files:
+                if file not in known and self.cache_file.match(file):
+                    path = os.path.join(dir,file)
+                    os.unlink(path)
 
     def get(self,key):
         """Update and log use_order."""
