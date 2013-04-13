@@ -2,6 +2,7 @@ from .. import grailutil
 from .. import ht_time
 import os
 import io
+import subprocess
 
 
 META, DATA, DONE = 'META', 'DATA', 'DONE'
@@ -112,8 +113,10 @@ class file_access:
         # XXX Unixism
         if self.url and self.url[-1] != '/':
             self.url = self.url + '/'
-        with os.popen("ls -l -a {}/. 2>&1".format(self.pathname), "r") as fp:
-            lines = fp.readlines()
+        args = ("ls", "-l", "-a", self.pathname + "/.")
+        with subprocess.Popen(args, stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT, universal_newlines=True) as proc:
+            lines = proc.stdout.readlines()
         import re
         from urllib.parse import quote
         from urllib.parse import urljoin
