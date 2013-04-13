@@ -42,7 +42,7 @@ class SGMLError(Exception):
 
 
 # SGML lexer base class -- find tags and call handler functions.
-# Usage: p = SGMLLexer(); p.feed(data); ...; p.close().
+# Usage: p = SGMLLexer(); p.feed(text); ...; p.close().
 # The data between tags is passed to the parser by calling
 # self.lex_data() with some data as argument (the data may be split up
 # in arbutrary chunks).  Entity references are passed by calling

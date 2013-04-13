@@ -9,7 +9,7 @@ SGMLError = SGMLLexer.SGMLError
 
 
 # SGML parser class -- find tags and call handler functions.
-# Usage: p = SGMLParser(); p.feed(data); ...; p.close().
+# Usage: p = SGMLParser(); p.feed(text); ...; p.close().
 # The dtd is defined by deriving a class which defines methods
 # with special names to handle tags: start_foo and end_foo to handle
 # <foo> and </foo>, respectively, or do_foo to handle <foo> by itself.
