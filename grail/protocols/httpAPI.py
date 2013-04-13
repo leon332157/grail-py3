@@ -15,7 +15,7 @@ XXX Main deficiencies:
 """
 
 
-import httplib
+import http.client
 from urllib.parse import splithost
 import mimetools
 from .. import grailutil
@@ -27,12 +27,8 @@ import socket
 from .. import GRAILVERSION
 
 
-httplib.HTTP_VERSIONS_ACCEPTED = r'HTTP/1\.[0-9.]+'
-replypat = httplib.HTTP_VERSIONS_ACCEPTED + r'[ \t]+([0-9][0-9][0-9])(.*)'
+replypat = r'HTTP/1\.[0-9.]+[ \t]+([0-9][0-9][0-9])(.*)'
 replyprog = re.compile(replypat)
-
-httplib.replypat = replypat
-httplib.replyprog = replyprog
 
 
 # Search for blank line following HTTP headers
@@ -47,31 +43,14 @@ DATA = 'data'
 DONE = 'done'
 CLOS = 'closed'
 
-class MyHTTPConnection(httplib.HTTPConnection):
+class MyHTTPConnection(http.client.HTTPConnection):
 
     def putrequest(self, request, selector):
         self.selector = selector
-        httplib.HTTPConnection.putrequest(self, request, selector)
-
-
-class MyHTTP(httplib.HTTP):
-
-    _connection_class = MyHTTPConnection
-
-    def __init__(self, host='', port=None, strict=None):
-        "Provide a default host, since the superclass requires one."
-
-        # some joker passed 0 explicitly, meaning default port
-        if port == 0:
-            port = None
-
-        # Note that we may pass an empty string as the host; this will throw
-        # an error when we attempt to connect. Presumably, the client code
-        # will call connect before then, with a proper host.
-        self._setup(MyHTTPConnection(host, port, strict))
-
+        http.client.HTTPConnection.putrequest(self, request, selector)
 
     def getreply(self, file):
+        """Copies from older httplib.HTTP.getreply() API"""
         self.file = file
         line = self.file.readline()
         if self.debuglevel > 0: print('reply:', repr(line))
@@ -97,14 +76,8 @@ class MyHTTP(httplib.HTTP):
     def close(self):
         if self.file:
             self.file.close()
-        if self._conn.sock:
-            try:
-                self._conn.sock.close()
-            except socket.error:
-                # What can you do? :-)
-                pass
         self.file = None
-        self._conn.sock = None
+        http.client.HTTPConnection.close(self)
 
 
 class http_access:
@@ -145,7 +118,7 @@ class http_access:
         else:
             host = user_passwd
             auth = None
-        self.h = MyHTTP(host)
+        self.h = MyHTTPConnection(host)
         self.h.putrequest(method, selector)
         self.h.putheader('User-agent', GRAILVERSION)
         if auth:
@@ -181,7 +154,7 @@ class http_access:
     def pollmeta(self, timeout=0):
         assert self.state == META
 
-        sock = self.h._conn.sock
+        sock = self.h.sock
         try:
             if not select.select([sock], [], [], timeout)[0]:
                 return "waiting for server response", False
@@ -235,7 +208,7 @@ class http_access:
         return data
 
     def fileno(self):
-        return self.h._conn.sock.fileno()
+        return self.h.sock.fileno()
 
 
 # To test this, use ProtocolAPI.test()
