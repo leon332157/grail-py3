@@ -22,7 +22,7 @@ components of its group.
 import re
 from collections import defaultdict
 
-validpat = '^([-_a-z0-9]*)--([-_a-z0-9]*):(.*)$'
+validpat = r'^([-_a-z0-9]*)--([-_a-z0-9]*):(.*)$'
 valid = re.compile(validpat, re.IGNORECASE)
 
 debug = False

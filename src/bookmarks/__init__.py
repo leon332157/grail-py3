@@ -85,11 +85,11 @@ def check_xml_format(buffer):
 __formats = {
     # format-name     first-line-magic
     #                  short-name   extension
-    "html":          ('<!DOCTYPE\s+(GRAIL|NETSCAPE)-Bookmark-file-1',
+    "html":          (r'<!DOCTYPE\s+(GRAIL|NETSCAPE)-Bookmark-file-1',
                       "html",      ".html",	"html"),
-    "pickle":        ('#.*GRAIL-Bookmark-file-[234]',
+    "pickle":        (r'#.*GRAIL-Bookmark-file-[234]',
                       "pickle",    ".pkl",	"xbel"),
-    "xbel":          ('<(\?xml|!DOCTYPE)\s+xbel',
+    "xbel":          (r'<(\?xml|!DOCTYPE)\s+xbel',
                       "xbel",      ".xml",	"xbel"),
     }
 

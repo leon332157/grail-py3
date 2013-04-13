@@ -666,7 +666,7 @@ class DiskCache:
             # should we flush() here? probably...
             self.log.flush()
 
-    cache_file = re.compile('^spam[0-9]+')
+    cache_file = re.compile(r'^spam[0-9]+')
 
     def erase_cache(self):
 

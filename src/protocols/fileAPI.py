@@ -19,9 +19,9 @@ LISTING_TRAILER = """</PRE>
 </BODY>
 """
 
-LISTING_PATTERN = """\
-^([-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z])\
-([ \\t]+.*[ \\t]+)([^ \\t]+)$"""
+LISTING_PATTERN = r"""
+^([-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z])
+([ \t]+.*[ \t]+)([^ \t]+)$"""
 
 class file_access:
 
@@ -121,7 +121,7 @@ class file_access:
         from urlparse import urljoin
         from html import escape
         from xml.sax import saxutils
-        prog = re.compile(self.listing_pattern)
+        prog = re.compile(self.listing_pattern, re.VERBOSE)
         data = self.listing_header % {'url': self.url,
                                       'pathname': escape(self.pathname)}
         for line in lines:

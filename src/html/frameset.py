@@ -116,7 +116,7 @@ class FrameSet:
             y = y + height
 
     import re
-    sizeprog = re.compile('[ \\t]*([0-9]*)([%*]?)')
+    sizeprog = re.compile(r'[ \t]*([0-9]*)([%*]?)')
 
     def calculate_sizes(self, sizes, total):
         rawlist = sizes.split(",")

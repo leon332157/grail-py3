@@ -670,55 +670,55 @@ class SGMLLexer(SGMLLexerBase):
 
 # Regular expressions used for parsing:
 OPTIONAL_WHITESPACE = "[%s]*" % whitespace
-interesting = re.compile('[&<]')
-incomplete = re.compile('&([a-zA-Z][a-zA-Z0-9]*|'
-                           '#[0-9]*)?|'
-                           '<([a-zA-Z][^<>]*|'
-                           '/([a-zA-Z][^<>]*)?|'
-                           '![^<>]*)?')
+interesting = re.compile(r'[&<]')
+incomplete = re.compile(r'''&([a-zA-Z][a-zA-Z0-9]*|
+                           \#[0-9]*)?|
+                           <([a-zA-Z][^<>]*|
+                           /([a-zA-Z][^<>]*)?|
+                           ![^<>]*)?''', re.VERBOSE)
 
-entityref = re.compile(ERO + '([a-zA-Z][-.a-zA-Z0-9]*)[^-.a-zA-Z0-9]')
-simplecharref = re.compile(CRO + '([0-9]+[^0-9])')
+entityref = re.compile(ERO + r'([a-zA-Z][-.a-zA-Z0-9]*)[^-.a-zA-Z0-9]')
+simplecharref = re.compile(CRO + r'([0-9]+[^0-9])')
 legalcharref \
-    = re.compile(CRO + '([0-9]+[^0-9]|[a-zA-Z.-]+[^a-zA-Z.-])')
-processinginstruction = re.compile('<\\?([^>]*)' + PIC)
+    = re.compile(CRO + r'([0-9]+[^0-9]|[a-zA-Z.-]+[^a-zA-Z.-])')
+processinginstruction = re.compile(r'<\?([^>]*)' + PIC)
 
-starttagopen = re.compile(STAGO + '[>a-zA-Z]')
-shorttagopen = re.compile(STAGO + '[a-zA-Z][-.a-zA-Z0-9]*'
+starttagopen = re.compile(STAGO + r'[>a-zA-Z]')
+shorttagopen = re.compile(STAGO + r'[a-zA-Z][-.a-zA-Z0-9]*'
                              + OPTIONAL_WHITESPACE + NET)
-shorttag = re.compile(STAGO + '([a-zA-Z][-.a-zA-Z0-9]*)'
-                         + OPTIONAL_WHITESPACE + NET + '([^/]*)' + NET)
-endtagopen = re.compile(ETAGO + '[<>a-zA-Z]')
-endbracket = re.compile('[<>]')
+shorttag = re.compile(STAGO + r'([a-zA-Z][-.a-zA-Z0-9]*)'
+                         + OPTIONAL_WHITESPACE + NET + r'([^/]*)' + NET)
+endtagopen = re.compile(ETAGO + r'[<>a-zA-Z]')
+endbracket = re.compile(r'[<>]')
 endtag = re.compile(ETAGO +
-                       '([a-zA-Z][-.a-zA-Z0-9]*)'
-                       '([^-.<>a-zA-Z0-9]?[^<>]*)[<>]')
-special = re.compile(MDO + '[^>]*' + MDC)
+                       r'([a-zA-Z][-.a-zA-Z0-9]*)'
+                       r'([^-.<>a-zA-Z0-9]?[^<>]*)[<>]')
+special = re.compile(MDO + r'[^>]*' + MDC)
 markupdeclaration = re.compile(MDO +
-                                  '(([-.a-zA-Z0-9]+|'
-                                  + LIT + '[^"]*' + LIT + '|'
-                                  + LITA + "[^']*" + LITA + '|'
-                                  + COM + '([^-]|-[^-])*' + COM
-                                  + ')' + OPTIONAL_WHITESPACE
-                                  + ')*' + MDC)
+                                  r'(([-.a-zA-Z0-9]+|'
+                                  + LIT + r'[^"]*' + LIT + r'|'
+                                  + LITA + r"[^']*" + LITA + r'|'
+                                  + COM + r'([^-]|-[^-])*' + COM
+                                  + r')' + OPTIONAL_WHITESPACE
+                                  + r')*' + MDC)
 md_name = re.compile('([^>%s\'"]+)' % whitespace
                         + OPTIONAL_WHITESPACE)
 md_string = re.compile('("[^"]*"|\'[^\']*\')' + OPTIONAL_WHITESPACE)
 commentopen = re.compile(MDO + COM)
 commentclose = re.compile(COM + OPTIONAL_WHITESPACE + MDC)
-tagfind = re.compile('[a-zA-Z][-_.a-zA-Z0-9]*')
+tagfind = re.compile(r'[a-zA-Z][-_.a-zA-Z0-9]*')
 attrfind = re.compile(
     # comma is for compatibility
     ('[%s,]*([_a-zA-Z][-:.a-zA-Z_0-9]*)' % whitespace)
-    + '(' + OPTIONAL_WHITESPACE + VI + OPTIONAL_WHITESPACE # VI
-    + '(' + LITA + "[^']*" + LITA
-    + '|' + LIT + '[^"]*' + LIT
-    + '|[\-~a-zA-Z0-9,./:+*%?!\\(\\)_#=]*))?')
-tagend = re.compile(OPTIONAL_WHITESPACE + '[<>/]')
+    + r'(' + OPTIONAL_WHITESPACE + VI + OPTIONAL_WHITESPACE # VI
+    + r'(' + LITA + r"[^']*" + LITA
+    + r'|' + LIT + r'[^"]*' + LIT
+    + r'|[\-~a-zA-Z0-9,./:+*%?!\(\)_#=]*))?')
+tagend = re.compile(OPTIONAL_WHITESPACE + r'[<>/]')
 
 # used below in comment_match()
-comment_start = re.compile(COM + '([^-]*)-(.|\\n)')
-comment_segment = re.compile('([^-]*)-(.|\\n)')
+comment_start = re.compile(COM + r'([^-]*)-(.|\n)')
+comment_segment = re.compile(r'([^-]*)-(.|\n)')
 comment_whitespace = re.compile(OPTIONAL_WHITESPACE)
 
 del re

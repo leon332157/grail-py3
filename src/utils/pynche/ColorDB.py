@@ -128,7 +128,7 @@ class ColorDB:
 
 class RGBColorDB(ColorDB):
     _re = re.compile(
-        '\s*(?P<red>\d+)\s+(?P<green>\d+)\s+(?P<blue>\d+)\s+(?P<name>.*)')
+        r'\s*(?P<red>\d+)\s+(?P<green>\d+)\s+(?P<blue>\d+)\s+(?P<name>.*)')
 
 
 
@@ -136,7 +136,7 @@ class RGBColorDB(ColorDB):
 # expression, SCANLINES is the number of header lines to scan, and CLASS is
 # the class to instantiate if a match is found
 
-X_RGB_TXT = re.compile('XConsortium'), 1, RGBColorDB
+X_RGB_TXT = re.compile(r'XConsortium'), 1, RGBColorDB
 
 def get_colordb(file, filetype=X_RGB_TXT):
     colordb = None

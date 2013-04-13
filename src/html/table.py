@@ -17,7 +17,7 @@ EMPTY = 102
 class BadMojoError(Exception):
     def __str__(self): return 'Bad Mojo!  Infinite loop in cell height calculation.'
 
-CELLGEOM_RE = re.compile('%sx%s\+%s\+%s' % (('([-+]?[0-9]+)',) * 4))
+CELLGEOM_RE = re.compile(r'%sx%s\+%s\+%s' % (('([-+]?[0-9]+)',) * 4))
 
 DEFAULT_VALIGN = 'top'
 

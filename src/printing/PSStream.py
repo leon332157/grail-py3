@@ -49,10 +49,10 @@ def get_userheader():
 
 
 # Regular expressions.
-QUOTE_re = '(\\(|\\)|\\\\)'
+QUOTE_re = r'(\(|\)|\\)'
 
 def cook(string):
-    return re.sub(QUOTE_re, '\\\\\\1', string)
+    return re.sub(QUOTE_re, r'\\\1', string)
 
 
 # Keep images that come above the ascenders for the current line

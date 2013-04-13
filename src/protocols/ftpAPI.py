@@ -47,26 +47,26 @@ LISTING_TRAILER = """</PRE>
 # pattern catches file names with embedded spaces and correctly chops
 # off symbolic links.  assumption is anything after `yyyy' or `hh:mm'
 # field and before optional `-> symlink' field is the name of the file
-LISTING_PATTERN = (
-    "^("                               # group 1
-        "[-a-z]"                        # file type
-        "[-a-z][-a-z][-a-z]"            # owner rwx
-        "[-a-z][-a-z][-a-z]"            # group rwx
-        "[-a-z][-a-z][-a-z]"            # world rwx
-    ")"                                # end group 1
-    "("                                # group 2
-        "[ \\t]+.*[ \\t]+"                # links, owner, grp, sz, mnth, day
-        "[0-9][0-9]:?[0-9][0-9]"        # year or hh:mm
-        "[ \\t]+"                        # spaces
-    ")"                                # end group 2
-    "("                                # group 3
-        "([^-]|-[^>])+"              # lots of chars, but not symlink
-    ")"                                # end group 3
-    "("                                # optional group 5
-        "[ \\t]+->.*"                    # spaces followed by symlink 
-    ")?"                               # end optional group 5
-    "$"                                 # end of string
-    )
+LISTING_PATTERN = r"""
+    ^(                               # group 1
+        [-a-z]                        # file type
+        [-a-z][-a-z][-a-z]            # owner rwx
+        [-a-z][-a-z][-a-z]            # group rwx
+        [-a-z][-a-z][-a-z]            # world rwx
+    )                                # end group 1
+    (                                # group 2
+        [ \t]+.*[ \t]+                # links, owner, grp, sz, mnth, day
+        [0-9][0-9]:?[0-9][0-9]        # year or hh:mm
+        [ \t]+                        # spaces
+    )                                # end group 2
+    (                                # group 3
+        ([^-]|-[^>])+              # lots of chars, but not symlink
+    )                                # end group 3
+    (                                # optional group 5
+        [ \t]+->.*                    # spaces followed by symlink 
+    )?                               # end optional group 5
+    $                                 # end of string
+    """
 
 
 ftpcache = {}                           # XXX Ouch!  A global!
@@ -202,7 +202,7 @@ class ftp_access:
             return ""
         lines, self.lines = self.lines[:-1], self.lines[-1:]
         data = ""
-        prog = re.compile(self.listing_pattern)
+        prog = re.compile(self.listing_pattern, re.VERBOSE)
         for line in lines:
             if self.debuglevel > 2:
                 print "*getl*", repr(line)

@@ -15,7 +15,7 @@ class Parser:
     __old_root = None
     __root = None
 
-    __header_rx = re.compile('#.*GRAIL-Bookmark-file-([234])')
+    __header_rx = re.compile(r'#.*GRAIL-Bookmark-file-([234])')
 
     def __init__(self, filename):
         self._filename = filename

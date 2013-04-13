@@ -52,9 +52,9 @@ def convert_to_url(urn):
 # support data for convert_to_url()
 #
 import re
-_reference_rx = re.compile("([^:]+):(\d+)$")
-_draft_rx = re.compile("id:(.+)$")
-_meeting_rx = re.compile("mtg-(\d+)-(.*)$")
+_reference_rx = re.compile(r"([^:]+):(\d+)$")
+_draft_rx = re.compile(r"id:(.+)$")
+_meeting_rx = re.compile(r"mtg-(\d+)-(.*)$")
 del re
 
 _number_to_date = {

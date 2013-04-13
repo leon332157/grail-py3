@@ -28,8 +28,8 @@ import sys
 from __main__ import GRAILVERSION
 
 
-httplib.HTTP_VERSIONS_ACCEPTED = 'HTTP/1\\.[0-9.]+'
-replypat = httplib.HTTP_VERSIONS_ACCEPTED + '[ \\t]+([0-9][0-9][0-9])(.*)'
+httplib.HTTP_VERSIONS_ACCEPTED = r'HTTP/1\.[0-9.]+'
+replypat = httplib.HTTP_VERSIONS_ACCEPTED + r'[ \t]+([0-9][0-9][0-9])(.*)'
 replyprog = re.compile(replypat)
 
 httplib.replypat = replypat
@@ -37,7 +37,7 @@ httplib.replyprog = replyprog
 
 
 # Search for blank line following HTTP headers
-endofheaders = re.compile('\\n[ \\t]*\\r?\\n')
+endofheaders = re.compile(r'\n[ \t]*\r?\n')
 
 
 # Stages

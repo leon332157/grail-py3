@@ -43,7 +43,7 @@ GRAIL_ARGS = ('-c', GRAILCMD)
 
 def normalize_display(display):
     # normalize the display name
-    cre = re.compile('([^:]+)?:([0-9]+)(\\.([0-9]+))?')
+    cre = re.compile(r'([^:]+)?:([0-9]+)(\.([0-9]+))?')
     match = cre.match(display)
     if match:
         host, display, screen = match.group(1, 2, 4)

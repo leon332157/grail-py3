@@ -136,7 +136,7 @@ if not _filename:
     USER = getenv('USER') or getenv('LOGNAME')
     XDISPLAY = getenv('DISPLAY') or ':0'
     # normalize the display name
-    cre = re.compile('([^:]+)?:([0-9]+)(\\.([0-9]+))?')
+    cre = re.compile(r'([^:]+)?:([0-9]+)(\.([0-9]+))?')
     match = cre.match(XDISPLAY)
     if match:
         host, display, screen = match.group(1, 2, 4)
@@ -165,7 +165,7 @@ class Controller:
         # clients of this class to register callbacks for commands
         # first.
         self._cbdict = {}
-        self._cmdre = re.compile('([^ \\t]+)(.*)')
+        self._cmdre = re.compile(r'([^ \t]+)(.*)')
 
     def start(self):
         """Begin listening for remote control commands."""

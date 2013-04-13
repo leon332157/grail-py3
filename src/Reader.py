@@ -845,7 +845,7 @@ class TransferDisplay:
         else:
             self.__percent = None
 
-    __boldpat = re.compile('-([a-z]*bold)-', re.IGNORECASE)
+    __boldpat = re.compile(r'-([a-z]*bold)-', re.IGNORECASE)
     __datafont = None
     def make_labeled_field(self, master, labeltext, valuetext='', side=TOP):
         frame = Frame(master)

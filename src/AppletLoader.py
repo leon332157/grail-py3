@@ -8,7 +8,7 @@ from BaseReader import BaseReader
 
 
 # Pattern for valid CODE attribute; group(2) extracts module name
-codeprog = re.compile('^(.*/)?([_a-zA-Z][_a-zA-Z0-9]*)\\.py$')
+codeprog = re.compile(r'^(.*/)?([_a-zA-Z][_a-zA-Z0-9]*)\.py$')
 
 CLEANUP_HANDLER_NAME = "__cleanup__"
 

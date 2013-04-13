@@ -34,7 +34,7 @@ panels_dirs = [os.path.join(grail_root, 'prefpanels'),
                os.path.join(grail_root, 'prefspanels'),
                os.path.expanduser("~/.grail/prefspanels")]
 
-modname_matcher = re.compile('^(.*)Panel.py[c]?$')
+modname_matcher = re.compile(r'^(.*)Panel.py[c]?$')
 
 # Framework
 

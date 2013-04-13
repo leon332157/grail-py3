@@ -25,7 +25,7 @@ import sys
 import time
 from grailutil import *
 
-GRAIL_RE = re.compile('([^ \\t]+)[ \\t]+([^ \\t]+)[ \\t]+?(.*)')
+GRAIL_RE = re.compile(r'([^ \t]+)[ \t]+([^ \t]+)[ \t]+?(.*)')
 DEFAULT_NETSCAPE_HIST_FILE = os.path.join(gethome(), '.netscape-history')
 DEFAULT_GRAIL_HIST_FILE = os.path.join(getgraildir(), 'grail-history')
 

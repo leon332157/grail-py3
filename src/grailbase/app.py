@@ -50,7 +50,7 @@ class Application:
 
 
     __data_scheme_re = re.compile(
-        'data:([^,;]*)(;([^,]*)|),' , re.IGNORECASE)
+        r'data:([^,;]*)(;([^,]*)|),' , re.IGNORECASE)
 
     def guess_type(self, url):
         """Guess the type of a file based on its URL.

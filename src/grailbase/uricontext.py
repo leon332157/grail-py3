@@ -10,7 +10,7 @@ __default_joiner = urlparse.urljoin
 del urlparse
 
 import re
-__typematch = re.compile('^([^/:]+):').match
+__typematch = re.compile(r'^([^/:]+):').match
 del re
 
 def __splittype(url):

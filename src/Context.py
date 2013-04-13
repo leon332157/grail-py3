@@ -389,7 +389,7 @@ class Context(URIContext):
             raise IOError, ("protocol error",
                             "no scheme identifier in URL", url)
         scheme = scheme.lower()
-        sanitized = re.sub("[^a-zA-Z0-9]", "_", scheme)
+        sanitized = re.sub(r"[^a-zA-Z0-9]", "_", scheme)
         modname = sanitized + "API"
         try:
             klass  = self.local_api_handlers[modname]

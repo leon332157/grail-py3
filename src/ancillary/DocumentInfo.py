@@ -87,7 +87,7 @@ class DocumentInfoDialog:
                       ).pack(anchor=Tkinter.NE, side=Tkinter.LEFT)
         return fr
 
-    __boldpat = re.compile('-([a-z]*bold|demi)-', re.IGNORECASE)
+    __boldpat = re.compile(r'-([a-z]*bold|demi)-', re.IGNORECASE)
     __datafont = None
     def add_label_field(self, label, value, name):
         fr = self.add_field(label, name)

@@ -54,7 +54,7 @@ class AuthenticationManager:
             # don't know about anything other than basic
             pass
 
-    basic_realm = re.compile('realm="(.*)"')
+    basic_realm = re.compile(r'realm="(.*)"')
 
     def basic_get_realm(self,challenge):
         # the actual specification allows for multiple name=value
