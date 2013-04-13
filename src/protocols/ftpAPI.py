@@ -274,7 +274,7 @@ class ftpwrapper:
 
     def reset(self):
         self.conn = None
-        self.ftp = GrailFTP()
+        self.ftp = ftplib.FTP()
         if self.debuglevel is not None:
             self.ftp.set_debuglevel(self.debuglevel)
         self.ftp.connect(self.host, self.port)
@@ -307,12 +307,10 @@ class ftpwrapper:
         if file and not isdir:
             try:
                 cmd = 'RETR ' + unquote(file)
-                conn = self.ftp.transfercmd(cmd)
+                conn, self.content_length = self.ftp.ntransfercmd(cmd)
             except ftplib.error_perm, reason:
                 if str(reason)[:3] != '550':
                     raise IOError, ('ftp error', reason)
-            else:
-                self.content_length = self.ftp._xfer_size
         if not conn:
             # Try a directory listing
             isdir = 1
@@ -321,23 +319,6 @@ class ftpwrapper:
             conn = self.ftp.transfercmd(cmd)
         self.conn = conn
         return conn, isdir
-
-
-class GrailFTP(ftplib.FTP):
-    #
-    #  Hackish subclass of ftplib.FTP to allow the transfer size to be
-    #  available for the creation of a content-length header.
-    #
-    _size_re = re.compile("\\(([0-9][0-9]*) bytes\\)", re.IGNORECASE)
-    _xfer_size = None
-
-    def getresp(self):
-        resp = ftplib.FTP.getresp(self)
-        if len(resp) >= 3 and resp[:3] == "150":
-            m = self._size_re.search(resp)
-            if m and m.start() >= 0:
-                self._xfer_size = int(m.group(1))
-        return resp
 
 
 # To test this, use ProtocolAPI.test()
