@@ -49,8 +49,6 @@ HTML_HEADER = """<HTML>
 
 <H1>%(title)s</H1>
 
-%(error)s
-
 The handle you have selected resolves to multiple data items or to an
 unknown data type.<P>
 
@@ -121,8 +119,7 @@ class hdl_access(nullAPI.null_access):
         return self._local_hashtables[key]
 
     def __init__(self, hdl, method, params):
-        self._msgattrs = {"title": "Ambiguous handle resolution",
-                          "error": ""}
+        self._msgattrs = {"title": "Ambiguous handle resolution"}
         nullAPI.null_access.__init__(self, hdl, method, params)
 
         self._hdl, self._attrs = parse_handle(hdl)
@@ -137,7 +134,6 @@ class hdl_access(nullAPI.null_access):
                 if not m:
                     self._msgattrs["title"] = (
                         "hdlAPI: Could not load %s data type handler" % mname)
-                    self._msgattrs["error"] = sys.exc_value + "<p>"
                     raise ImportError, mname
                 types = m.handle_types
                 formatter = m.data_formatter
