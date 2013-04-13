@@ -167,7 +167,7 @@ class ftp_access:
     def getdata(self, maxbytes):
         if self.state == EOF:
             self.state = DONE
-            return ""
+            return b""
         assert self.state == DATA
         data = self.sock.recv(maxbytes)
         if self.debuglevel > 4: print("*data*", repr(data))
@@ -187,7 +187,7 @@ class ftp_access:
                     del self.lines[-1]
                 self.lines.append(None) # Mark the end
         else:
-            lines = data.split('\n')
+            lines = data.decode('latin-1').split('\n')
             if self.debuglevel > 3:
                 for line in lines: print("*addl*", repr(line))
             if self.lines:
@@ -199,7 +199,7 @@ class ftp_access:
 
     def getlistingdata(self):
         if not self.lines:
-            return ""
+            return b""
         lines, self.lines = self.lines[:-1], self.lines[-1:]
         data = ""
         prog = re.compile(self.listing_pattern, re.VERBOSE)
@@ -232,7 +232,7 @@ class ftp_access:
         if self.lines == [None]:
             data = data + self.listing_trailer
             self.lines = []
-        return data
+        return data.encode('latin-1', 'xmlcharrefreplace')
 
     listing_header = LISTING_HEADER
     listing_trailer = LISTING_TRAILER

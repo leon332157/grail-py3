@@ -173,7 +173,7 @@ class SharedItem:
                 self.meta = self.api.getmeta()
                 self.stage = DATA
             elif self.complete and offset >= self.datalen:
-                return ''
+                return b''
             chunk_key, delta = self._getdata_search_string_list(offset)
             chunk = self.data[self.datamap[chunk_key]]
             return chunk[delta:]

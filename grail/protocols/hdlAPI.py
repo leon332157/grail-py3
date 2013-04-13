@@ -161,7 +161,7 @@ class hdl_access(nullAPI.null_access):
 
     def getmeta(self):
         nullAPI.null_access.getmeta(self)
-        self._data = ""
+        self._data = b""
         self._pos = 0
         return self._formatter(self)
 
@@ -169,7 +169,7 @@ class hdl_access(nullAPI.null_access):
         if len(self._items) == 1 and self._items[0][0] == hdllib.HDL_TYPE_URL:
             return 302, 'Moved', {'location': self._items[0][1]}
         if len(self._items) == 0:
-            self._data = "Handle not resolved to anything\n"
+            self._data = b"Handle not resolved to anything\n"
             return 404, 'Handle not resolved to anything', {}
         data = HTML_HEADER.format_map(self._msgattrs)
         for type, uri in self._items:
@@ -189,7 +189,7 @@ class hdl_access(nullAPI.null_access):
                 text = '<LI>type={}, value={}\n'.format(type, uri)
             data = data + text
         data = data + HTML_TRAILER
-        self._data = data
+        self._data = data.encode('latin-1', 'xmlcharrefreplace')
         return 200, 'OK', {'content-type': 'text/html'}
 
     _formatter = formatter

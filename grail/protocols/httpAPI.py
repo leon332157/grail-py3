@@ -26,12 +26,12 @@ import socket
 from .. import GRAILVERSION
 
 
-replypat = r'HTTP/1\.[0-9.]+[ \t]+([0-9][0-9][0-9])(.*)'
+replypat = br'HTTP/1\.[0-9.]+[ \t]+([0-9][0-9][0-9])(.*)'
 replyprog = re.compile(replypat)
 
 
 # Search for blank line following HTTP headers
-endofheaders = re.compile(r'\n[ \t]*\r?\n')
+endofheaders = re.compile(br'\n[ \t]*\r?\n')
 
 
 # Stages
@@ -111,7 +111,7 @@ class http_access:
         self.h.endheaders()
         if data:
             self.h.send(data)
-        self.readahead = ""
+        self.readahead = bytearray()
         self.state = META
         self.line1seen = False
         self.reply = None
@@ -139,12 +139,12 @@ class http_access:
         if not new:
             self.reply = simplereply(self.selector)
             return "EOF in server response", True
-        self.readahead = self.readahead + new
-        if '\n' not in new:
+        self.readahead.extend(new)
+        if b'\n' not in new:
             return "receiving server response", False
         if not self.line1seen:
             self.line1seen = True
-            line, rest = self.readahead.split('\n', 1)
+            line, rest = self.readahead.split(b'\n', 1)
             m = replyprog.match(line)
             if not m:
                 # Not an HTTP/1.0 response.  Fall back to HTTP/0.9.

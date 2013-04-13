@@ -21,7 +21,7 @@ class null_access:
     def getdata(self, maxbytes):
         assert self.state == DATA
         self.state = DONE
-        return ""
+        return b""
 
     def fileno(self):
         return -1

@@ -1,6 +1,7 @@
 from .. import grailutil
 from .. import ht_time
 import os
+import io
 
 
 META, DATA, DONE = 'META', 'DATA', 'DONE'
@@ -98,7 +99,7 @@ class file_access:
             return -1
         try:
             return self.fp.fileno()
-        except AttributeError:
+        except io.UnsupportedOperation:
             return -1
 
     def close(self):
@@ -113,7 +114,6 @@ class file_access:
             self.url = self.url + '/'
         with os.popen("ls -l -a {}/. 2>&1".format(self.pathname), "r") as fp:
             lines = fp.readlines()
-        import StringIO
         import re
         from urllib.parse import quote
         from urllib.parse import urljoin
@@ -142,7 +142,7 @@ class file_access:
                 mode, middle, saxutils.quoteattr(href), name)
             data = data + line
         data = data + self.listing_trailer
-        self.fp = StringIO.StringIO(data)
+        self.fp = io.BytesIO(data.encode("latin-1", "xmlcharrefreplace"))
         self.headers['content-type'] = 'text/html'
         self.headers['content-length'] = str(len(data))
 

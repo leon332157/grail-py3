@@ -42,8 +42,8 @@ def parse(url):
     if pos >= 0:
         encoding = url[:pos].strip().lower()
         url = url[pos + 1:]
-    data = url
+    data = url.encode()
     if data and encoding == "base64":
         import base64
-        data = base64.decodestring(data)
+        data = base64.decodebytes(data)
     return (ctype or "text/plain"), data
