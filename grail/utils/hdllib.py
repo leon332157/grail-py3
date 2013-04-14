@@ -56,7 +56,7 @@ I think yes, but this means repacking the request.
 # this would be a tremendous increase for handle resolution.
 
 import random
-import md5
+import hashlib
 import os
 import select
 import socket
@@ -402,7 +402,7 @@ class PacketUnpacker:
         items = self.unpack_item_array_cont_chk(start)
 
         checksum = self.u.unpack_fopaque(16)
-        digest = md5.new(self.buf()[start:-16]).digest()
+        digest = hashlib.md5(self.buf()[start:-16]).digest()
 
         if digest != checksum:
             raise Error("body checksum mismatch")
@@ -583,7 +583,7 @@ class HashTable:
         # Verify the checksum before proceeding
         checksum = data[:16]
         data = data[16:]
-        if md5.new(data).digest() != checksum:
+        if haslib.md5(data).digest() != checksum:
             raise Error("checksum error for hash table")
 
         # Read and decode header
@@ -704,7 +704,7 @@ class HashTable:
         if self.num_of_bits > 0:
             if hdl[:2] == '//': hdl = hdl[2:]
             hdl = hdl.upper()
-            digest = md5.new(hdl).digest()
+            digest = hashlib.md5(hdl).digest()
             u = xdrlib.Unpacker(digest)
             index = u.unpack_uint()
             index = (index&0xFFFFFFFF) >> (32 - self.num_of_bits)
