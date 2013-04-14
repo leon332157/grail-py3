@@ -13,7 +13,7 @@ __version__ = '$Revision: 2.5 $'
 import urllib.parse
 from . import grailutil
 import os
-import rfc822
+import email.parser
 import string
 import time
 from . import tktools
@@ -135,7 +135,8 @@ class MailDialog:
         fn = os.path.join(grailutil.getgraildir(), "mail-headers")
         d = {}
         if os.path.isfile(fn):
-            msg = rfc822.Message(open(fn))
+            with open(fn, "rb") as fp:
+                msg = email.parser.BytesParser().parse(fp, headersonly=True)
             for k, v in msg.items():
                 d[k] = v
         return d

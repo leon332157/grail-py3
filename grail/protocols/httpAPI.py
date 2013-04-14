@@ -17,12 +17,11 @@ XXX Main deficiencies:
 
 import http.client
 from urllib.parse import splithost
-import mimetools
+import email.parser
 from .. import grailutil
 import select
 from .. import Reader
 import re
-import StringIO
 import socket
 from .. import GRAILVERSION
 
@@ -43,41 +42,16 @@ DATA = 'data'
 DONE = 'done'
 CLOS = 'closed'
 
-class MyHTTPConnection(http.client.HTTPConnection):
-
-    def putrequest(self, request, selector):
-        self.selector = selector
-        http.client.HTTPConnection.putrequest(self, request, selector)
-
-    def getreply(self, file):
-        """Copies from older httplib.HTTP.getreply() API"""
-        self.file = file
-        line = self.file.readline()
-        if self.debuglevel > 0: print('reply:', repr(line))
-        m = replyprog.match(line)
-        if m is None:
-            # Not an HTTP/1.0 response.  Fall back to HTTP/0.9.
-            # Push the data back into the file.
-            self.file.seek(-len(line), 1)
-            self.headers = {}
-            app = grailutil.get_grailapp()
-            c_type, c_encoding = app.guess_type(self._conn.selector)
-            if c_encoding:
-                self.headers['content-encoding'] = c_encoding
-            # HTTP/0.9 sends HTML by default
-            self.headers['content-type'] = c_type or "text/html"
-            return 200, "OK", self.headers
-        errcode, errmsg = m.group(1, 2)
-        errcode = int(errcode)
-        errmsg = errmsg.strip()
-        self.headers = mimetools.Message(self.file, 0)
-        return errcode, errmsg, self.headers
-
-    def close(self):
-        if self.file:
-            self.file.close()
-        self.file = None
-        http.client.HTTPConnection.close(self)
+def simplereply(url):
+    """Return (code, reason, headers) for a HTTP 0.9 reply based on URL"""
+    headers = {}
+    app = grailutil.get_grailapp()
+    c_type, c_encoding = app.guess_type(url)
+    if c_encoding:
+        headers['content-encoding'] = c_encoding
+    # HTTP/0.9 sends HTML by default
+    headers['content-type'] = c_type or "text/html"
+    return 200, "OK", headers
 
 
 class http_access:
@@ -105,9 +79,9 @@ class http_access:
         else:
             assert method in ("GET", "POST")
         if isinstance(resturl, tuple):
-            host, selector = resturl    # For proxy interface
+            host, self.selector = resturl    # For proxy interface
         else:
-            host, selector = splithost(resturl)
+            host, self.selector = splithost(resturl)
         if not host:
             raise IOError("no host specified in URL")
         user_passwd, sep, host = host.partition('@')
@@ -118,8 +92,8 @@ class http_access:
         else:
             host = user_passwd
             auth = None
-        self.h = MyHTTPConnection(host)
-        self.h.putrequest(method, selector)
+        self.h = http.client.HTTPConnection(host)
+        self.h.putrequest(method, self.selector)
         self.h.putheader('User-agent', GRAILVERSION)
         if auth:
             self.h.putheader('Authorization', 'Basic {}'.format(auth))
@@ -140,6 +114,7 @@ class http_access:
         self.readahead = ""
         self.state = META
         self.line1seen = False
+        self.reply = None
         if self.reader_callback:
             self.reader_callback()
 
@@ -162,31 +137,41 @@ class http_access:
             raise IOError(msg) from msg
         new = sock.recv(1024)
         if not new:
+            self.reply = simplereply(self.selector)
             return "EOF in server response", True
         self.readahead = self.readahead + new
         if '\n' not in new:
             return "receiving server response", False
         if not self.line1seen:
             self.line1seen = True
-            line = self.readahead.split('\n', 1)[0]
-            if not replyprog.match(line):
+            line, rest = self.readahead.split('\n', 1)
+            m = replyprog.match(line)
+            if not m:
+                # Not an HTTP/1.0 response.  Fall back to HTTP/0.9.
+                self.reply = simplereply(self.selector)
                 return "received non-HTTP/1.0 server response", True
+            self.errcode, self.errmsg = m.group(1, 2)
+            self.errcode = int(self.errcode)
+            self.errmsg = self.errmsg.decode('latin-1').strip()
+            self.readahead = rest
         m = endofheaders.search(self.readahead)
         if m and m.start() >= 0:
+            headers = self.readahead[:m.end()].decode('latin-1')
+            del self.readahead[:m.end()]
+            parser = email.parser.Parser()
+            headers = parser.parsestr(headers, headersonly=True)
+            self.reply = self.errcode, self.errmsg, headers
             return "received server response", True
         return "receiving server response", False
 
     def getmeta(self):
         assert self.state == META
-        if not self.readahead:
+        if not self.reply:
             x, y = self.pollmeta(None)
             while not y:
                 x, y = self.pollmeta(None)
-        file = StringIO.StringIO(self.readahead)
-        errcode, errmsg, headers = self.h.getreply(file)
         self.state = DATA
-        self.readahead = file.read()
-        return errcode, errmsg, headers
+        return self.reply
 
     def polldata(self):
         assert self.state == DATA
