@@ -385,7 +385,7 @@ class PacketUnpacker:
 
         hdl = self.u.unpack_string()
 
-        options = self.u.unpack_item_array()
+        options = self.unpack_item_array()
 
         ntypes = self.u.unpack_uint()
         types = []
@@ -693,7 +693,7 @@ class HashTable:
     def hash_handle(self, hdl):
         """Hash a handle to a tuple describing a handle server bucket.
 
-        Return an 8-tuple containing the bucket fields:
+        Return a 7-tuple containing the bucket fields:
             slot no
             weight
             ipaddr (transformed to a string in dot notation)
