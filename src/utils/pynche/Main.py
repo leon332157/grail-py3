@@ -121,12 +121,12 @@ def initial_color(s, colordb):
 def build(master=None, initialcolor=None, initfile=None, ignore=None):
     # create the windows and go
     for f in RGB_TXT:
-	try:
-	    colordb = ColorDB.get_colordb(f)
+        try:
+            colordb = ColorDB.get_colordb(f)
             if colordb:
                 break
-	except IOError:
-	    pass
+        except IOError:
+            pass
     else:
         usage(1, 'No color database file found, see the -d option.')
 
@@ -160,33 +160,33 @@ def build(master=None, initialcolor=None, initfile=None, ignore=None):
 
 def run(app, s):
     try:
-	app.start()
+        app.start()
     except KeyboardInterrupt:
-	pass
+        pass
 
 
 
 def main():
     try:
-	opts, args = getopt.getopt(
+        opts, args = getopt.getopt(
             sys.argv[1:],
             'hd:i:Xv',
             ['database=', 'initfile=', 'ignore', 'help', 'version'])
     except getopt.error, msg:
-	usage(1, msg)
+        usage(1, msg)
 
     if len(args) == 0:
         initialcolor = None
     elif len(args) == 1:
         initialcolor = args[0]
     else:
-	usage(1)
+        usage(1)
 
     ignore = 0
     initfile = os.path.expanduser('~/.pynche')
     for opt, arg in opts:
-	if opt in ('-h', '--help'):
-	    usage(0)
+        if opt in ('-h', '--help'):
+            usage(0)
         elif opt in ('-v', '--version'):
             print '''\
 Pynche -- The PYthon Natural Color and Hue Editor.
@@ -194,8 +194,8 @@ Contact: Barry Warsaw
 Email:   bwarsaw@python.org
 Version: %s''' % __version__
             sys.exit(0)
-	elif opt in ('-d', '--database'):
-	    RGB_TXT.insert(0, arg)
+        elif opt in ('-d', '--database'):
+            RGB_TXT.insert(0, arg)
         elif opt in ('-X', '--ignore'):
             ignore = 1
         elif opt in ('-i', '--initfile'):

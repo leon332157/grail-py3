@@ -906,7 +906,7 @@ def _get_height(tw):
         # convinced this algorithm always works.
         loopcnt = loopcnt + 1
         if loopcnt > 25:
-		return 10	# just assume *something*
+            return 10	# just assume *something*
             #raise BadMojoError  #(tw.winfo_height())
         linecount = linecount + 1
         tw['height'] = linecount
