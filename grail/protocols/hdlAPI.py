@@ -85,7 +85,7 @@ def parse_handle(hdl):
             else:
                 value = urllib.parse.unquote(value)
             d[key.lower()] = value
-    return urllib.parse.unquote(hdl), d
+    return urllib.parse.unquote(hdl, 'latin-1').encode('latin-1'), d
 
 class hdl_access(nullAPI.null_access):
 
@@ -167,13 +167,15 @@ class hdl_access(nullAPI.null_access):
 
     def formatter(self, alterego=None):
         if len(self._items) == 1 and self._items[0][0] == hdllib.HDL_TYPE_URL:
-            return 302, 'Moved', {'location': self._items[0][1]}
+            location = self._items[0][1].decode('latin-1')
+            return 302, 'Moved', {'location': location}
         if len(self._items) == 0:
             self._data = b"Handle not resolved to anything\n"
             return 404, 'Handle not resolved to anything', {}
         data = HTML_HEADER.format_map(self._msgattrs)
         for type, uri in self._items:
             if type == hdllib.HDL_TYPE_URL:
+                uri = uri.decode('latin-1')
                 text = '<LI><A HREF={}>{}</A>\n'.format(
                     saxutils.quoteattr(uri), saxutils.escape(uri))
             else:

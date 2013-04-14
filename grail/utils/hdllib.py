@@ -69,7 +69,7 @@ DEBUG = 0                               # Default debugging flag
 
 # Internal constants
 # XXX These need reorganizing
-HANDLE_SERVICE_ID = 'HDL' + 13*' ' # Yes the spaces are important
+HANDLE_SERVICE_ID = b'HDL' + 13*b' ' # Yes the spaces are important
 HASH_TABLE_FILE_FALLBACK = 'hdl_hash.tbl'
 DEFAULT_GLOBAL_SERVER = "hs.handle.net"
 # XXX It is not guaranteed that IP addresses listed here will be the
@@ -222,7 +222,7 @@ class PacketPacker:
         self.p.pack_int(err)
 
     def pack_body(self, hdl, flags = [], types = [], replyport = 0,
-                  replyaddr = '\0\0\0\0'):
+                  replyaddr = bytes(4)):
         """Pack the packet body (preceded by its length)."""
 
         # Build the body first, so we can include its length
@@ -232,7 +232,7 @@ class PacketPacker:
         p.pack_uint(len(flags))
         for flag in flags:
             p.pack_uint(flag)
-            p.pack_opaque(chr(1))
+            p.pack_opaque(b"\x01")
         p.pack_uint(len(types)) 
         for type in types:
             p.pack_uint(type)
@@ -641,7 +641,7 @@ class HashTable:
         admin_port = u.unpack_int()
         secondary_slot_no = u.unpack_int()
 
-        ipaddr = ".".join(map(repr, map(ord, ip_address)))
+        ipaddr = ".".join(map(str, ip_address))
 
         if self.debug:
             print("Hash bucket index:", index)
@@ -704,7 +704,7 @@ class HashTable:
         """
 
         if self.num_of_bits > 0:
-            if hdl[:2] == '//': hdl = hdl[2:]
+            if hdl[:2] == b'//': hdl = hdl[2:]
             hdl = hdl.upper()
             digest = hashlib.md5(hdl).digest()
             u = xdrlib.Unpacker(digest)
@@ -859,7 +859,7 @@ class HashTable:
 
 
 def hexstr(s):
-    """Convert a string to hexadecimal."""
+    """Convert a byte string to hexadecimal."""
     return binascii.hexlify(s).decode("ascii")
 
 
@@ -869,7 +869,7 @@ def fetch_global_hash_table(ht=None, debug=DEBUG):
     if debug: print("Fetching global hash table")
     if not ht:
         ht = HashTable(server=DEFAULT_GLOBAL_SERVER, debug=debug)
-    flags, items = ht.get_data("/service-pointer",
+    flags, items = ht.get_data(b"/service-pointer",
                                command=HP_HASH_REQUEST,
                                response=HP_HASH_RESPONSE)
     hashtable = None
@@ -899,7 +899,7 @@ def fetch_local_hash_table(hdl, ht=None, debug=DEBUG):
     # 1. Get the authority name
     hdl = get_authority(hdl)
     # 2. Prefix the "ha.auth/" authority
-    hdl = "ha.auth/" + hdl
+    hdl = b"ha.auth/" + hdl
     if debug: print("Requesting handle", repr(hdl))
     # 3. Create a HashTable object if none is provided
     if not ht: ht = HashTable(debug=debug)
@@ -949,8 +949,8 @@ def fetch_local_hash_table(hdl, ht=None, debug=DEBUG):
 
 def get_authority(hdl):
     """Return the authority name for a handle."""
-    if hdl[:2] == "//": hdl = hdl[2:]
-    hdl = hdl.split('/', 1)[0]
+    if hdl[:2] == b"//": hdl = hdl[2:]
+    hdl = hdl.split(b'/', 1)[0]
     return hdl.lower()
 
 
@@ -1088,6 +1088,7 @@ def test(defargs = testsets[0]):
 
     for hdl in args:
         print("Handle:", repr(hdl))
+        hdl = hdl.encode("latin-1")
 
         try:
             replyflags, items = ht.get_data(
@@ -1110,12 +1111,7 @@ def test(defargs = testsets[0]):
 
         if debug: print(replyflags, items)
 
-        bits = 0
-        i = 0
-        for c in replyflags:
-            bits = bits | (ord(c) << i)
-            i = i + 8
-
+        bits = int.from_bytes(replyflags, "little")
         print("flags:", hex(bits), end="")
         for i in range(8 * len(replyflags)):
             if bits & (1<<i):
