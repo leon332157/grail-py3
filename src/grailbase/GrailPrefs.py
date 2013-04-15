@@ -159,7 +159,7 @@ class AllPreferences:
         Silently ignores unregistered callbacks."""
         try:
             self.callbacks[group].remove(callback)
-        except ValueError, KeyError:
+        except (ValueError, KeyError):
             pass
 
     # Getting:

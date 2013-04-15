@@ -393,7 +393,7 @@ class Framework:
         for (g, c), (type_nm, uiget, uiset) in self.collection.items():
             try:
                 uiset(prefsgetter(g, c, type_nm, factory))
-            except TypeError, ValueError:
+            except (TypeError, ValueError):
                 e, v, tb = sys.exc_type, sys.exc_value, sys.exc_traceback
                 self.app.root.report_callback_exception(e, v, tb)
         self.poll_modified()
@@ -428,7 +428,7 @@ class Framework:
                 if (type(val) == StringType) and (type_nm != 'string'):
                     val = typify(val, type_nm)
                 prefsset(g, c, val)
-        except TypeError, ValueError:
+        except (TypeError, ValueError):
             # Reject the value registered in the UI, notify, and fail save:
             e, v, tb = sys.exc_type, sys.exc_value, sys.exc_traceback
             self.app.root.report_callback_exception(e, v, tb)
