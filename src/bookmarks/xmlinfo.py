@@ -66,12 +66,12 @@ def get_xml_info(buffer):
 
 
 def dump_info(values):
-    format = "%%%ds: %%s" % max(map(len, FieldLabels.__dict__.values()))
+    width = max(map(len, FieldLabels.__dict__.values()))
     for field_name in FieldNames:
         value = getattr(values, field_name)
         label = getattr(FieldLabels, field_name)
         if value is not None:
-            print format % (label, value)
+            print "%*s: %s" % (width, label, value)
 
 
 def main():
