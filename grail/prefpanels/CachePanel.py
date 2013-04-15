@@ -3,10 +3,10 @@
 __version__ = "$Revision: 1.14 $"
 
 # Base class for the panel:
-import PrefsPanels
+from .. import PrefsPanels
 
 from Tkinter import *
-import tktools
+from .. import tktools
 
 
 class CachePanel(PrefsPanels.Framework):

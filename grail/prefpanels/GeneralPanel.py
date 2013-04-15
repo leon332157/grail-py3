@@ -3,7 +3,7 @@
 __version__ = "$Revision: 1.20 $"
 
 # Base class for the panel:
-import PrefsPanels
+from .. import PrefsPanels
 
 from Tkinter import *
 
@@ -68,7 +68,7 @@ class GeneralPanel(PrefsPanels.Framework):
  
         # History preference
 
-        from History import VIEW_BY_TITLES, VIEW_BY_URLS
+        from ..History import VIEW_BY_TITLES, VIEW_BY_URLS
 
         viewby = StringVar(frame)
         viewbyframe = Frame(frame)

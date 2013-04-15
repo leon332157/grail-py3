@@ -3,7 +3,7 @@
 __version__ = "$Revision: 1.18 $"
 
 # Base class for the panel:
-import PrefsPanels
+from .. import PrefsPanels
 
 from Tkinter import *
 

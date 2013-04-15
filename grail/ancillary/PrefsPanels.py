@@ -5,7 +5,7 @@ Loads preference modules from GRAILROOT/prefpanels/*Panel.py and
 
 __version__ = "$Revision: 2.37 $"
 
-import sys, os
+import sys
 from functools import reduce
 
 from .grailbase import GrailPrefs
@@ -14,22 +14,13 @@ typify = GrailPrefs.typify
 import urlparse
 from Tkinter import *
 from . import tktools
-from . import grailutil
 import re
 import pkgutil
+from . import prefpanels
 from imp import reload
 
 
 PANEL_CLASS_NAME_SUFFIX = 'Panel'
-
-grail_root = grailutil.get_grailroot()
-
-# User's panels dir should come after sys, so user's takes precedence.
-panels_dirs = [os.path.join(grail_root, 'prefpanels'),
-               os.path.expanduser("~/.grail/prefpanels"),
-               # These two for backwards compat with beta versions:
-               os.path.join(grail_root, 'prefspanels'),
-               os.path.expanduser("~/.grail/prefspanels")]
 
 modname_matcher = re.compile(r'^(.*)Panel$')
 
@@ -566,10 +557,11 @@ class PrefsPanelsMenu:
 
         For multiple panels with the same name, the last one found is used."""
         got = {}
-        for finder, modname, _ in pkgutil.iter_modules(panels_dirs):
+        for finder, modname, _ in pkgutil.iter_modules(prefpanels.__path__):
             match = modname_matcher.match(modname)
             if match:
                 name = match.group(1).replace("_", " ")
+                modname = "{}.{}".format(prefpanels.__name__, modname)
                 got[name] = ((name.strip(), modname, finder))
         return got.values()
                     

@@ -3,10 +3,10 @@
 __version__ = "$Revision: 1.13 $"
 
 # Base class for the dialog:
-import PrefsPanels
+from .. import PrefsPanels
 
 from Tkinter import *
-import grailutil
+from .. import grailutil
 
 class ProxiesPanel(PrefsPanels.Framework):
     """Network preferences related to redirection of URL streams."""

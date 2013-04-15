@@ -2,10 +2,10 @@
 
 __version__ = '$Revision: 1.11 $'
 
-import PrefsPanels
+from .. import PrefsPanels
 from Tkinter import *
 
-from BookmarksGUI import \
+from ..BookmarksGUI import \
      NEW_AT_BEG, \
      NEW_AT_END, \
      NEW_AS_CHILD, \

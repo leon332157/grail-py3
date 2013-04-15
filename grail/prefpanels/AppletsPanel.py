@@ -2,9 +2,9 @@
 
 from Tkinter import *
 
-import tktools
+from .. import tktools
 
-import PrefsPanels
+from .. import PrefsPanels
 
 LABEL = "\
 Enter applet group names (host names, or domain names with leading dot):"

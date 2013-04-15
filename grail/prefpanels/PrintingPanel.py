@@ -2,8 +2,8 @@
 
 __version__ = "$Revision: 1.12 $"
 
-import grailutil
-import PrefsPanels
+from .. import grailutil
+from .. import PrefsPanels
 import Tkinter
 
 
@@ -57,8 +57,8 @@ class PrintingPanel(PrefsPanels.Framework):
                               label_width=LABEL_WIDTH)
         # paper size:
         var = StringSetVar()
-        import printing.paper
-        sizes = printing.paper.paper_sizes.keys()
+        from ..printing import paper
+        sizes = paper.paper_sizes.keys()
         sizes.sort()
         sizes = map(str.capitalize, sizes)
         self.PrefsOptionMenu(frame, "Paper size: ", GROUP, 'paper-size',
@@ -66,7 +66,7 @@ class PrintingPanel(PrefsPanels.Framework):
                              variable=StringSetVar())
         # page orientation:
         var = StringSetVar()
-        opts = printing.paper.paper_rotations.keys()
+        opts = paper.paper_rotations.keys()
         opts.sort()
         opts = map(str.capitalize, opts)
         self.PrefsOptionMenu(frame, "Orientation: ", GROUP, 'orientation',
