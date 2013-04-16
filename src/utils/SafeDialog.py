@@ -31,18 +31,15 @@ class Dialog:
             self.root.grab_set()
         except TclError:
             print "*** Grab failed ***"
-        try:
-            self.root.mainloop()
-        except SystemExit:
-            pass
+        self.root.mainloop()
         self.root.destroy()
 
     def default_done(self, event):
-        raise SystemExit
+        self.root.quit()
 
     def done(self, num):
         self.num = num
-        raise SystemExit
+        self.root.quit()
 
 def _test():
         d = Dialog(root,  title='File Modified',

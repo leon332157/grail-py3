@@ -159,10 +159,8 @@ class LoginDialog:
         self.root.grab_set()
 
     def go(self):
-        try:
-            self.root.mainloop()
-        except SystemExit:
-            return self.user_passwd
+        self.root.mainloop()
+        return self.user_passwd
 
     def user_return_event(self, event):
         self.passwd_entry.focus_set()
@@ -182,5 +180,5 @@ class LoginDialog:
 
     def goaway(self):
         self.root.destroy()
-        raise SystemExit
+        self.root.quit()
 

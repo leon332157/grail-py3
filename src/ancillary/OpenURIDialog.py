@@ -49,25 +49,29 @@ class OpenURIDialog:
         focuswin = self.__entry.focus_get()
         self.__frame.grab_set()
         self.__entry.focus_set()
-        try:
-            self.__frame.mainloop()
-        except SystemExit, (uri, new):
-            self.__frame.grab_release()
-            focuswin.focus_set()
-            self.__frame.destroy()
-            if uri:
-                uri = ''.join(uri.split())
-                self.__class__.__lasturi = uri
-            return uri, new
+        self.__frame.mainloop()
+        self.__frame.grab_release()
+        focuswin.focus_set()
+        self.__frame.destroy()
+        if self.__uri:
+            self.__uri = ''.join(self.__uri.split())
+            self.__class__.__lasturi = self.__uri
+        return self.__uri, self.__new
 
     def okaycmd(self, event=None):
-        raise SystemExit, (self.__entry.get(), 0)
+        self.__uri = self.__entry.get()
+        self.__new = 0
+        self.__frame.quit()
 
     def newcmd(self, event=None):
-        raise SystemExit, (self.__entry.get(), 1)
+        self.__uri = self.__entry.get()
+        self.__new = 1
+        self.__frame.quit()
 
     def clearcmd(self, event=None):
         self.__entry.delete(0, END)
 
     def cancelcmd(self, event=None):
-        raise SystemExit, (None, 0)
+        self.__uri = None
+        self.__new = 0
+        self.__frame.quit()
