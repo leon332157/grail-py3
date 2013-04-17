@@ -16,11 +16,8 @@ Introduction
     changed the name because these days, too many other systems have
     the acronym `ICE'.
 
-    Pynche has been tested with Python 1.5.1 using Tk 8.0.  It
-    probably works with Python 1.5.  I've tested it on both Solaris
-    2.6 and Windows NT.  There are some funky things that happen on
-    Windows but I think they are primarily Tk problems.  You'll want
-    to be sure to have Tk 8.0.3 for Windows.  Also, Pynche is very
+    Pynche probably works with Python 3.0.
+    I've tested Pynche on both Solaris 2.6 and Windows NT.  Pynche is very
     colormap intensive, so it doesn't work very well on 8-bit graphics
     cards.  I'll probably fix that in the future.
 

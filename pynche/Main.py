@@ -12,7 +12,7 @@ Tkinter provides such a nice programming environment, with enough power, that
 I finally buckled down and implemented it.  I changed the name because these
 days, too many other systems have the acronym `ICE'.
 
-This program currently requires Python 1.5 with Tkinter.  It has only been
+This program currently requires Python 3.0 with Tkinter.  It has only been
 tested on Solaris 2.6.  Feedback is greatly appreciated.  Send email to
 bwarsaw@python.org
 

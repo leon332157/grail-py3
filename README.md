@@ -1,8 +1,21 @@
-﻿Notes:
+﻿This version of Grail has been modified to work with Python 3.  The major
+changes include:
 
 * Applets don’t work because the _rexec_ and _Bastion_ modules have been
 removed.
-* Also, HTTPS does not work.
+* Requires features of Python 3.3.  The source code has been updated to use
+new data types and standard library features, and support for prior Python
+versions has been dropped.
+* The pickle bookmarks format is not compatible with the older version.  Any
+old bookmarks cache file (~/.grail/grail-bookmarks.pkl) should be removed.
+This should normally be fine because the bookmarks are also saved in a
+Netscape file by default.
+* The modules have been incorporated into a package named _grail_.  The
+package and modules within it can be invoked using the “python3 -m” option.
+
+Notes:
+
+* HTTPS does not work.
 
 *******************************************************************************
 
@@ -72,25 +85,20 @@ currently, the oldest Tcl/Tk version supported is 8.0.  You can get
 Tcl/Tk it at <http://www.scriptics.com/>; or try [ftp to ftp.sunlabs.com
 in directory /pub/tcl/](ftp://ftp.sunlabs.com/pub/tcl/).
 
-- Install Python 1.5 (or newer if available), configured for use with
+- Install Python 3.3 (or newer if available), configured for use with
 Tk.  The URL to get Python is <http://www.python.org/>; or try [ftp to
 ftp.python.org in directory
 /pub/python/src/](ftp://ftp.python.org/pub/python/src/).  You must enable Tk
-support by editing the file _Modules/Setup_; see the comments in that
-file (search for _tkinter_) and the main README that comes with Python.
+support.
 
-- Install the Grail sources in a convenient place.  Grail is executed
-directly from its source directory.  If you are using the /usr/local
-hierarchy, the Grail sources could be installed in
-/usr/local/lib/grail/.
+- Install the Grail sources in a convenient place, preferably in Python’s
+module search path.  If you are using the /usr/local hierarchy, the _grail_
+package could be installed in /usr/local/lib/site-python/.
 
-You can also choose to leave grail.py unchanged and have a shell
-script named _grail_ which execs the Python interpreter, e.g.:
+You can also choose to have a shell script named _grail_ which execs the
+Python interpreter, e.g.:
 
-    exec python /usr/local/lib/grail/grail.py ${1+"$@"}
-
-(On Windows or Macintosh systems, the best thing to do is to create a
-shortcut or alias to the file grail.py on the desktop.)
+    exec python3 -m grail "$@"
 
 ### Optional dependencies ###
 
@@ -116,11 +124,9 @@ The following commands are required for Telnet URLs.
 Using Grail
 -----------
 
-If the first line of the grail.py script points to a working Python
-interpreter with Tk support, you should be able to start Grail by
-executing “`./grail.py`” in the Grail source directory.  Grail figures
-out where the source directory is by inspecting `sys.argv[0]`, so in
-fact typing the pathname to the script from anywhere should work.
+Grail can be invoked by running the _grail_ module as a script:
+
+    python3 -m grail
 
 ### Command line options ###
 
