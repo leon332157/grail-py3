@@ -757,61 +757,6 @@ class Reader(BaseReader):
         return None
 
 
-class LoginDialog:
-
-    def __init__(self, master, netloc, realmvalue):
-        self.root = tktools.make_toplevel(master,
-                                          title="Authentication Dialog")
-        self.prompt = Label(self.root,
-                            text="Enter user authentication\nfor %s on %s" %
-                            (realmvalue, netloc))
-        self.prompt.pack(side=TOP)
-        self.user_entry, dummy = tktools.make_form_entry(self.root, "User:")
-        self.user_entry.focus_set()
-        self.user_entry.bind('<Return>', self.user_return_event)
-        self.passwd_entry, dummy = \
-                           tktools.make_form_entry(self.root, "Password:")
-        self.passwd_entry.config(show="*")
-        self.passwd_entry.bind('<Return>', self.ok_command)
-        self.ok_button = Button(self.root, text="OK", command=self.ok_command)
-        self.ok_button.pack(side=LEFT)
-        self.cancel_button = Button(self.root, text="Cancel",
-                                    command=self.cancel_command)
-        self.cancel_button.pack(side=RIGHT)
-
-        self.user_passwd = None
-
-        tktools.set_transient(self.root, master)
-
-        self.root.grab_set()
-
-    def go(self):
-        try:
-            self.root.mainloop()
-        except SystemExit:
-            return self.user_passwd
-
-    def user_return_event(self, event):
-        self.passwd_entry.focus_set()
-
-    def ok_command(self, event=None):
-        user = string.strip(self.user_entry.get())
-        passwd = string.strip(self.passwd_entry.get())
-        if not user:
-            self.root.bell()
-            return
-        self.user_passwd = user + ':' + passwd
-        self.goaway()
-
-    def cancel_command(self):
-        self.user_passwd = None
-        self.goaway()
-
-    def goaway(self):
-        self.root.destroy()
-        raise SystemExit
-
-
 from formatter import AS_IS
 
 
