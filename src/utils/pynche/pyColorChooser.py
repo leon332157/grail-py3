@@ -82,7 +82,7 @@ def save():
 if __name__ == '__main__':
     class Tester:
         def __init__(self):
-            from Tkinter import *
+            from Tkinter import Tk, Button, Label
             self.__root = tk = Tk()
             b = Button(tk, text='Choose Color...', command=self.__choose)
             b.pack()
