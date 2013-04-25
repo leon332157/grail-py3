@@ -157,24 +157,24 @@ class FrameSet:
         if available < 0 or available > 0 and not (percent or star):
             for i, (number, type) in enumerate(sizelist):
                 if not type:
-                    number = number * total / fixed
+                    number = number * total // fixed
                     sizelist[i] = number, type
             available = 0
         if percent or star:
             scale = 100
             if percent:
-                requested = total * percent / scale
+                requested = total * percent // scale
                 if requested > available or requested < available and not star:
-                    scale = percent * total / requested
-                    requested = total * percent / scale
+                    scale = percent * total // requested
+                    requested = total * percent // scale
                 available = max(0, available - requested)
             for i, (number, type) in enumerate(sizelist):
                 if type == '%':
-                    number = total * number / scale
+                    number = total * number // scale
                     sizelist[i] = number, type
                     fixed = fixed + number
                 elif type == '*':
-                    number = available * number / star
+                    number = available * number // star
                     sizelist[i] = number, type
 
         list = []

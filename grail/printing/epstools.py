@@ -45,17 +45,17 @@ class EPSImage:
                (self.__height * self.__yscale)
 
     def set_size(self, width, height):
-        self.__xscale = float(width) / self.__width
-        self.__yscale = float(height) / self.__height
+        self.__xscale = width / self.__width
+        self.__yscale = height / self.__height
 
     def set_width(self, width):
         aspect = self.__yscale / self.__xscale
-        self.__xscale = float(width) / self.__width
+        self.__xscale = width / self.__width
         self.__yscale = self.__xscale * aspect
 
     def set_height(self, height):
         aspect = self.__xscale / self.__yscale
-        self.__yscale = float(height) / self.__height
+        self.__yscale = height / self.__height
         self.__xscale = self.__yscale * aspect
 
 

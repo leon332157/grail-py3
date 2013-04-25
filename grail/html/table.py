@@ -584,8 +584,8 @@ class Table(AttrElem):
                 # apportion the min/max widths to each of the
                 # consituent columns (this is how Arena does it as per
                 # the latest Table HTML spec).
-                maxwidth = cell.maxwidth() / cell.colspan
-                minwidth = cell.minwidth() / cell.colspan
+                maxwidth = cell.maxwidth() // cell.colspan
+                minwidth = cell.minwidth() // cell.colspan
                 for col_i in range(col, col + cell.colspan):
                     maxwidths[col_i] = max(maxwidths[col_i], maxwidth) + bw
                     minwidths[col_i] = max(minwidths[col_i], minwidth) + bw
@@ -671,7 +671,7 @@ class Table(AttrElem):
             adjustedwidths = [0] * colcount
             for col in range(colcount):
                 d = maxwidths[col] - minwidths[col]
-                adjustedwidths[col] = minwidths[col] + d * W / D
+                adjustedwidths[col] = minwidths[col] + d * W // D
             cellwidths = adjustedwidths
 
         # calculate column heights.  this should be done *after*
@@ -688,7 +688,7 @@ class Table(AttrElem):
                 for w in cellwidths[col:col + cell.colspan]:
                     cellwidth = cellwidth + w
                 cell.situate(width=cellwidth)
-                cellheight = _safe_mojo_height(cell) / cell.rowspan
+                cellheight = _safe_mojo_height(cell) // cell.rowspan
                 for row_i in range(row, min(rowcount, row + cell.rowspan)):
                     cellheights[row_i] = max(cellheights[row_i], cellheight)
 
@@ -998,8 +998,8 @@ class ContainedText(AttrElem):
                 # divide by 200 since padding is a percentage and we
                 # want to put equal amounts of pad on both sides of
                 # the picture.
-                padding = int(table.get_available_width() *
-                              int(padding[:-1]) / 200)
+                padding = (table.get_available_width() *
+                              int(padding[:-1]) // 200)
             except ValueError:
                 padding = 0
         tw['padx'] = padding

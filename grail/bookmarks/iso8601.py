@@ -52,8 +52,8 @@ def tostring(t, timezone=0):
     if timezone:
         sign = "+" if (timezone < 0) else "-"
         timezone = abs(timezone)
-        hours = timezone / (60 * 60)
-        minutes = (timezone % (60 * 60)) / 60
+        hours = timezone // (60 * 60)
+        minutes = (timezone % (60 * 60)) // 60
         tzspecifier = "%c%02d:%02d" % (sign, hours, minutes)
     else:
         tzspecifier = "Z"
@@ -167,7 +167,7 @@ def __extract_tzd(m):
 
 
 def __find_julian(year, julian):
-    month = julian / 30 + 1
+    month = julian // 30 + 1
     day = julian % 30 + 1
     jday = None
     while jday != julian:

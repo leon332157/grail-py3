@@ -46,10 +46,10 @@ USER_DATA_DIR = os.path.abspath(
 
 
 def get_scaling_adjustments(w):
-    scheight = float(w.winfo_screenheight())
-    scwidth = float(w.winfo_screenwidth())
-    scheight_mm = float(w.winfo_screenmmheight())
-    scwidth_mm = float(w.winfo_screenmmwidth())
+    scheight = w.winfo_screenheight()
+    scwidth = w.winfo_screenwidth()
+    scheight_mm = w.winfo_screenmmheight()
+    scwidth_mm = w.winfo_screenmmwidth()
     vert_pixels_per_in = scheight / (scheight_mm / 25)
     horiz_pixels_per_in = scwidth / (scwidth_mm / 25)
     result = (72.0 / horiz_pixels_per_in), (72.0 / vert_pixels_per_in)

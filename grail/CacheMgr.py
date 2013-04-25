@@ -298,7 +298,7 @@ class CacheManager:
         #####
         ##### limit is hardcoded, please fix
         #####
-        if item.datalen > self.caches[0].max_size / 4:
+        if item.datalen > self.caches[0].max_size // 4:
             return False
 
         code, msg, params = item.meta

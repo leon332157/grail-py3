@@ -874,7 +874,7 @@ class TransferDisplay:
     __bytespat = "%.1f%%"
     def make_progress_bar(self, size, frame):
         self.__bytespat = "%.1f%% of " + grailutil.nicebytes(size)
-        self.__maxsize = 1.0 * size     # make it a float for future calc.
+        self.__maxsize = size
         f = Frame(frame, relief=SUNKEN, borderwidth=1, background=LIGHT_BLUE,
                   height=20, width=202)
         f.pack(pady='1m')
@@ -901,7 +901,7 @@ class TransferDisplay:
         self.__bytes['text'] = datasize
         if self.__progbar:
             self.__progbar.config(
-                width=max(1, int(datasize * (200 / self.__maxsize))))
+                width=max(1, datasize * 200 // self.__maxsize))
             self.__percent['text'] = (
                 self.__bytespat % (100.0 * (datasize / self.__maxsize)))
             t = time.time()

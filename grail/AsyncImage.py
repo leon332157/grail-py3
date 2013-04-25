@@ -234,11 +234,11 @@ class PILAsyncImageSupport(BaseAsyncImage):
         # determine desired size:
         if self.__width and not self.__height and self.__width != im.size[0]:
             # scale horizontally
-            self.__height = int(1.0 * im.size[1] * self.__width / im.size[0])
+            self.__height = im.size[1] * self.__width // im.size[0]
         elif self.__height and not self.__width \
              and self.__height != im.size[1]:
             # scale vertically
-            self.__width = int(1.0 * im.size[0] * self.__height / im.size[1])
+            self.__width = im.size[0] * self.__height // im.size[1]
         else:
             self.__width = self.__width or im.size[0]
             self.__height = self.__height or im.size[1]
@@ -247,9 +247,9 @@ class PILAsyncImageSupport(BaseAsyncImage):
            or (im.mode == "P" and "transparency" in im.info):
             r, g, b = self.context.viewer.text.winfo_rgb(
                 self.context.viewer.text["background"])
-            r = r / 256                 # convert these to 8-bit versions
-            g = g / 256
-            b = b / 256
+            r = r // 256                 # convert these to 8-bit versions
+            g = g // 256
+            b = b // 256
             if im.mode == "P":
                 im = p_to_rgb(im, (r, g, b))
             else:
