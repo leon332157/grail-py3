@@ -1,2 +1,4 @@
 *.pyc
-
+src/*.prof
+src/icons/eps.color/*.eps
+src/icons/eps.grey/*.eps
