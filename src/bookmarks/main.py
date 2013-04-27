@@ -7,7 +7,8 @@ Options:
     -h, --help	        Display this help message.
     -g, --guess-type    Guess type of one or more bookmark files, or stdin.
     -f, --format        Specify bookmark output format ('html' or 'xbel');
-                        default is 'html'.
+                        default is 'html', except when invoked as 'bkmk2-
+                        xbel', etc.
     -x                  Strip all personal information fields from output.
     --export fields     Strip specified personal fields from the output;
                         'fields' is a comma-separated list of fields.  The
@@ -57,7 +58,7 @@ class Options:
         }
 
     def __init__(self, args):
-        s = os.path.splitext(os.path.basename(sys.argv[0]))
+        s, _ = os.path.splitext(os.path.basename(sys.argv[0]))
         if s[:len(SCRIPT_PREFIX)] == SCRIPT_PREFIX:
             s = s[len(SCRIPT_PREFIX):]
             if valid_output_format(s):
