@@ -32,7 +32,7 @@ Licensing issues
 
 The license of Grail allows essentially unrestricted use and
 redistribution.  The full text of the license can be found in the file
-LICENSE in the _src_ directory.  The sources are Copyright © CNRI
+LICENSE in the _grail_ directory.  The sources are Copyright © CNRI
 1996–1999.  Grail is a registered trademark of CNRI.
 
 
