@@ -17,7 +17,7 @@ def init_types():
     global allowed_types
     allowed_types = {}
     if AsyncImage.isPILAllowed():
-        import Image
+        from PIL import Image
         for datatype in Image.MIME.values():
             type, subtype = string.splitfields(datatype, '/')
             if type == "image":

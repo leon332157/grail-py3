@@ -137,8 +137,8 @@ def load_image_internal(img_fn, greyscale, eps_fn):
 
 def load_image_pil(img_fn, greyscale, eps_fn):
     """Use PIL to generate EPS."""
-    import Image, _imaging              # _imaging to make sure we have a
-    import traceback                    # full PIL installation.
+    from PIL import Image
+    import traceback
     try:
         im = Image.open(img_fn)
         format = im.format
