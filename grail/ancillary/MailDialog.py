@@ -10,7 +10,7 @@ user-defined handling of the mailto: scheme to subclass this dialog.
 """
 __version__ = '$Revision: 2.5 $'
 
-import cgi
+import urllib.parse
 from . import grailutil
 import os
 import rfc822
@@ -72,7 +72,7 @@ class MailDialog:
         # query semantics may be used to identify header field values
         scheme, netloc, path, params, query, fragment = urlparse(address)
         address = urlunparse((scheme, netloc, path, '', '', ''))
-        headers = cgi.parse_qs(query)
+        headers = urllib.parse.parse_qs(query)
         # create widgets
         self.master = master
         self.root = tktools.make_toplevel(self.master,
