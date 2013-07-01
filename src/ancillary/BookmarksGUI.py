@@ -1021,7 +1021,10 @@ class BookmarksController(OutlinerController):
         try:
             list = self._listbox.curselection()
             if len(list) > 0:
-                selection = string.atoi(str(list[0]))
+                # Workaround for Bug 869780, "curselection() in Tkinter.py
+                # should return ints", http://bugs.python.org/issue869780
+                selection = int(list[0])
+                
                 return self.viewer().node(selection), selection
         except AttributeError: pass
         return node, selection

@@ -41,7 +41,7 @@ class WidthMagic:
         #  Getting the 'padx' option of the text widget needs to be done
         #  here for an as-yet undetermined reason.
         return int(self.__text.winfo_width() - self.__removable
-                   - (2 * string.atoi(str(self.__text["padx"]))))
+                   - (2 * self.__text["padx"]))
 
     def get_requested_widths(self):
         return self.__abswidth, self.__percentwidth

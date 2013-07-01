@@ -239,7 +239,10 @@ class HistoryDialog:
             self._frame.bell()
 
     def _load_url(self, which, context):
-        selection = string.atoi(which)
+        # Workaround for Bug 869780, "curselection() in Tkinter.py should
+        # return ints", http://bugs.python.org/issue869780
+        selection = int(which)
+        
         last = self._listbox.index(END)
         pos = last - selection - 1
         context.load_from_history(self._history.peek(pos=pos))
