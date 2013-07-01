@@ -354,28 +354,17 @@ class CacheManager:
         - get rid of the fragment identifier
 
         """
-        scheme, netloc, path, params, query, fragment = urlparse.urlparse(url)
-        i = string.find(netloc, '@')
-        if i > 0:
-            userpass = netloc[:i]
-            netloc = netloc[i+1:]    # delete the '@'
-        else:
-            userpass = ""
-        scheme = string.lower(scheme)
-        netloc = string.lower(netloc)
-        i = string.find(netloc, ':')
-        if i >= 0:
-            try:
-                port = string.atoi(netloc[i+1:])
-            except string.atoi_error:
-                port = None
-        else:
+        parsed = urlparse.urlparse(url)
+        try:
+            port = parsed.port
+        except ValueError:
             port = None
-        if scheme == 'http' and port == 80:
-            netloc = netloc[:i]
-        elif type(port) == type(0):
-            netloc = netloc[:i] + ":%d" % port
-        return urlparse.urlunparse((scheme, netloc, path, params, query, ""))
+        if port is None or parsed.scheme == 'http' and port == 80:
+            netloc = parsed.hostname
+        else:
+            netloc = parsed.hostname + ":%d" % port
+        return urlparse.urlunparse((parsed.scheme, netloc, parsed.path,
+            parsed.params, parsed.query, ""))
 
 
 class DiskCacheEntry:
