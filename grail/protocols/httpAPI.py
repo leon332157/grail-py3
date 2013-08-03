@@ -93,6 +93,12 @@ class http_access:
             host = user_passwd
             auth = None
         self.h = http.client.HTTPConnection(host)
+        
+        # Grail does not currently seem to handle HTTP 1.1's persistent
+        # connections, nor chunked transfer encoding
+        self.h._http_vsn = 10
+        self.h._http_vsn_str = 'HTTP/1.0'
+        
         self.h.putrequest(method, self.selector)
         self.h.putheader('User-agent', GRAILVERSION)
         if auth:
