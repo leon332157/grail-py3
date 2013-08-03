@@ -121,7 +121,7 @@ def main(args=None):
         except ImportError as e:
             # Only catch this if grailrc itself doesn't import,
             # otherwise propagate.
-            if e.args[0].split()[-1] != "grailrc":
+            if e.name != "grailrc":
                 raise
         except:
             app.exception_dialog('during import of startup file')
