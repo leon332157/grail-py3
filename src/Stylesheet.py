@@ -47,7 +47,7 @@ class Stylesheet:
         self.dictify_group(massaged)
 
     def __getattr__(self, composite):
-        """Make the self.attr dict keys look like class attributes."""
+        """Make the self.attrs dict keys look like class attributes."""
         try:
             attr = string.splitfields(composite, '.')[0]
             return self.attrs[attr]
