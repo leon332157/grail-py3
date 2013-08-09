@@ -317,7 +317,7 @@ class ftpwrapper:
                 cmd = 'RETR ' + unquote(file)
                 conn = self.ftp.transfercmd(cmd)
             except ftplib.error_perm, reason:
-                if reason[:3] != '550':
+                if str(reason)[:3] != '550':
                     raise IOError, ('ftp error', reason)
             else:
                 self.content_length = self.ftp._xfer_size
