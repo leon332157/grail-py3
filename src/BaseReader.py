@@ -46,7 +46,7 @@ class BaseReader:
 
         self.context.addreader(self)
 
-        self.fno = None   # will be assigned by start
+        self.fno = -1   # will be assigned by start
         self.killed = False
 
         # Only http_access has delayed startup property.

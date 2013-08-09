@@ -110,7 +110,7 @@ class ftp_access:
                 type = 'i'
         if dirs and not dirs[0]: dirs = dirs[1:]
         key = (user, host, port, '/'.join(dirs))
-        self.debuglevel = None
+        self.debuglevel = 0
         try:
             ftpcache.setdefault(key, [])
             for attr in attrs:
