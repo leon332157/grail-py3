@@ -2,7 +2,7 @@
 __version__ = "$Revision: 1.6 $"
 
 import AsyncImage
-import HTMLParser
+from sgml import HTMLParser
 import string
 import Tkinter
 
