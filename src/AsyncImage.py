@@ -31,8 +31,9 @@ class ImageTempFileReader(TempFileReader):
         'image/x-xbitmap':
             'xbmtopbm | ppmtogif -transparent "#FFFFFF" 2>/dev/null',
         'image/tiff':
-            """(T=${TMPDIR-/usr/tmp}/@$$.tiff; cat >$T;
-                tifftopnm $T 2>/dev/null; rm -f $T)""",
+            """(T=${TMPDIR-/tmp}/@$$.tiff; cat >$T;
+                tifftopnm $T 2>/dev/null; rm -f $T) |
+                ppmtogif -transparent "#FFFFFF" 2>/dev/null""",
         'image/png':
             # This requires pngtopnm which isn't standard netpbm yet
             'pngtopnm | ppmtogif -transparent "#FFFFFF" 2>/dev/null',
