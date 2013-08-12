@@ -91,6 +91,23 @@ script named _grail_ which execs the Python interpreter, e.g.:
 (On Windows or Macintosh systems, the best thing to do is to create a
 shortcut or alias to the file grail.py on the desktop.)
 
+### Optional dependencies ###
+
+Grail normally uses the Python Imaging Library (PIL) to display some image
+formats. If it is unable to use PIL, it uses the following commands instead,
+if available.
+
+- djpeg
+- xbmtopbm
+- pngtopnm
+- tifftopnm
+- ppmtogif
+
+The following commands are required for Telnet URLs.
+
+- xterm
+- telnet
+
 
 Using Grail
 -----------
