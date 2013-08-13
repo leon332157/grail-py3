@@ -345,6 +345,9 @@ class GzipWrapper:
 # forbids it), but it's never a good idea to ignore the possibility.
 #
 transfer_decoding_wrappers = {
+    "7bit": None,
+    "8bit": None,
+    "binary": None,
     "quoted-printable": QuotedPrintableWrapper,
     }
 
@@ -388,7 +391,9 @@ def wrap_parser(parser, ctype, content_encoding=None, transfer_encoding=None):
     if content_encoding:
         parser = content_decoding_wrappers[content_encoding](parser)
     if transfer_encoding:
-        parser = transfer_decoding_wrappers[transfer_encoding](parser)
+        decoder = transfer_decoding_wrappers[transfer_encoding]
+        if decoder:
+            parser = decoder(parser)
     return parser
     
 
@@ -568,10 +573,7 @@ class Reader(BaseReader):
                 content_encoding = encoding
         real_content_type = content_type or "unknown"
         real_content_encoding = content_encoding
-        if (transfer_encoding
-            and not transfer_decoding_wrappers.has_key(transfer_encoding)) \
-            or (content_encoding
-                and not content_decoding_wrappers.has_key(content_encoding)):
+        if not support_encodings(content_encoding, transfer_encoding):
             # XXX provisional hack -- change content type to octet stream
             content_type = "application/octet-stream"
             transfer_encoding = None
