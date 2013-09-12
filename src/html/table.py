@@ -88,7 +88,7 @@ class TableSubParser:
             parser.save_bgn()
             ti.caption.freeze()
             parser.pop_formatter()
-            ti.caption.finish()
+            ti.caption.finish(ti)
 
     def do_colgroup(self, parser, attrs):
         ti = self._lasttable 
@@ -184,7 +184,7 @@ class TableSubParser:
         ti = self._lasttable
         if ti and ti.lastcell:
             ti.lastcell.freeze()
-            ti.lastcell.finish()
+            ti.lastcell.finish(ti)
             ti.lastcell = None
             # tosses any dangling text not in a caption or explicit cell
             parser.save_bgn()
@@ -928,7 +928,6 @@ class ContainedText(AttrElem):
     """
     def __init__(self, table, parentviewer, attrs):
         AttrElem.__init__(self, attrs)
-        self._table = table
         self._container = table.container
 
 ##      from profile import Profile
@@ -1004,7 +1003,7 @@ class ContainedText(AttrElem):
         self._maxwidth = maxwidth
         return len(self._viewer.subwindows)
 
-    def finish(self, padding=0):
+    def finish(self, table, padding=0):
         # TBD: if self.layout == AUTOLAYOUT???
         self._x = self._y = 0
         fw = self._fw
@@ -1016,7 +1015,7 @@ class ContainedText(AttrElem):
                 # divide by 200 since padding is a percentage and we
                 # want to put equal amounts of pad on both sides of
                 # the picture.
-                padding = int(self._table.get_available_width() *
+                padding = int(table.get_available_width() *
                               string.atoi(padding[:-1]) / 200)
             except ValueError:
                 padding = 0
@@ -1066,8 +1065,8 @@ class Caption(ContainedText):
                 ['top', 'bottom', 'left', 'right']) or 'top'
         self.align = self.attribute('align', conv=conv_align)
 
-    def finish(self, padding=0):
-        ContainedText.finish(self, padding=0)
+    def finish(self, table, padding=0):
+        ContainedText.finish(self, table, padding=0)
         # set the style of the contained text
         self._viewer.text.tag_add('contents', 1.0, END)
         self._viewer.text.tag_config('contents', justify=CENTER)
@@ -1156,8 +1155,8 @@ class Cell(ContainedText):
     def is_empty(self):
         return not self._tw.get(1.0, 'end - 1 c')
 
-    def finish(self, padding=0):
-        ContainedText.finish(self, padding=self.cellpadding)
+    def finish(self, table, padding=0):
+        ContainedText.finish(self, table, padding=self.cellpadding)
 
 
 class TDCell(Cell):
@@ -1168,8 +1167,8 @@ class THCell(Cell):
         # TBD: this should be extracted from stylesheets and/or preferences
         self._parser.get_formatter().push_font((None, None, 1, None))
 
-    def finish(self):
-        Cell.finish(self)
+    def finish(self, table):
+        Cell.finish(self, table)
         self._tw.tag_add('contents', 1.0, END)
         self._tw.tag_config('contents', justify=CENTER)
 
