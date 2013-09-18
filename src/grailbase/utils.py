@@ -40,7 +40,7 @@ def gethome():
                 pwent = pwd.getpwuid(os.getuid())
             else:
                 pwent = pwd.getpwnam(user)
-            home = pwent[6]
+            home = pwent.pw_dir
         return home
     except (KeyError, ImportError):
         return os.curdir

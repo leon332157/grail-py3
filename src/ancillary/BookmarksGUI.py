@@ -65,7 +65,7 @@ def username():
     except KeyError:
         try:
             import pwd
-            name = pwd.getpwuid(os.getuid())[4] + "'s"
+            name = pwd.getpwuid(os.getuid()).pw_gecos + "'s"
         except (ImportError, AttributeError):
             name = 'Your'
     return name
