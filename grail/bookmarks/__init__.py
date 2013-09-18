@@ -101,8 +101,8 @@ __formats = {
     #                  short-name   extension
     "html":          (br'<!DOCTYPE\s+(GRAIL|NETSCAPE)-Bookmark-file-1',
                       "html",      ".html",	"html"),
-    "pickle":        (br'#.*GRAIL-Bookmark-file-[234]',
-                      "pickle",    ".pkl",	"xbel"),
+    "pickle":        (br'#.*GRAIL-Bookmark-file-[5]',
+                      "pickle",    ".pkl5",	"xbel"),
     "xbel":          (br'<(\?xml|!DOCTYPE)\s+xbel',
                       "xbel",      ".xml",	"xbel"),
     }

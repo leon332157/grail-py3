@@ -9,7 +9,7 @@ from io import TextIOWrapper
 
 
 class Writer(BookmarkWriter):
-    HEADER_STRING = "# GRAIL-Bookmark-file-4 (cache pickle format)\n"
+    HEADER_STRING = "# GRAIL-Bookmark-file-5 (cache pickle format)\n"
     _filetype = "pickle"
 
     __filename = ""

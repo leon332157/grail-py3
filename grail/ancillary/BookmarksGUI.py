@@ -154,7 +154,7 @@ class BMSaveDialog(filedialog.SaveFileDialog, FileDialogExtras):
         elif filetype == "XBEL":
             pat = "*.xml"
         else:
-            pat = "*.pkl"
+            pat = "*.pkl5"
         if pat != oldpat:
             self.set_filter(dir, pat)
         if filetype not in ("HTML", "XBEL"):

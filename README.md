@@ -6,10 +6,9 @@ removed.
 * Requires features of Python 3.3.  The source code has been updated to use
 new data types and standard library features, and support for prior Python
 versions has been dropped.
-* The pickle bookmarks format is not compatible with the older version.  Any
-old bookmarks cache file (~/.grail/grail-bookmarks.pkl) should be removed.
-This should normally be fine because the bookmarks are also saved in a
-Netscape file by default.
+* The pickle bookmarks filename suffix is now “.pkl5”, because the format is
+not compatible with the older version.  This should normally be fine because
+the bookmarks will be loaded from a Netscape file by default.
 * The modules have been incorporated into a package named _grail_.  The
 package and modules within it can be invoked using the “python3 -m” option.
 
