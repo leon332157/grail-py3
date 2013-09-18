@@ -95,22 +95,9 @@ def pref_or_getenv(name, group='proxies', type_name='string',
 
     app = get_grailapp()
 
-    if type_name == 'string':
-        component = app.prefs.Get(group, name, factory=factory)
-        if len(component) or factory:
-            return component
-    elif type_name == 'int':
-        component = app.prefs.GetInt(group, name, factory=factory)
+    component = app.prefs.GetTyped(group, name, type_name, factory=factory)
+    if type_name != 'string' or len(component) or factory:
         return component
-    elif type_name == 'Boolean':
-        component = app.prefs.GetBoolean(group, name, factory=factory)
-        return component
-    elif type_name == 'float':
-        component = app.prefs.GetFloat(group, name, factory=factory)
-        return component
-    else:
-        raise ValueError, ('%s not supported - must be one of %s'
-                      % (`type_name`, ['string', 'int', 'float', 'Boolean']))
 
     import os
     try:
