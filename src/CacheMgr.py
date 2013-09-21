@@ -187,17 +187,21 @@ class CacheManager:
             api = None
         if api:
             # creating reference to cached item
-            if reload:
-                item = SharedItem(url, mode, params, self, key, data, api,
-                                 reload=reload)
-                self.touch(key)
-            elif not self.fresh_p(key):
-                item = SharedItem(url, mode, params, self, key, data, api,
-                                 refresh=self.items[key].lastmod)
-                self.touch(key,refresh=1)
-            else:
-                item = SharedItem(url, mode, params, self, key, data, api)
-                
+            try:
+                if reload:
+                    item = SharedItem(url, mode, params, self, key, data,
+                                     api, reload=reload)
+                    self.touch(key)
+                elif not self.fresh_p(key):
+                    item = SharedItem(url, mode, params, self, key, data,
+                                     api, refresh=self.items[key].lastmod)
+                    self.touch(key,refresh=1)
+                else:
+                    item = SharedItem(url, mode, params, self, key, data,
+                        api)
+            except:
+                api.close()
+                raise
         else:
             # cause item to be loaded (and perhaps cached)
             item = SharedItem(url, mode, params, self, key, data)
