@@ -190,7 +190,7 @@ class PILAsyncImageSupport(BaseAsyncImage):
 
     def __init__(self, context, url, reload=False, width=None, height=None,
     **kw):
-        import ImageTk
+        from PIL import ImageTk
         self.setup(context, url, reload)
         master = kw.get("master")
         if master is None:
@@ -221,7 +221,7 @@ class PILAsyncImageSupport(BaseAsyncImage):
         return self.url, self.__width, self.__height
 
     def set_file(self, filename):
-        import Image
+        from PIL import Image
         try:
             im = Image.open(filename)
             im.load()                   # force loading to catch IOError
@@ -289,7 +289,7 @@ def p_to_rgb(im, rgb):
         The RGB-value to use for the transparent areas.  This should be
         a 3-tuple of integers, 8 bits for each band.
     """
-    import Image
+    from PIL import Image
     new_im = Image.new("RGB", im.size, rgb)
     point_mask = [0xff] * 256
     point_mask[im.info['transparency']] = 0
@@ -307,7 +307,7 @@ def rgba_to_rgb(im, rgb):
         The RGB-value to use for the transparent areas.  This should be
         a 3-tuple of integers, 8 bits for each band.
     """
-    import Image
+    from PIL import Image
     new_im = Image.new("RGB", im.size, rgb)
     new_im.paste(im, None, im)
     return new_im
@@ -319,7 +319,7 @@ def xbm_to_rgba(im):
     im
         The XBM image.
     """
-    import Image
+    from PIL import Image
     # invert & mask so we get transparency
     mapping = [255] * 256
     mapping[255] = 0
@@ -329,16 +329,9 @@ def xbm_to_rgba(im):
 
 def pil_installed():
     # Determine if the Python Imaging Library is available.
-    #
-    # Note that "import Image" is not sufficient to test the availability of
-    # the image loading capability.  Image can be imported without _imaging
-    # and still supports identification of file types.  Grail requires _imaging
-    # to support image loading.
-    #
     try:
-        import _imaging
-        import Image
-        import ImageTk
+        from PIL import Image
+        from PIL import ImageTk
     except ImportError:
         return False
     # Now check the integration with Tk:
@@ -367,7 +360,7 @@ def AsyncImage(context, url, reload=False, **kw):
     #
     global AsyncImage
     if isPILAllowed():
-        import ImageTk
+        from PIL import ImageTk
         class PILAsyncImage(PILAsyncImageSupport, ImageTk.PhotoImage):
             pass
         AsyncImage = PILAsyncImage
