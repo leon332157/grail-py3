@@ -60,7 +60,7 @@ LISTING_PATTERN = (
         "[ \\t]+"                        # spaces
     ")"                                # end group 2
     "("                                # group 3
-        "([^-]\|-[^>])+"              # lots of chars, but not symlink
+        "([^-]|-[^>])+"              # lots of chars, but not symlink
     ")"                                # end group 3
     "("                                # optional group 5
         "[ \\t]+->.*"                    # spaces followed by symlink 
