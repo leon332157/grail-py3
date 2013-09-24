@@ -234,7 +234,7 @@ bookmarks--open-details-on-add: 0
 # show-optional-buttons can be 0=false, 1=true
 bookmarks--show-navigation-buttons: 1
 # name of the "current" bookmark file;
-# empty if it should be selected automatcally.
+# empty if it should be selected automatically.
 bookmarks--bookmark-file:
 #
 # History defaults
