@@ -95,8 +95,11 @@ shortcut or alias to the file grail.py on the desktop.)
 ### Optional dependencies ###
 
 Grail normally uses the Python Imaging Library (PIL) to display some image
-formats. It also uses the _djpeg_ command for JPEG images. If it is unable to
-use PIL, it uses the following commands instead, if available.
+formats. This version is tested with the “Pillow” fork. Grail also uses the
+_djpeg_ command for JPEG images. 
+
+If Grail is unable to use PIL, it uses the following commands instead,
+if available.
 
 - djpeg
 - xbmtopbm

@@ -291,8 +291,13 @@ def p_to_rgb(im, rgb):
     """
     from PIL import Image
     new_im = Image.new("RGB", im.size, rgb)
+    
     point_mask = [0xff] * 256
-    point_mask[im.info['transparency']] = 0
+    if isinstance(im.info['transparency'], int):
+        point_mask[im.info['transparency']] = 0
+    else:  # Workaround for new palleted alpha PNG support in PIL
+        point_mask[:len(im.info['transparency'])] = im.info['transparency']
+    
     new_im.paste(im, None, im.point(point_mask, '1'))
     return new_im
 
