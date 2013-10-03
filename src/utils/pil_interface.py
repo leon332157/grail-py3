@@ -11,6 +11,22 @@
 #			Grail implementation; removed timimg display.
 #
 
+"""
+This is an extremely rudimentary interface between Grail 0.3b1 and PIL
+0.1.  Among other things, it doesn't work for inline images.
+
+To handle other file formats, just copy the image_tiff.py file to,
+say, image_jpeg, image_gif, image_bmp, image_ppm, image_sgi,
+image_sun, image_pcx, image_xbm, etc... (and make sure to change the
+class name within the file as well).
+
+Hopefully, future versions of Grail will let me register multiple
+formats with a single module, and use the same code for inline images
+as well.
+
+	/F
+"""
+
 import Image, ImageTk
 import Tkinter
 import string, StringIO
