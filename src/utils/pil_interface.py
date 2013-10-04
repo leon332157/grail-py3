@@ -27,11 +27,11 @@ as well.
 	/F
 """
 
-import Image, ImageTk
+from PIL import Image, ImageTk
 import Tkinter
 import string, StringIO
-
-import time
+import grailutil
+import os.path
 
 from formatter import AS_IS
 
@@ -72,11 +72,12 @@ class pil_interface:
 		im.load() # benchmark decoding
 		tkim = ImageTk.PhotoImage(im.mode, im.size)
 		tkim.paste(im)
-		self.label.image = tkim.image
+		self.label.image = tkim
 		self.label.config(image = self.label.image)
 	    except:
 		self.broken = 1
 	if self.broken:
-	    self.label.image = Tkinter.PhotoImage(file = 'icons/sadsmiley.gif')
+	    file = grailutil.which(os.path.join('icons', 'sadsmiley.gif'))
+	    self.label.image = Tkinter.PhotoImage(file = file)
 	    self.label.config(image = self.label.image)
 	    self.viewer.text.insert(Tkinter.END, '\nBroken Image!')

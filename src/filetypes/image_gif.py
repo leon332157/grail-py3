@@ -39,10 +39,6 @@ class pil_interface:
 try:
     from PIL import Image
     from PIL import ImageTk
-    
-    # Found in PIL versions 0.2b3 to 0.3a4, e.g.
-    # http://web.archive.org/web/http://www.pythonware.com/downloads/Imaging-0.3a4.tar.gz
-    # TODO: Should probably be included with Grail
     from pil_interface import pil_interface
 except ImportError:
     _use_pil = 0
