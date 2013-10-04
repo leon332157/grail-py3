@@ -38,7 +38,7 @@ class pil_interface:
 try:
     from PIL import Image
     from PIL import ImageTk
-    from pil_interface import pil_interface
+    from ..pil_interface import pil_interface
 except ImportError:
     _use_pil = False
 else:

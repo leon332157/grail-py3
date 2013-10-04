@@ -28,9 +28,9 @@ as well.
 """
 
 from PIL import Image, ImageTk
-import Tkinter
-import string, StringIO
-import grailutil
+import tkinter
+import StringIO
+from . import grailutil
 import os.path
 
 from formatter import AS_IS
@@ -44,40 +44,40 @@ class pil_interface:
 
     """
     
-    def __init__(self, viewer, reload=0):
-	self.broken = 0
-	self.viewer = viewer
-	self.viewer.new_font((AS_IS, AS_IS, AS_IS, 1))
-	self.label = Tkinter.Label(self.viewer.text, text="<decoding>",
+    def __init__(self, viewer, reload=False):
+        self.broken = False
+        self.viewer = viewer
+        self.viewer.new_font((AS_IS, AS_IS, AS_IS, True))
+        self.label = tkinter.Label(self.viewer.text, text="<decoding>",
                                    background=viewer.text.cget("background"),
                                    highlightthickness=0)
-	self.viewer.add_subwindow(self.label)
-	self.buf = []
+        self.viewer.add_subwindow(self.label)
+        self.buf = []
 
     def feed(self, data):
-	try:
-	    self.buf.append(data)
-	    # FIXME: try to identify the file; as soon as this succeeds,
-	    # start decoding data as it arrives
-	except IOError, (errno, errmsg):
-	    self.buf = []
-	    self.broken = 1
-	    raise IOError, (errno, errmsg)
+        try:
+            self.buf.append(data)
+            # FIXME: try to identify the file; as soon as this succeeds,
+            # start decoding data as it arrives
+        except IOError:
+            self.buf = []
+            self.broken = True
+            raise
 
     def close(self):
-	if self.buf:
-	    try:
-		self.buf = string.joinfields(self.buf, "")
-		im = Image.open(StringIO.StringIO(self.buf))
-		im.load() # benchmark decoding
-		tkim = ImageTk.PhotoImage(im.mode, im.size)
-		tkim.paste(im)
-		self.label.image = tkim
-		self.label.config(image = self.label.image)
-	    except:
-		self.broken = 1
-	if self.broken:
-	    file = grailutil.which(os.path.join('icons', 'sadsmiley.gif'))
-	    self.label.image = Tkinter.PhotoImage(file = file)
-	    self.label.config(image = self.label.image)
-	    self.viewer.text.insert(Tkinter.END, '\nBroken Image!')
+        if self.buf:
+            try:
+                self.buf = "".join(self.buf)
+                im = Image.open(StringIO.StringIO(self.buf))
+                im.load() # benchmark decoding
+                tkim = ImageTk.PhotoImage(im.mode, im.size)
+                tkim.paste(im)
+                self.label.image = tkim
+                self.label.config(image = self.label.image)
+            except:
+                self.broken = True
+        if self.broken:
+            file = grailutil.which(os.path.join('icons', 'sadsmiley.gif'))
+            self.label.image = tkinter.PhotoImage(file = file)
+            self.label.config(image = self.label.image)
+            self.viewer.text.insert(tkinter.END, '\nBroken Image!')
