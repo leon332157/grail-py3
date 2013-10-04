@@ -19,14 +19,15 @@ DEFAULT_NETSCAPE_BM_FILE = os.path.join(gethome(), '.netscape-bookmarks.html')
 base = os.path.join(getgraildir(), 'grail-bookmarks.')
 DEFAULT_GRAIL_BM_FILE_HTML = base + "html"
 DEFAULT_GRAIL_BM_FILE_XBEL = base + "xml"
-DEFAULT_GRAIL_BM_FILE = DEFAULT_GRAIL_BM_FILE_XBEL
 del base
+
+DEFAULT_GRAIL_BM_FORMAT = "xbel"
+DEFAULT_GRAIL_BM_FILE = DEFAULT_GRAIL_BM_FILE_XBEL
 
 # Don't change this; this is the only one that makes sense here!
 CACHE_FORMAT = "pickle"
 
 BOOKMARKS_FILES = [
-#    os.path.splitext(DEFAULT_GRAIL_BM_FILE)[0], # "native" pickled format
     DEFAULT_GRAIL_BM_FILE_XBEL,
     DEFAULT_GRAIL_BM_FILE_HTML,
     DEFAULT_NETSCAPE_BM_FILE,
@@ -115,7 +116,6 @@ class BMSaveDialog(filedialog.SaveFileDialog, FileDialogExtras):
         FileDialogExtras.__init__(self, self.top)
         self.__create_widgets(master)
         self.set_filetype(
-            "html" or
             controller._app.prefs.Get("bookmarks", "default-save-format"))
 
     def __create_widgets(self, master):
@@ -163,7 +163,7 @@ class BMSaveDialog(filedialog.SaveFileDialog, FileDialogExtras):
 
 
 class BookmarksIO:
-    __format = "html"	#None
+    __format = DEFAULT_GRAIL_BM_FORMAT
 
     def __init__(self, frame, controller):
         self.__controller = controller
@@ -222,6 +222,8 @@ class BookmarksIO:
             loader = BMLoadDialog(self.__frame, self.__controller)
             fname, ext = os.path.splitext(filename)
             filename = loader.go(filename, "*" + ext, key="bookmarks")
+        if not filename:
+            return None, None
         cachename = (os.path.splitext(filename)[0]
                      + bookmarks.get_default_extension(CACHE_FORMAT))
         if (cachename != filename
@@ -256,18 +258,16 @@ class BookmarksIO:
                     self.set_format(format)
                     return root, reader
         # load the file
-        root = reader = None
-        if filename:
-            try:
-                fp, reader = self.__open_file_for_reading(filename)
-            except IOError:
-                # only ENOENT is passed through like this
-                fp, reader = self.__open_url_for_reading(filename)
-            with fp:
-                root = reader.read_file(fp)
-            if not req_filename:
-                # only set this if the filename wasn't passed in:
-                self.set_filename(filename)
+        try:
+            fp, reader = self.__open_file_for_reading(filename)
+        except IOError:
+            # only ENOENT is passed through like this
+            fp, reader = self.__open_url_for_reading(filename)
+        with fp:
+            root = reader.read_file(fp)
+        if not req_filename:
+            # only set this if the filename wasn't passed in:
+            self.set_filename(filename)
         return root, reader
 
     def __save_to_file(self, root, filename):

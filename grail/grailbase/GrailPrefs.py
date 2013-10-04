@@ -162,9 +162,9 @@ class AllPreferences:
                 return self.sys.Get(group, cmpnt)
 
     def GetTyped(self, group, cmpnt, type_name, factory=False):
-        """Get preference, using CONVERTER to convert to type NAME.
+        """Get preference, converted to given type.
 
-        Optional SYS true means get system default value.
+        Optional FACTORY true means get system default value.
 
         Raise KeyError if not found, TypeError if value is wrong type."""
         val = self.Get(group, cmpnt, factory)

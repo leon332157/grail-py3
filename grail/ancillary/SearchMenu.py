@@ -12,7 +12,7 @@ class SearchMenu:
     conforms to the following interface:
 
     search_for_pattern(pattern, regex_flag, case_flag, backwards_flag)
-        Searchs for the pattern, returning true if the search
+        Searches for the pattern, returning true if the search
         succeeded, false if it failed.  This search module will ring
         the bell if no hit was found.
 

@@ -8,6 +8,7 @@ from .Cursors import *
 from collections import Iterable
 from urllib.parse import urljoin, urlparse
 from .Stylesheet import UndefinedStyle
+from functools import partial
 
 
 MIN_IMAGE_LEADER = "\240"               # Non-spacing space
@@ -441,7 +442,7 @@ class Viewer(formatter.AbstractWriter):
             self.popup_menu = ViewerMenu(self.text, self)
         self.popup_menu.set_link_url(link_url)
         self.popup_menu.set_image_url(image_url)
-        self.popup_menu.tk_popup(event.x_root, event.y_root)
+        self.popup_menu.tk_popup(event.x_root, event.y_root, self)
 
     def resize_event(self, event=None):
         for func in self.resize_interests:
@@ -875,7 +876,6 @@ class ViewerMenu:
     def __init__(self, master, viewer):
         self.__menu = menu = Menu(master, tearoff=0)
         self.__context = context = viewer.context
-        self.__viewer = viewer
         menu.add_command(label="Back in Frame", command=context.go_back)
         menu.add_command(label="Forward in Frame",
                          command=context.go_forward)
@@ -898,20 +898,20 @@ class ViewerMenu:
         menu.add_command(label="Save Frame As...",
                          command=context.save_document)
         self.__last_standard_index = menu.index(END)
-        menu.bind("<Unmap>", self.__unmap)
+        menu.bind("<Unmap>", partial(self.__unmap, viewer))
 
-    def tk_popup(self, x, y):
+    def tk_popup(self, x, y, viewer):
         # update the "Forward in Frame" item
         context = self.__context
         future, page = context.history.peek(+1)
         self.__menu.entryconfig(1, state=(NORMAL if page else DISABLED))
         #
         # update the "Back in Frame" item
-        viewer = self.__viewer
+        parent = viewer
         future, page = context.history.peek(-1)
-        while viewer.parent and not page:
-            viewer = viewer.parent
-            context = viewer.context
+        while parent.parent and not page:
+            parent = parent.parent
+            context = parent.context
             future, page = context.history.peek(-1)
         self.__menu.entryconfig(0, state=(NORMAL if page else DISABLED))
         #
@@ -929,9 +929,9 @@ class ViewerMenu:
                 self.__menu.delete(self.__last_standard_index + 1, END)
                 self.__have_link = self.__have_image = False
             if need_link:
-                self.__add_link_items()
+                self.__add_link_items(viewer)
             if need_image:
-                self.__add_image_items()
+                self.__add_image_items(viewer)
             self.__menu.update_idletasks()
         self.__menu.tk_popup(x, y)
 
@@ -947,7 +947,7 @@ class ViewerMenu:
         else:
             self.__image_file = ""
 
-    def __add_image_items(self):
+    def __add_image_items(self, viewer):
         self.__have_image = True
         self.__menu.add_separator()
         self.__image_prev = self.__image_file
@@ -956,9 +956,9 @@ class ViewerMenu:
         label = "Save Image {}...".format(self.__image_file)
         self.__menu.add_command(label=label, command=self.__save_image)
         self.__menu.add_command(label="Copy Image Location",
-                                command=self.__select_image_url)
+            command=partial(self.__select_image_url, viewer))
 
-    def __add_link_items(self):
+    def __add_link_items(self, viewer):
         self.__have_link = True
         self.__menu.add_separator()
         self.__menu.add_command(label="Bookmark Link",
@@ -966,21 +966,21 @@ class ViewerMenu:
         self.__menu.add_command(label="Print Link...",
                                 command=self.__print_link)
         self.__menu.add_command(label="Save Link As...",
-                                command=self.__save_link)
+                                command=partial(self.__save_link, viewer))
         self.__menu.add_command(label="Copy Link Location",
-                                command=self.__select_link_url)
+            command=partial(self.__select_link_url, viewer))
 
     __selection = ''
-    def __select_image_url(self, event=None):
-        self.__select(self.__context.get_baseurl(self.__image_url))
+    def __select_image_url(self, viewer, event=None):
+        self.__select(viewer, self.__context.get_baseurl(self.__image_url))
 
-    def __select_link_url(self, event=None):
-        self.__select(self.__context.get_baseurl(self.__link_url))
+    def __select_link_url(self, viewer, event=None):
+        self.__select(viewer, self.__context.get_baseurl(self.__link_url))
 
-    def __select(self, selection):
+    def __select(self, viewer, selection):
         self.__selection = selection
-        self.__viewer.text.selection_handle(self.__selection_handler)
-        self.__viewer.text.selection_own()
+        viewer.text.selection_handle(self.__selection_handler)
+        viewer.text.selection_own()
 
     def __selection_handler(self, offset, maxbytes):
         offset = int(offset)
@@ -1003,8 +1003,8 @@ class ViewerMenu:
         context.print_document()
         context.browser.remove()
 
-    def __save_link(self, event=None):
-        self.__viewer.remove_temp_tag(
+    def __save_link(self, viewer, event=None):
+        viewer.remove_temp_tag(
             histify=self.__context.save_document(self.__link_url))
 
     def __open_image(self, event=None):
@@ -1038,9 +1038,9 @@ class ViewerMenu:
         br.context = context
         return context
 
-    def __unmap(self, event=None):
+    def __unmap(self, viewer, event=None):
         if self.__link_url:
-            self.__viewer.remove_temp_tag()
+            viewer.remove_temp_tag()
 
     def __open_in_new(self, event=None):
         from .Browser import Browser

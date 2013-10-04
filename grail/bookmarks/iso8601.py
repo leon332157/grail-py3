@@ -137,8 +137,8 @@ def __extract_time(m):
         raise ValueError("illegal minutes number: " + m.group("minutes"))
     seconds = m.group("seconds")
     if seconds:
-        seconds = float(seconds)
-        if not 0 <= seconds <= 59:
+        seconds = int(float(seconds))
+        if not 0 <= seconds < 60:
             raise ValueError("illegal seconds number: " + m.group("seconds"))
     else:
         seconds = 0
