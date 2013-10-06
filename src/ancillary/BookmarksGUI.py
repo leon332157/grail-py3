@@ -225,6 +225,8 @@ class BookmarksIO:
             loader = BMLoadDialog(self.__frame, self.__controller)
             fname, ext = os.path.splitext(filename)
             filename = loader.go(filename, "*" + ext, key="bookmarks")
+        if not filename:
+            return None, None
         cachename = (os.path.splitext(filename)[0]
                      + bookmarks.get_default_extension(CACHE_FORMAT))
         if (cachename != filename
@@ -261,18 +263,16 @@ class BookmarksIO:
                     self.set_format(format)
                     return root, reader
         # load the file
-        root = reader = None
-        if filename:
-            try:
-                fp, reader = self.__open_file_for_reading(filename)
-            except IOError, error:
-                # only ENOENT is passed through like this
-                fp, reader = self.__open_url_for_reading(filename)
-            root = reader.read_file(fp)
-            fp.close()
-            if not req_filename:
-                # only set this if the filename wasn't passed in:
-                self.set_filename(filename)
+        try:
+            fp, reader = self.__open_file_for_reading(filename)
+        except IOError, error:
+            # only ENOENT is passed through like this
+            fp, reader = self.__open_url_for_reading(filename)
+        root = reader.read_file(fp)
+        fp.close()
+        if not req_filename:
+            # only set this if the filename wasn't passed in:
+            self.set_filename(filename)
         return root, reader
 
     def __save_to_file(self, root, filename):
