@@ -377,7 +377,7 @@ class TkListboxViewer(OutlinerViewer):
 
     def _select(self, index):
         last = self._listbox.index(END)
-        if not (0 <= index < last): index = 0
+        if index is None or not (0 <= index < last): index = 0
         self._listbox.select_clear(0, END)
         self._listbox.select_set(index)
         self._listbox.activate(index)
