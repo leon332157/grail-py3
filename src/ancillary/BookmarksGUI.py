@@ -117,7 +117,6 @@ class BMSaveDialog(FileDialog.SaveFileDialog, FileDialogExtras):
         FileDialogExtras.__init__(self, self.top)
         self.__create_widgets(master)
         self.set_filetype(
-            "html" or
             controller._app.prefs.Get("bookmarks", "default-save-format"))
 
     def __create_widgets(self, master):
