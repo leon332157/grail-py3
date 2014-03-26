@@ -555,7 +555,7 @@ class DiskCache:
         current contents and use_order from the log.
 
         A version number is included, but currently we only assert
-        that a the version number read is the same as the current
+        that the version number read is the same as the current
         version number.
         """
         logpath = os.path.join(self.directory, 'LOG')

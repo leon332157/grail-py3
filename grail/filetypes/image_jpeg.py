@@ -16,7 +16,7 @@ if hasattr(os, 'popen') and _FILTERPATH:
     
         """Parser for image/jpeg files.
     
-        Collect all the data on a temp file and then create an in-line
+        Collect all the data in a temp file and then create an in-line
         image from it.
     
         """
