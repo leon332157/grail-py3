@@ -100,7 +100,9 @@ def close_subprocess(proc):
     """Close a process opened by the "subprocess" module
     
     Ignores broken pipe error when flushing and closing the process's input
-    pipe and the stream is buffered."""
+    pipe and the stream is buffered. This function is used since neither
+    proc.communicate() nor proc.__exit__() seem to clean up the process after
+    a broken pipe. See <https://bugs.python.org/issue21619>."""
     try:
         proc.stdin.close()
     except BrokenPipeError:
