@@ -120,14 +120,14 @@ class PSFont:
         # bold-italic version, `B' *must* preceed `I'.  See header.ps
         # for more info.
         self.docfonts = {
-            'FONTV':   '%s%s' % (vrealname, vreg),
-            'FONTVB':  '%s-%s' % (vrealname, vbold),
-            'FONTVI':  '%s-%s' % (vrealname, vitalic),
-            'FONTVBI': '%s-%s%s' % (vrealname, vbold, vitalic),
-            'FONTF':   '%s%s' % (frealname, freg),
-            'FONTFB':  '%s-%s' % (frealname, fbold),
-            'FONTFI':  '%s-%s' % (frealname, fitalic),
-            'FONTFBI': '%s-%s%s' % (frealname, fbold, fitalic)
+            'FONTV':   '{}{}'.format(vrealname, vreg),
+            'FONTVB':  '{}-{}'.format(vrealname, vbold),
+            'FONTVI':  '{}-{}'.format(vrealname, vitalic),
+            'FONTVBI': '{}-{}{}'.format(vrealname, vbold, vitalic),
+            'FONTF':   '{}{}'.format(frealname, freg),
+            'FONTFB':  '{}-{}'.format(frealname, fbold),
+            'FONTFI':  '{}-{}'.format(frealname, fitalic),
+            'FONTFBI': '{}-{}{}'.format(frealname, fbold, fitalic)
             }
         # instantiated font objects
         self.fontobjs = {}
@@ -139,8 +139,8 @@ class PSFont:
         This is the only place the nickname is computed.
         """
         sz, family, italic, bold = self.font
-        nick = "%s%s%s" % (family, bold, italic)
-##      utils.debug("get_font(): %s ==> %s\n" % (self.font, (nick, sz)))
+        nick = "{}{}{}".format(family, bold, italic)
+##      utils.debug("get_font(): {} ==> {}\n".format(self.font, (nick, sz)))
         return nick, sz
 
     def set_font(self, font_tuple):
@@ -150,7 +150,7 @@ class PSFont:
         points.  """
         # we *said* we wanted a tuple
         if font_tuple is None: font_tuple = (None, None, None, None)
-##      utils.debug("set_font(%s)\n" % (font_tuple,))
+##      utils.debug("set_font({})\n".format(font_tuple))
         set_sz, set_italic, set_bold, set_tt = font_tuple
         # get the current font and break up the tuple
         cur_sz, cur_family, cur_italic, cur_bold = self.font
@@ -189,7 +189,7 @@ class PSFont:
 
     def text_width(self, text):
 ##      width = self.tw_func(self._fontsize, text)
-##      utils.debug("%r @ %spt ==> %s" % (text, self._fontsize, width),
+##      utils.debug("{!r} @ {}pt ==> {}".format(text, self._fontsize, width),
 ##                  'charsizing')
 ##      return width
         return self.tw_func(self._fontsize, text)

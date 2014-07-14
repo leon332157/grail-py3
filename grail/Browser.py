@@ -142,9 +142,9 @@ class Browser:
                 accelerator = accelerator.upper()
         menu.add_command(label=label, command=command, underline=underline,
                          accelerator="Alt-" + accelerator)
-        self.root.bind("<Alt-%s>" % accelerator, command)
+        self.root.bind("<Alt-{}>".format(accelerator), command)
         if len(accelerator) == 1:
-            self.root.bind("<Alt-%s>" % accelerator.lower(), command)
+            self.root.bind("<Alt-{}>".format(accelerator.lower()), command)
 
     def create_menu_file(self, menu):
         self._menucmd(menu, "New Window", "N", self.new_command)
@@ -434,14 +434,14 @@ class Browser:
         self.logo_index = self.logo_index + 1
         if self.logo_last > 0 and self.logo_index > self.logo_last:
             self.logo_index = 1
-        entytyname = "grail.logo.%d" % self.logo_index
+        entytyname = "grail.logo.{}".format(self.logo_index)
         image = self.app.load_dingbat(entytyname)
         if not image:
             if self.logo_index == 1:
                 self.logo_animate = False
                 return
             self.logo_index = 1
-            entytyname = "grail.logo.%d" % self.logo_index
+            entytyname = "grail.logo.{}".format(self.logo_index)
             image = self.app.load_dingbat(entytyname)
             if not image:
                 self.logo_animate = False
@@ -492,7 +492,7 @@ class Browser:
         textwidget = self.viewer.text
         try:
             index = textwidget.index(SEL_FIRST)
-            index = '%s + %d chars' % (index, 0 if backwards_flag else 1)
+            index = '{} + {} chars'.format(index, 0 if backwards_flag else 1)
         except TclError:
             index = '1.0'
         length = IntVar(textwidget)
@@ -507,7 +507,8 @@ class Browser:
             except TclError:
                 pass
             hitlength = length.get()
-            textwidget.tag_add(SEL, hit, "%s + %s chars" % (hit, hitlength))
+            end = "{} + {} chars".format(hit, hitlength)
+            textwidget.tag_add(SEL, hit, end)
             textwidget.yview_pickplace(SEL_FIRST)
         return hit
 

@@ -121,7 +121,7 @@ def protocol_access(url, mode, params, data=None):
     else:
         access = None
     if not access:
-        raise IOError("protocol error", "no class for %s" % scheme)
+        raise IOError("protocol error", "no class for {}".format(scheme))
     try:
         if data:
             return access(resturl, mode, params, data)

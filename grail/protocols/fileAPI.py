@@ -7,10 +7,10 @@ META, DATA, DONE = 'META', 'DATA', 'DONE'
 
 LISTING_HEADER = """<HTML>
 <HEAD>
-<TITLE>Local Directory: %(url)s</TITLE>
+<TITLE>Local Directory: {url}</TITLE>
 </HEAD>
 <BODY>
-<H1>Local Directory: %(pathname)s</H1>
+<H1>Local Directory: {pathname}</H1>
 <PRE>"""
 
 LISTING_TRAILER = """</PRE>
@@ -111,7 +111,7 @@ class file_access:
         # XXX Unixism
         if self.url and self.url[-1] != '/':
             self.url = self.url + '/'
-        with os.popen("ls -l -a %s/. 2>&1" % self.pathname, "r") as fp:
+        with os.popen("ls -l -a {}/. 2>&1".format(self.pathname), "r") as fp:
             lines = fp.readlines()
         import StringIO
         import re
@@ -120,8 +120,8 @@ class file_access:
         from html import escape
         from xml.sax import saxutils
         prog = re.compile(self.listing_pattern, re.VERBOSE)
-        data = self.listing_header % {'url': self.url,
-                                      'pathname': escape(self.pathname)}
+        data = self.listing_header.format(url=self.url,
+                                      pathname=escape(self.pathname))
         for line in lines:
             if line[-1] == '\n': line = line[:-1]
             m = prog.match(line)
@@ -138,7 +138,7 @@ class file_access:
                     name = name + '/'
                 if not href.endswith('/'):
                     href = href + '/'
-            line = '%s%s<A HREF=%s>%s</A>\n' % (
+            line = '{}{}<A HREF={}>{}</A>\n'.format(
                 mode, middle, saxutils.quoteattr(href), name)
             data = data + line
         data = data + self.listing_trailer

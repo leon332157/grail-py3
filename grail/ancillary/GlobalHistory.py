@@ -43,7 +43,7 @@ def now():
 class HistoryLineReader:
     def _error(self, line):
         sys.stderr.write('WARNING: ignoring ill-formed history file line:\n')
-        sys.stderr.write('WARNING: %s\n' % line)
+        sys.stderr.write('WARNING: {}\n'.format(line))
 
 class NetscapeHistoryReader(HistoryLineReader):
     def parse_line(self, line):
@@ -180,7 +180,8 @@ class GlobalHistory:
                 if expiration and expiration > timestamp:
                     continue
                 if not title or title == url:
-                    print('%s\t%d' % (url, timestamp), file=fp)
+                    print('{}\t{}'.format(url, timestamp), file=fp)
                 else:
-                    print('%s\t%d\t%s' % (url, timestamp, title), file=fp)
+                    line = '{}\t{}\t{}'.format(url, timestamp, title)
+                    print(line, file=fp)
         self._app.unregister_on_exit(self.on_app_exit)

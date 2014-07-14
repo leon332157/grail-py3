@@ -15,11 +15,11 @@ class FontSizeVar(Tkinter.StringVar):
     _default = "10.0 / 10.7"
     def get(self):
         sizes = grailutil.conv_fontsize(Tkinter.StringVar.get(self))
-        return "%s / %s" % sizes
+        return "{} / {}".format(*sizes)
 
     def set(self, value):
         sizes = grailutil.conv_fontsize(value)
-        return Tkinter.StringVar.set(self, "%s / %s" % sizes)
+        return Tkinter.StringVar.set(self, "{} / {}".format(*sizes))
 
 
 class StringSetVar(Tkinter.StringVar):

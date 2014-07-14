@@ -292,7 +292,8 @@ class AppletLoader:
         elif type == ihooks.C_EXTENSION:
             m = rexec.load_dynamic(mod, filename, file)
         else:
-            raise ImportError("Unsupported module type: %r" % filename)
+            msg = "Unsupported module type: {!r}".format(filename)
+            raise ImportError(msg)
         return m
 
     def show_tb(self):
@@ -318,8 +319,8 @@ class ModuleReader(BaseReader):
     def handle_error(self, errno, errmsg, headers):
         self.apploader.context.error_dialog(
             ImportError,
-            "Applet code at URL %s not loaded (%s: %s)" %
-            (self.apploader.codeurl, errno, errmsg))
+            "Applet code at URL {} not loaded ({}: {})".format(
+            self.apploader.codeurl, errno, errmsg))
         self.apploader.close()
         self.apploader = None
         BaseReader.handle_error(self, errno, errmsg, headers)

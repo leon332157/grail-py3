@@ -2,7 +2,7 @@
 
 Contact: Barry Warsaw
 Email:   bwarsaw@python.org
-Version: %(__version__)s
+Version: {__version__}
 
 Pynche is based largely on a similar color editor I wrote years ago for the
 Sunview window system.  That editor was called ICE: the Interactive Color
@@ -16,7 +16,7 @@ This program currently requires Python 1.5 with Tkinter.  It has only been
 tested on Solaris 2.6.  Feedback is greatly appreciated.  Send email to
 bwarsaw@python.org
 
-Usage: %(PROGRAM)s [-d file] [-i file] [-X] [-v] [-h] [initialcolor]
+Usage: {PROGRAM} [-d file] [-i file] [-X] [-v] [-h] [initialcolor]
 
 Where:
     --database file
@@ -78,7 +78,7 @@ RGB_TXT = [
 
 
 def docstring():
-    return (__doc__ % globals()).rstrip()
+    return __doc__.format_map(globals()).rstrip()
 
 
 def usage(status, msg=''):
@@ -191,7 +191,7 @@ def main():
 Pynche -- The PYthon Natural Color and Hue Editor.
 Contact: Barry Warsaw
 Email:   bwarsaw@python.org
-Version: %s''' % __version__)
+Version: {}'''.format(__version__))
             sys.exit(0)
         elif opt in ('-d', '--database'):
             RGB_TXT.insert(0, arg)

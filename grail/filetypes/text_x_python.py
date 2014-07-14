@@ -47,7 +47,7 @@ class AppletEmbedding(HTMLParser.Embedding):
     def end(self):
         self.__apploader.go_for_it()
 
-ws_width = re.compile("[%s]*" % whitespace).match
+ws_width = re.compile("[{}]*".format(whitespace)).match
 
 
 class parse_text_x_python:
@@ -74,7 +74,7 @@ class parse_text_x_python:
             nodes = parser.st2list(parser.suite(self.__source), True)
         except parser.ParserError as err:
             self.__viewer.context.message(
-                "Syntax error in Python source: %s" % err)
+                "Syntax error in Python source: {}".format(err))
             return
         self.setup_tags()
         ISTERMINAL = token.ISTERMINAL
@@ -103,8 +103,9 @@ class parse_text_x_python:
                    else:
                        endpos = ()
                    if prevline != lineno:
-                       tag_add('python:comment',
-                               "%d.%d" % (prevline, prevcol), "%d.0" % lineno)
+                       start = "{}.{}".format(prevline, prevcol)
+                       end = "{}.0".format(lineno)
+                       tag_add('python:comment', start, end)
                        prevcol = 0
                        prevline = lineno
                        sourceline = sourcetext[lineno]
@@ -120,7 +121,7 @@ class parse_text_x_python:
                 else:
                     nodes = node[1:] + nodes
         # end of last token to EOF is a comment...
-        start = "%d.%d" % (prevline or 1, prevcol)
+        start = "{}.{}".format(prevline or 1, prevcol)
         tag_add('python:comment', start, Tkinter.END)
         self.__viewer.context.message_clear()
         self.tag_add = None
@@ -189,8 +190,8 @@ class parse_text_x_python:
             are not counted specially.
 
         """
-        start = "%d.%d" % (lineno, colno)
-        end = "%s + %d chars" % (start, len(nstr))
+        start = "{}.{}".format(lineno, colno)
+        end = "{} + {} chars".format(start, len(nstr))
         if self.__next_tag:
             self.tag_add(self.__next_tag, start, end)
             self.__next_tag = None
@@ -201,8 +202,8 @@ class parse_text_x_python:
             qw = 1			# number of leading/trailing quotation
             if nstr[0] == nstr[1]:	# marks -- `quote width'
                 qw = 3
-            start = "%d.%d" % (lineno, colno + qw)
-            end = "%s + %d chars" % (start, len(nstr) - (2 * qw))
+            start = "{}.{}".format(lineno, colno + qw)
+            end = "{} + {} chars".format(start, len(nstr) - (2 * qw))
             self.tag_add("python:string", start, end)
 
     # Set foreground colors from this tag==>color table:

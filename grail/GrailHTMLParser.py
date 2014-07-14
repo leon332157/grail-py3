@@ -30,7 +30,7 @@ _inited = False
 
 def init_module(prefs):
     for opt in (1, 2, 3, 4, 5, 6):
-        fmt = prefs.Get('parsing-html', 'format-h%d' % opt)
+        fmt = prefs.Get('parsing-html', 'format-h{}'.format(opt))
         HeaderNumber.set_default_format(opt - 1, literal_eval(fmt))
 
 
@@ -122,7 +122,8 @@ class GrailHTMLParser(HTMLParser):
         if href:
             atag = 'a'
             if target:
-                utag = '>%s%s%s' % (href, Viewer.TARGET_SEPARATOR, target)
+                utag = '>{}{}{}'
+                utag = utag.format(href, Viewer.TARGET_SEPARATOR, target)
             else:
                 utag = '>' + href
             self.viewer.bind_anchors(utag)
@@ -715,7 +716,7 @@ class IconicEntityLinker:
         if not self.__target:
             target = self.__viewer.context.get_target()
         if target:
-            message = "%s in %s" % (self.__url, target)
+            message = "{} in {}".format(self.__url, target)
         else:
             message = self.__url
         self.__viewer.enter_message(message)
@@ -754,7 +755,7 @@ class DynamicReloader:
     def parse(self, spec):
         a, sep, b = spec.partition(";")
         if sep:
-            spec = "%s %s" % (a, b)
+            spec = "{} {}".format(a, b)
         specitems = spec.split()
         if not specitems:
             return None, None

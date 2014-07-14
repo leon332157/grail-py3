@@ -70,7 +70,7 @@ class BaseSGMLHandler(ElementHandler):
     def unknown_charref(self, ordinal, terminator):
         """
         """
-        self.handle_data("%s%d%s" % (SGMLLexer.CRO, ordinal, terminator))
+        self.handle_data("{}{}{}".format(SGMLLexer.CRO, ordinal, terminator))
 
     def unknown_endtag(self, tag):
         """
@@ -80,12 +80,12 @@ class BaseSGMLHandler(ElementHandler):
     def unknown_entityref(self, ref, terminator):
         """
         """
-        self.handle_data("%s%s%s" % (SGMLLexer.ERO, ref, terminator))
+        self.handle_data("{}{}{}".format(SGMLLexer.ERO, ref, terminator))
 
     def unknown_namedcharref(self, ref, terminator):
         """
         """
-        self.handle_data("%s%d%s" % (SGMLLexer.CRO, ordinal, terminator))
+        self.handle_data("{}{}{}".format(SGMLLexer.CRO, ordinal, terminator))
 
     def unknown_starttag(self, tag, attrs):
         """

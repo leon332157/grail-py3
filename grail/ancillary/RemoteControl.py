@@ -144,10 +144,10 @@ if not _filename:
             host = socket.gethostname()
         if not screen:
             screen = '0'
-        XDISPLAY = '%s:%s.%s' % (host, display, screen)
+        XDISPLAY = '{}:{}.{}'.format(host, display, screen)
     _filename = os.path.join(TMPDIR,
                              os.path.join('.grail-unix',
-                                          '%s-%s' % (USER, XDISPLAY)))
+                                          '{}-{}'.format(USER, XDISPLAY)))
 
 
 class Controller:

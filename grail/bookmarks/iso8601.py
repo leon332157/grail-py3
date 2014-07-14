@@ -54,7 +54,7 @@ def tostring(t, timezone=0):
         timezone = abs(timezone)
         hours = timezone // (60 * 60)
         minutes = (timezone % (60 * 60)) // 60
-        tzspecifier = "%c%02d:%02d" % (sign, hours, minutes)
+        tzspecifier = "{}{:02}:{:02}".format(sign, hours, minutes)
     else:
         tzspecifier = "Z"
     psecs = t - int(t)
@@ -63,15 +63,15 @@ def tostring(t, timezone=0):
     if seconds or psecs:
         if psecs:
             psecs = round(psecs * 100)
-            f = "%4d-%02d-%02dT%02d:%02d:%02d.%02d%s"
+            f = "{:4}-{:02}-{:02}T{:02}:{:02}:{:02}.{:02}{}"
             v = (year, month, day, hours, minutes, seconds, psecs, tzspecifier)
         else:
-            f = "%4d-%02d-%02dT%02d:%02d:%02d%s"
+            f = "{:4}-{:02}-{:02}T{:02}:{:02}:{:02}{}"
             v = (year, month, day, hours, minutes, seconds, tzspecifier)
     else:
-        f = "%4d-%02d-%02dT%02d:%02d%s"
+        f = "{:4}-{:02}-{:02}T{:02}:{:02}{}"
         v = (year, month, day, hours, minutes, tzspecifier)
-    return f % v
+    return f.format(*v)
 
 
 def ctime(t):
@@ -95,7 +95,7 @@ __time_re = (r"""
              (?:(?P=tsep)(?P<seconds>\d\d(?:[.,]\d+)?))?"""
              + __tzd_re)
 
-__datetime_re = "%s(?:T%s)?" % (__date_re, __time_re)
+__datetime_re = "{}(?:T{})?".format(__date_re, __time_re)
 __datetime_rx = re.compile(__datetime_re, re.VERBOSE)
 
 del re

@@ -217,7 +217,7 @@ class HistoryDialog:
             if viewby == VIEW_BY_TITLES:
                 docurl, frag = urldefrag(url)
                 if frag and title != url:
-                    title = title + ' [%s]' % frag
+                    title = title + ' [{}]'.format(frag)
                 self._listbox.insert(END, title)
             elif viewby == VIEW_BY_URLS:
                 self._listbox.insert(END, url)
@@ -260,7 +260,7 @@ class HistoryDialog:
 
     def _highlight(self, event):
         self._listbox.select_clear(0, END)
-        self._listbox.select_set('@%d,%d' % (event.x, event.y))
+        self._listbox.select_set('@{},{}'.format(event.x, event.y))
 
     def _close(self, event=None):
         self._frame.withdraw()

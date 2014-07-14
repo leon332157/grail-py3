@@ -13,9 +13,9 @@ class Writer(walker.TreeWalker):
     _depth = 0
     __header = '''\
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE %s
-  PUBLIC "%s"
-         "%s">
+<!DOCTYPE {}
+  PUBLIC "{}"
+         "{}">
 '''
 
     PUBLIC_ID = XBEL_1_0_PUBLIC_ID
@@ -30,7 +30,8 @@ class Writer(walker.TreeWalker):
         root_type = root.get_nodetype().lower()
         if root_type == "folder":
             root_type = "xbel"
-        fp.write(self.__header % (root_type, self.PUBLIC_ID, self.SYSTEM_ID))
+        fp.write(self.__header.format(
+            root_type, self.PUBLIC_ID, self.SYSTEM_ID))
         self.__fp = fp
         self.write = fp.write
         self.walk()
@@ -46,17 +47,17 @@ class Writer(walker.TreeWalker):
         attrs = ''
         added = node.add_date()
         if added:
-            attrs = '\n      added="%s"' % iso8601.ctime(added)
+            attrs = '\n      added="{}"'.format(iso8601.ctime(added))
         if node.id():
             if not attrs:
                 attrs = "\n     "
-            attrs = '%s id="%s"' % (attrs, node.id())
+            attrs = '{} id="{}"'.format(attrs, node.id())
         #
         if not self._depth:
-            self.write('<xbel%s>\n' % attrs)
+            self.write('<xbel{}>\n'.format(attrs))
             if title:
-                self.write("%s  <title>%s</title>\n"
-                           % (tab, saxutils.escape(title)))
+                self.write("{}  <title>{}</title>\n".format(
+                           tab, saxutils.escape(title)))
             if info:
                 self.__write_info(info)
             if desc:
@@ -70,10 +71,10 @@ class Writer(walker.TreeWalker):
         else:
             attrs = attrs + ' folded="yes"'
         if title or info or desc or node.children():
-            self.write(tab + '<folder%s>\n' % attrs)
+            self.write(tab + '<folder{}>\n'.format(attrs))
             if title:
-                self.write("%s  <title>%s</title>\n"
-                           % (tab, saxutils.escape(title)))
+                self.write("{}  <title>{}</title>\n".format(
+                           tab, saxutils.escape(title)))
             if info:
                 self.__write_info(info)
             if desc:
@@ -82,7 +83,7 @@ class Writer(walker.TreeWalker):
             self.__close_folders.append(1)
             # children are handled through the walker
         else:
-            self.write(tab + '<folder%s/>\n' % attrs)
+            self.write(tab + '<folder{}/>\n'.format(attrs))
             self.__close_folders.append(0)
 
     def end_Folder(self, node):
@@ -101,8 +102,8 @@ class Writer(walker.TreeWalker):
         if idref is None:
             sys.stderr.write("Alias node has no referent; dropping.\n")
         else:
-            self.write('%s<alias ref="%s"/>\n'
-                       % ("  " * self._depth, idref))
+            self.write('{}<alias ref="{}"/>\n'.format(
+                       "  " * self._depth, idref))
 
     def start_Bookmark(self, node):
         date_attr = _fmt_date_attr
@@ -112,21 +113,21 @@ class Writer(walker.TreeWalker):
         desc = (node.description() or '').strip()
         idref = node.id() or ''
         if idref:
-            idref = 'id="%s"' % idref
+            idref = 'id="{}"'.format(idref)
         title = saxutils.escape(node.title() or '')
         uri = saxutils.quoteattr(node.uri() or '')
         attrs = filter(None, (idref, added, modified, visited))
         #
         tab = "  " * self._depth
-        sep = "\n%s          " % tab
+        sep = "\n{}          ".format(tab)
         attrs = sep.join(attrs)
         if attrs:
             attrs = " " + attrs
         else:
             sep = " "
-        self.write('%s<bookmark%s%shref=%s>\n' % (tab, attrs, sep, uri))
+        self.write('{}<bookmark{}{}href={}>\n'.format(tab, attrs, sep, uri))
         if title:
-            self.write("%s  <title>%s</title>\n" % (tab, title))
+            self.write("{}  <title>{}</title>\n".format(tab, title))
         if node.info():
             self.__write_info(node.info())
         if desc:
@@ -140,8 +141,8 @@ class Writer(walker.TreeWalker):
         desc = saxutils.escape(desc)
         if len(desc) > w:
             desc = _wrap_lines(desc, 70 - len(tab), indentation=len(tab) + 4)
-            desc = "%s\n%s    " % (desc, tab)
-        self.write("%s  <desc>%s</desc>\n" % (tab, desc))
+            desc = "{}\n{}    ".format(desc, tab)
+        self.write("{}  <desc>{}</desc>\n".format(tab, desc))
 
     def __write_info(self, info):
         tab = "  " * (self._depth + 1)
@@ -162,8 +163,8 @@ class Writer(walker.TreeWalker):
         append(element.tag)
         space = " "
         for attr, value in element.items():
-            append('%s%s=%s' % (space, attr, saxutils.quoteattr(value)))
-            space = "\n%s%s" % (tab, " "*len(tag))
+            append('{}{}={}'.format(space, attr, saxutils.quoteattr(value)))
+            space = "\n{}{}".format(tab, " "*len(tag))
         if not element.text and not len(element):
             append("/>")
             return
@@ -186,12 +187,12 @@ class Writer(walker.TreeWalker):
                 self.__dump_xml(citem, L, tab + "  ")
                 append("\n")
             append(tab)
-        append("</%s>" % element.tag)
+        append("</{}>".format(element.tag))
 
 
 def _fmt_date_attr(date, attrname):
     if date:
-        return '%s="%s"' % (attrname, iso8601.ctime(date))
+        return '{}="{}"'.format(attrname, iso8601.ctime(date))
     return ''
 
 
@@ -201,7 +202,7 @@ def _wrap_lines(s, width, indentation=0):
     buffer = ''
     for w in words:
         if buffer:
-            nbuffer = "%s %s" % (buffer, w)
+            nbuffer = "{} {}".format(buffer, w)
             if len(nbuffer) > width:
                 lines.append(buffer)
                 buffer = w

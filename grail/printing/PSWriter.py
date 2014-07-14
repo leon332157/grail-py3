@@ -59,16 +59,16 @@ class PSWriter(formatter.AbstractWriter):
         self.ps.push_end()
 
     def new_alignment(self, align):
-##      utils.debug('new_alignment: %r' % align)
+##      utils.debug('new_alignment: {!r}'.format(align))
         self.__alignment = align
         self.ps.push_alignment(align)
 
     def new_font(self, font):
-##      utils.debug('new_font: %r' % font)
+##      utils.debug('new_font: {!r}'.format(font))
         self.ps.push_font_change(font)
 
     def new_margin(self, margin, level):
-##      utils.debug('new_margin: margin=%s, level=%s' % (margin, level))
+##      utils.debug('new_margin: margin={}, level={}'.format(margin, level))
         self.ps.push_margin(level)
         self.__detab_pos = 0
 
@@ -79,12 +79,12 @@ class PSWriter(formatter.AbstractWriter):
         # Right now the only styles we support are lower case 'underline' for
         # underline and a 'blockquote' for each right-hand indentation.
     def new_styles(self, styles):
-##      utils.debug('new_styles: %s' % styles)
+##      utils.debug('new_styles: {}'.format(styles))
         self.ps.push_underline('underline' in styles)
         self.ps.push_rightmargin(styles.count('blockquote'))
 
     def send_paragraph(self, blankline):
-##      utils.debug('send_paragraph: %s' % blankline)
+##      utils.debug('send_paragraph: {}'.format(blankline))
         self.ps.push_paragraph(blankline, self.settings.paragraph_skip)
         self.__detab_pos = 0
         self.__pending_indentation = None
@@ -99,7 +99,7 @@ class PSWriter(formatter.AbstractWriter):
     def send_indentation(self, width):
         """Add some 'pended' paragraph indentation which might get cancelled
         later."""
-##      utils.debug('send_indentation: %s' % width)
+##      utils.debug('send_indentation: {}'.format(width))
         if self.__suppress_indentation:
             self.__suppress_indentation = False
         else:
@@ -121,14 +121,14 @@ class PSWriter(formatter.AbstractWriter):
         self.__suppress_indentation = False
 
     def send_label_data(self, data):
-##      utils.debug('send_label_data: %s' % data)
+##      utils.debug('send_label_data: {}'.format(data))
         self.ps.push_label(data)
         self.__detab_pos = 0
         self.__pending_indentation = None
         self.__suppress_indentation = False
 
     def send_flowing_data(self, data):
-##      utils.debug('send_flowing_data: %s' % data)
+##      utils.debug('send_flowing_data: {}'.format(data))
         self.ps.push_literal(False)
         if self.__pending_indentation:
             self.ps.push_horiz_space(self.__pending_indentation)
@@ -139,7 +139,7 @@ class PSWriter(formatter.AbstractWriter):
         self.__detab_pos = 0
 
     def send_literal_data(self, data):
-##      utils.debug('send_literal_data: %s' % data)
+##      utils.debug('send_literal_data: {}'.format(data))
         self.ps.push_literal(True)
         if self.__pending_indentation:
             self.ps.push_horiz_space(self.__pending_indentation)

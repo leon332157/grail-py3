@@ -271,7 +271,7 @@ class SGMLLexer(SGMLLexerBase):
 
     def setliteral(self, tag):
         self.literal = True
-        re = "%s%s[%s]*%s" % (ETAGO, tag, whitespace, TAGC)
+        re = "{}{}[{}]*{}".format(ETAGO, tag, whitespace, TAGC)
         if self._normfunc is str.lower:
             self._lit_etag_re = re.compile(re, re.IGNORECASE)
         else:
@@ -399,7 +399,7 @@ class SGMLLexer(SGMLLexerBase):
                         try:
                             self.lex_charref(int(name), terminator)
                         except ValueError:
-                            self.lex_data("&#%s%s" % (name, terminator))
+                            self.lex_data("&#{}{}".format(name, terminator))
                     else:
                         #  Named character reference:
                         self.lex_namedcharref(self._normfunc(name),
@@ -670,7 +670,7 @@ class SGMLLexer(SGMLLexerBase):
 
 
 # Regular expressions used for parsing:
-OPTIONAL_WHITESPACE = "[%s]*" % whitespace
+OPTIONAL_WHITESPACE = "[{}]*".format(whitespace)
 interesting = re.compile(r'[&<]')
 incomplete = re.compile(r'''&([a-zA-Z][a-zA-Z0-9]*|
                            \#[0-9]*)?|
@@ -702,7 +702,7 @@ markupdeclaration = re.compile(MDO +
                                   + COM + r'([^-]|-[^-])*' + COM
                                   + r')' + OPTIONAL_WHITESPACE
                                   + r')*' + MDC)
-md_name = re.compile('([^>%s\'"]+)' % whitespace
+md_name = re.compile('([^>{}\'"]+)'.format(whitespace)
                         + OPTIONAL_WHITESPACE)
 md_string = re.compile('("[^"]*"|\'[^\']*\')' + OPTIONAL_WHITESPACE)
 commentopen = re.compile(MDO + COM)
@@ -710,7 +710,7 @@ commentclose = re.compile(COM + OPTIONAL_WHITESPACE + MDC)
 tagfind = re.compile(r'[a-zA-Z][-_.a-zA-Z0-9]*')
 attrfind = re.compile(
     # comma is for compatibility
-    ('[%s,]*([_a-zA-Z][-:.a-zA-Z_0-9]*)' % whitespace)
+    ('[{},]*([_a-zA-Z][-:.a-zA-Z_0-9]*)'.format(whitespace))
     + r'(' + OPTIONAL_WHITESPACE + VI + OPTIONAL_WHITESPACE # VI
     + r'(' + LITA + r"[^']*" + LITA
     + r'|' + LIT + r'[^"]*' + LIT
@@ -762,7 +762,7 @@ def comment_match(rawdata, start):
             pos = pos + matchlength + ws
             return pos - start, comment + matcher.group(1)
         # only a partial match
-        comment = "%s%s-%s" % (comment,
+        comment = "{}{}-{}".format(comment,
                                matcher.group(1), matcher.group(2))
         pos = pos + matchlength
         matcher = comment_segment.match(rawdata, pos)

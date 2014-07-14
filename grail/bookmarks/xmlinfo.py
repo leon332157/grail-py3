@@ -68,7 +68,7 @@ def dump_info(values):
         value = getattr(values, field_name)
         label = FieldLabels[field_name]
         if value is not None:
-            print("%*s: %s" % (width, label, value))
+            print("{:>{}}: {}".format(label, width, value))
 
 
 def main():
@@ -122,7 +122,7 @@ def main():
     try:
         values = get_xml_info(buffer)
     except Error as e:
-        sys.stderr.write("parse failed: %s\n" % e)
+        sys.stderr.write("parse failed: {}\n".format(e))
         if debugging:
             raise
         sys.exit(1)

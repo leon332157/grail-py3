@@ -97,7 +97,7 @@ class PyncheWidget:
         root = self.__root = Toplevel(tkroot, class_='Pynche', menu=menubar)
         root.protocol('WM_DELETE_WINDOW',
                       self.__bell if modal else self.__quit)
-        root.title('Pynche %s' % version)
+        root.title('Pynche {}'.format(version))
         root.iconname('Pynche')
         # Only bind accelerators for the File->Quit menu item if running as a
         # standalone app
@@ -151,13 +151,13 @@ class PyncheWidget:
         from .Main import __version__
         tkMessageBox.showinfo('About Pynche ' + __version__,
                               '''\
-Pynche %s
+Pynche {}
 The PYthonically Natural
 Color and Hue Editor
 
 For information
 contact: Barry A. Warsaw
-email:   bwarsaw@python.org''' % __version__)
+email:   bwarsaw@python.org'''.format(__version__))
 
     def __popup_usage(self, event=None):
         if not self.__helpwin:

@@ -7,8 +7,8 @@ class Error(Exception):
         self.filename = filename
     def __repr__(self):
         C = type(self)
-        return "<%s.%s for file %s>" \
-               % (C.__module__, C.__name__, self.filename)
+        return "<{}.{} for file {}>".format(
+               C.__module__, C.__name__, self.filename)
 
 
 class BookmarkFormatError(Error):
@@ -19,11 +19,11 @@ class BookmarkFormatError(Error):
 
     def __repr__(self):
         C = type(self)
-        return "<%s.%s for %s %s>" \
-               % (C.__module__, C.__name__, self.what, self.filename)
+        return "<{}.{} for {} {}>".format(
+               C.__module__, C.__name__, self.what, self.filename)
 
     def __str__(self):
-        return "%s for %s %s" % (self.problem, self.what, self.filename)
+        return "{} for {} {}".format(self.problem, self.what, self.filename)
 
 
 class PoppedRootError(Error):
@@ -47,16 +47,16 @@ class BookmarkWriter:
 
 
 
-pubid_fmt = "+//IDN python.org//DTD XML Bookmark Exchange Language %s//EN"
-sysid_fmt = "http://www.python.org/topics/xml/dtds/xbel-%s.dtd"
+pubid_fmt = "+//IDN python.org//DTD XML Bookmark Exchange Language {}//EN"
+sysid_fmt = "http://www.python.org/topics/xml/dtds/xbel-{}.dtd"
 
-XBEL_1_0_PUBLIC_ID = pubid_fmt % "1.0"
-XBEL_1_0_SYSTEM_ID = sysid_fmt % "1.0"
+XBEL_1_0_PUBLIC_ID = pubid_fmt.format("1.0")
+XBEL_1_0_SYSTEM_ID = sysid_fmt.format("1.0")
 XBEL_1_0_ROOT_ELEMENTS = ("xbel", "folder", "bookmark", "alias", "separator")
 
 # not yet released
-XBEL_1_1_PUBLIC_ID = pubid_fmt % "1.1"
-XBEL_1_1_SYSTEM_ID = sysid_fmt % "1.1"
+XBEL_1_1_PUBLIC_ID = pubid_fmt.format("1.1")
+XBEL_1_1_SYSTEM_ID = sysid_fmt.format("1.1")
 XBEL_1_1_ROOT_ELEMENTS = XBEL_1_0_ROOT_ELEMENTS + ("link",)
 
 del pubid_fmt
@@ -133,12 +133,12 @@ def get_default_extension(format):
 
 def get_parser_class(format):
     from . import formats
-    name = "%s_parser" % get_short_name(format)
+    name = "{}_parser".format(get_short_name(format))
     return __import__(name, vars(formats), level=1).Parser
 
 def get_writer_class(format):
     from . import formats
-    name = "%s_writer" % get_short_name(format)
+    name = "{}_writer".format(get_short_name(format))
     return __import__(name, vars(formats), level=1).Writer
 
 def get_output_format(format):

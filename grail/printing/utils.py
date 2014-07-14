@@ -112,5 +112,4 @@ def conv_fontsize(spec):
             raise ValueError("illegal font size specification")
     else:
         spec = [spec, spec]
-    spec = map(float, spec)
-    return tuple(spec)
+    return map(float, spec)

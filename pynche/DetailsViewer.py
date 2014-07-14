@@ -149,10 +149,10 @@ class DetailsViewer:
         if tie in (0, 1, 2, 4):
             text = ''
         else:
-            text = '(= %s Level)' % {3: 'Cyan',
+            text = '(= {} Level)'.format({3: 'Cyan',
                                      5: 'Magenta',
                                      6: 'Yellow',
-                                     7: 'Grey'}[tie]
+                                     7: 'Grey'}[tie])
         self.__l2.configure(text=text)
 
     def __quit(self, event=None):

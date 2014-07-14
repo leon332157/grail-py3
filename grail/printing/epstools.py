@@ -60,26 +60,26 @@ class EPSImage:
 
 
 #  Dictionary of image converters from key ==> EPS.
-#  The values need to be formatted against a dictionary that contains the
-#  values `i' for the input filename and `o' for the output filename.
+#  The values need to be formatted against the keyword arguments
+#  `i' for the input filename and `o' for the output filename.
 image_converters = {
-    ('gif', 'color') : 'giftopnm %(i)s | pnmtops -noturn >%(o)s',
-    ('gif', 'grey') : 'giftopnm %(i)s | ppmtopgm | pnmtops -noturn >%(o)s',
-    ('jpeg', 'color') : 'djpeg -pnm %(i)s | pnmtops -noturn >%(o)s',
-    ('jpeg', 'grey') : 'djpeg -grayscale -pnm %(i)s | pnmtops -noturn >%(o)s',
-    ('pbm', 'grey') : 'pbmtoepsi %(i)s >%(o)s',
-    ('pgm', 'grey') : 'pnmtops -noturn %(i)s >%(o)s',
-    ('ppm', 'color') : 'pnmtops -noturn %(i)s >%(o)s',
-    ('ppm', 'grey') : 'ppmtopgm %(i)s | pnmtops -noturn >%(o)s',
-    ('rast', 'color') : 'rasttopnm %(i)s | pnmtops -noturn >%(o)s',
-    ('rast', 'grey') : 'rasttopnm %(i)s | ppmtopgm | pnmtops -noturn >%(o)s',
-    ('rgb', 'color') : 'rgb3toppm %(i)s | pnmtops -noturn >%(o)s',
-    ('rgb', 'grey') : 'rgb3toppm %(i)s | ppmtopgm | pnmtops -noturn >%(o)s',
-    ('tiff', 'color') : 'tifftopnm %(i)s | pnmtops -noturn >%(o)s',
-    ('tiff', 'grey') : 'tifftopnm %(i)s | ppmtopgm | pnmtops -noturn >%(o)s',
-    ('xbm', 'grey') : 'xbmtopbm %(i)s | pbmtoepsi >%(o)s',
-    ('xpm', 'color') : 'xpmtoppm %(i)s | pnmtops -noturn >%(o)s',
-    ('xpm', 'grey') : 'xpmtoppm %(i)s | ppmtopgm | pnmtops -noturn >%(o)s'
+    ('gif', 'color') : 'giftopnm {i} | pnmtops -noturn >{o}',
+    ('gif', 'grey') : 'giftopnm {i} | ppmtopgm | pnmtops -noturn >{o}',
+    ('jpeg', 'color') : 'djpeg -pnm {i} | pnmtops -noturn >{o}',
+    ('jpeg', 'grey') : 'djpeg -grayscale -pnm {i} | pnmtops -noturn >{o}',
+    ('pbm', 'grey') : 'pbmtoepsi {i} >{o}',
+    ('pgm', 'grey') : 'pnmtops -noturn {i} >{o}',
+    ('ppm', 'color') : 'pnmtops -noturn {i} >{o}',
+    ('ppm', 'grey') : 'ppmtopgm {i} | pnmtops -noturn >{o}',
+    ('rast', 'color') : 'rasttopnm {i} | pnmtops -noturn >{o}',
+    ('rast', 'grey') : 'rasttopnm {i} | ppmtopgm | pnmtops -noturn >{o}',
+    ('rgb', 'color') : 'rgb3toppm {i} | pnmtops -noturn >{o}',
+    ('rgb', 'grey') : 'rgb3toppm {i} | ppmtopgm | pnmtops -noturn >{o}',
+    ('tiff', 'color') : 'tifftopnm {i} | pnmtops -noturn >{o}',
+    ('tiff', 'grey') : 'tifftopnm {i} | ppmtopgm | pnmtops -noturn >{o}',
+    ('xbm', 'grey') : 'xbmtopbm {i} | pbmtoepsi >{o}',
+    ('xpm', 'color') : 'xpmtoppm {i} | pnmtops -noturn >{o}',
+    ('xpm', 'grey') : 'xpmtoppm {i} | ppmtopgm | pnmtops -noturn >{o}'
     }
 
 
@@ -115,9 +115,9 @@ def load_image_internal(img_fn, greyscale, eps_fn):
         cnv_key = (imgtype, 'grey')
     if cnv_key not in image_converters:
         os.unlink(img_fn)
-        raise EPSError('No converter defined for %s images.' % imgtype)
+        raise EPSError('No converter defined for {} images.'.format(imgtype))
     img_command = image_converters[cnv_key]
-    img_command = img_command % {'i':img_fn, 'o':eps_fn}
+    img_command = img_command.format(i=img_fn, o=eps_fn)
     try:
         if os.system(img_command + ' 2>/dev/null'):
             os.unlink(img_fn)
@@ -188,7 +188,7 @@ def convert_gif_to_eps(cog, giffile, epsfile):
     file is created.  The name of the file created is returned.
     """
     if ('gif', cog) not in image_converters:
-        raise EPSError("No conversion defined for %s GIFs." % cog)
+        raise EPSError("No conversion defined for {} GIFs.".format(cog))
     try:
         fp = open(epsfile, 'w')
     except IOError:
@@ -198,7 +198,7 @@ def convert_gif_to_eps(cog, giffile, epsfile):
         filename = epsfile
         fp.close()
     img_command = image_converters[('gif', cog)]
-    img_command = img_command % {'i':giffile, 'o':filename}
+    img_command = img_command.format(i=giffile, o=filename)
     try:
         if os.system(img_command + ' 2>/dev/null'):
             if os.path.exists(filename):
@@ -207,6 +207,6 @@ def convert_gif_to_eps(cog, giffile, epsfile):
     except BaseException as err:
         if os.path.exists(filename):
             os.unlink(filename)
-        raise EPSError('Could not run conversion process: %s.'
-                       % type(err).__name__)
+        raise EPSError('Could not run conversion process: {}.'.format(
+                       type(err).__name__))
     return filename

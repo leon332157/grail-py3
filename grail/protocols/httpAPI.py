@@ -149,7 +149,7 @@ class http_access:
         self.h.putrequest(method, selector)
         self.h.putheader('User-agent', GRAILVERSION)
         if auth:
-            self.h.putheader('Authorization', 'Basic %s' % auth)
+            self.h.putheader('Authorization', 'Basic {}'.format(auth))
         if 'host' not in params:
             self.h.putheader('Host', host)
         if 'accept-encoding' not in params:

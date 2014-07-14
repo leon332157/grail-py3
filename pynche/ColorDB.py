@@ -51,7 +51,8 @@ class ColorDB:
             # get this compiled regular expression from derived class
             mo = self._re.match(line)
             if not mo:
-                sys.stderr.write('Error in %s, line %d\n' % (fp.name, lineno))
+                msg = 'Error in {}, line {}\n'.format(fp.name, lineno)
+                sys.stderr.write(msg)
                 lineno = lineno + 1
                 continue
             #
@@ -180,7 +181,7 @@ def triplet_to_rrggbb(rgbtuple):
     """Converts a (red, green, blue) tuple to #rrggbb."""
     hexname = _tripdict.get(rgbtuple)
     if hexname is None:
-        hexname = '#%02x%02x%02x' % rgbtuple
+        hexname = '#{:02x}{:02x}{:02x}'.format(*rgbtuple)
         _tripdict[rgbtuple] = hexname
     return hexname
 
@@ -219,5 +220,5 @@ if __name__ == '__main__':
     for n in colordb.unique_names():
         r, g, b = colordb.find_byname(n)
         aliases = colordb.aliases_of(r, g, b)
-        print('%20s: (%3d/%3d/%3d) == %s' % (n, r, g, b,
+        print('{:>20}: ({:3}/{:3}/{:3}) == {}'.format(n, r, g, b,
                                              " ".join(aliases[1:])))

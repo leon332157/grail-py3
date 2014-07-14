@@ -1,7 +1,7 @@
-"""%(program)s -- Bookmark management utility.
+"""{program} -- Bookmark management utility.
 
-usage:  %(program)s [options] infile [outfile]
-        %(program)s -g|--guess-type [files...]
+usage:  {program} [options] infile [outfile]
+        {program} -g|--guess-type [files...]
 
 Options:
     -h, --help	        Display this help message.
@@ -21,7 +21,7 @@ Options:
                         is case-insensitive.  The entire hierarchical
                         structure above the match node is returned.  If
                         there are no matches, an error is printed to stderr
-                        and %(program)s exits with a non-zero return code.
+                        and {program} exits with a non-zero return code.
 
 A hyphen (-) may be used as either the input file or the output file to
 indicate standard input or standard output, respectively.  If a file is
@@ -132,7 +132,7 @@ def main():
                 infile = urllib.urlopen(ifn)
                 baseurl = infile.url
             else:
-                error(1, "could not open %s: %s" % (ifn, err.strerror))
+                error(1, "could not open {}: {}".format(ifn, err.strerror))
         else:
             baseurl = "file:" + os.path.join(os.getcwd(), ifn)
     with infile:
@@ -192,9 +192,9 @@ def report_info(root):
     total = 0
     for type, count in sorted(coll.get_type_counts().items()):
         total = total + count
-        print("%12s: %5d" % (type, count))
-    print("%12s  -----" % '')
-    print("%12s: %5d" % ("Total", total))
+        print("{:>12}: {:5}".format(type, count))
+    print("{:>12}  -----".format(''))
+    print("{:>12}: {:5}".format("Total", total))
 
 
 def guess_bookmarks_type(filename, verbose=False):
@@ -204,7 +204,7 @@ def guess_bookmarks_type(filename, verbose=False):
         with open(filename) as fp:
             type = get_format(fp)
     if verbose:
-        print("%s: %s" % (filename, type))
+        print("{}: {}".format(filename, type))
     else:
         print(type)
 
@@ -216,7 +216,7 @@ def get_outfile(ofn):
         try:
             outfile = open(ofn, 'w')
         except IOError as err:
-            error(1, "could not open %s: %s" % (ofn, err.strerror))
+            error(1, "could not open {}: {}".format(ofn, err.strerror))
         print("Writing output to", ofn)
     return outfile
 
@@ -226,13 +226,13 @@ def usage(err=0, message=''):
         sys.stdout = sys.stderr
     program = os.path.basename(sys.argv[0])
     if message:
-        print("%s: %s" % (program, message))
+        print("{}: {}".format(program, message))
         print()
-    print(__doc__ % {"program": program})
+    print(__doc__.format(program=program))
     sys.exit(err)
 
 
 def error(err, message):
     program = os.path.basename(sys.argv[0])
-    sys.stderr.write("%s: %s\n" % (program, message))
+    sys.stderr.write("{}: {}\n".format(program, message))
     sys.exit(err)

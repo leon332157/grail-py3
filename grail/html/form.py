@@ -168,7 +168,8 @@ class FormInfo:
             klass = getattr(self, classname)
             instance = klass(self, options, bgcolor)
         else:
-            print("*** Form with <INPUT TYPE=%s> not supported ***" % type)
+            msg = "*** Form with <INPUT TYPE={}> not supported ***"
+            print(msg.format(type))
 
     def submit_command(self):
         enctype = self.enctype.lower()
@@ -234,18 +235,18 @@ class FormInfo:
             if isinstance(v, tuple):
                 # XXX Argh!  Have to do it twice, for each coordinate
                 if None in v: continue
-                disp = 'form-data; name="%s.x"' % i.name
+                disp = 'form-data; name="{}.x"'.format(i.name)
                 sw = mw.nextpart()
                 sw.addheader("Content-Disposition", disp)
                 body = sw.startbody("text/plain")
                 body.write(str(v[0]))
-                disp = 'form-data; name="%s.y"' % i.name
+                disp = 'form-data; name="{}.y"'.format(i.name)
                 sw = mw.nextpart()
                 sw.addheader("Content-Disposition", disp)
                 body = sw.startbody("text/plain")
                 body.write(str(v[1]))
                 continue
-            disp = 'form-data; name="%s"' % i.name
+            disp = 'form-data; name="{}"'.format(i.name)
             data = None
             if type(i).__name__ == 'InputFile':
                 try:
@@ -254,7 +255,7 @@ class FormInfo:
                 except IOError as msg:
                     print("IOError:", msg)
                 else:
-                    disp = disp + '; filename="%s"' % v
+                    disp = disp + '; filename="{}"'.format(v)
             sw = mw.nextpart()
             sw.addheader("Content-Disposition", disp)
             if data is not None:

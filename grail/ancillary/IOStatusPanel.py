@@ -63,7 +63,7 @@ class IOStatusPanel:
         self.infobox.delete(0, END)
         for browser in self.app.browsers:
             count = count+1
-            headline = "<Browser %d>" % count
+            headline = "<Browser {}>".format(count)
             self.infobox.insert(END, headline)
             self.add_context_info(browser.context)
 
@@ -71,7 +71,7 @@ class IOStatusPanel:
         indent = "   " * level
         headline = context.get_url() or "<no document>"
         if context.viewer.name:
-            headline = "%s: %s" % (context.viewer.name, headline)
+            headline = "{}: {}".format(context.viewer.name, headline)
         self.infobox.insert(END, indent + headline)
         for reader in context.readers:
             self.add_reader_info(reader, level+1)

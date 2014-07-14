@@ -244,8 +244,8 @@ class ModuleLoader(BasicModuleLoader):
             elif type == PKG_DIRECTORY:
                 m = self.hooks.load_package(name, filename, file)
             else:
-                raise ImportError("Unrecognized module type (%r) for %s" %
-                      (type, name))
+                msg = "Unrecognized module type ({!r}) for {}"
+                raise ImportError(msg.format(type, name))
         finally:
             if file: file.close()
         m.__file__ = filename
@@ -264,14 +264,14 @@ class FancyModuleLoader(ModuleLoader):
         if type == PKG_DIRECTORY:
             initstuff = self.find_module_in_dir("__init__", filename, False)
             if not initstuff:
-                raise ImportError("No __init__ module in package %s" % name)
+                msg = "No __init__ module in package {}".format(name)
+                raise ImportError(msg)
             initfile, initfilename, initinfo = initstuff
             initsuff, initmode, inittype = initinfo
             if inittype not in (PY_COMPILED, PY_SOURCE):
                 if initfile: initfile.close()
-                raise ImportError(
-                    "Bad type (%r) for __init__ module in package %s" % (
-                    inittype, name))
+                msg = "Bad type ({!r}) for __init__ module in package {}"
+                raise ImportError(msg.format(inittype, name))
             path = [filename]
             file = initfile
             realfilename = initfilename
@@ -326,14 +326,14 @@ class BasicModuleImporter():
             return self.modules[name] # Fast path
         stuff = self.loader.find_module(name)
         if not stuff:
-            raise ImportError("No module named %s" % name)
+            raise ImportError("No module named {}".format(name))
         return self.loader.load_module(name, stuff)
 
     def reload(self, module, path = None):
         name = module.__name__
         stuff = self.loader.find_module(name, path)
         if not stuff:
-            raise ImportError("Module %s not found for reload" % name)
+            raise ImportError("Module {} not found for reload".format(name))
         return self.loader.load_module(name, stuff)
 
     def unload(self, module):
@@ -390,7 +390,7 @@ class ModuleImporter(BasicModuleImporter):
     def find_head_package(self, parent, name):
         head, _, tail = name.partition('.')
         if parent:
-            qname = "%s.%s" % (parent.__name__, head)
+            qname = "{}.{}".format(parent.__name__, head)
         else:
             qname = head
         q = self.import_it(head, qname, parent)
@@ -406,7 +406,7 @@ class ModuleImporter(BasicModuleImporter):
         m = q
         while tail:
             head, _, tail = tail.partition('.')
-            mname = "%s.%s" % (m.__name__, head)
+            mname = "{}.{}".format(m.__name__, head)
             m = self.import_it(head, mname, m)
             if not m:
                 raise ImportError("No module named " + mname)
@@ -424,7 +424,7 @@ class ModuleImporter(BasicModuleImporter):
                         self.ensure_fromlist(m, all, True)
                 continue
             if sub != "*" and not hasattr(m, sub):
-                subname = "%s.%s" % (m.__name__, sub)
+                subname = "{}.{}".format(m.__name__, sub)
                 submod = self.import_it(sub, subname, m)
                 if not submod:
                     raise ImportError("No module named " + subname)

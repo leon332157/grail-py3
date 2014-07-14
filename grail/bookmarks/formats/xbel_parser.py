@@ -178,8 +178,8 @@ class DocumentHandler:
             for n in self.__missing_ids.pop(id, ()):
                 n.set_idref(node)
         elif required:
-            raise BookmarkFormatError(self.__filename,
-                                      "missing %s attribute" % attrname)
+            msg = "missing {} attribute".format(attrname)
+            raise BookmarkFormatError(self.__filename, msg)
 
     def handle_idref(self, node, attrs, attrname="ref", required=True):
         idref = attrs.get(attrname)
@@ -189,8 +189,8 @@ class DocumentHandler:
             else:
                 self.__missing_ids[idref].append(node)
         elif required:
-            raise BookmarkFormatError(self.__filename,
-                                      "missing %s attribute" % attrname)
+            msg = "missing {} attribute".format(attrname)
+            raise BookmarkFormatError(self.__filename, msg)
 
     def __store_date(self, node, attrs, attrname, nodefuncname):
         date = attrs.get(attrname)

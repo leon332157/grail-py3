@@ -44,7 +44,7 @@ class DocumentInfoDialog:
             if k == 'date' and isinstance(v, CacheMgr.HTTime):
                 from . import ht_time
                 v = ht_time.unparse(v.get_secs())
-            s = "%s%s:\t%s\n" % (s, k, v)
+            s = "{}{}:\t{}\n".format(s, k, v)
         stretch = self.add_text_field("Response headers", s, "headers")
         if query:
             query = query.translate(FIELD_BREAKER)
@@ -98,7 +98,7 @@ class DocumentInfoDialog:
             if match:
                 pos = match.start() + 1
                 end = match.end()
-                datafont = "%smedium%s" % (font[:pos], font[end:])
+                datafont = "{}medium{}".format(font[:pos], font[end:])
                 DocumentInfoDialog.__datafont = datafont
             else:
                 # don't try again:

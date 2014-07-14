@@ -87,4 +87,4 @@ def unparse(secs):
     mday = int(str[8:10])
     dtime = str[11:19]
     year = str[20:24]
-    return "%s, %02d %s %s %s GMT" % (day, mday, mon, year, dtime)
+    return "{}, {:02} {} {} {} GMT".format(day, mday, mon, year, dtime)

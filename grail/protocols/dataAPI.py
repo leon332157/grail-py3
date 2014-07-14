@@ -4,8 +4,8 @@ from . import nullAPI
 class data_access(nullAPI.null_access):
     def __init__(self, url, method, params):
         if method != "GET":
-            raise IOError(
-                  "'data:' scheme does not support the %s method" % method)
+            msg = "'data:' scheme does not support the {} method"
+            raise IOError(msg.format(method))
         self.state = nullAPI.META
         self.__ctype, self.__data = parse(url)
 

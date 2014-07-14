@@ -83,7 +83,7 @@ class ImageObject(HTMLParser.Embedding):
             __map_count = __map_count + 1
         except NameError:
             __map_count = 0
-        name = '<OBJECT-MAP-%d>' % __map_count
+        name = '<OBJECT-MAP-{}>'.format(__map_count)
         from .. import ImageMap
         map = ImageMap.MapInfo(name)
         context.image_maps[name] = map

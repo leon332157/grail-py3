@@ -266,8 +266,8 @@ class CacheManager:
                 self.caches[0].update(item)
         except CacheFileError as err:
             (file,) = err.args
-            print("error adding item %s (file %s): %s"
-                % (item.url, file, err.__cause__))
+            print("error adding item {} (file {}): {}".format(
+                item.url, file, err.__cause__))
 
     # list of protocols that we can cache
     cache_protocols = ['http', 'ftp', 'hdl']
@@ -345,7 +345,7 @@ class CacheManager:
 
         - change the hostname to all lowercase
         - remove the port if it is the scheme's default port
-        - reformat the port using %d
+        - reformat the port
         - get rid of the fragment identifier
 
         """
@@ -357,7 +357,7 @@ class CacheManager:
         if port is None or parsed.scheme == 'http' and port == 80:
             netloc = parsed.hostname
         else:
-            netloc = parsed.hostname + ":%d" % port
+            netloc = parsed.hostname + ":{}".format(port)
         return urlparse.urlunparse((parsed.scheme, netloc, parsed.path,
             parsed.params, parsed.query, ""))
 
@@ -843,7 +843,7 @@ class DiskCache:
         try:
             os.unlink(self.get_file_path(evictee.file))
         except EnvironmentError as err:
-            # print("error deleting %s from cache: %s" % (key, err))
+            # print("error deleting {} from cache: {}".format(key, err))
             pass
         self.log_entry(evictee,delete=True)
         evictee.delete()
@@ -865,7 +865,7 @@ class disk_cache_access:
         try:
             self.fp = open(filename, 'rb')
         except IOError as err:
-            print("io error opening %s: %s" % (filename, err))
+            print("io error opening {}: {}".format(filename, err))
             raise
         self.state = DATA
 

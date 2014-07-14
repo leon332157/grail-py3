@@ -93,7 +93,7 @@ def run(app):
         error = 1
         help = True
         options = ()
-        sys.stderr.write("option failure: %s\n" % err)
+        sys.stderr.write("option failure: {}\n".format(err))
     for opt, arg in options:
         if opt in ('-h', '--help'):
             help = True
@@ -157,7 +157,7 @@ def run(app):
     if printer:
         if copies < 1:
             copies = 1
-        outfile = "|lpr -#%d -P%s" % (copies, printer)
+        outfile = "|lpr -#{} -P{}".format(copies, printer)
     if args:
         infile = args[0]
         if args[1:]:
@@ -441,21 +441,21 @@ def usage(settings):
     print('Usage:', progname, '[options] [file-or-url]')
     print('    -u: URL for footer')
     print('    -t: title for header')
-    print('    -a: toggle anchor footnotes (default is %s)'
-          % _onoff(settings.footnoteflag))
-    print('    -U: toggle anchor underlining (default is %s)'
-          % _onoff(settings.underflag))
+    print('    -a: toggle anchor footnotes (default is {})'.format(
+          _onoff(settings.footnoteflag)))
+    print('    -U: toggle anchor underlining (default is {})'.format(
+          _onoff(settings.underflag)))
     print('    -o: orientation; portrait, landscape, or seascape')
     print('    -p: paper size; letter, legal, a4, etc.', end=' ')
-    print('(default is %s)' % settings.papersize)
-    print('    -f: font size, in points (default is %s/%s)'
-          % settings.get_fontsize())
+    print('(default is {})'.format(settings.papersize))
+    print('    -f: font size, in points (default is {}/{})'.format(
+          *settings.get_fontsize()))
     print('    -d: turn on debugging')
     print('    -l: logfile for debugging, otherwise stderr')
-    print('    -s: toggle "advanced" SGML recognition (default is %s)'
-          % _onoff(settings.strict_parsing))
-    print('    -T: size of tab stop in points (default is %s)'
-          % printing_paper.PaperInfo.TabStop)
+    line = '    -s: toggle "advanced" SGML recognition (default is {})'
+    print(line.format(_onoff(settings.strict_parsing)))
+    print('    -T: size of tab stop in points (default is {})'.format(
+          printing_paper.PaperInfo.TabStop))
     print('    -P: specify output printer')
     print('    -m: descend tree starting from specified document,')
     print('        printing all HTML documents found')

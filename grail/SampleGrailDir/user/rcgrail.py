@@ -51,7 +51,7 @@ def normalize_display(display):
             host = socket.gethostname()
         if not screen:
             screen = '0'
-        return '%s:%s.%s' % (host, display, screen)
+        return '{}:{}.{}'.format(host, display, screen)
 
 def rc_filename(user=None, display=None):
     tmpdir = tempfile.gettempdir()
@@ -59,7 +59,7 @@ def rc_filename(user=None, display=None):
     if not display:
         display = os.environ['DISPLAY'] or ':0'
     display = normalize_display(display)
-    sfile = '%s-%s' % (user, display)
+    sfile = '{}-{}'.format(user, display)
     return os.path.join(tmpdir, os.path.join(RCDIR, sfile))
 
 def usage(progname):
@@ -128,7 +128,7 @@ def main():
         s.send(cmd)
         if pingonly:
             data = s.recv(1024)
-            print("Grail's response: `%s'" % data)
+            print("Grail's response: `{}'".format(data))
         s.close()
     except socket.error:
         print('rcgrail: unable to communicate with Grail')

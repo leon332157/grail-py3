@@ -35,9 +35,9 @@ DONE = 'DONE'
 
 
 LISTING_HEADER = """<HTML>
-<HEAD><TITLE>FTP Directory: %(url)s</TITLE></HEAD>
+<HEAD><TITLE>FTP Directory: {url}</TITLE></HEAD>
 <BODY>
-<H1>FTP Directory: %(url)s</H1>
+<H1>FTP Directory: {url}</H1>
 <PRE>"""
 
 LISTING_TRAILER = """</PRE>
@@ -91,7 +91,7 @@ class ftp_access:
         else:
             port = ftplib.FTP_PORT
         path, attrs = splitattr(path)
-        self.url = "ftp://%s%s" % (netloc, path)
+        self.url = "ftp://{}{}".format(netloc, path)
         dirs = path.split('/')
         dirs, file = dirs[:-1], dirs[-1]
         self.content_length = None
@@ -207,8 +207,8 @@ class ftp_access:
             if self.debuglevel > 2:
                 print("*getl*", repr(line))
             if line is None:
-                data = data + self.listing_header % {'url':
-                                                     html.escape(self.url)}
+                data = data + self.listing_header.format(url=
+                                                     html.escape(self.url))
                 continue
             if line[-1:] == '\r': line = line[:-1]
             m = prog.match(line) 
@@ -225,7 +225,7 @@ class ftp_access:
                     name = name + '/'
                 if not href.endswith('/'):
                     href = href + '/'
-            line = '%s%s<A HREF=%s>%s</A>%s\n' % (
+            line = '{}{}<A HREF={}>{}</A>{}\n'.format(
                 mode, middle, saxutils.quoteattr(href), name,
                 (symlink or ''))
             data = data + line

@@ -29,7 +29,7 @@ class ColorButton(Button):
         from pynche.pyColorChooser import askcolor
         rgb, name = askcolor(self.get(), master=self.__master)
         if rgb:
-            self.set("#%02x%02x%02x" % rgb)
+            self.set("#{:02x}{:02x}{:02x}".format(*rgb))
 
 
 class StylePanel(PrefsPanels.Framework):
@@ -100,4 +100,4 @@ class StylePanel(PrefsPanels.Framework):
         b = ColorButton(frame)
         b.pack(side=LEFT)
         self.RegisterUI(prefgroup, prefname, 'string', b.get, b.set)
-        Label(frame, text=" %s " % description).pack(side=LEFT)
+        Label(frame, text=" {} ".format(description)).pack(side=LEFT)

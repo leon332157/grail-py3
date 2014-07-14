@@ -86,13 +86,13 @@ class BaseReader:
 
     def __str__(self):
         if self.maxbytes:
-            percent = self.nbytes*100/self.maxbytes
-            status = "%d%% of %s read" % (percent,
+            percent = self.nbytes*100//self.maxbytes
+            status = "{}% of {} read".format(percent,
                                           grailutil.nicebytes(self.maxbytes))
         elif not self.nbytes:
             status = self.message
         else:
-            status = "%s read" % grailutil.nicebytes(self.nbytes)
+            status = "{} read".format(grailutil.nicebytes(self.nbytes))
         if self.api and self.api.iscached():
             status = status + " (cached)"
         if self.api and not self.shorturl:
@@ -102,10 +102,10 @@ class BaseReader:
             if i >= 0:
                 path = path[i+1:]
             self.shorturl = path or self.api._url_
-        return "%s: %s" % (self.shorturl, status)
+        return "{}: {}".format(self.shorturl, status)
 
     def __repr__(self):
-        return "%s(...%s)" % (type(self).__name__, self.api)
+        return "{}(...{})".format(type(self).__name__, self.api)
 
     def update_status(self):
         self.context.new_reader_status() # Will call our __str__() method

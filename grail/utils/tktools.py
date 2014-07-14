@@ -59,7 +59,7 @@ def set_transient(widget, master, relx=0.5, rely=0.3, expose=1):
     w_height = widget.winfo_reqheight()
     x = m_x + (m_width - w_width) * relx
     y = m_y + (m_height - w_height) * rely
-    widget.geometry("+%d+%d" % (x, abs(y)))
+    widget.geometry("+{}+{}".format(int(x), int(abs(y))))
     if expose:
         widget.deiconify()      # Become visible at the desired location
     return widget

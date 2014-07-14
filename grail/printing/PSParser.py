@@ -116,7 +116,7 @@ class PrintingHTMLParser(HTMLParser):
 
     FOOTNOTE_DIV_ATTRIBUTES = {'align': 'left'}
     FOOTNOTE_LIST_ATTRIBUTES = {'type': '1.', 'compact': 'compact'}
-    FOOTNOTE_INDICATOR_FORMAT = "[%d]"
+    FOOTNOTE_INDICATOR_FORMAT = "[{}]"
     FOOTNOTE_HEADER = "URLs referenced in this document:"
 
     def write_footnotes(self):
@@ -184,8 +184,8 @@ class PrintingHTMLParser(HTMLParser):
             yshift = old_size - ((1.0 + SIZE_STEP / 2) * new_size)
             self.formatter.push_font((AS_IS, False, False, False))
             self.formatter.writer.ps.push_yshift(yshift)
-            self.handle_data(self.FOOTNOTE_INDICATOR_FORMAT
-                             % self._anchors[anchor])
+            self.handle_data(self.FOOTNOTE_INDICATOR_FORMAT.format(
+                             self._anchors[anchor]))
             self.formatter.writer.ps.pop_yshift()
             self.formatter.pop_font()
             self.end_small()
@@ -359,7 +359,7 @@ class PrintingHTMLParser(HTMLParser):
     def handle_image(self, src, alt, ismap, align, width,
                      height, border=2, *args, **kw):
         if self.settings.imageflag:
-            utils.debug("handle_image('%s', ...)" % src)
+            utils.debug("handle_image('{}', ...)".format(src))
             imageurl = self.context.get_baseurl(src)
             if imageurl in self._image_cache:
                 image = self._image_cache[imageurl]

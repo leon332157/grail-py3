@@ -62,6 +62,7 @@ import select
 import socket
 import time
 import xdrlib
+import binascii
 
 DEBUG = 0                               # Default debugging flag
 
@@ -185,17 +186,17 @@ class Error(IOError):
             IOError.__init__(self, errno, strerror)
         self.info = info
     def __repr__(self):
-        msg = "Error(%r" % self.strerror
+        msg = "Error({!r}".format(self.strerror)
         if self.errno is not None:
-            msg = msg + ", %r" % self.errno
+            msg = msg + ", {!r}".format(self.errno)
         if self.info is not None:
-            msg = msg + ", %r" % self.info
+            msg = msg + ", {!r}".format(self.info)
         msg = msg + ")"
         return msg
     def __str__(self):
         msg = IOError.__str__(self)
         if self.info is not None:
-            msg = msg + " (info=%s)" % self.info
+            msg = msg + " (info={})".format(self.info)
         return msg
 
 
@@ -515,7 +516,7 @@ class HashTable:
                     self._read_hash_table(fn)
                 except IOError as msg:
                     if self.debug:
-                        print("Error for %r: %s" % (fn, msg))
+                        print("Error for {!r}: {}".format(fn, msg))
                 else:
                     break
             else:
@@ -591,8 +592,9 @@ class HashTable:
         self.schema_version = u.unpack_int()
         # The header_length field is not present if schema version < 2
         if self.schema_version < 2:
-            if self.debug: print("Old hash table detected, version: %d"
-               % self.schema_version)
+            if self.debug:
+                msg = "Old hash table detected, version: {}"
+                print(msg.format(self.schema_version))
             self.header_length = HP_HASH_HEADER_SIZE
             restofheader = data[4:self.header_length]
         else:
@@ -715,7 +717,7 @@ class HashTable:
             if self.debug: print("return cached bucket for index", index)
             return self.bucket_cache[index]
 
-        raise Error("no bucket found with index %d" % index)
+        raise Error("no bucket found with index {}".format(index))
 
 
     def get_data(self, hdl, types=[], flags=[], timeout=30, interval=5,
@@ -790,7 +792,7 @@ class HashTable:
                 print("#Datagrams:    ", total)
                 print("Error code:    ", err, end="")
                 if err in error_map:
-                    print(" (%s)" % error_map[err], end="")
+                    print(" ({})".format(error_map[err]), end="")
                 print()
                 print('-'*20)
 
@@ -858,7 +860,7 @@ class HashTable:
 
 def hexstr(s):
     """Convert a string to hexadecimal."""
-    return "%02x"*len(s) % tuple(map(ord, s))
+    return binascii.hexlify(s).decode("ascii")
 
 
 
@@ -882,7 +884,7 @@ def fetch_global_hash_table(ht=None, debug=DEBUG):
                 # This data is in the same format as file "hdl_hash.tbl"
                 if debug: print("hash table data =", hexstr(hashtable))
             else:
-                raise Error("Unknown SERVICE_ID: %s" % urnscheme)
+                raise Error("Unknown SERVICE_ID: {}".format(urnscheme))
     return HashTable(data=hashtable, debug=debug)
 
 
@@ -920,7 +922,7 @@ def fetch_local_hash_table(hdl, ht=None, debug=DEBUG):
                 hashtable = urndata
                 if debug: print("hash table data =", hexstr(hashtable))
             else:
-                raise Error("Unknown SERVICE_ID: %s" % urnscheme)       
+                raise Error("Unknown SERVICE_ID: {}".format(urnscheme))
         else:
             if debug: print("type", type, "=", data)
     if hashtable:
@@ -938,7 +940,7 @@ def fetch_local_hash_table(hdl, ht=None, debug=DEBUG):
                     if debug: print("hash table data =", hexstr(hashtable))
                     return HashTable(data=hashtable, debug=debug)
                 else:
-                    raise Error("Unknown SERVICE_ID: %s" % urnscheme)
+                    raise Error("Unknown SERVICE_ID: {}".format(urnscheme))
             else:
                 if debug: print("type", type, "=", data)
 
@@ -1132,8 +1134,8 @@ def test(defargs = testsets[0]):
             if stufftype in data_map:
                 s = data_map[stufftype][9:]
             else:
-                s = "UNKNOWN(%d)" % stufftype
-            print("\t%s/%s" % (s, stuffvalue))
+                s = "UNKNOWN({})".format(stufftype)
+            print("\t{}/{}".format(s, stuffvalue))
         print()
 
 

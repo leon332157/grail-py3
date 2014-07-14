@@ -319,7 +319,7 @@ class BookmarksIO:
 
 class IOErrorDialog:
     def __init__(self, master, where, errmsg):
-        msg = 'Bookmark file error encountered %s:' % where
+        msg = 'Bookmark file error encountered {}:'.format(where)
         self._frame = tktools.make_toplevel(master, msg)
         self._frame.protocol('WM_DELETE_WINDOW', self.close)
         label = Label(self._frame, text=msg)
@@ -664,7 +664,7 @@ class BookmarksDialog:
 
     def _highlight(self, event):
         self._listbox.select_clear(0, END)
-        self._listbox.select_set('@%d,%d' % (event.x, event.y))
+        self._listbox.select_set('@{},{}'.format(event.x, event.y))
 
 
 class DetailsDialog:
@@ -1355,7 +1355,7 @@ class BookmarksController(OutlinerController):
                 if nodei == sv.count():
                     nodei = 0
             node = sv.node(nodei)
-##          print('checking nodei(%d): %s' % (nodei, node))
+##          print('checking nodei({}): {}'.format(nodei, node))
             if not node:
                 print('no node for', nodei)
                 return False
@@ -1363,9 +1363,9 @@ class BookmarksController(OutlinerController):
             # description string. get this as one big ol' string
             nodetype = node.get_nodetype()
             if nodetype == "Folder":
-                text = '%s\n%s\n' % (node.title(), node.description())
+                text = '{}\n{}\n'.format(node.title(), node.description())
             elif nodetype == "Bookmark":
-                text = '%s\n%s\n%s\n' % (node.title(), node.uri(),
+                text = '{}\n{}\n{}\n'.format(node.title(), node.uri(),
                                          node.description())
             else:
                 continue

@@ -110,7 +110,7 @@ class ImageWindow(Frame):
         # because we now need *two* tests for maps when the 
         # common case might be no map
         if self.ismap:
-            return self.url + "?%d,%d" % (event.x, event.y), ""
+            return self.url + "?{},{}".format(event.x, event.y), ""
         elif self.map:
             return self.map.url(event.x,event.y)
         return self.url, self.target

@@ -302,7 +302,7 @@ class StripWidget:
             i = i + 1
         # call the raw tcl script
         colors = ' '.join(chips)
-        tk.eval('setcolor %s {%s}' % (self.__canvas._w, colors))
+        tk.eval('setcolor {} {{{}}}'.format(self.__canvas._w, colors))
         # move the arrows around
         self.__trackarrow(chip, (red, green, blue))
 

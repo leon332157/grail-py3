@@ -609,7 +609,7 @@ def standalone():
             self.root = root
             root.report_callback_exception = self.report_callback_exception
         def report_callback_exception(self, e, v, tb):
-            print("Callback error: %s, %s" % (e, v))
+            print("Callback error: {}, {}".format(e, v))
             import traceback
             traceback.print_exception(e, v, tb)
         def register_on_exit(self, func): pass

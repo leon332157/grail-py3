@@ -284,7 +284,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
 
     def anchor_end(self):
         if self.anchor:
-            self.handle_data("[%d]" % len(self.anchorlist))
+            self.handle_data("[{}]".format(len(self.anchorlist)))
             self.anchor = None
 
     # --- Hook for images; should probably be overridden
@@ -1060,7 +1060,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         if ordinal in self.__charrefs:
             data = self.__charrefs[ordinal]
         else:
-            data = "%s%d%s" % (SGMLLexer.CRO, ordinal, terminator)
+            data = "{}{}{}".format(SGMLLexer.CRO, ordinal, terminator)
             self.badhtml = True
         self.handle_data(data)
 
@@ -1074,7 +1074,8 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         if entname == entname.upper():
             self.handle_entityref(entname.lower(), terminator)
         else:
-            self.handle_data('%s%s%s' % (SGMLLexer.ERO, entname, terminator))
+            data = '{}{}{}'.format(SGMLLexer.ERO, entname, terminator)
+            self.handle_data(data)
 
     # remove from the dictionary so the "unknown" handler can call the
     # magic implementation...

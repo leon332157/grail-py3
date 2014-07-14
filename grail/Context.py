@@ -233,20 +233,21 @@ class Context(URIContext):
                     if reader.api.iscached():
                         cached = cached + 1
                 if maxbytes > 0:
-                    percent = nbytes*100/maxbytes
-                    message = "%d%% of %s read" % (
+                    percent = nbytes*100//maxbytes
+                    message = "{}% of {} read".format(
                         percent, grailutil.nicebytes(maxbytes))
                 else:
-                    message = "%s read" % grailutil.nicebytes(nbytes)
+                    message = "{} read".format(grailutil.nicebytes(nbytes))
                 if cached == nr:
                     message = message + " (all cached)"
                 elif cached:
-                    message = message + " (%d cached)" % cached
-                message = "%d streams, %d active: %s" % (nr, nr - nw, message)
+                    message = message + " ({} cached)".format(cached)
+                fmt = "{} streams, {} active: {}"
+                message = fmt.format(nr, nr - nw, message)
         elif self.on_top():
             message = ""
         elif self.get_url():
-            message = "URL: %s" % self.get_url()
+            message = "URL: {}".format(self.get_url())
         else:
             message = "empty"
         self.message(message)
@@ -380,7 +381,8 @@ class Context(URIContext):
     def set_local_api(self, name, klass):
         """Install a local protocol handler"""
         if not name.endswith("API"):
-            raise IOError("Invalid name (%s) for protocol handler" % name)
+            msg = "Invalid name ({}) for protocol handler".format(name)
+            raise IOError(msg)
         self.local_api_handlers[name] = klass
 
     def get_local_api(self, url, method, params):
@@ -472,7 +474,7 @@ class Context(URIContext):
         self.stop()
         self.save_page_state()
         # Start loading a new URL into the window
-        self.message("Loading %s" % url)
+        self.message("Loading {}".format(url))
         if reload:
             show_source = self.show_source
         else:
@@ -546,7 +548,7 @@ class Context(URIContext):
         self.save_page_state()
         url = self.get_baseurl(url)
         method = 'POST'
-        self.message("Posting to %s" % url)
+        self.message("Posting to {}".format(url))
         try:
             self.read_page(url, method, params, reload=True, data=data)
         except IOError as msg:

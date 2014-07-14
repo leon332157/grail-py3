@@ -624,7 +624,8 @@ class Reader(BaseReader):
                 encoding = real_content_encoding + "ed "
                 if encoding[:2] == "x-":
                     encoding = encoding[2:]
-            encoding_label = "MIME type: %s%s" % (encoding, real_content_type)
+            encoding_label = "MIME type: {}{}".format(
+                encoding, real_content_type)
             import FileDialog
             fd = FileDialog.SaveFileDialog(context.root)
             label = Label(fd.top, text=encoding_label)
@@ -740,8 +741,8 @@ class Reader(BaseReader):
             self.save_filename, self.save_plist)
         if not command:
             command = self.save_mailcap
-        self.last_context.message("Mailcap: %s" % command)
-        command = "(%s; rm -f %s)&" % (command, self.save_filename)
+        self.last_context.message("Mailcap: {}".format(command))
+        command = "({}; rm -f {})&".format(command, self.save_filename)
         sts = os.system(command)
         if sts:
             print("Exit status", sts, "from command", command)
@@ -826,7 +827,7 @@ class TransferDisplay:
     def create_widgets(self, url, filename, content_length):
         """Create the widgets in the Toplevel instance."""
         fr, topfr, botfr = tktools.make_double_frame(self.root)
-        Label(topfr, text="Downloading %s" % os.path.basename(filename)
+        Label(topfr, text="Downloading {}".format(os.path.basename(filename))
               ).pack(anchor=W, pady='1m')
         Frame(topfr, borderwidth=1, height=2, relief=SUNKEN
               ).pack(fill=X, pady='1m')
@@ -841,7 +842,7 @@ class TransferDisplay:
         if content_length:
             self.__bytes['width'] = len(format(content_length)) + 2
             self.__percent = self.make_labeled_field(
-                frame, "Complete:", self.__bytespat % 0.0, LEFT)
+                frame, "Complete:", self.__bytespat.format(0.0), LEFT)
         else:
             self.__percent = None
 
@@ -860,7 +861,7 @@ class TransferDisplay:
             if match:
                 pos = match.start()+1
                 end = match.end()
-                self.__datafont = "%smedium%s" % (font[:pos], font[end:])
+                self.__datafont = "{}medium{}".format(font[:pos], font[end:])
         if self.__datafont:
             try: value['font'] = self.__datafont
             except TclError: self.__datafont = ''
@@ -871,9 +872,9 @@ class TransferDisplay:
         pass
 
     __progbar = None
-    __bytespat = "%.1f%%"
+    __bytespat = "{:.1f}%"
     def make_progress_bar(self, size, frame):
-        self.__bytespat = "%.1f%% of " + grailutil.nicebytes(size)
+        self.__bytespat = "{:.1f}% of " + grailutil.nicebytes(size)
         self.__maxsize = size
         f = Frame(frame, relief=SUNKEN, borderwidth=1, background=LIGHT_BLUE,
                   height=20, width=202)
@@ -903,7 +904,7 @@ class TransferDisplay:
             self.__progbar.config(
                 width=max(1, datasize * 200 // self.__maxsize))
             self.__percent['text'] = (
-                self.__bytespat % (100.0 * (datasize / self.__maxsize)))
+                self.__bytespat.format(100.0 * (datasize / self.__maxsize)))
             t = time.time()
             if t - self.__prevtime >= TRANSFER_STATUS_UPDATE_PERIOD:
                 self.root.update_idletasks()

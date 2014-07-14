@@ -10,7 +10,7 @@ class ImageLoopItem:
         self.pause = pause
         self.delay = delay
         self.context = master.grail_context
-        self.urlpattern = img + "T%d.gif"
+        self.urlpattern = img + "T{}.gif"
         self.images = []
         self.index = 0
         self.done = False
@@ -20,7 +20,7 @@ class ImageLoopItem:
         self.schedule()
 
     def loadnext(self):
-        url = self.urlpattern % (len(self.images) + 1)
+        url = self.urlpattern.format(len(self.images) + 1)
         image = self.context.get_async_image(url)
         if not image:
             self.done = True

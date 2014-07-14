@@ -33,7 +33,7 @@ class KeywordMatcher:
         keywords = self.__keywords
         if not keywords:
             return False
-        text = "%s %s" % (node.description(), node.title())
+        text = "{} {}".format(node.description(), node.title())
         if not self.__case_sensitive:
             text = text.lower()
         words = set(text.translate(self.__tr).split())

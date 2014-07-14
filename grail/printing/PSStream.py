@@ -26,14 +26,14 @@ def get_systemheader():
     if fn:
         with open(fn) as file:
             return file.read()
-    return "%%\%%  System header %s not found!\n%%" % fn
+    return "%\%  System header {} not found!\n%".format(fn)
 
 
 USERHEADER_INFO = """\
-%%
-%% This is custom header material was loaded from:
-%%      %s
-%%"""
+%
+% This is custom header material was loaded from:
+%      {}
+%"""
 
 # Allow the user to provide supplemental prologue material:
 def get_userheader():
@@ -42,7 +42,7 @@ def get_userheader():
     for fn in settings.get_settings().user_headers:
         filename = utils.which(fn, options.user_data_dirs)
         if filename:
-            templates.append(USERHEADER_INFO % fn)
+            templates.append(USERHEADER_INFO.format(fn))
             with open(filename) as file:
                 templates.append(file.read())
     return '\n'.join(templates)
@@ -114,7 +114,7 @@ class PSStream:
         return self.__pageno
 
     def set_pageno(self, pageno):
-        utils.debug("========== new page number: %s\n" % pageno)
+        utils.debug("========== new page number: {}\n".format(pageno))
         self.__pageno = pageno
 
     __titles = None
@@ -152,14 +152,14 @@ class PSStream:
         # define the fonts
         print("/scalfac", self._font.points_per_pixel, "D", file=self._ofp)
         for key, value in docfonts.items():
-            print("/%s /%s dup reencodeISO D findfont D" % (key, value),
+            print("/{} /{} dup reencodeISO D findfont D".format(key, value),
                 file=self._ofp)
         # finish out the prolog with paper information:
         for name, value in vars(self._paper).items():
             if isinstance(value, str):
-                print("/Gr%s (%s) D" % (name, value), file=self._ofp)
+                print("/Gr{} ({}) D".format(name, value), file=self._ofp)
             else:
-                print("/Gr%s %s D" % (name, value), file=self._ofp)
+                print("/Gr{} {} D".format(name, value), file=self._ofp)
         # Add time information to allow the printing functions to include
         # 'date printed' to the footers if desired.  We need a way to get
         # the last-modified time of the document from the context headers,
@@ -172,7 +172,7 @@ class PSStream:
         local = time.localtime(t)
         utc = time.gmtime(t)
         for name, local, utc in zip(names, local, utc):
-            print("/Gr%s %s D /GrUTC%s %s D" % (name, local, name, utc),
+            print("/Gr{} {} D /GrUTC{} {} D".format(name, local, name, utc),
                 file=self._ofp)
         # add per-user customization:
         user_template = get_userheader()
@@ -246,16 +246,16 @@ class PSStream:
         xscale, yscale = img.get_scale()
         # Translate & scale for image origin (maybe should add
         # some cropping?  just assuming image is reasonable):
-        print('gsave\n currentpoint %s sub translate %s %s scale'
-              % (below, xscale, yscale), file=self._linefp)
+        print('gsave\n currentpoint {} sub translate {} {} scale'.format(
+              below, xscale, yscale), file=self._linefp)
         if ll_x or ll_y:
             #  Have to translate again to make image happy:
-            print(' %d %d translate' % (-ll_x, -ll_y), file=self._linefp)
+            print(' {} {} translate'.format(-ll_x, -ll_y), file=self._linefp)
         if img.data[-1] == '\n':
             img.data = img.data[:-1]
         print(img.data, file=self._linefp)
         #  Restore context, move to right of image:
-        print('grestore %s 0 R' % width, file=self._linefp)
+        print('grestore {} 0 R'.format(width), file=self._linefp)
 
     def push_font_string(self, s, font):
         if not font:
@@ -274,9 +274,10 @@ class PSStream:
             self._baseline = size
         else:
             self._baseline = max(self._baseline, size)
-        self._linefp.write('gsave\n /%s findfont %d scalefont setfont '
-                           % (font, size))
-        self._linefp.write('(%s) show\ngrestore %d 0 R\n' % (cook(s), width))
+        fmt = 'gsave\n /{} findfont {} scalefont setfont '
+        self._linefp.write(fmt.format(font, size))
+        fmt = '({}) show\ngrestore {} 0 R\n'
+        self._linefp.write(fmt.format(cook(s), width))
         self._xpos = self._xpos + width
 
     def push_alignment(self, align):
@@ -297,7 +298,7 @@ class PSStream:
         if self._linestr:
             self.close_string()
         yshift = 1.0 * yshift
-        self._linefp.write('0 %s R\n' % yshift)
+        self._linefp.write('0 {} R\n'.format(yshift))
         absshift = self._yshift[-1][0] + yshift
         self._yshift.append((absshift, yshift))
         newheight = absshift + self.get_fontsize()
@@ -314,7 +315,7 @@ class PSStream:
     def pop_yshift(self):
         if self._linestr:
             self.close_string()
-        self._linefp.write('0 %s R\n' % -self._yshift.pop()[1])
+        self._linefp.write('0 {} R\n'.format(-self._yshift.pop()[1]))
 
     def push_end(self):
         self.close_line()
@@ -330,7 +331,7 @@ class PSStream:
             self._baseline = self.get_fontsize() \
                              + max(0.0, self._yshift[-1][0])
         psfontname, size = self._font.set_font(font)
-        self._linefp.write('%s %s SF\n' % (psfontname, size))
+        self._linefp.write('{} {} SF\n'.format(psfontname, size))
         self._space_width = self._font.text_width(' ')
         newfontsize = size + max(0.0, self._yshift[-1][0])
         if self._baseline is None:
@@ -371,8 +372,8 @@ class PSStream:
             start = (pagewidth - width) / 2
         else:   #  ALIGN = right
             start = pagewidth - width
-        self._linefp.write('%d %s %s HR\n'
-                           % (height, start + self._margin, width))
+        self._linefp.write('{} {} {} HR\n'.format(
+                           height, start + self._margin, width))
         self.close_line()
         self._align = old_align
         self._xpos = 0.0
@@ -384,7 +385,7 @@ class PSStream:
         max_width = self.get_pagewidth()
         if self._xpos + width > max_width:
             self.close_line()
-        self._linefp.write("%s 0 R\n" % width)
+        self._linefp.write("{} 0 R\n".format(width))
         self._xpos = self._xpos + width
 
     def push_margin(self, level):
@@ -393,7 +394,7 @@ class PSStream:
         distance = level * self._paper.TabStop
         if self._margin != distance:
             self._margin = distance
-            self._ofp.write('/grIndentMargin %s D CR\n' % distance)
+            self._ofp.write('/grIndentMargin {} D CR\n'.format(distance))
 
     def push_rightmargin(self, level):
         if self._linestr:
@@ -410,16 +411,16 @@ class PSStream:
         if isinstance(bullet, str):
             #  Simple textual bullet:
             distance = self._font.text_width(bullet) + LABEL_TAB
-            self._linefp.write('gsave CR -%s 0 R (%s) S grestore\n' %
-                               (distance, cook(bullet)))
+            self._linefp.write('gsave CR -{} 0 R ({}) S grestore\n'.format(
+                               distance, cook(bullet)))
         elif isinstance(bullet, Iterable):
             #  Font-based dingbats:
             string, font = bullet
-            self._linefp.write('gsave\n CR %s %d SF\n'
-                               % (font, self.get_fontsize()))
-            self._linefp.write(' (%s) dup\n' % cook(string))
-            self._linefp.write(' stringwidth pop -%s E sub 0 R S\ngrestore\n'
-                               % LABEL_TAB)
+            self._linefp.write('gsave\n CR {} {} SF\n'.format(
+                               font, int(self.get_fontsize())))
+            self._linefp.write(' ({}) dup\n'.format(cook(string)))
+            fmt = ' stringwidth pop -{} E sub 0 R S\ngrestore\n'
+            self._linefp.write(fmt.format(LABEL_TAB))
         else:
             #  This had better be an EPSImage object!
             max_width = self._paper.TabStop - LABEL_TAB
@@ -429,13 +430,13 @@ class PSStream:
             xscale, yscale = bullet.get_scale()
             #  Locate new origin:
             vshift = (self.get_fontsize() - height) / 2.0
-            self._linefp.write("gsave\n CR -%s %s R currentpoint translate "
-                               "%s %s scale\n"
-                               % (distance, vshift, xscale, yscale))
+            self._linefp.write("gsave\n CR -{} {} R currentpoint translate "
+                               "{} {} scale\n".format(
+                               distance, vshift, xscale, yscale))
             ll_x, ll_y, ur_x, ur_y = bullet.bbox
             if ll_x or ll_y:
                 #  Have to translate again to make image happy:
-                self._linefp.write(' %d %d translate\n' % (-ll_x, -ll_y))
+                self._linefp.write(' {} {} translate\n'.format(-ll_x, -ll_y))
             self._linefp.write(bullet.data)
             self._linefp.write("grestore\n")
 
@@ -587,8 +588,8 @@ class PSStream:
         if self.get_pageno() != 1:
             title = cook(self.get_title())
         self.prune_titles()
-        self._ofp.write("(%s)\n(%s)\n%d EP\n"
-                        % (url, title, self.get_pageno()))
+        self._ofp.write("({})\n({})\n{} EP\n".format(
+                        url, title, self.get_pageno()))
 
     def push_page_end(self):
         # self._baseline could be None
@@ -624,8 +625,8 @@ class PSStream:
         # do we need to break the page?
         # will the line we're about to write fit on the current page?
         linesz = self._baseline + self._descender + self._vtab
-##      utils.debug('ypos= %f, linesz= %f, diff= %f, PH= %f' %
-##                  (self._ypos, linesz, (self._ypos - linesz),
+##      utils.debug('ypos= {:f}, linesz= {:f}, diff= {:f}, PH= {:f}'.format(
+##                  self._ypos, linesz, (self._ypos - linesz),
 ##                   -self._paper.ImageHeight))
         self._ypos = self._ypos - linesz
         if self._ypos <= -self._paper.ImageHeight:
@@ -637,10 +638,10 @@ class PSStream:
             offset = self.get_pagewidth() - self._xpos
         else:
             offset = 0.0
-        self._ofp.write('CR %s -%s R\n%s' %
-                        (offset, distance, self._linefp.getvalue()))
+        self._ofp.write('CR {} -{} R\n{}'.format(
+                        offset, distance, self._linefp.getvalue()))
         if self._descender > 0:
-            self._ofp.write('0 -%s R\n' % self._descender)
+            self._ofp.write('0 -{} R\n'.format(self._descender))
             self._descender = 0.0
         # reset cache
         self._line_start_font = self._font.get_font()
@@ -665,6 +666,6 @@ class PSStream:
         if self._prev_render != render and cooked[0] == ' ':
             cooked = cooked[1:]
             self._linefp.write('( ) S\n')
-        self._linefp.write('(%s) %s\n' % (cooked, render))
+        self._linefp.write('({}) {}\n'.format(cooked, render))
         self._prev_render = render
         self._linestr = []

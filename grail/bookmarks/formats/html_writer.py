@@ -32,21 +32,21 @@ class Writer(walker.TreeWalker):
     # node-type handlers
 
     def start_Separator(self, node):
-        print('%s<HR>' % self.__tab(), file=self.__fp)
+        print('{}<HR>'.format(self.__tab()), file=self.__fp)
 
     def start_Bookmark(self, node):
         alias = self.__compute_alias_info(node)
         modified = node.last_modified() or ''
         if modified:
-            modified = ' LAST_MODIFIED="%d"' % modified
+            modified = ' LAST_MODIFIED="{}"'.format(modified)
         add_date = node.add_date() or ''
         if add_date:
-            add_date = ' ADD_DATE="%d"' % add_date
+            add_date = ' ADD_DATE="{}"'.format(add_date)
         last_visit = node.last_visited()
         if last_visit:
-            last_visit = ' LAST_VISIT="%d"' % last_visit
-        print('%s<DT><A HREF="%s"%s%s%s%s>%s</A>' %
-              (self.__tab(), node.uri(), alias, add_date,
+            last_visit = ' LAST_VISIT="{}"'.format(last_visit)
+        print('{}<DT><A HREF="{}"{}{}{}{}>{}</A>'.format(
+              self.__tab(), node.uri(), alias, add_date,
                last_visit, modified, saxutils.escape(node.title())),
               file=self.__fp)
         self.__write_description(node.description())
@@ -59,7 +59,7 @@ class Writer(walker.TreeWalker):
         if idref not in self.__id_map:
             self.__id_map[idref] = self.__id_next
             self.__id_next = self.__id_next + 1
-        self.__alias_id = ' ALIASOF="%d"' % self.__id_map[idref]
+        self.__alias_id = ' ALIASOF="{}"'.format(self.__id_map[idref])
         self.start_Bookmark(node.get_refnode())
 
     def start_Folder(self, node):
@@ -74,9 +74,9 @@ class Writer(walker.TreeWalker):
         else: folded = ' FOLDED'
         add_date = node.add_date() or ''
         if add_date:
-            add_date = ' ADD_DATE="%d"' % add_date
-        print('%s<DT><H3%s%s>%s</H3>' %
-              (tab, folded, add_date, node.title()), file=self.__fp)
+            add_date = ' ADD_DATE="{}"'.format(add_date)
+        print('{}<DT><H3{}{}>{}</H3>'.format(
+              tab, folded, add_date, node.title()), file=self.__fp)
         self.__write_description(node.description())
         print(tab + '<DL><p>', file=self.__fp)
         self.__depth = self.__depth + 1
@@ -95,7 +95,7 @@ class Writer(walker.TreeWalker):
                 if id not in self.__id_map:
                     self.__id_map[id] = self.__id_next
                     self.__id_next = self.__id_next + 1
-                alias = ' ALIASID="%d"' % self.__id_map[id]
+                alias = ' ALIASID="{}"'.format(self.__id_map[id])
         self.__alias_id = ''
         return alias
 
@@ -105,15 +105,15 @@ class Writer(walker.TreeWalker):
     def __write_description(self, desc):
         if not desc: return
         # write the description, sans leading and trailing whitespace
-        print('<DD>%s' % saxutils.escape(desc).strip(), file=self.__fp)
+        print('<DD>{}'.format(saxutils.escape(desc).strip()), file=self.__fp)
 
     __header = """\
 <!DOCTYPE NETSCAPE-Bookmark-file-1>
 <!-- This is an automatically generated file.
     It will be read and overwritten.
     Do Not Edit! -->
-<TITLE>%(title)s</TITLE>
-<H1>%(title)s</H1>"""
+<TITLE>{title}</TITLE>
+<H1>{title}</H1>"""
 
     def __write_header(self, root):
-        print(self.__header % {'title': root.title()}, file=self.__fp)
+        print(self.__header.format(title=root.title()), file=self.__fp)

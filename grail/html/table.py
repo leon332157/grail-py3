@@ -17,7 +17,7 @@ EMPTY = 102
 class BadMojoError(Exception):
     def __str__(self): return 'Bad Mojo!  Infinite loop in cell height calculation.'
 
-CELLGEOM_RE = re.compile(r'%sx%s\+%s\+%s' % (('([-+]?[0-9]+)',) * 4))
+CELLGEOM_RE = re.compile(r'{0}x{0}\+{0}\+{0}'.format('([-+]?[0-9]+)'))
 
 DEFAULT_VALIGN = 'top'
 
@@ -857,7 +857,7 @@ def _get_widths(tw):
     border_x = max(border_x, 0)
     linecnt = _get_linecount(tw) + 1
     for lineno in range(1, linecnt):
-        index = '%d.0' % lineno
+        index = '{}.0'.format(lineno)
         tw.see(index)
         x, y, w, h, b = tw.dlineinfo(index)
         width_max = max(width_max, w)
@@ -1132,8 +1132,8 @@ class Cell(ContainedText):
         pass
 
     def __repr__(self):
-##      return '<%s>' % id(self) + '"%s"' % self._tw.get(1.0, END)[:-1]
-        return '"%s"' % self._tw.get(1.0, END)[:-1]
+##      return '<{}>"{}"'.format(id(self), self._tw.get(1.0, END)[:-1])
+        return '"{}"'.format(self._tw.get(1.0, END)[:-1])
 
     def is_empty(self):
         return not self._tw.get(1.0, 'end - 1 c')

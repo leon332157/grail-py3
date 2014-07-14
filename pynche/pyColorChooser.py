@@ -97,7 +97,7 @@ if __name__ == '__main__':
                 text = 'You hit CANCEL!'
             else:
                 r, g, b = rgb
-                text = 'You picked %s (%3d/%3d/%3d)' % (name, r, g, b)
+                text = 'You picked {} ({:3}/{:3}/{:3})'.format(name, r, g, b)
             self.__l.configure(text=text)
 
         def __quit(self, event=None):

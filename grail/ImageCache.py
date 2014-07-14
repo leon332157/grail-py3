@@ -19,7 +19,7 @@ class ImageCache:
     def debug_show_state(self):
         print("debugging ouput\ncurrent state of image cache")
         for image in self.image_objects.keys():
-            print("Image: %s.\n  Owners=%s" % (image,
+            print("Image: {}.\n  Owners={}".format(image,
                                             self.current_owners[image]))
         for owner, images in self.old_objects.items():
             print("Old images owned by ", owner)

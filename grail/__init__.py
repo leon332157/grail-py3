@@ -42,12 +42,12 @@ from io import RawIOBase
 KEEPALIVE_TIMER = 500
 
 # Command line usage message
-USAGE = """Usage: %s [options] [url]
+USAGE = """Usage: {} [options] [url]
 Options:
     -i, --noimages : inhibit loading of images
     -g <geom>, --geometry <geom> : initial window geometry
     -d <display>, --display <display> : override $DISPLAY
-    -q : ignore user's grailrc module""" % sys.argv[0]
+    -q : ignore user's grailrc module""".format(sys.argv[0])
 
 def main(args=None):
     prefs = GrailPrefs.AllPreferences()

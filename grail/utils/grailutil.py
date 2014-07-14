@@ -44,7 +44,7 @@ def nicebytes(n):
     """
     if n < 1000:
         if n == 1: return "1 byte"
-        return "%d bytes" % n
+        return "{} bytes".format(n)
     n = n * 0.001
     if n < 1000.0:
         suffix = "K"
@@ -58,7 +58,7 @@ def nicebytes(n):
     if n < 10.0: r = 2
     elif n < 100.0: r = 1
     else: r = 0
-    return "%.*f" % (r, n) + suffix
+    return "{:.{}f}".format(n, r) + suffix
 
 
 

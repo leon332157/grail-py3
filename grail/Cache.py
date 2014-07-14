@@ -90,7 +90,7 @@ class SharedItem:
         self.init_new_load(META)
 
     def __repr__(self):
-        return "SharedItem(%r)<%d>" % (self.url, self.refcnt)
+        return "SharedItem({!r})<{}>".format(self.url, self.refcnt)
 
     def iscached(self):
         return self.incache and not self.reloading
@@ -276,7 +276,7 @@ class SharedAPI:
         return self.item and self.item.iscached()
 
     def __repr__(self):
-        return "SharedAPI(%s)" % self.item
+        return "SharedAPI({})".format(self.item)
 
     def __del__(self):
         self.close()

@@ -79,9 +79,8 @@ def PrintDialog(context, url, title):
     ctype, ctype_params = grailutil.conv_mimetype(ctype)
     mod = context.app.find_type_extension("printing.filetypes", ctype)
     if ctype != "application/postscript" and not mod.parse:
-        context.error_dialog(
-            "Unprintable document",
-            "No printing support is available for the %s media type." % ctype)
+        msg = "No printing support is available for the {} media type."
+        context.error_dialog("Unprintable document", msg.format(ctype))
         return
     RealPrintDialog(context, url, title, infp, ctype)
 
@@ -311,8 +310,8 @@ class RealPrintDialog:
         if proc:
             sts = proc.wait()
         if sts:
-            self.context.error_dialog("Exit",
-                                      "Print command exit status %r" % sts)
+            msg = "Print command exit status {}".format(sts)
+            self.context.error_dialog("Exit", msg)
         self.root.destroy()
 
     def cancel_event(self, event):

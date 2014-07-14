@@ -137,9 +137,8 @@ class LoginDialog:
     def __init__(self, master, netloc, realmvalue):
         self.root = tktools.make_toplevel(master,
                                           title="Authentication Dialog")
-        self.prompt = Label(self.root,
-                            text="Enter user authentication\nfor %s on %s" %
-                            (realmvalue, netloc))
+        text = "Enter user authentication\nfor {} on {}"
+        self.prompt = Label(self.root, text=text.format(realmvalue, netloc))
         self.prompt.pack(side=TOP)
         self.user_entry, dummy = tktools.make_form_entry(self.root, "User:")
         self.user_entry.focus_set()

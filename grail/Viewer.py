@@ -143,7 +143,7 @@ class Viewer(formatter.AbstractWriter):
         if not self.context or self.linkinfo:
             return
         if self.name:
-            message = "%s: %s" % (self.name, message)
+            message = "{}: {}".format(self.name, message)
         self.status.set(message)
         if not self.parent:
             self.context.browser.messagevariable(self.status)
@@ -331,11 +331,12 @@ class Viewer(formatter.AbstractWriter):
         # Configure margin tags
         for level in range(1, 20):
             pix = level * INDENTATION_WIDTH
-            self.text.tag_configure('margin_%d' % level,
+            self.text.tag_configure('margin_{}'.format(level),
                                     lmargin1=pix, lmargin2=pix)
-            self.text.tag_configure('rightmargin_%d' % level, rmargin=pix)
-            tabs = "%d right %d left" % (pix-5, pix)
-            self.text.tag_configure('label_%d' % level,
+            tag = 'rightmargin_{}'.format(level)
+            self.text.tag_configure(tag, rmargin=pix)
+            tabs = "{} right {} left".format(pix-5, pix)
+            self.text.tag_configure('label_{}'.format(level),
                                     lmargin1=pix-INDENTATION_WIDTH, tabs=tabs)
         # Configure anchor tags
         for tag in 'a', 'ahist':
@@ -534,7 +535,7 @@ class Viewer(formatter.AbstractWriter):
     def new_margin(self, margin, level):
 ##      print("New margin:", margin, level)
         self.marginlevel = level
-        self.margintag = level and ('margin_%d' % level)
+        self.margintag = level and ('margin_{}'.format(level))
         self.new_tags()
 
     def new_spacing(self, spacing):
@@ -548,7 +549,7 @@ class Viewer(formatter.AbstractWriter):
             self.text.insert(END, self.pendingdata, self.flowingtags)
             self.pendingdata = ''
         self.rightmarginlevel = rl = styles.count('blockquote')
-        self.rightmargintag = ('rightmargin_%d' % rl) if rl else None
+        self.rightmargintag = ('rightmargin_{}'.format(rl)) if rl else None
         self.flowingtags = tuple(filter(
             None,
             (self.align, self.fonttag, self.margintag, self.rightmargintag,
@@ -579,10 +580,10 @@ class Viewer(formatter.AbstractWriter):
 
     def send_label_data(self, data):
 ##      print("Label data:", repr(data))
-        tags = self.flowingtags + ('label_%d' % self.marginlevel,)
+        tags = self.flowingtags + ('label_{}'.format(self.marginlevel),)
         if isinstance(data, str):
             self.text.insert(END, self.pendingdata, self.flowingtags,
-                             '\t%s\t' % data, tags)
+                             '\t{}\t'.format(data), tags)
             self.pendingdata = ''
         elif isinstance(data, Iterable):
             #  (string, fonttag) pair
@@ -595,7 +596,7 @@ class Viewer(formatter.AbstractWriter):
                 self.pendingdata = '\t'
             else:
                 self.text.insert(END, self.pendingdata, self.flowingtags,
-                                 '\t%s\t' % data, tags)
+                                 '\t{}\t'.format(data), tags)
                 self.pendingdata = ''
         else:
             #  Some sort of image specified by DINGBAT or SRC
@@ -646,7 +647,7 @@ class Viewer(formatter.AbstractWriter):
             if not target:
                 target = self.context.get_target()
             if target:
-                message = "%s in %s" % (url, target)
+                message = "{} in {}".format(url, target)
             else:
                 message = url
         self.enter_message(message)
@@ -678,7 +679,7 @@ class Viewer(formatter.AbstractWriter):
         self._shifted = True
 
     def anchor_click(self, event):
-        here = self.text.index("@%d,%d" % (event.x, event.y))
+        here = self.text.index("@{},{}".format(event.x, event.y))
         if self.current_index != here:
             self.remove_temp_tag()
             return
@@ -693,7 +694,7 @@ class Viewer(formatter.AbstractWriter):
                 self.context.follow(url, target)
 
     def anchor_click_new(self, event):
-        here = self.text.index("@%d,%d" % (event.x, event.y))
+        here = self.text.index("@{},{}".format(event.x, event.y))
         if self.current_index != here:
             return
         url = self.find_tag_url()
@@ -952,8 +953,8 @@ class ViewerMenu:
         self.__image_prev = self.__image_file
         self.__menu.add_command(label="Open Image " + self.__image_file,
                                 command=self.__open_image)
-        self.__menu.add_command(label="Save Image %s..." % self.__image_file,
-                                command=self.__save_image)
+        label = "Save Image {}...".format(self.__image_file)
+        self.__menu.add_command(label=label, command=self.__save_image)
         self.__menu.add_command(label="Copy Image Location",
                                 command=self.__select_image_url)
 

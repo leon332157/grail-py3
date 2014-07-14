@@ -44,7 +44,7 @@ class Preferences:
         elif group in self.saved and cmpnt in self.saved[group]:
             return self.saved[group][cmpnt]
         else:
-            raise KeyError("Preference %s not found" % ((group, cmpnt),))
+            raise KeyError("Preference {} not found".format((group, cmpnt)))
 
     def Set(self, group, cmpnt, val):
         if isinstance(val, bool):
@@ -171,8 +171,8 @@ class AllPreferences:
         try:
             return typify(val, type_name)
         except TypeError:
-            raise TypeError('%s should be %s: %r'
-                               % ((group, cmpnt), type_name, val))
+            raise TypeError('{} should be {}: {!r}'.format(
+                               (group, cmpnt), type_name, val))
 
     def GetInt(self, group, cmpnt, factory=False):
         return self.GetTyped(group, cmpnt, "int", factory)
@@ -260,13 +260,13 @@ def typify(val, type_name):
         elif type_name == 'Boolean':
             i = int(val)
             if i not in (0, 1):
-                raise TypeError('%r should be Boolean' % val)
+                raise TypeError('{!r} should be Boolean'.format(val))
             return bool(i)
     except ValueError:
-            raise TypeError('%r should be %s' % (val, type_name))
+            raise TypeError('{!r} should be {}'.format(val, type_name))
     
-    raise ValueError('%r not supported - must be one of %s'
-                       % (type_name, ['string', 'int', 'float', 'Boolean']))
+    raise ValueError('{!r} not supported - must be one of {}'.format(
+                       type_name, ['string', 'int', 'float', 'Boolean']))
     
 
 class Test(unittest.TestCase):

@@ -111,11 +111,11 @@ class Collection:
         return id_map, ref_map
 
     __next_id = 1
-    __id_format = "bkmk.%s"
+    __id_format = "bkmk.{}"
     def new_id(self):
         i = self.__next_id
         while True:
-            id = self.__id_format % i
+            id = self.__id_format.format(i)
             i = i + 1
             if id not in self.__id_map:
                 break

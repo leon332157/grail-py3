@@ -16,7 +16,7 @@ class MIMEExtensionLoader(extloader.ExtensionLoader):
         new_name = name.replace("-", "_")
         major, minor = new_name.split("/")
         if minor:
-            modname = "%s_%s" % (major, minor)
+            modname = "{}_{}".format(major, minor)
         else:
             modname = major
         mod = self.find_module(modname)
@@ -48,7 +48,8 @@ class MIMETypeExtension:
         else:
             # not very useful, now is it?
             flags = ""
-        return "<%s.%s for %s%s>" % (modulename, classname, self.type, flags)
+        fmt = "<{}.{} for {}{}>"
+        return fmt.format(modulename, classname, self.type, flags)
 
     def __load_attr(self, mod, name, load_as=None):
         load_as = load_as or name

@@ -103,8 +103,8 @@ class MailDialog:
         hseq = _make_dict_sequence(hinfo)
         for x, header in hseq:
             if header in variables:
-                s = "%s: %s\n" \
-                    % (string.capwords(header, '-'), variables[header])
+                s = "{}: {}\n".format(
+                    string.capwords(header, '-'), variables[header])
                 self.text.insert(END, s)
         # insert newline
         self.text.insert(END, '\n', ())

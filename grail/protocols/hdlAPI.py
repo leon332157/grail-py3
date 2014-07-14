@@ -41,12 +41,12 @@ HANDLE_TYPES = [hdllib.HDL_TYPE_URL]
 HTML_HEADER = """<HTML>
 
 <HEAD>
-<TITLE>%(title)s</TITLE>
+<TITLE>{title}</TITLE>
 </HEAD>
 
 <BODY>
 
-<H1>%(title)s</H1>
+<H1>{title}</H1>
 
 The handle you have selected resolves to multiple data items or to an
 unknown data type.<P>
@@ -120,8 +120,8 @@ class hdl_access(nullAPI.null_access):
             try:
                 m = self.app.get_loader('protocols').find_module(mname)
                 if not m:
-                    self._msgattrs["title"] = (
-                        "hdlAPI: Could not load %s data type handler" % mname)
+                    fmt = "hdlAPI: Could not load {} data type handler"
+                    self._msgattrs["title"] = fmt.format(mname)
                     raise ImportError(mname)
                 types = m.handle_types
                 formatter = m.data_formatter
@@ -171,10 +171,10 @@ class hdl_access(nullAPI.null_access):
         if len(self._items) == 0:
             self._data = "Handle not resolved to anything\n"
             return 404, 'Handle not resolved to anything', {}
-        data = HTML_HEADER % self._msgattrs
+        data = HTML_HEADER.format_map(self._msgattrs)
         for type, uri in self._items:
             if type == hdllib.HDL_TYPE_URL:
-                text = '<LI><A HREF=%s>%s</A>\n' % (
+                text = '<LI><A HREF={}>{}</A>\n'.format(
                     saxutils.quoteattr(uri), saxutils.escape(uri))
             else:
                 if type in (hdllib.HDL_TYPE_SERVICE_POINTER,
@@ -186,7 +186,7 @@ class hdl_access(nullAPI.null_access):
                     type = hdllib.data_map[type][9:]
                 else:
                     type = str(type)
-                text = '<LI>type=%s, value=%s\n' % (type, uri)
+                text = '<LI>type={}, value={}\n'.format(type, uri)
             data = data + text
         data = data + HTML_TRAILER
         self._data = data
