@@ -62,7 +62,7 @@ def tostring(t, timezone=0):
     year, month, day, hours, minutes, seconds = t[:6]
     if seconds or psecs:
         if psecs:
-            psecs = int(round(psecs * 100))
+            psecs = round(psecs * 100)
             f = "%4d-%02d-%02dT%02d:%02d:%02d.%02d%s"
             v = (year, month, day, hours, minutes, seconds, psecs, tzspecifier)
         else:
