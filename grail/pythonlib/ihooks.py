@@ -57,40 +57,13 @@ import os
 import sys
 
 
-VERBOSE = False
-
-
 from imp import C_EXTENSION, PY_SOURCE, PY_COMPILED
 from imp import C_BUILTIN, PY_FROZEN, PKG_DIRECTORY
 BUILTIN_MODULE = C_BUILTIN
 FROZEN_MODULE = PY_FROZEN
 
 
-class _Verbose:
-
-    def __init__(self, verbose = VERBOSE):
-        self.verbose = verbose
-
-    def get_verbose(self):
-        return self.verbose
-
-    def set_verbose(self, verbose):
-        self.verbose = verbose
-
-    # XXX The following is an experimental interface
-
-    def note(self, *args):
-        if self.verbose:
-            self.message(*args)
-
-    def message(self, format, *args):
-        if args:
-            print format%args
-        else:
-            print format
-
-
-class BasicModuleLoader(_Verbose):
+class BasicModuleLoader:
 
     """Basic module loader.
 
@@ -143,7 +116,7 @@ class BasicModuleLoader(_Verbose):
             if file: file.close()
 
 
-class Hooks(_Verbose):
+class Hooks:
 
     """Hooks into the filesystem and interpreter.
 
@@ -209,9 +182,9 @@ class ModuleLoader(BasicModuleLoader):
 
     """
 
-    def __init__(self, hooks = None, verbose = VERBOSE):
-        BasicModuleLoader.__init__(self, verbose)
-        self.hooks = hooks or Hooks(verbose)
+    def __init__(self, hooks = None):
+        BasicModuleLoader.__init__(self)
+        self.hooks = hooks or Hooks()
 
     def default_path(self):
         return self.hooks.default_path()
@@ -324,7 +297,7 @@ class FancyModuleLoader(ModuleLoader):
         return m
 
 
-class BasicModuleImporter(_Verbose):
+class BasicModuleImporter():
 
     """Basic module importer; uses module loader.
 
@@ -332,9 +305,8 @@ class BasicModuleImporter(_Verbose):
 
     """
 
-    def __init__(self, loader = None, verbose = VERBOSE):
-        _Verbose.__init__(self, verbose)
-        self.loader = loader or ModuleLoader(None, verbose)
+    def __init__(self, loader = None):
+        self.loader = loader or ModuleLoader(None)
         self.modules = self.loader.modules_dict()
 
     def get_loader(self):

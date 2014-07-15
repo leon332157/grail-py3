@@ -39,25 +39,8 @@ if os.sys.platform.startswith('sco'):
     SENDMAIL = "/usr/mmdf/bin/submit -mtlrxto,cc'*'s"
     # submit needs a Date: field or it will not include it
     COMMON_HEADERS = COMMON_HEADERS + ((2, "date"),)
-    TEMPLATE ="""\
-To: %(to)s
-Date: %(date)s
-Subject: %(subject)s
-MIME-Version: 1.0
-Content-Type: %(ctype)s
-X-Mailer: %(mailer)s
-X-URL: %(url)s
-"""
 else:
     SENDMAIL = "/usr/lib/sendmail -t" # XXX
-    TEMPLATE ="""\
-To: %(to)s
-Subject: %(subject)s
-MIME-Version: 1.0
-Content-Type: %(ctype)s
-X-Mailer: %(mailer)s
-X-URL: %(url)s
-"""
 
 DISALLOWED_HEADERS = ['from', 'appearantly-to', 'bcc', 'content-length',
                       'content-type', 'mime-version', 'to',
@@ -65,8 +48,6 @@ DISALLOWED_HEADERS = ['from', 'appearantly-to', 'bcc', 'content-length',
 
 
 class MailDialog:
-
-    template = TEMPLATE
 
     def __init__(self, master, address, data):
         # query semantics may be used to identify header field values
