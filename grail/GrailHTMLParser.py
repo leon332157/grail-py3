@@ -15,6 +15,7 @@ from . import grailutil
 
 from .grailutil import extract_attribute, extract_keyword
 from .sgml.HTMLParser import HTMLParser, HeaderNumber
+from ast import literal_eval
 
 
 AS_IS = formatter.AS_IS
@@ -30,7 +31,7 @@ _inited = False
 def init_module(prefs):
     for opt in (1, 2, 3, 4, 5, 6):
         fmt = prefs.Get('parsing-html', 'format-h%d' % opt)
-        HeaderNumber.set_default_format(opt - 1, eval(fmt))
+        HeaderNumber.set_default_format(opt - 1, literal_eval(fmt))
 
 
 class GrailHTMLParser(HTMLParser):

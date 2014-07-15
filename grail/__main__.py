@@ -4,7 +4,8 @@ from . import main
 
 if sys.argv[1:] and sys.argv[1][:2] == '-p':
     p = sys.argv.pop(1)
-    if p[2:]: n = eval(p[2:])
+    from ast import literal_eval
+    if p[2:]: n = literal_eval(p[2:])
     else: n = 20
     sys.modules[__package__].KEEPALIVE_TIMER = 50000
     import profile
