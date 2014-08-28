@@ -1,6 +1,6 @@
 """Printing interface for HTML documents."""
 
-import printing.PSParser
+from .. import PSParser
 
 parse_text_html = PSParser.PrintingHTMLParser
 
