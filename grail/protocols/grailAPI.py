@@ -1,0 +1,17 @@
+"""grail: URI scheme handler."""
+
+from .. import grailutil
+import urllib.request
+from .nullAPI import null_access
+
+class grail_access(null_access):
+
+    def __init__(self, url, method, params):
+        null_access.__init__(self, url, method, params)
+        file = grailutil.which(url)
+        if not file: raise IOError("Grail file {!r} not found".format(url))
+        self.url = "file:" + urllib.request.pathname2url(file)
+
+    def getmeta(self):
+        null_access.getmeta(self)       # assert, state change
+        return 301, "Redirected", {'location': self.url}

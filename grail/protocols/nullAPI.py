@@ -1,0 +1,30 @@
+META, DATA, DONE = 'META', 'DATA', 'DONE'
+
+class null_access:
+
+    def __init__(self, url, method, params):
+        self.state = META
+
+    def pollmeta(self):
+        assert self.state == META
+        return "Ready", True
+
+    def getmeta(self):
+        assert self.state == META
+        self.state = DATA
+        return 204, "No content", {}
+
+    def polldata(self):
+        assert self.state == DATA
+        return "Ready", True
+
+    def getdata(self, maxbytes):
+        assert self.state == DATA
+        self.state = DONE
+        return b""
+
+    def fileno(self):
+        return -1
+
+    def close(self):
+        pass
