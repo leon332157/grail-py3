@@ -8,6 +8,7 @@ from . import SGMLHandler
 
 
 class TagExtensionLoader(grailbase_extloader.ExtensionLoader):
+
     def find(self, name):
         mod = self.find_module(name)
         taginfo = None

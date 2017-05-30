@@ -80,12 +80,13 @@ class BasicModuleLoader:
 
     """
 
-    def find_module(self, name, path = None):
-        if path is None: 
+    def find_module(self, name, path=None):
+        if path is None:
             path = [None] + self.default_path()
         for dir in path:
             stuff = self.find_module_in_dir(name, dir)
-            if stuff: return stuff
+            if stuff:
+                return stuff
         return None
 
     def default_path(self):
@@ -113,7 +114,8 @@ class BasicModuleLoader:
         try:
             return imp.load_module(name, file, filename, info)
         finally:
-            if file: file.close()
+            if file:
+                file.close()
 
 
 class Hooks:
@@ -129,44 +131,62 @@ class Hooks:
 
     # imp interface
     def get_suffixes(self): return imp.get_suffixes()
+
     def new_module(self, name): return imp.new_module(name)
+
     def is_builtin(self, name): return imp.is_builtin(name)
+
     def init_builtin(self, name): return imp.init_builtin(name)
+
     def is_frozen(self, name): return imp.is_frozen(name)
+
     def init_frozen(self, name): return imp.init_frozen(name)
+
     def get_frozen_object(self, name): return imp.get_frozen_object(name)
+
     def load_source(self, name, filename, file=None):
         return imp.load_source(name, filename, file)
+
     def load_compiled(self, name, filename, file=None):
         return imp.load_compiled(name, filename, file)
+
     def load_dynamic(self, name, filename, file=None):
         return imp.load_dynamic(name, filename, file)
+
     def load_package(self, name, filename, file=None):
         return imp.load_module(name, file, filename, ("", "", PKG_DIRECTORY))
 
     def add_module(self, name):
         d = self.modules_dict()
-        if name in d: return d[name]
+        if name in d:
+            return d[name]
         d[name] = m = self.new_module(name)
         return m
 
     # sys interface
     def modules_dict(self): return sys.modules
+
     def default_path(self): return sys.path
 
     def path_split(self, x): return os.path.split(x)
+
     def path_join(self, x, y): return os.path.join(x, y)
+
     def path_isabs(self, x): return os.path.isabs(x)
     # etc.
 
     def path_exists(self, x): return os.path.exists(x)
+
     def path_isdir(self, x): return os.path.isdir(x)
+
     def path_isfile(self, x): return os.path.isfile(x)
+
     def path_islink(self, x): return os.path.islink(x)
     # etc.
 
     def openfile(self, *x): return open(*x)
     openfile_error = IOError
+
     def listdir(self, x): return os.listdir(x)
     listdir_error = os.error
     # etc.
@@ -182,7 +202,7 @@ class ModuleLoader(BasicModuleLoader):
 
     """
 
-    def __init__(self, hooks = None):
+    def __init__(self, hooks=None):
         BasicModuleLoader.__init__(self)
         self.hooks = hooks or Hooks()
 
@@ -215,11 +235,12 @@ class ModuleLoader(BasicModuleLoader):
                 stuff = self.find_module_in_dir("__init__", fullname, False)
                 if stuff:
                     file = stuff[0]
-                    if file: file.close()
+                    if file:
+                        file.close()
                     return None, fullname, ('', '', PKG_DIRECTORY)
         for info in self.hooks.get_suffixes():
             suff, mode, type = info
-            fullname = self.hooks.path_join(dir, name+suff)
+            fullname = self.hooks.path_join(dir, name + suff)
             try:
                 fp = self.hooks.openfile(fullname, mode)
                 return fp, fullname, info
@@ -247,7 +268,8 @@ class ModuleLoader(BasicModuleLoader):
                 msg = "Unrecognized module type ({!r}) for {}"
                 raise ImportError(msg.format(type, name))
         finally:
-            if file: file.close()
+            if file:
+                file.close()
         m.__file__ = filename
         return m
 
@@ -269,7 +291,8 @@ class FancyModuleLoader(ModuleLoader):
             initfile, initfilename, initinfo = initstuff
             initsuff, initmode, inittype = initinfo
             if inittype not in (PY_COMPILED, PY_SOURCE):
-                if initfile: initfile.close()
+                if initfile:
+                    initfile.close()
                 msg = "Bad type ({!r}) for __init__ module in package {}"
                 raise ImportError(msg.format(inittype, name))
             path = [filename]
@@ -305,7 +328,7 @@ class BasicModuleImporter():
 
     """
 
-    def __init__(self, loader = None):
+    def __init__(self, loader=None):
         self.loader = loader or ModuleLoader(None)
         self.modules = self.loader.modules_dict()
 
@@ -323,13 +346,13 @@ class BasicModuleImporter():
 
     def import_module(self, name, globals={}, locals={}, fromlist=[]):
         if name in self.modules:
-            return self.modules[name] # Fast path
+            return self.modules[name]  # Fast path
         stuff = self.loader.find_module(name)
         if not stuff:
             raise ImportError("No module named {}".format(name))
         return self.loader.load_module(name, stuff)
 
-    def reload(self, module, path = None):
+    def reload(self, module, path=None):
         name = module.__name__
         stuff = self.loader.find_module(name, path)
         if not stuff:
@@ -361,7 +384,7 @@ class BasicModuleImporter():
 class ModuleImporter(BasicModuleImporter):
 
     """A module importer that supports packages."""
-    
+
     def import_module(self, name, globals=None, locals=None, fromlist=None):
         parent = self.determine_parent(globals)
         q, tail = self.find_head_package(parent, name)
@@ -394,12 +417,14 @@ class ModuleImporter(BasicModuleImporter):
         else:
             qname = head
         q = self.import_it(head, qname, parent)
-        if q: return q, tail
+        if q:
+            return q, tail
         if parent:
             qname = head
             parent = None
             q = self.import_it(head, qname, parent)
-            if q: return q, tail
+            if q:
+                return q, tail
         raise ImportError("No module named " + qname)
 
     def load_tail(self, q, tail):
@@ -460,10 +485,12 @@ class ModuleImporter(BasicModuleImporter):
 default_importer = None
 current_importer = None
 
-def install(importer = None):
+
+def install(importer=None):
     global current_importer
     current_importer = importer or default_importer or ModuleImporter()
     current_importer.install()
+
 
 def uninstall():
     global current_importer

@@ -3,17 +3,19 @@
 Loosely modelled after the W3C Reference Library at
 <URL:http://www.w3.org/pub/WWW/Library/>.
 """
- 
+
 import time
 import string
 
-_months = { 'jan' : 1, 'feb' : 2, 'mar' : 3, 'apr' : 4,
-            'may' : 5, 'jun' : 6, 'jul' : 7, 'aug' : 8,
-            'sep' : 9, 'oct' : 10, 'nov' : 11, 'dec' : 12 }
+_months = {'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4,
+           'may': 5, 'jun': 6, 'jul': 7, 'aug': 8,
+           'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12}
+
 
 def _month_to_num(month):
     m = month.lower()
     return _months[m]
+
 
 def _2dyear_to_4dyear(yy):
     # what do we do with those darn two-digit years?
@@ -23,12 +25,13 @@ def _2dyear_to_4dyear(yy):
     else:
         return yy + 1900
 
+
 def parse(str):
     """Parses time in rfc850, rfc1123, and raw seconds formats. Returns
     seconds since the epoch corrected for timezone.
 
     rfc850:  Weekday, 00-Mon-00 00:00:00 GMT
-    rfc1123: Wkd, 00 Mon 0000 00:00:00 GMT 
+    rfc1123: Wkd, 00 Mon 0000 00:00:00 GMT
     raw: [0-9]+ (defined as seconds since current time)
 
     Raises ValueError if time can't be parsed.
@@ -69,19 +72,20 @@ def parse(str):
             hour = int(str[11:13])
             min = int(str[14:16])
             sec = int(str[17:19])
-            
-            ### do we assume this is GMT time or not?
-            ### let's assume it is
+
+            # do we assume this is GMT time or not?
+            # let's assume it is
             gmt = (year, mon, mday, hour, min, sec, 0, 0, 0)
             secs = time.mktime(gmt)
             return secs - time.timezone
+
 
 def unparse(secs):
     """Turns localtime in seconds since epoch to HTTP time.
     """
 
     str = time.asctime(time.gmtime(secs))
-    # puts the string in asctime() format, must convert 
+    # puts the string in asctime() format, must convert
     day = str[0:3]
     mon = str[4:7]
     mday = int(str[8:10])

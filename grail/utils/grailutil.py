@@ -42,7 +42,8 @@ def nicebytes(n):
 
     """
     if n < 1000:
-        if n == 1: return "1 byte"
+        if n == 1:
+            return "1 byte"
         return "{} bytes".format(n)
     n = n * 0.001
     if n < 1000.0:
@@ -54,13 +55,14 @@ def nicebytes(n):
         else:
             n = n * 0.001
             suffix = "G"
-    if n < 10.0: r = 2
-    elif n < 100.0: r = 1
-    else: r = 0
+    if n < 10.0:
+        r = 2
+    elif n < 100.0:
+        r = 1
+    else:
+        r = 0
     return "{:.{}f}".format(n, r) + suffix
 
-
-
 
 def pref_or_getenv(name, group='proxies', type_name='string',
                    check_ok=None):
@@ -76,8 +78,8 @@ def pref_or_getenv(name, group='proxies', type_name='string',
     'name2').
 
     """
-    if check_ok and  name not in check_ok:
-            return None
+    if check_ok and name not in check_ok:
+        return None
 
     app = get_grailapp()
 
@@ -97,7 +99,7 @@ def pref_or_getenv(name, group='proxies', type_name='string',
 
 def close_subprocess(proc):
     """Close a process opened by the "subprocess" module
-    
+
     Ignores broken pipe error when flushing and closing the process's input
     pipe and the stream is buffered. This function is used since neither
     proc.communicate() nor proc.__exit__() seem to clean up the process after

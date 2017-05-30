@@ -5,13 +5,14 @@ __version__ = '$Revision: 1.6 $'
 
 _settings = None
 
+
 def get_settings(prefs=None):
     global _settings
     if not _settings:
         _settings = PrintSettings(prefs)
     return _settings
 
-
+
 from . import utils                            # || module
 
 

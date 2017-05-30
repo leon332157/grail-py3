@@ -15,7 +15,9 @@ you must hit Return or Tab to select the color.
 from tkinter import *
 import re
 
+
 class TypeinViewer:
+
     def __init__(self, switchboard, master=None):
         # non-gui ivars
         self.__sb = switchboard
@@ -34,7 +36,7 @@ class TypeinViewer:
         self.__x.grid(row=0, column=1)
         self.__x.bindtags(self.__x.bindtags() + ('Normalize', 'Update'))
         self.__x.bind_class('Normalize', '<Key>', self.__normalize)
-        self.__x.bind_class('Update'   , '<Key>', self.__maybeupdate)
+        self.__x.bind_class('Update', '<Key>', self.__maybeupdate)
         # Green
         self.__yl = Label(self.__frame, text='Green:')
         self.__yl.grid(row=1, column=0, sticky=E)
@@ -84,8 +86,8 @@ class TypeinViewer:
         if v is None or v < 0 or v > 255:
             i = ew.index(INSERT)
             if event.char:
-                contents = contents[:i-1] + contents[i:]
-                icursor = icursor-1
+                contents = contents[:i - 1] + contents[i:]
+                icursor = icursor - 1
             ew.bell()
         elif self.__hexp.get():
             contents = hex(v)

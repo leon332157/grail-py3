@@ -1,5 +1,6 @@
 META, DATA, DONE = 'META', 'DATA', 'DONE'
 
+
 class null_access:
 
     def __init__(self, url, method, params):

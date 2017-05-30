@@ -78,7 +78,7 @@ def ctime(t):
     """Similar to time.ctime(), but using ISO-8601 format."""
     return tostring(t, time.timezone)
 
-
+
 # Internal data and functions:
 
 import re
@@ -160,7 +160,7 @@ def __extract_tzd(m):
         minutes = int(minutes, 10)
     else:
         minutes = 0
-    offset = (hours*60 + minutes) * 60
+    offset = (hours * 60 + minutes) * 60
     if tzd[0] == "+":
         return -offset
     return offset

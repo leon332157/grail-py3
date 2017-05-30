@@ -27,6 +27,7 @@ valid = re.compile(validpat, re.IGNORECASE)
 
 debug = False
 
+
 def parseprefs(fp):
     """Parse a Grail preferences file.  See module docstring."""
     groups = defaultdict(dict)
@@ -54,7 +55,7 @@ def parseprefs(fp):
                 cn = cn.lower()
                 value = value.strip()
                 group = groups[groupname]
-                group[cn] = value # XXX Override a previous value
+                group[cn] = value  # XXX Override a previous value
             elif line.strip() != "":
                 # It's a bad line.  Ignore it.
                 if debug:
@@ -83,7 +84,7 @@ def test():
         t0 = time.time()
         groups = parseprefs(fp)
         t1 = time.time()
-    print("Parsing time", round(t1-t0, 3))
+    print("Parsing time", round(t1 - t0, 3))
     for groupname, group in sorted(groups.items()):
         print()
         print(groupname)

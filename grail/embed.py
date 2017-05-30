@@ -2,11 +2,13 @@
 
 import grail
 
+
 def setup(display=None):
     if display:
         grail.main(["--display", display])
     else:
         grail.main([])
+
 
 def getBrowser(**kw):
     try:
@@ -17,7 +19,7 @@ def getBrowser(**kw):
     prefs = grail.GrailPrefs.AllPreferences()
     geometry = prefs.Get('browser', 'initial-geometry')
     from grail import Browser
-    return Browser.Browser(grail.app.root, grail.app, geometry=geometry) 
+    return Browser.Browser(grail.app.root, grail.app, geometry=geometry)
 
 if __name__ == '__main__':
     setup()

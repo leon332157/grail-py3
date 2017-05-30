@@ -8,6 +8,7 @@ import functools
 
 
 class ElementHandler:
+
     def close(self):
         pass
 
@@ -42,7 +43,7 @@ class BaseSGMLHandler(ElementHandler):
     # Example -- handle entity reference, no need to override for most
     # applications.
     entitydefs = \
-               {'lt': '<', 'gt': '>', 'amp': '&', 'quot': '"'}
+        {'lt': '<', 'gt': '>', 'amp': '&', 'quot': '"'}
 
     def handle_entityref(self, name, terminator):
         """
@@ -52,7 +53,6 @@ class BaseSGMLHandler(ElementHandler):
             self.handle_data(table[name])
         else:
             self.unknown_entityref(name, terminator)
-
 
     def handle_data(self, data):
         """
@@ -108,6 +108,7 @@ class CompositeHandler:
     inherited from the ElementHandler class.
 
     """
+
     def __init__(self, primary, secondary):
         """Compose two gatherers into a single gatherer.
 
@@ -151,7 +152,7 @@ class CompositeHandler:
     def handle_endtag(self, tag, method):
         self.__tagmap[tag].handle_endtag(tag, method)
 
-
+
 @functools.total_ordering
 class TagInfo:
     container = True
@@ -173,6 +174,7 @@ class TagInfo:
         if isinstance(other, TagInfo):
             return self.tag == other.tag
         return NotImplemented
+
     def __lt__(self, other):
         if isinstance(other, str):
             return self.tag < other

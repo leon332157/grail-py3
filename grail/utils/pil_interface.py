@@ -35,15 +35,16 @@ import os.path
 
 from formatter import AS_IS
 
+
 class pil_interface:
-    
+
     """Parser base class for images handled by PIL.
-    
+
     Hack version: collect all data into a string buffer, and create
     an image from it when completed.
 
     """
-    
+
     def __init__(self, viewer, reload=False):
         self.broken = False
         self.viewer = viewer
@@ -69,15 +70,15 @@ class pil_interface:
             try:
                 self.buf.seek(0)
                 im = Image.open(self.buf)
-                im.load() # benchmark decoding
+                im.load()  # benchmark decoding
                 tkim = ImageTk.PhotoImage(im.mode, im.size)
                 tkim.paste(im)
                 self.label.image = tkim
-                self.label.config(image = self.label.image)
+                self.label.config(image=self.label.image)
             except:
                 self.broken = True
         if self.broken:
             file = grailutil.which(os.path.join('icons', 'sadsmiley.gif'))
-            self.label.image = tkinter.PhotoImage(file = file)
-            self.label.config(image = self.label.image)
+            self.label.image = tkinter.PhotoImage(file=file)
+            self.label.config(image=self.label.image)
             self.viewer.text.insert(tkinter.END, '\nBroken Image!')

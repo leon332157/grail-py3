@@ -37,6 +37,7 @@ whitespace = '\\t\\n\x0b\x0c\\r '
 
 import re
 
+
 class SGMLError(Exception):
     pass
 
@@ -232,6 +233,7 @@ class SGMLLexer(SGMLLexerBase):
         pass
 
     rawdata = ''
+
     def reset(self):
         self.stack = []
         self.lasttag = '???'
@@ -312,38 +314,45 @@ class SGMLLexer(SGMLLexerBase):
             # pick up self._finish_parse as soon as possible:
             end = end or self._finish_parse
             match = interesting.search(rawdata, i)
-            if match: j = match.start()
-            else: j = n
-            if i < j: self.lex_data(rawdata[i:j])
+            if match:
+                j = match.start()
+            else:
+                j = n
+            if i < j:
+                self.lex_data(rawdata[i:j])
             i = j
-            if i == n: break
+            if i == n:
+                break
             #print("interesting", j, i)
             if rawdata[i] == '<':
                 #print("<", self.literal, rawdata[i:20])
                 if starttagopen.match(rawdata, i):
-                    #print("open")
+                    # print("open")
                     if self.literal:
                         self.lex_data(rawdata[i])
-                        i = i+1
+                        i = i + 1
                         continue
                     #print("parse_starttag", self.parse_starttag)
                     k = self.parse_starttag(i)
-                    if k < 0: break
+                    if k < 0:
+                        break
                     i = k
                     continue
                 if endtagopen.match(rawdata, i):
                     k = self.parse_endtag(i)
-                    if k < 0: break
+                    if k < 0:
+                        break
                     i = k
                     self.literal = False
                     continue
                 if commentopen.match(rawdata, i):
                     if self.literal:
                         self.lex_data(rawdata[i])
-                        i = i+1
+                        i = i + 1
                         continue
                     k = self.parse_comment(i, end)
-                    if k < 0: break
+                    if k < 0:
+                        break
                     i = i + k
                     continue
                 match = processinginstruction.match(rawdata, i)
@@ -360,12 +369,12 @@ class SGMLLexer(SGMLLexerBase):
                 match = special.match(rawdata, i)
                 if match:
                     k = match.start()
-                    if k-i == 3:
+                    if k - i == 3:
                         self.lex_declaration([])
                         i = i + 3
                         continue
                     if self._strict:
-                        if rawdata[i+2].isalpha():
+                        if rawdata[i + 2].isalpha():
                             k = self.parse_declaration(i)
                             if k > -1:
                                 i = i + k
@@ -384,11 +393,11 @@ class SGMLLexer(SGMLLexerBase):
                 match = charref.match(rawdata, i)
                 if match:
                     k = match.end()
-                    if rawdata[k-1] not in ';\n':
-                        k = k-1
+                    if rawdata[k - 1] not in ';\n':
+                        k = k - 1
                         terminator = ''
                     else:
-                        terminator = rawdata[k-1]
+                        terminator = rawdata[k - 1]
                     name = match.group(1)[:-1]
                     postchar = ''
                     if terminator == '\n' and not self._strict:
@@ -413,11 +422,11 @@ class SGMLLexer(SGMLLexerBase):
                     k = match.end()
                     #  General entity reference:
                     #k = i+k
-                    if rawdata[k-1] not in ';\n':
-                        k = k-1
+                    if rawdata[k - 1] not in ';\n':
+                        k = k - 1
                         terminator = ''
                     else:
-                        terminator = rawdata[k-1]
+                        terminator = rawdata[k - 1]
                     name = match.group(1)
                     self.lex_entityref(name, terminator)
                     i = k
@@ -429,12 +438,12 @@ class SGMLLexer(SGMLLexerBase):
             match = incomplete.match(rawdata, i)
             if not match:
                 self.lex_data(rawdata[i])
-                i = i+1
+                i = i + 1
                 continue
             k = match.end()
             j = k
             if j == n:
-                break # Really incomplete
+                break  # Really incomplete
             self.lex_data(rawdata[i:j])
             i = j
         # end while
@@ -461,7 +470,7 @@ class SGMLLexer(SGMLLexerBase):
                     comments.append(comment)
                 elif end:
                     self.lex_error("unexpected end of data in comment")
-                    comments.append(rawdata[pos+2:])
+                    comments.append(rawdata[pos + 2:])
                     pos = datalength
                 elif rawdata[pos] != "-":
                     self.lex_error("illegal character in"
@@ -474,18 +483,18 @@ class SGMLLexer(SGMLLexerBase):
                 self.lex_comment(comment)
             return pos + len(MDC) - i
         # not strict
-        match = commentclose.search(rawdata, i+4)
+        match = commentclose.search(rawdata, i + 4)
         if not match:
             if end:
                 j = rawdata.find(MDC, i)
                 if j >= 0:
-                    self.lex_comment(rawdata[i+4: j])
+                    self.lex_comment(rawdata[i + 4: j])
                     return j + len(MDC) - i
-                self.lex_comment(rawdata[i+4:])
+                self.lex_comment(rawdata[i + 4:])
                 return len(rawdata) - i
             return -1
         j = match.start()
-        self.lex_comment(rawdata[i+4: j])
+        self.lex_comment(rawdata[i + 4: j])
         return match.end() - i
 
     # Internal -- handle starttag, return length or -1 if not terminated
@@ -510,13 +519,13 @@ class SGMLLexer(SGMLLexerBase):
             self.lex_endtag(tag)
             return k
         # XXX The following should skip matching quotes (' or ")
-        match = endbracket.search(rawdata, i+1)
+        match = endbracket.search(rawdata, i + 1)
         if not match:
             return -1
         j = match.start(0)
         #print("parse_starttag endbracket", j)
         # Now parse the data between i+1 and j into a tag and attrs
-        if rawdata[i:i+2] == '<>':
+        if rawdata[i:i + 2] == '<>':
             #  Semantics of the empty tag are handled by lex_starttag():
             if self._strict:
                 self.lex_starttag('', {})
@@ -525,18 +534,19 @@ class SGMLLexer(SGMLLexerBase):
             return i + 2
 
         #print("tagfind start", i+1)
-        match = tagfind.match(rawdata, i+1)     # matches just the GI
+        match = tagfind.match(rawdata, i + 1)     # matches just the GI
         if not match:
             raise RuntimeError('unexpected call to parse_starttag')
         k = match.end(0)
         #print("tagfind end", k)
-        tag = self._normfunc(rawdata[i+1:k])
+        tag = self._normfunc(rawdata[i + 1:k])
         #print("tag", tag)
         # pull recognizable attributes
         attrs = {}
         while k < j:
             match = attrfind.match(rawdata, k)
-            if not match: break
+            if not match:
+                break
             l = match.start(0)
             k = k + l
             # Break out the name[/value] pair:
@@ -544,7 +554,7 @@ class SGMLLexer(SGMLLexerBase):
             if not rest:
                 attrvalue = None    # was:  = attrname
             elif attrvalue[:1] == LITA == attrvalue[-1:] or \
-                 attrvalue[:1] == LIT == attrvalue[-1:]:
+                    attrvalue[:1] == LIT == attrvalue[-1:]:
                 attrvalue = attrvalue[1:-1]
                 if '&' in attrvalue:
                     from .SGMLReplacer import replace
@@ -582,7 +592,7 @@ class SGMLLexer(SGMLLexerBase):
         #
         c = rawdata[k]
         if c == '/' and not self._strict:
-            if rawdata[k:k+2] == "/>":
+            if rawdata[k:k + 2] == "/>":
                 # using XML empty-tag hack
                 self.lex_starttag(tag, attrs)
                 self.lex_endtag(tag)
@@ -598,17 +608,17 @@ class SGMLLexer(SGMLLexerBase):
     # Internal -- parse endtag
     def parse_endtag(self, i):
         rawdata = self.rawdata
-        if rawdata[i+2] in '<>':
-            if rawdata[i+2] == '<' and not self._strict:
+        if rawdata[i + 2] in '<>':
+            if rawdata[i + 2] == '<' and not self._strict:
                 self.lex_limitation("unclosed end tags not supported")
                 self.lex_data(ETAGO)
                 return i + 2
             self.lex_endtag('')
-            return i + 2 + (rawdata[i+2] == TAGC)
+            return i + 2 + (rawdata[i + 2] == TAGC)
         match = endtag.match(rawdata, i)
         if not match:
             return -1
-        j = match.end(0)-1
+        j = match.end(0) - 1
         #j = i + j - 1
         if rawdata[j] == TAGC:
             j = j + 1
@@ -686,24 +696,24 @@ processinginstruction = re.compile(r'<\?([^>]*)' + PIC)
 
 starttagopen = re.compile(STAGO + r'[>a-zA-Z]')
 shorttagopen = re.compile(STAGO + r'[a-zA-Z][-.a-zA-Z0-9]*'
-                             + OPTIONAL_WHITESPACE + NET)
+                          + OPTIONAL_WHITESPACE + NET)
 shorttag = re.compile(STAGO + r'([a-zA-Z][-.a-zA-Z0-9]*)'
-                         + OPTIONAL_WHITESPACE + NET + r'([^/]*)' + NET)
+                      + OPTIONAL_WHITESPACE + NET + r'([^/]*)' + NET)
 endtagopen = re.compile(ETAGO + r'[<>a-zA-Z]')
 endbracket = re.compile(r'[<>]')
 endtag = re.compile(ETAGO +
-                       r'([a-zA-Z][-.a-zA-Z0-9]*)'
-                       r'([^-.<>a-zA-Z0-9]?[^<>]*)[<>]')
+                    r'([a-zA-Z][-.a-zA-Z0-9]*)'
+                    r'([^-.<>a-zA-Z0-9]?[^<>]*)[<>]')
 special = re.compile(MDO + r'[^>]*' + MDC)
 markupdeclaration = re.compile(MDO +
-                                  r'(([-.a-zA-Z0-9]+|'
-                                  + LIT + r'[^"]*' + LIT + r'|'
-                                  + LITA + r"[^']*" + LITA + r'|'
-                                  + COM + r'([^-]|-[^-])*' + COM
-                                  + r')' + OPTIONAL_WHITESPACE
-                                  + r')*' + MDC)
+                               r'(([-.a-zA-Z0-9]+|'
+                               + LIT + r'[^"]*' + LIT + r'|'
+                               + LITA + r"[^']*" + LITA + r'|'
+                               + COM + r'([^-]|-[^-])*' + COM
+                               + r')' + OPTIONAL_WHITESPACE
+                               + r')*' + MDC)
 md_name = re.compile('([^>{}\'"]+)'.format(whitespace)
-                        + OPTIONAL_WHITESPACE)
+                     + OPTIONAL_WHITESPACE)
 md_string = re.compile('("[^"]*"|\'[^\']*\')' + OPTIONAL_WHITESPACE)
 commentopen = re.compile(MDO + COM)
 commentclose = re.compile(COM + OPTIONAL_WHITESPACE + MDC)
@@ -711,7 +721,7 @@ tagfind = re.compile(r'[a-zA-Z][-_.a-zA-Z0-9]*')
 attrfind = re.compile(
     # comma is for compatibility
     ('[{},]*([_a-zA-Z][-:.a-zA-Z_0-9]*)'.format(whitespace))
-    + r'(' + OPTIONAL_WHITESPACE + VI + OPTIONAL_WHITESPACE # VI
+    + r'(' + OPTIONAL_WHITESPACE + VI + OPTIONAL_WHITESPACE  # VI
     + r'(' + LITA + r"[^']*" + LITA
     + r'|' + LIT + r'[^"]*' + LIT
     + r'|[\-~a-zA-Z0-9,./:+*%?!\(\)_#=]*))?')
@@ -723,6 +733,7 @@ comment_segment = re.compile(r'([^-]*)-(.|\n)')
 comment_whitespace = re.compile(OPTIONAL_WHITESPACE)
 
 del re
+
 
 def comment_match(rawdata, start):
     """Match a legal SGML comment.
@@ -763,7 +774,7 @@ def comment_match(rawdata, start):
             return pos - start, comment + matcher.group(1)
         # only a partial match
         comment = "{}{}-{}".format(comment,
-                               matcher.group(1), matcher.group(2))
+                                   matcher.group(1), matcher.group(2))
         pos = pos + matchlength
         matcher = comment_segment.match(rawdata, pos)
         if not matcher:

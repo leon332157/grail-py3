@@ -19,7 +19,7 @@ class ImageTempFileReader(TempFileReader):
             try:
                 ctype = headers['content-type']
             except KeyError:
-                return # Hope for the best
+                return  # Hope for the best
             if ctype in self.image_filters and not isPILAllowed():
                 self.set_pipeline(self.image_filters[ctype])
 
@@ -36,7 +36,7 @@ class ImageTempFileReader(TempFileReader):
         'image/png':
             # This requires pngtopnm which isn't standard netpbm yet
             'pngtopnm | ppmtogif -transparent "#FFFFFF" 2>/dev/null',
-        }
+    }
 
     def handle_done(self):
         self.image.set_file(self.getfilename())
@@ -46,14 +46,14 @@ class ImageTempFileReader(TempFileReader):
         if errcode == 401:
             if 'www-authenticate' in headers:
                 cred_headers = {}
-                for k,v in headers.items():
+                for k, v in headers.items():
                     cred_headers[k.lower()] = v
                 cred_headers['request-uri'] = self.image.url
                 self.stop()
                 credentials = self.image.context.app.auth.request_credentials(
                     cred_headers)
                 if 'Authorization' in credentials:
-                    for k,v in credentials.items():
+                    for k, v in credentials.items():
                         self.image.headers[k] = v
                     # self.image.restart(self.image.url)
                     self.image.start_loading(self.image.context)
@@ -72,8 +72,6 @@ class ImageTempFileReader(TempFileReader):
             os.unlink(self.getfilename())
         except os.error:
             pass
-
-
 
 
 class BaseAsyncImage:
@@ -96,12 +94,13 @@ class BaseAsyncImage:
     def start_loading(self, context=None, reload=False):
         # seems that the reload=True when you click on an image that
         # you had stopped loading
-        if context: self.context = context
+        if context:
+            self.context = context
         if self.reader:
             return
         try:
             api = self.context.app.open_url(self.url, 'GET', self.headers,
-                                            self.reload or reload) 
+                                            self.reload or reload)
         except IOError:
             self.show_bad()
             return
@@ -189,7 +188,7 @@ class PILAsyncImageSupport(BaseAsyncImage):
     __height = 0
 
     def __init__(self, context, url, reload=False, width=None, height=None,
-    **kw):
+                 **kw):
         from PIL import ImageTk
         self.setup(context, url, reload)
         master = kw.get("master")
@@ -236,7 +235,7 @@ class PILAsyncImageSupport(BaseAsyncImage):
             # scale horizontally
             self.__height = im.size[1] * self.__width // im.size[0]
         elif self.__height and not self.__width \
-             and self.__height != im.size[1]:
+                and self.__height != im.size[1]:
             # scale vertically
             self.__width = im.size[0] * self.__height // im.size[1]
         else:
@@ -278,9 +277,9 @@ class PILAsyncImageSupport(BaseAsyncImage):
             self.do_color_magic()
         self.image[key] = value
 
-
+
 def p_to_rgb(im, rgb):
-    """Translate a P-mode image with transparency to an RGB image. 
+    """Translate a P-mode image with transparency to an RGB image.
 
     im
         The transparent image.
@@ -291,19 +290,19 @@ def p_to_rgb(im, rgb):
     """
     from PIL import Image
     new_im = Image.new("RGB", im.size, rgb)
-    
+
     point_mask = [0xff] * 256
     if isinstance(im.info['transparency'], int):
         point_mask[im.info['transparency']] = 0
     else:  # Workaround for new palleted alpha PNG support in PIL
         point_mask[:len(im.info['transparency'])] = im.info['transparency']
-    
+
     new_im.paste(im, None, im.point(point_mask, '1'))
     return new_im
 
 
 def rgba_to_rgb(im, rgb):
-    """Translate an RGBA-mode image to an RGB image. 
+    """Translate an RGBA-mode image to an RGB image.
 
     im
         The transparent image.
@@ -319,7 +318,7 @@ def rgba_to_rgb(im, rgb):
 
 
 def xbm_to_rgba(im):
-    """Translate a XBM image to an RGBA image. 
+    """Translate a XBM image to an RGBA image.
 
     im
         The XBM image.
@@ -331,7 +330,7 @@ def xbm_to_rgba(im):
     mask = im.point(mapping)
     return Image.merge("RGBA", (mask, mask, mask, im))
 
-
+
 def pil_installed():
     # Determine if the Python Imaging Library is available.
     try:
@@ -348,6 +347,7 @@ def pil_installed():
 
 
 _pil_allowed = None
+
 
 def isPILAllowed():
     """Return true iff PIL should be used by the caller."""

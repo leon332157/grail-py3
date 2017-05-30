@@ -4,8 +4,10 @@ For Unix only; requires xterm in your $PATH.
 
 """
 
-import os, urllib.parse
+import os
+import urllib.parse
 from .nullAPI import null_access
+
 
 class telnet_access(null_access):
 
@@ -14,7 +16,7 @@ class telnet_access(null_access):
         host, junk = urllib.parse.splithost(url)
         userpasswd, host = urllib.parse.splituser(host)
         host, port = urllib.parse.splitport(host)
-        
+
         # XXX I tried doing this using os.system(), but the file
         # descriptors that Grail has open seemed to be confusing
         # telnet or xterm.  So we need to close all file descriptors,

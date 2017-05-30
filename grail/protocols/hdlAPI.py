@@ -32,7 +32,7 @@ from . import nullAPI
 from .. import grailutil
 from xml.sax import saxutils
 
-
+
 # We are currently only concerned with URL type handles.
 HANDLE_TYPES = [hdllib.HDL_TYPE_URL]
 
@@ -65,7 +65,6 @@ HTML_TRAILER = """
 """
 
 
-
 def parse_handle(hdl):
     """Parse off options from handle.
 
@@ -86,6 +85,7 @@ def parse_handle(hdl):
                 value = urllib.parse.unquote(value)
             d[key.lower()] = value
     return urllib.parse.unquote(hdl, 'latin-1').encode('latin-1'), d
+
 
 class hdl_access(nullAPI.null_access):
 
@@ -132,7 +132,7 @@ class hdl_access(nullAPI.null_access):
                     try:
                         n = int(t)
                     except ValueError:
-                        self._types = [] # Request all types
+                        self._types = []  # Request all types
                     else:
                         self._types = [n]
             else:

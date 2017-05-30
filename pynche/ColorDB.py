@@ -24,19 +24,20 @@ import sys
 import re
 import operator
 
+
 class BadColor(Exception):
     pass
 
 DEFAULT_DB = None
 
 
-
 # generic class
 class ColorDB:
+
     def __init__(self, fp, lineno):
         # Maintain several dictionaries for indexing into the color database.
-        # Note that while Tk supports RGB intensities of 4, 8, 12, or 16 bits, 
-        # for now we only support 8 bit intensities.  At least on OpenWindows, 
+        # Note that while Tk supports RGB intensities of 4, 8, 12, or 16 bits,
+        # for now we only support 8 bit intensities.  At least on OpenWindows,
         # all intensities in the /usr/openwin/lib/rgb.txt file are 8-bit
         #
         # key is (red, green, blue) tuple, value is (name, [aliases])
@@ -123,19 +124,19 @@ class ColorDB:
         except KeyError:
             raise BadColor((red, green, blue))
         return [name] + aliases
-        
-
+
+
 class RGBColorDB(ColorDB):
     _re = re.compile(
         r'\s*(?P<red>\d+)\s+(?P<green>\d+)\s+(?P<blue>\d+)\s+(?P<name>.*)')
 
 
-
 # format is a tuple (RE, SCANLINES, CLASS) where RE is a compiled regular
 # expression, SCANLINES is the number of header lines to scan, and CLASS is
 # the class to instantiate if a match is found
 
 X_RGB_TXT = re.compile(r'XConsortium'), 1, RGBColorDB
+
 
 def get_colordb(file, filetype=X_RGB_TXT):
     colordb = None
@@ -160,8 +161,9 @@ def get_colordb(file, filetype=X_RGB_TXT):
     return colordb
 
 
-
 _namedict = {}
+
+
 def rrggbb_to_triplet(color, atoi=int):
     """Converts a #rrggbb color to the tuple (red, green, blue)."""
     rgbtuple = _namedict.get(color)
@@ -177,6 +179,8 @@ def rrggbb_to_triplet(color, atoi=int):
 
 
 _tripdict = {}
+
+
 def triplet_to_rrggbb(rgbtuple):
     """Converts a (red, green, blue) tuple to #rrggbb."""
     hexname = _tripdict.get(rgbtuple)
@@ -192,10 +196,9 @@ def triplet_to_brightness(rgbtuple):
     r = 0.299
     g = 0.587
     b = 0.114
-    return r*rgbtuple[0] + g*rgbtuple[1] + b*rgbtuple[2]
+    return r * rgbtuple[0] + g * rgbtuple[1] + b * rgbtuple[2]
 
 
-
 if __name__ == '__main__':
     colordb = get_colordb('/usr/openwin/lib/rgb.txt')
     if not colordb:
@@ -215,10 +218,10 @@ if __name__ == '__main__':
     t0 = time.time()
     nearest = colordb.nearest(r, g, b)
     t1 = time.time()
-    print('found nearest color', nearest, 'in', t1-t0, 'seconds')
+    print('found nearest color', nearest, 'in', t1 - t0, 'seconds')
     # dump the database
     for n in colordb.unique_names():
         r, g, b = colordb.find_byname(n)
         aliases = colordb.aliases_of(r, g, b)
         print('{:>20}: ({:3}/{:3}/{:3}) == {}'.format(n, r, g, b,
-                                             " ".join(aliases[1:])))
+                                                      " ".join(aliases[1:])))

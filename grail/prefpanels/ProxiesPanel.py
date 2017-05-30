@@ -8,9 +8,10 @@ from .. import PrefsPanels
 from tkinter import *
 from .. import grailutil
 
+
 class ProxiesPanel(PrefsPanels.Framework):
     """Network preferences related to redirection of URL streams."""
-    
+
     # Class var for help button - relative to grail-help-root.
     HELP_URL = "help/prefs/proxies.html"
 
@@ -32,31 +33,40 @@ class ProxiesPanel(PrefsPanels.Framework):
 
         #
         # Create top level widgets
-        l = Label(proxy_frame, pady=15,
-               text="A proxy allows your browser to access the Internet through a Firewall.")
+        l = Label(
+            proxy_frame,
+            pady=15,
+            text="A proxy allows your browser to access the Internet through a Firewall.")
 
-        self.no = Checkbutton(proxy_frame,
-               text="Proxy Exceptions List            ",
-               variable=self.no_proxy_enabled,
-               padx=200, pady=15,
-               font='-*-helvetica-bold-o-normal-*-*-120-*-*-*-*-*-*' ,
-               command=self.no_switch)
-        manual = Checkbutton(proxy_frame,
-               text="Manual Proxy Configuration ",
-               variable=self.manual_proxy_enabled,
-               padx=200, pady=15,
-               font='-*-helvetica-bold-o-normal-*-*-120-*-*-*-*-*-*',
-               command=self.manual_switch)
-        
+        self.no = Checkbutton(
+            proxy_frame,
+            text="Proxy Exceptions List            ",
+            variable=self.no_proxy_enabled,
+            padx=200,
+            pady=15,
+            font='-*-helvetica-bold-o-normal-*-*-120-*-*-*-*-*-*',
+            command=self.no_switch)
+        manual = Checkbutton(
+            proxy_frame,
+            text="Manual Proxy Configuration ",
+            variable=self.manual_proxy_enabled,
+            padx=200,
+            pady=15,
+            font='-*-helvetica-bold-o-normal-*-*-120-*-*-*-*-*-*',
+            command=self.manual_switch)
+
         self.he = Entry(manual_right_frame, relief=SUNKEN, width=38)
         self.hl = Label(manual_left_frame, relief=FLAT,
-               text="HTTP Proxy (http://server:port):")
+                        text="HTTP Proxy (http://server:port):")
         self.fe = Entry(manual_right_frame, relief=SUNKEN, width=38)
         self.fl = Label(manual_left_frame, relief=FLAT,
-               text=" FTP Proxy (http://server:port):",)
+                        text=" FTP Proxy (http://server:port):",)
 
-        self.nl = Label(no_proxy_frame, relief=FLAT,
-               text="Servers that need no proxy to be reached (www.python.org, .dlib.org):",)
+        self.nl = Label(
+            no_proxy_frame,
+            relief=FLAT,
+            text="Servers that need no proxy to be reached (www.python.org, .dlib.org):",
+        )
         self.ne = Entry(no_proxy_frame, relief=SUNKEN, width=75)
 
         #
@@ -86,7 +96,8 @@ class ProxiesPanel(PrefsPanels.Framework):
             self.manual_proxy_enabled.set(1)
         else:
             self.manual_proxy_enabled.set(0)
-        no_proxy_enabled = grailutil.pref_or_getenv('no_proxy_enabled', type_name='int')
+        no_proxy_enabled = grailutil.pref_or_getenv(
+            'no_proxy_enabled', type_name='int')
         if no_proxy_enabled == 1:
             self.no_proxy_enabled.set(1)
         else:
@@ -98,14 +109,13 @@ class ProxiesPanel(PrefsPanels.Framework):
         (for example) ' Factory Defaults'  or 'Revert' get pressed.
         It allows updates to the Panel to reflect state changed by
         the framework."""
-        
+
         if self.manual_proxy_enabled.get() == -1:
             self.manual_proxy_enabled.set(0)
         if self.no_proxy_enabled.get() == -1:
             self.no_proxy_enabled.set(0)
 
         self.manual_switch()
-        
 
     def register_prefs_UI(self):
         """Associate the UI widgets with the Preferences variables."""
@@ -125,7 +135,6 @@ class ProxiesPanel(PrefsPanels.Framework):
         self.RegisterUI('proxies', 'http_proxy', 'string',
                         self.he.get, self.widget_set_func(self.he))
 
-
     def no_switch(self):
         """ Set the state of the No Proxy Configuration controls
         to DISABLED if the Checkbutton is not set."""
@@ -136,7 +145,7 @@ class ProxiesPanel(PrefsPanels.Framework):
         else:
             self.nl.config(foreground='grey')
             self.ne.config(state=DISABLED)
-        
+
     def manual_switch(self):
         """ Set the state of the Manual Proxy Configuration controls
         to DISABLED if the Checkbutton is no set."""
@@ -159,5 +168,3 @@ class ProxiesPanel(PrefsPanels.Framework):
             self.nl.config(foreground='grey')
             self.ne.config(state=DISABLED)
             self.no.config(state=DISABLED)
-            
-            

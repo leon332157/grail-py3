@@ -5,10 +5,11 @@ command and sheet-specific values as, effectively, class attributes with
 dictionary values suitable for feeding to the text widget for tag
 configuration."""
 
+
 class UndefinedStyle(Exception):
     pass
 
-## NOTE: Link colors are taken from Netscape 1.1's X app defaults
+# NOTE: Link colors are taken from Netscape 1.1's X app defaults
 
 
 class Stylesheet:
@@ -59,7 +60,7 @@ class Stylesheet:
             sname = self.prefs.Get('styles', 'default-size')
             if sname not in allsizes:
                 raise UndefinedStyle("Bad preferences file,"
-                                       " can't get valid size.")
+                                     " can't get valid size.")
         sdict = {}
         slist = self.prefs.Get('styles', sname + '-sizes').split()
         for k in self.prefs.Get('styles', 'size-names').split():
@@ -84,7 +85,7 @@ class Stylesheet:
             tname = self.prefs.Get('styles', 'default-family')
             if tname not in allfams:
                 raise UndefinedStyle("Bad preferences file,"
-                                       " can't get valid family.")
+                                     " can't get valid family.")
         return tname
 
     def dictify_list(self, fields):

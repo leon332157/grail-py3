@@ -36,6 +36,6 @@ class Parser:
         header, newline, data = data.partition(b'\n')
         if not newline:
             raise BookmarkFormatError(self._filename,
-                                                "incomplete file header")
+                                      "incomplete file header")
         header += newline
         return header, data

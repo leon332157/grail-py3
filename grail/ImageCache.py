@@ -1,5 +1,5 @@
 class ImageCache:
-    
+
     """a cache for Tk image objects and their python wrappers
 
     The current goal of this cache is to provide a safe mechanism for
@@ -20,7 +20,7 @@ class ImageCache:
         print("debugging ouput\ncurrent state of image cache")
         for image in self.image_objects.keys():
             print("Image: {}.\n  Owners={}".format(image,
-                                            self.current_owners[image]))
+                                                   self.current_owners[image]))
         for owner, images in self.old_objects.items():
             print("Old images owned by ", owner)
             for image in images:
@@ -59,7 +59,7 @@ class ImageCache:
 
     def keep_old_copy(self, owner, image, key):
         key = self.form_key(key)
-        self.old_objects.setdefault(owner, []).append((key,image))
+        self.old_objects.setdefault(owner, []).append((key, image))
 
     def owner_exiting(self, owner):
         del self.old_objects[owner]

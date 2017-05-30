@@ -49,6 +49,7 @@ Options:
     -d <display>, --display <display> : override $DISPLAY
     -q : ignore user's grailrc module""".format(sys.argv[0])
 
+
 def main(args=None):
     prefs = GrailPrefs.AllPreferences()
     # XXX Disable cache for NT
@@ -57,8 +58,10 @@ def main(args=None):
     global ilu_tk
     ilu_tk = None
     if prefs.GetBoolean('security', 'enable-ilu'):
-        try: import ilu_tk
-        except ImportError: pass
+        try:
+            import ilu_tk
+        except ImportError:
+            pass
     embedded = args is not None
     if not embedded:
         args = sys.argv[1:]
@@ -117,7 +120,8 @@ def main(args=None):
     # Import user's grail startup file, defined as
     # $GRAILDIR/user/grailrc.py if it exists.
     if user_init:
-        try: import grailrc
+        try:
+            import grailrc
         except ImportError as e:
             # Only catch this if grailrc itself doesn't import,
             # otherwise propagate.
@@ -161,7 +165,7 @@ class URLReadWrapper(RawIOBase):
 
     def readable(self):
         return True
-    
+
     def readinto(self, b):
         if self.eof:
             return 0
@@ -172,6 +176,7 @@ class URLReadWrapper(RawIOBase):
         else:
             self.eof = True
             return 0
+
 
 class SocketQueue:
 
@@ -185,11 +190,10 @@ class SocketQueue:
         old_max = self.max
         self.max = new_max
         if old_max < new_max and len(self.blocked) > 0:
-            for i in range(0,min(new_max-old_max, len(self.blocked))):
+            for i in range(0, min(new_max - old_max, len(self.blocked))):
                 # run wild free sockets
                 self.open = self.open + 1
                 self.callbacks.pop(self.blocked.pop(0))()
-            
 
     def request_socket(self, requestor, callback):
         if self.open >= self.max:
@@ -208,6 +212,7 @@ class SocketQueue:
             self.callbacks.pop(self.blocked.pop(0))()  # apply callback
         else:
             self.open = self.open - 1
+
 
 class Application(BaseApplication.BaseApplication):
 
@@ -230,7 +235,7 @@ class Application(BaseApplication.BaseApplication):
         sockets = self.prefs.GetInt('sockets', 'number')
         self.sq = SocketQueue(sockets)
         self.prefs.AddGroupCallback('sockets',
-                                    lambda self=self: \
+                                    lambda self=self:
                                     self.sq.change_max(
                                         self.prefs.GetInt('sockets',
                                                           'number')))
@@ -260,20 +265,28 @@ class Application(BaseApplication.BaseApplication):
 
     def register_on_exit(self, method):
         self.on_exit_methods.append(method)
+
     def unregister_on_exit(self, method):
-        try: self.on_exit_methods.remove(method)
-        except ValueError: pass
+        try:
+            self.on_exit_methods.remove(method)
+        except ValueError:
+            pass
+
     def exit_notification(self):
         for m in self.on_exit_methods[:]:
-            try: m()
-            except: pass
+            try:
+                m()
+            except:
+                pass
 
     def add_browser(self, browser):
         self.browsers.append(browser)
 
     def del_browser(self, browser):
-        try: self.browsers.remove(browser)
-        except ValueError: pass
+        try:
+            self.browsers.remove(browser)
+        except ValueError:
+            pass
 
     def quit(self):
         self.root.quit()
@@ -371,12 +384,12 @@ class Application(BaseApplication.BaseApplication):
         from . import SafeDialog
         msg = str(msg)
         SafeDialog.Dialog(root or self.root,
-                      text=msg,
-                      title="Error: " + str(exc),
-                      bitmap='error',
-                      default=0,
-                      strings=('OK',),
-                      )
+                          text=msg,
+                          title="Error: " + str(exc),
+                          bitmap='error',
+                          default=0,
+                          strings=('OK',),
+                          )
 
     dingbatimages = {'ldots': ('...', None),    # math stuff
                      'sp': (' ', None),

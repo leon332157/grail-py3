@@ -54,7 +54,7 @@ def find_nodes(folder, matcher, copynodes=True):
             folder.collapse()
         return folder
 
-
+
 # Interfaces that need to be implemented in the specific search modules.
 # These classes are defined primarily for documentation purposes; read
 # the docstrings!
@@ -95,7 +95,7 @@ class MatcherInterface:
     def match_SomeNodeType(self, somenodetype):
         return False
 
-
+
 # Internal helpers:
 
 def __get_search_module(which):

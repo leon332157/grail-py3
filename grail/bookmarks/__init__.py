@@ -4,8 +4,10 @@ from io import TextIOBase, TextIOWrapper
 
 
 class Error(Exception):
+
     def __init__(self, filename):
         self.filename = filename
+
     def __repr__(self):
         C = type(self)
         return "<{}.{} for file {}>".format(
@@ -13,6 +15,7 @@ class Error(Exception):
 
 
 class BookmarkFormatError(Error):
+
     def __init__(self, filename, problem, what="file"):
         Error.__init__(self, filename)
         self.problem = problem
@@ -32,6 +35,7 @@ class PoppedRootError(Error):
 
 
 class BookmarkReader:
+
     def __init__(self, parser):
         self.__parser = parser
 
@@ -56,11 +60,11 @@ class BookmarkReader:
 
 class BookmarkWriter:
     # base class -- subclasses are required to set _filetype attribute
+
     def get_filetype(self):
         return self._filetype
 
 
-
 pubid_fmt = "+//IDN python.org//DTD XML Bookmark Exchange Language {}//EN"
 sysid_fmt = "http://www.python.org/topics/xml/dtds/xbel-{}.dtd"
 
@@ -99,15 +103,16 @@ def check_xml_format(buffer):
 __formats = {
     # format-name     first-line-magic
     #                  short-name   extension
-    "html":          (br'<!DOCTYPE\s+(GRAIL|NETSCAPE)-Bookmark-file-1',
-                      "html",      ".html",	"html"),
-    "pickle":        (br'#.*GRAIL-Bookmark-file-[5]',
-                      "pickle",    ".pkl5",	"xbel"),
-    "xbel":          (br'<(\?xml|!DOCTYPE)\s+xbel',
-                      "xbel",      ".xml",	"xbel"),
-    }
+    "html": (br'<!DOCTYPE\s+(GRAIL|NETSCAPE)-Bookmark-file-1',
+             "html", ".html", "html"),
+    "pickle": (br'#.*GRAIL-Bookmark-file-[5]',
+               "pickle", ".pkl5", "xbel"),
+    "xbel": (br'<(\?xml|!DOCTYPE)\s+xbel',
+             "xbel", ".xml", "xbel"),
+}
 
 __format_inited = False
+
 
 def __init_format_table():
     global __format_inited
@@ -119,6 +124,7 @@ def __init_format_table():
             rx = re.compile(rx)
             table.append((rx, result))
     __format_inited = True
+
 
 def get_format(fp):
     if not __format_inited:
@@ -141,6 +147,7 @@ def get_format(fp):
 def get_short_name(format):
     return __formats[format][1]
 
+
 def get_default_extension(format):
     return __formats[format][2]
 
@@ -150,10 +157,12 @@ def get_parser_class(format):
     name = "{}_parser".format(get_short_name(format))
     return __import__(name, vars(formats), level=1).Parser
 
+
 def get_writer_class(format):
     from . import formats
     name = "{}_writer".format(get_short_name(format))
     return __import__(name, vars(formats), level=1).Writer
+
 
 def get_output_format(format):
     return __formats[format][3]

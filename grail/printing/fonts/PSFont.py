@@ -16,13 +16,16 @@ This module has its origins in code contributed by Fredrik Lundh
 import operator
 import array
 
+
 class PSFont:
+
     def __init__(self, fontname, fullname, metrics):
         self._fontname = fontname
         self._fullname = fullname
         self._metrics = metrics
 
     def fontname(self): return self._fontname
+
     def fullname(self): return self._fullname
 
     def text_width(self, fontsize, str):

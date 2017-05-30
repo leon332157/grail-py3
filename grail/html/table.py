@@ -14,17 +14,21 @@ AUTOLAYOUT = 2
 OCCUPIED = 101
 EMPTY = 102
 
+
 class BadMojoError(Exception):
-    def __str__(self): return 'Bad Mojo!  Infinite loop in cell height calculation.'
+
+    def __str__(
+        self): return 'Bad Mojo!  Infinite loop in cell height calculation.'
 
 CELLGEOM_RE = re.compile(r'{0}x{0}\+{0}\+{0}'.format('([-+]?[0-9]+)'))
 
 DEFAULT_VALIGN = 'top'
 
-
+
 # ----- HTML tag parsing interface
 
 class TableSubParser:
+
     def __init__(self):
         self._lasttable = None
         self._table_stack = []
@@ -59,7 +63,7 @@ class TableSubParser:
                 self._lasttable = None
 
     def start_caption(self, parser, attrs):
-        ti = self._lasttable 
+        ti = self._lasttable
         if ti:
             # tosses any dangling text not in a caption or explicit cell
             parser.save_end()
@@ -68,7 +72,7 @@ class TableSubParser:
             parser.push_formatter(caption.new_formatter())
 
     def end_caption(self, parser):
-        ti = self._lasttable 
+        ti = self._lasttable
         if ti and ti.caption:
             # tosses any dangling text not in a caption or explicit cell
             parser.save_bgn()
@@ -77,17 +81,18 @@ class TableSubParser:
             ti.caption.finish(ti)
 
     def do_colgroup(self, parser, attrs):
-        ti = self._lasttable 
+        ti = self._lasttable
         if ti:
             colgroup = Colgroup(attrs)
             ti.colgroups.append(colgroup)
 
     def do_col(self, parser, attrs):
-        ti = self._lasttable 
+        ti = self._lasttable
         if ti:
             span = grailutil.extract_keyword('span', attrs, default=1,
                                              conv=grailutil.conv_integer)
-            if span < 1: span = 1       # if = 0, ignore.  Not quite right...
+            if span < 1:
+                span = 1       # if = 0, ignore.  Not quite right...
             while span:
                 span = span - 1
                 if ti.colgroups:
@@ -105,20 +110,23 @@ class TableSubParser:
         return body
 
     def do_thead(self, parser, attrs):
-        ti = self._lasttable 
-        if ti: ti.head = self._do_body(parser, attrs)
+        ti = self._lasttable
+        if ti:
+            ti.head = self._do_body(parser, attrs)
 
     def do_tfoot(self, parser, attrs):
-        ti = self._lasttable 
-        if ti: ti.foot = self._do_body(parser, attrs)
+        ti = self._lasttable
+        if ti:
+            ti.foot = self._do_body(parser, attrs)
 
     def do_tbody(self, parser, attrs):
-        ti = self._lasttable 
-        if ti: ti.tbodies.append(self._do_body(parser, attrs))
+        ti = self._lasttable
+        if ti:
+            ti.tbodies.append(self._do_body(parser, attrs))
 
     def start_tr(self, parser, attrs):
         self._finish_cell(parser)
-        ti = self._lasttable 
+        ti = self._lasttable
         if ti:
             if not ti.lastbody:
                 # this row goes into an implied tbody
@@ -160,7 +168,7 @@ class TableSubParser:
             parser.push_formatter(cell.new_formatter())
             # tosses any dangling text not in a caption or explicit cell
             parser.save_end()
-            #parser.formatter.push_alignment(cell.attribute('align',
+            # parser.formatter.push_alignment(cell.attribute('align',
             #                                      conv=str.lower))
             cell.init_style()
             ti.lastbody.lastrow.cells.append(cell)
@@ -177,10 +185,10 @@ class TableSubParser:
             parser.pop_formatter()
 
     def do_th(self, parser, attrs): self._do_cell(parser, attrs, True)
+
     def do_td(self, parser, attrs): self._do_cell(parser, attrs)
 
 
-
 def conv_stdunits(val):
     """Convert from string representation to Standard Units for Widths.
 
@@ -229,8 +237,9 @@ def conv_valign(val):
 
 
 def conv_halign(val):
-    return grailutil.conv_enumeration(grailutil.conv_normstring(val),
-                              ['left', 'center', 'right', 'justify', 'char'])
+    return grailutil.conv_enumeration(
+        grailutil.conv_normstring(val), [
+            'left', 'center', 'right', 'justify', 'char'])
 
 
 class AttrElem:
@@ -252,7 +261,7 @@ class AttrElem:
                                            default=default,
                                            delete=False)
 
-
+
 def _safe_mojo_height(cell):
     mojocnt = 0
     while mojocnt < 50:
@@ -261,16 +270,17 @@ def _safe_mojo_height(cell):
         except BadMojoError as err:
             (mojoheight,) = err.args
 ##          print('Mojo sez:', mojoheight)
-            cell.situate(height=2*mojoheight)
+            cell.situate(height=2 * mojoheight)
             mojocnt = mojocnt + 1
     else:
         print('Not even Mojo knows!  Mojo using:', mojoheight)
         return mojoheight
 
 
-
 class Container(Canvas):
+
     def set_table(self, table): self._table = table
+
     def table_geometry(self):
         """Return the geometry metrics needed by the table module.
 
@@ -285,6 +295,7 @@ class Table(AttrElem):
     Attrs: width, cols, border, frame, rules, cellspacing, cellpadding.
 
     """
+
     def __init__(self, parentviewer, attrs, parenttable=None):
         AttrElem.__init__(self, attrs)
         self.parentviewer = parentviewer
@@ -301,7 +312,7 @@ class Table(AttrElem):
         self.Awidth = self.attribute('width', conv=conv_stdunits)
         self.Acols = self.attribute('cols', conv=grailutil.conv_integer)
         if self.Acols:
-##          self.layout = FIXEDLAYOUT
+            ##          self.layout = FIXEDLAYOUT
             print('Fixed layout tables not yet supported!',
                   '(Using auto-layout)')
             self.layout = AUTOLAYOUT
@@ -309,6 +320,7 @@ class Table(AttrElem):
             self.layout = AUTOLAYOUT
         # grok through the myriad of border/frame combinations.  this
         # is truly grotesque!
+
         def conv_frame(val):
             return grailutil.conv_enumeration(
                 grailutil.conv_normstring(val),
@@ -349,6 +361,7 @@ class Table(AttrElem):
         self.Aframe = Aframe
         self.Aborder = Aborder
         # now do rules attribute
+
         def conv_rules(val):
             return grailutil.conv_enumeration(
                 grailutil.conv_normstring(val),
@@ -414,6 +427,7 @@ class Table(AttrElem):
         return self.__magic.get_available_width()
 
     def minwidth(self): return self._minwidth
+
     def maxwidth(self): return self._maxwidth
 
     def _map(self):
@@ -473,13 +487,13 @@ class Table(AttrElem):
                     rawtable[index] = cell
                     # the cell could span multiple columns.  TBD:
                     # there must be a better algorithm for this!
-                    for cs in range(col+1, col + cell.colspan):
+                    for cs in range(col + 1, col + cell.colspan):
                         rawtable[(row, cs)] = OCCUPIED
-                        for rs in range(row+1, row + cell.rowspan):
+                        for rs in range(row + 1, row + cell.rowspan):
                             rawtable[(rs, cs)] = OCCUPIED
-                    for rs in range(row+1, row + cell.rowspan):
+                    for rs in range(row + 1, row + cell.rowspan):
                         rawtable[(rs, col)] = OCCUPIED
-                        for cs in range(col+1, col + cell.colspan):
+                        for cs in range(col + 1, col + cell.colspan):
                             rawtable[(rs, cs)] = OCCUPIED
                     col = col + 1
                 row = row + 1
@@ -509,9 +523,9 @@ class Table(AttrElem):
             if cell == OCCUPIED:
                 continue
             row, col = index
-            for prune in rowprune[row:row+cell.rowspan]:
+            for prune in rowprune[row:row + cell.rowspan]:
                 cell.rowspan = cell.rowspan - 1 + prune
-            for prune in colprune[col:col+cell.colspan]:
+            for prune in colprune[col:col + cell.colspan]:
                 cell.colspan = cell.colspan - 1 + prune
 
         # prune and fill empty cells
@@ -543,20 +557,20 @@ class Table(AttrElem):
         colcount = lastcol
 
         # debugging
-##      print('# of rows=', rowcount, '# of cols=', colcount)
+# print('# of rows=', rowcount, '# of cols=', colcount)
 
 ##      print('==========', id(self))
-##      for row in range(rowcount):
+# for row in range(rowcount):
 ##          print('[', end=' ')
-##          for col in range(colcount):
+# for col in range(colcount):
 ##              element = table[(row, col)]
-##              if element == EMPTY:
+# if element == EMPTY:
 ##                  print('EMPTY', end=' ')
-##              elif element == OCCUPIED:
+# elif element == OCCUPIED:
 ##                  print('OCCUPIED', end=' ')
-##              else:
+# else:
 ##                  print(element, end=' ')
-##          print(']')
+# print(']')
 ##      print('==========', id(self))
 
         # save these for the next phase of autolayout
@@ -595,6 +609,7 @@ class Table(AttrElem):
         self._minwidths = minwidths
 
     _prevwidth = -1
+
     def _autolayout_3(self, force=False):
         # This test protects against re-doing the layout if only the
         # vertical size changed.
@@ -621,17 +636,17 @@ class Table(AttrElem):
 
         # debugging
 ##      print('==========', id(self))
-##      for row in range(rowcount):
+# for row in range(rowcount):
 ##          print('[', end=' ')
-##          for col in range(colcount):
+# for col in range(colcount):
 ##              element = table[(row, col)]
-##              if element == EMPTY:
+# if element == EMPTY:
 ##                  print('EMPTY', end=' ')
-##              elif element == OCCUPIED:
+# elif element == OCCUPIED:
 ##                  print('OCCUPIED', end=' ')
-##              else:
+# else:
 ##                  print(element, end=' ')
-##          print(']')
+# print(']')
 ##      print('==========', id(self))
 
         if self.Awidth is None:
@@ -743,7 +758,7 @@ class Table(AttrElem):
             ypos = ypos + height + self.Acellspacing
 
         self.container.config(width=canvaswidth + 2 * self.Acellspacing,
-                              height=ypos-bw)
+                              height=ypos - bw)
 
     def _reset(self, viewer):
         # called when the viewer is cleared
@@ -759,7 +774,7 @@ class Table(AttrElem):
 
     def _resize(self, viewer):
         # called when the outer browser is resized (typically by the user)
-##      print('_resize:', viewer)
+        ##      print('_resize:', viewer)
         self._autolayout_3()
 
     def _force_resize(self):
@@ -787,29 +802,35 @@ class Table(AttrElem):
         if not self._mapped:
             self._map()
 
-
+
 class ColumnarElem(AttrElem):
     # base class for COL, COLGROUP
+
     def __init__(self, attrs):
         AttrElem.__init__(self, attrs)
         self.Ahalign = self.attribute('align', conv=conv_halign, default=None)
         self.Avalign = self.attribute('valign', conv=conv_valign,
                                       default=DEFAULT_VALIGN)
 
+
 class Colgroup(ColumnarElem):
     """A column group."""
+
     def __init__(self, attrs):
         ColumnarElem.__init__(self, attrs)
         self.cols = []
 
+
 class Col(ColumnarElem):
     """A column."""
-    def __init__(self, attrs, group = None):
+
+    def __init__(self, attrs, group=None):
         ColumnarElem.__init__(self, attrs)
         if group:
             group.cols.append(self)
             self.Ahalign = self.Ahalign or group.Ahalign
             self.Avalign = self.Avalign or group.Avalign
+
 
 class HeadFootBody(AttrElem):
     """A generic THEAD, TFOOT, or TBODY."""
@@ -818,6 +839,7 @@ class HeadFootBody(AttrElem):
         AttrElem.__init__(self, attrs)
         self.trows = []
         self.lastrow = None
+
 
 class TR(AttrElem):
     """A TR table row element."""
@@ -843,9 +865,10 @@ class TR(AttrElem):
     def is_accepting(self):
         return self._accepting
 
-
+
 def _get_linecount(tw):
     return int(tw.index(END).split('.')[0]) - 1
+
 
 def _get_widths(tw):
     width_max = 0
@@ -868,9 +891,10 @@ def _get_widths(tw):
     longest_word = reduce(max, map(len, contents.split()), 0)
     tw['width'] = longest_word + 1
     width_min = tw.winfo_reqwidth() + (2 * border_x)
-    wn = float(width_min)+2
-    wx = float(width_max)+2
+    wn = float(width_min) + 2
+    wx = float(width_max) + 2
     return min(wn, wx), max(wn, wx)
+
 
 def _get_height(tw):
     linecount = _get_linecount(tw)
@@ -890,8 +914,8 @@ def _get_height(tw):
         # convinced this algorithm always works.
         loopcnt = loopcnt + 1
         if loopcnt > 25:
-            return 10	# just assume *something*
-            #raise BadMojoError  #(tw.winfo_height())
+            return 10  # just assume *something*
+            # raise BadMojoError  #(tw.winfo_height())
         linecount = linecount + 1
         tw['height'] = linecount
         tw.update_idletasks()
@@ -901,15 +925,15 @@ def _get_height(tw):
     # add in relief space too.  Close approximation for now...
     #
     # Add 2 for descenders
-    return y+h+border_y + 2
+    return y + h + border_y + 2
 
 
-
 class ContainedText(AttrElem):
     """Base class for a text widget contained as a cell in a canvas.
     Both Captions and Cells are derived from this class.
 
     """
+
     def __init__(self, table, parentviewer, attrs):
         AttrElem.__init__(self, attrs)
         self._container = table.container
@@ -917,10 +941,10 @@ class ContainedText(AttrElem):
 ##      from profile import Profile
 ##      from pstats import Stats
 ##      p = Profile()
-##      # can't use runcall because that doesn't return the results
-##      p.runctx('self._viewer = Viewer(master=table.container, context=parentviewer.context, scrolling=False, stylesheet=parentviewer.stylesheet, parent=parentviewer)',
-##               globals(), locals())
-##      Stats(p).strip_dirs().sort_stats('time').print_stats(5)
+# can't use runcall because that doesn't return the results
+# p.runctx('self._viewer = Viewer(master=table.container, context=parentviewer.context, scrolling=False, stylesheet=parentviewer.stylesheet, parent=parentviewer)',
+# globals(), locals())
+# Stats(p).strip_dirs().sort_stats('time').print_stats(5)
 
         self._viewer = Viewer(master=table.container,
                               context=parentviewer.context,
@@ -943,11 +967,14 @@ class ContainedText(AttrElem):
         return formatter
 
     def freeze(self): self._viewer.freeze()
+
     def unfreeze(self): self._viewer.unfreeze()
+
     def close(self): self._viewer.close()
 
     def maxwidth(self):
         return self._maxwidth           # not useful until after finish()
+
     def minwidth(self):
         return self._minwidth           # likewise
 
@@ -971,14 +998,14 @@ class ContainedText(AttrElem):
                 embedheight = max(embedheight, height)
             else:
                 # this is the best we can do
-##              print('non-conformant embedded window:', type(sub))
-##              print('using generic method, which may be incorrect')
+                ##              print('non-conformant embedded window:', type(sub))
+                ##              print('using generic method, which may be incorrect')
                 geom = sub.winfo_geometry()
                 match = CELLGEOM_RE.search(geom)
                 if match:
                     [w, h, x, y] = map(grailutil.conv_integer,
                                        match.group(1, 2, 3, 4))
-                min_nonaligned = max(min_nonaligned, w) # x+w?
+                min_nonaligned = max(min_nonaligned, w)  # x+w?
                 maxwidth = max(maxwidth, w)             # x+w?
                 embedheight = max(embedheight, h)       # y+h?
         self._embedheight = embedheight
@@ -999,7 +1026,7 @@ class ContainedText(AttrElem):
                 # want to put equal amounts of pad on both sides of
                 # the picture.
                 padding = (table.get_available_width() *
-                              int(padding[:-1]) // 200)
+                           int(padding[:-1]) // 200)
             except ValueError:
                 padding = 0
         tw['padx'] = padding
@@ -1028,17 +1055,18 @@ class ContainedText(AttrElem):
         self._x = x
         self._y = y
         self._container.move(self._tag, xdelta, ydelta)
-        if width != None and height != None:
+        if width is not None and height is not None:
             self._container.itemconfigure(self._tag,
                                           width=width, height=height)
-        elif width != None:
+        elif width is not None:
             self._container.itemconfigure(self._tag, width=width)
         else:
             self._container.itemconfigure(self._tag, height=height)
 
-
+
 class Caption(ContainedText):
     """A table caption element."""
+
     def __init__(self, table, parentviewer, attrs):
         ContainedText.__init__(self, table, parentviewer, attrs)
         self._tw.config(relief=FLAT, borderwidth=0)
@@ -1084,9 +1112,9 @@ class Cell(ContainedText):
                                 default=table.lastbody.trows[-1].Avalign)
         self.Avalign = valign
         if valign == 'middle':
-            self._tw.pack(fill = X)
+            self._tw.pack(fill=X)
         elif valign == 'bottom':
-            self._tw.pack(fill = X, anchor = S)
+            self._tw.pack(fill=X, anchor=S)
         # background color
         rowcolor = table.lastbody.trows[-1].Abgcolor
         if parser.context.app.prefs.GetBoolean('parsing-html', 'honor-colors'):
@@ -1114,8 +1142,10 @@ class Cell(ContainedText):
             else:
                 self.Abgcolor = None
         if self.Abgcolor:
-            try: self._fw.config(background=self.Abgcolor)
-            except TclError: self.Abgcolor = None       # color name error
+            try:
+                self._fw.config(background=self.Abgcolor)
+            except TclError:
+                self.Abgcolor = None       # color name error
         self.layout = table.layout
         # dig out useful attributes
         self.cellpadding = table.attribute('cellpadding', default=0)
@@ -1132,7 +1162,7 @@ class Cell(ContainedText):
         pass
 
     def __repr__(self):
-##      return '<{}>"{}"'.format(id(self), self._tw.get(1.0, END)[:-1])
+        # return '<{}>"{}"'.format(id(self), self._tw.get(1.0, END)[:-1])
         return '"{}"'.format(self._tw.get(1.0, END)[:-1])
 
     def is_empty(self):
@@ -1145,7 +1175,9 @@ class Cell(ContainedText):
 class TDCell(Cell):
     pass
 
+
 class THCell(Cell):
+
     def init_style(self):
         # TBD: this should be extracted from stylesheets and/or preferences
         self._parser.get_formatter().push_font((None, None, False, None))
@@ -1155,7 +1187,7 @@ class THCell(Cell):
         self._tw.tag_add('contents', 1.0, END)
         self._tw.tag_config('contents', justify=CENTER)
 
-
+
 if __name__ == '__main__':
     pass
 else:

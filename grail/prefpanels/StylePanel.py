@@ -9,6 +9,7 @@ from tkinter import *
 
 
 class ColorButton(Button):
+
     def __init__(self, master, cnf={}, **kw):
         kw["text"] = "Set"              # don't allow these to be provided
         #kw["font"] = "tiny"

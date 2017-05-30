@@ -2,13 +2,13 @@
 
 This class implements a pure input window which allows you to meticulously
 edit the current color.  You have both mouse control of the color (via the
-buttons along the bottom row), and there are keyboard bindings for each of the 
+buttons along the bottom row), and there are keyboard bindings for each of the
 increment/decrement buttons.
 
 The top three check buttons allow you to specify which of the three color
 variations are tied together when incrementing and decrementing.  Red, green,
 and blue are self evident.  By tying together red and green, you can modify
-the yellow level of the color.  By tying together red and blue, you can modify 
+the yellow level of the color.  By tying together red and blue, you can modify
 the magenta level of the color.  By tying together green and blue, you can
 modify the cyan level, and by tying all three together, you can modify the
 grey level.
@@ -59,8 +59,9 @@ WRAP = 'Wrap Around'
 RATIO = 'Preserve Distance'
 GRAV = 'Squash'
 
-
+
 class DetailsViewer:
+
     def __init__(self, switchboard, master=None):
         self.__sb = switchboard
         optiondb = switchboard.optiondb()
@@ -150,9 +151,9 @@ class DetailsViewer:
             text = ''
         else:
             text = '(= {} Level)'.format({3: 'Cyan',
-                                     5: 'Magenta',
-                                     6: 'Yellow',
-                                     7: 'Grey'}[tie])
+                                          5: 'Magenta',
+                                          6: 'Yellow',
+                                          7: 'Grey'}[tie])
         self.__l2.configure(text=text)
 
     def __quit(self, event=None):

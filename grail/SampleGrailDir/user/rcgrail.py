@@ -32,7 +32,7 @@ import tempfile
 import os
 import re
 
-
+
 # The file structure.  Modeled after X11
 RCDIR = '.grail-unix'
 GRAILCMD = 'grail'
@@ -40,6 +40,7 @@ GRAILCMD = 'grail'
 FILENAME = os.environ.get('GRAIL_REMOTE', '')
 GRAIL_CMD = '/bin/sh'
 GRAIL_ARGS = ('-c', GRAILCMD)
+
 
 def normalize_display(display):
     # normalize the display name
@@ -53,6 +54,7 @@ def normalize_display(display):
             screen = '0'
         return '{}:{}.{}'.format(host, display, screen)
 
+
 def rc_filename(user=None, display=None):
     tmpdir = tempfile.gettempdir()
     user = os.environ['USER'] or os.environ['LOGNAME']
@@ -61,6 +63,7 @@ def rc_filename(user=None, display=None):
     display = normalize_display(display)
     sfile = '{}-{}'.format(user, display)
     return os.path.join(tmpdir, os.path.join(RCDIR, sfile))
+
 
 def usage(progname):
     print('Usage:', progname, '[-b] [-d display] [-p] [-h] [URI]')
@@ -71,7 +74,6 @@ def usage(progname):
     print('    URI is the URI string to tell Grail to load')
 
 
-
 def main():
     progname = sys.argv[0]
     filename = FILENAME

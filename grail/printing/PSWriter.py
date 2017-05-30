@@ -55,20 +55,20 @@ class PSWriter(formatter.AbstractWriter):
 ##      self.new_font = self.ps.push_font_change
 
     def close(self):
-##      utils.debug('close')
+        # utils.debug('close')
         self.ps.push_end()
 
     def new_alignment(self, align):
-##      utils.debug('new_alignment: {!r}'.format(align))
+        ##      utils.debug('new_alignment: {!r}'.format(align))
         self.__alignment = align
         self.ps.push_alignment(align)
 
     def new_font(self, font):
-##      utils.debug('new_font: {!r}'.format(font))
+        ##      utils.debug('new_font: {!r}'.format(font))
         self.ps.push_font_change(font)
 
     def new_margin(self, margin, level):
-##      utils.debug('new_margin: margin={}, level={}'.format(margin, level))
+        ##      utils.debug('new_margin: margin={}, level={}'.format(margin, level))
         self.ps.push_margin(level)
         self.__detab_pos = 0
 
@@ -79,12 +79,12 @@ class PSWriter(formatter.AbstractWriter):
         # Right now the only styles we support are lower case 'underline' for
         # underline and a 'blockquote' for each right-hand indentation.
     def new_styles(self, styles):
-##      utils.debug('new_styles: {}'.format(styles))
+        ##      utils.debug('new_styles: {}'.format(styles))
         self.ps.push_underline('underline' in styles)
         self.ps.push_rightmargin(styles.count('blockquote'))
 
     def send_paragraph(self, blankline):
-##      utils.debug('send_paragraph: {}'.format(blankline))
+        ##      utils.debug('send_paragraph: {}'.format(blankline))
         self.ps.push_paragraph(blankline, self.settings.paragraph_skip)
         self.__detab_pos = 0
         self.__pending_indentation = None
@@ -106,7 +106,7 @@ class PSWriter(formatter.AbstractWriter):
             self.__pending_indentation = width
 
     def send_line_break(self):
-##      utils.debug('send_line_break')
+        # utils.debug('send_line_break')
         self.ps.push_hard_newline()
         self.__detab_pos = 0
         self.__pending_indentation = None
@@ -114,21 +114,21 @@ class PSWriter(formatter.AbstractWriter):
 
     def send_hor_rule(self, abswidth=None, percentwidth=None,
                       height=None, align=None):
-##      utils.debug('send_hor_rule')
+        # utils.debug('send_hor_rule')
         self.ps.push_horiz_rule(abswidth, percentwidth, height, align)
         self.__detab_pos = 0
         self.__pending_indentation = None
         self.__suppress_indentation = False
 
     def send_label_data(self, data):
-##      utils.debug('send_label_data: {}'.format(data))
+        ##      utils.debug('send_label_data: {}'.format(data))
         self.ps.push_label(data)
         self.__detab_pos = 0
         self.__pending_indentation = None
         self.__suppress_indentation = False
 
     def send_flowing_data(self, data):
-##      utils.debug('send_flowing_data: {}'.format(data))
+        ##      utils.debug('send_flowing_data: {}'.format(data))
         self.ps.push_literal(False)
         if self.__pending_indentation:
             self.ps.push_horiz_space(self.__pending_indentation)
@@ -139,7 +139,7 @@ class PSWriter(formatter.AbstractWriter):
         self.__detab_pos = 0
 
     def send_literal_data(self, data):
-##      utils.debug('send_literal_data: {}'.format(data))
+        ##      utils.debug('send_literal_data: {}'.format(data))
         self.ps.push_literal(True)
         if self.__pending_indentation:
             self.ps.push_horiz_space(self.__pending_indentation)
@@ -149,7 +149,7 @@ class PSWriter(formatter.AbstractWriter):
         self.ps.push_string(self.__detab_data(data))
 
     def send_eps_data(self, image, align):
-##      utils.debug('send_eps_data: <epsdata>, ' + repr(bbox))
+        ##      utils.debug('send_eps_data: <epsdata>, ' + repr(bbox))
         if self.__pending_indentation:
             self.ps.push_horiz_space(self.__pending_indentation)
             self.__pending_indentation = None

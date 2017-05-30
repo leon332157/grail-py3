@@ -1,6 +1,6 @@
 """Strip viewer and related widgets.
 
-The classes in this file implement the StripViewer shown in the top two thirds 
+The classes in this file implement the StripViewer shown in the top two thirds
 of the main Pynche window.  It consists of three StripWidgets which display
 the variations in red, green, and blue respectively of the currently selected
 r/g/b color value.
@@ -57,37 +57,48 @@ def constant(numchips):
     return seq
 
 # red variations, green+blue = cyan constant
+
+
 def constant_red_generator(numchips, red, green, blue):
     seq = constant(numchips)
     return zip([red] * numchips, seq, seq)
 
 # green variations, red+blue = magenta constant
+
+
 def constant_green_generator(numchips, red, green, blue):
     seq = constant(numchips)
     return zip(seq, [green] * numchips, seq)
 
 # blue variations, red+green = yellow constant
+
+
 def constant_blue_generator(numchips, red, green, blue):
     seq = constant(numchips)
     return zip(seq, seq, [blue] * numchips)
 
 # red variations, green+blue = cyan constant
+
+
 def constant_cyan_generator(numchips, red, green, blue):
     seq = constant(numchips)
     return zip(seq, [green] * numchips, [blue] * numchips)
 
 # green variations, red+blue = magenta constant
+
+
 def constant_magenta_generator(numchips, red, green, blue):
     seq = constant(numchips)
     return zip([red] * numchips, seq, [blue] * numchips)
 
 # blue variations, red+green = yellow constant
+
+
 def constant_yellow_generator(numchips, red, green, blue):
     seq = constant(numchips)
     return zip([red] * numchips, [green] * numchips, seq)
 
 
-
 class LeftArrow:
     _ARROWWIDTH = 30
     _ARROWHEIGHT = 15
@@ -153,22 +164,21 @@ class RightArrow(LeftArrow):
         return coords[2] - 6			  # TBD: kludge
 
 
-
 class StripWidget:
     _CHIPHEIGHT = 50
     _CHIPWIDTH = 10
     _NUMCHIPS = 40
 
     def __init__(self, switchboard,
-                 master     = None,
-                 chipwidth  = _CHIPWIDTH,
-                 chipheight = _CHIPHEIGHT,
-                 numchips   = _NUMCHIPS,
-                 generator  = None,
-                 axis       = None,
-                 label      = '',
-                 uwdvar     = None,
-                 hexvar     = None):
+                 master=None,
+                 chipwidth=_CHIPWIDTH,
+                 chipheight=_CHIPHEIGHT,
+                 numchips=_NUMCHIPS,
+                 generator=None,
+                 axis=None,
+                 label='',
+                 uwdvar=None,
+                 hexvar=None):
         # instance variables
         self.__generator = generator
         self.__axis = axis
@@ -179,7 +189,7 @@ class StripWidget:
         # the last chip selected
         self.__lastchip = None
         self.__sb = switchboard
-        
+
         canvaswidth = numchips * (chipwidth + 1)
         canvasheight = chipheight + 43		  # TBD: Kludge
 
@@ -187,8 +197,8 @@ class StripWidget:
         canvas = self.__canvas = Canvas(master,
                                         width=canvaswidth,
                                         height=canvasheight,
-##                                        borderwidth=2,
-##                                        relief=GROOVE
+                                        # borderwidth=2,
+                                        # relief=GROOVE
                                         )
 
         canvas.pack()
@@ -208,7 +218,7 @@ class StripWidget:
         for c in range(self.__numchips):
             color = 'grey'
             rect = canvas.create_rectangle(
-                x, y, x+chipwidth, y+chipheight,
+                x, y, x + chipwidth, y + chipheight,
                 fill=color, outline=color,
                 tags=tags)
             x = x + chipwidth + 1		  # for outline
@@ -228,7 +238,7 @@ class StripWidget:
         self.__rightarrow = RightArrow(canvas, chipx)
 
     def __arrow_x(self, chipnum):
-        coords = self.__canvas.coords(chipnum+1)
+        coords = self.__canvas.coords(chipnum + 1)
         assert coords
         x0, y0, x1, y1 = coords
         return (x1 + x0) / 2.0
@@ -241,7 +251,7 @@ class StripWidget:
         canvas = self.__canvas
         chip = canvas.find_overlapping(x, y, x, y)
         if chip and (1 <= chip[0] <= self.__numchips):
-            color = self.__chips[chip[0]-1]
+            color = self.__chips[chip[0] - 1]
             red, green, blue = ColorDB.rrggbb_to_triplet(color)
             etype = int(event.type)
             if (etype == BTNUP or self.__uwd.get()):
@@ -269,12 +279,12 @@ class StripWidget:
         if coloraxis <= 128:
             # use the left arrow
             self.__leftarrow.set_text(text)
-            self.__leftarrow.move_to(self.__arrow_x(chip-1))
+            self.__leftarrow.move_to(self.__arrow_x(chip - 1))
             self.__rightarrow.move_to(-100)
         else:
             # use the right arrow
             self.__rightarrow.set_text(text)
-            self.__rightarrow.move_to(self.__arrow_x(chip-1))
+            self.__rightarrow.move_to(self.__arrow_x(chip - 1))
             self.__leftarrow.move_to(-100)
         # and set the chip's outline
         brightness = ColorDB.triplet_to_brightness(rgbtuple)
@@ -283,7 +293,6 @@ class StripWidget:
         else:
             outline = 'black'
         self.__canvas.itemconfigure(chip, outline=outline)
-
 
     def update_yourself(self, red, green, blue):
         assert self.__generator
@@ -310,8 +319,9 @@ class StripWidget:
         self.__canvas.itemconfigure(self.__label, text=label)
         self.__generator = generator
 
-
+
 class StripViewer:
+
     def __init__(self, switchboard, master=None):
         self.__sb = switchboard
         optiondb = switchboard.optiondb()
@@ -370,19 +380,19 @@ class StripViewer:
         hexbtn.grid(row=1, column=1, sticky=W)
 
         # XXX: ignore this feature for now; it doesn't work quite right yet
-        
+
 ##        gentypevar = self.__gentypevar = IntVar()
-##        self.__variations = Radiobutton(frame,
-##                                        text='Variations',
-##                                        variable=gentypevar,
-##                                        value=0,
-##                                        command=self.__togglegentype)
+# self.__variations = Radiobutton(frame,
+# text='Variations',
+# variable=gentypevar,
+# value=0,
+# command=self.__togglegentype)
 ##        self.__variations.grid(row=0, column=1, sticky=W)
-##        self.__constants = Radiobutton(frame,
-##                                       text='Constants',
-##                                       variable=gentypevar,
-##                                       value=1,
-##                                       command=self.__togglegentype)
+# self.__constants = Radiobutton(frame,
+# text='Constants',
+# variable=gentypevar,
+# value=1,
+# command=self.__togglegentype)
 ##        self.__constants.grid(row=1, column=1, sticky=W)
 
         # create the white button

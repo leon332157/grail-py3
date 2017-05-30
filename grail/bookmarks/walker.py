@@ -4,6 +4,7 @@ __version__ = '$Revision: 1.5 $'
 
 
 class TreeWalker:
+
     def __init__(self, root=None):
         self.__root = root
 

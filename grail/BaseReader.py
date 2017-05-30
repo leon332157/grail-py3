@@ -11,6 +11,7 @@ from . import grailutil
 BUFSIZE = 512                           # Smaller size for better response
 SLEEPTIME = 100                         # Milliseconds between regular checks
 
+
 class BaseReader:
 
     """Base reader class -- read from a URL in the background.
@@ -37,7 +38,7 @@ class BaseReader:
         self.callback = self.checkmeta
         self.poller = self.api.pollmeta
         self.bufsize = BUFSIZE
-        
+
         # Stuff for status reporting
         self.nbytes = 0
         self.maxbytes = 0
@@ -86,9 +87,9 @@ class BaseReader:
 
     def __str__(self):
         if self.maxbytes:
-            percent = self.nbytes*100//self.maxbytes
-            status = "{}% of {} read".format(percent,
-                                          grailutil.nicebytes(self.maxbytes))
+            percent = self.nbytes * 100 // self.maxbytes
+            status = "{}% of {} read".format(
+                percent, grailutil.nicebytes(self.maxbytes))
         elif not self.nbytes:
             status = self.message
         else:
@@ -100,7 +101,7 @@ class BaseReader:
             path = tuple.path
             i = path.rfind('/', 0, -1)
             if i >= 0:
-                path = path[i+1:]
+                path = path[i + 1:]
             self.shorturl = path or self.api._url_
         return "{}: {}".format(self.shorturl, status)
 
@@ -108,7 +109,7 @@ class BaseReader:
         return "{}(...{})".format(type(self).__name__, self.api)
 
     def update_status(self):
-        self.context.new_reader_status() # Will call our __str__() method
+        self.context.new_reader_status()  # Will call our __str__() method
 
     def update_maxbytes(self, headers):
         self.maxbytes = 0
@@ -147,12 +148,13 @@ class BaseReader:
 
     def checkapi_regularly(self):
         if not self.callback:
-##          print("*** checkapi_regularly -- too late ***")
+            ##          print("*** checkapi_regularly -- too late ***")
             return
         self.callback()
         if self.callback:
             sleeptime = self.sleeptime
-            if self.poller and self.poller()[1]: sleeptime = 0
+            if self.poller and self.poller()[1]:
+                sleeptime = 0
             self.context.root.after(sleeptime, self.checkapi_regularly)
 
     def checkapi(self, *args):

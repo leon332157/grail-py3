@@ -16,19 +16,19 @@ selected and nearest ChipWidgets.
 from tkinter import *
 from . import ColorDB
 
-
+
 class ChipWidget:
     _WIDTH = 150
     _HEIGHT = 80
 
     def __init__(self,
-                 master = None,
-                 width  = _WIDTH,
-                 height = _HEIGHT,
-                 text   = 'Color',
-                 initialcolor = 'blue',
-                 presscmd   = None,
-                 releasecmd = None):
+                 master=None,
+                 width=_WIDTH,
+                 height=_HEIGHT,
+                 text='Color',
+                 initialcolor='blue',
+                 presscmd=None,
+                 releasecmd=None):
         # create the text label
         self.__label = Label(master, text=text)
         self.__label.grid(row=0, column=0)
@@ -62,8 +62,8 @@ class ChipWidget:
         self.__chip.configure(relief=RAISED)
 
 
-
 class ChipViewer:
+
     def __init__(self, switchboard, master=None):
         self.__sb = switchboard
         self.__frame = Frame(master, relief=RAISED, borderwidth=1)
@@ -78,8 +78,8 @@ class ChipViewer:
         self.__nframe = Frame(self.__frame)
         self.__nframe.grid(row=0, column=1)
         self.__nearest = ChipWidget(self.__nframe, text='Nearest',
-                                    presscmd = self.__buttonpress,
-                                    releasecmd = self.__buttonrelease)
+                                    presscmd=self.__buttonpress,
+                                    releasecmd=self.__buttonrelease)
 
     def update_yourself(self, red, green, blue):
         # TBD: should exactname default to X11 color name if their is an exact

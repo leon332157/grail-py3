@@ -37,6 +37,7 @@ def _parse_uri(uri):
 
 
 class Collection:
+
     def __init__(self, root=None):
         self.set_root(root)
 
@@ -112,6 +113,7 @@ class Collection:
 
     __next_id = 1
     __id_format = "bkmk.{}"
+
     def new_id(self):
         i = self.__next_id
         while True:
@@ -197,6 +199,7 @@ class Collection:
 
 
 class CopyWalker(walker.TreeWalker):
+
     def __init__(self, root=None):
         walker.TreeWalker.__init__(self, root)
         self.__node_map = defaultdict(list)
@@ -212,11 +215,11 @@ class CopyWalker(walker.TreeWalker):
     def get_new_root(self):
         if self.__parents:
             raise RuntimeError(
-                  "cannot retrieve new root before walk is complete")
+                "cannot retrieve new root before walk is complete")
         if self.__needed_ids:
             raise RuntimeError(
-                  "copied tree cannot resolve all referenced IDs: "
-                  + " ".join(self.__needed_ids))
+                "copied tree cannot resolve all referenced IDs: "
+                + " ".join(self.__needed_ids))
         return self.__new_root
 
     def add_node(self, node):

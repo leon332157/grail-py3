@@ -7,8 +7,8 @@ import time
 import urllib.parse
 
 
-
 class Error(Exception):
+
     def __init__(self, msg):
         self.msg = msg
         Exception.__init__(self, msg)
@@ -20,7 +20,7 @@ class AliasReferenceError(Error):
 
 def norm_uri(uri):
     scheme, netloc, path, params, query, fragment \
-            = urllib.parse.urlparse(uri)
+        = urllib.parse.urlparse(uri)
     if scheme == "http" and ':' in netloc:
         loc = netloc.split(':')
         try:
@@ -32,10 +32,9 @@ def norm_uri(uri):
                 del loc[-1]
                 netloc = ':'.join(loc)
     return urllib.parse.urlunparse((scheme, netloc.lower(), path,
-                                params, query, fragment))
+                                    params, query, fragment))
 
 
-
 class Node:
     __depth = 0
     __parent = None
@@ -122,7 +121,6 @@ class DescribableNode(Node):
     def info(self):
         return self.__info
 
-
     def set_add_date(self, added):
         self.__added = added
 
@@ -144,7 +142,6 @@ class Bookmark(DescribableNode):
     __last_modified = None
     __last_visited = None
 
-
     def uri(self):
         return self.__uri
 
@@ -153,7 +150,6 @@ class Bookmark(DescribableNode):
 
     def last_visited(self):
         return self.__last_visited
-
 
     def set_uri(self, uri):
         self.__uri = norm_uri(uri)
@@ -206,7 +202,6 @@ class Folder(DescribableNode):
             return child
         except ValueError:
             return
-
 
     def leaf_p(self):
         return False

@@ -8,6 +8,7 @@ from . import utils
 
 
 class Application:
+
     def __init__(self, prefs=None):
         utils._grail_app = self
         if prefs is None:
@@ -26,7 +27,7 @@ class Application:
         #
         # Add our type map file to the set used to initialize the shared map:
         #
-        typefile = os.path.join(self.graildir, "mime.types") 
+        typefile = os.path.join(self.graildir, "mime.types")
         mimetypes.init(mimetypes.knownfiles + [typefile])
 
     def get_loader(self, name):
@@ -38,7 +39,6 @@ class Application:
         loader.add_directory(userdir)
         self.__loaders[name] = loader
 
-
     #######################################################################
     #
     #  Misc. support.
@@ -48,9 +48,8 @@ class Application:
     def exception_dialog(self, message="", *args):
         raise RuntimeError("Subclass failed to implement exception_dialog().")
 
-
     __data_scheme_re = re.compile(
-        r'data:([^,;]*)(;([^,]*)|),' , re.IGNORECASE)
+        r'data:([^,;]*)(;([^,]*)|),', re.IGNORECASE)
 
     def guess_type(self, url):
         """Guess the type of a file based on its URL.

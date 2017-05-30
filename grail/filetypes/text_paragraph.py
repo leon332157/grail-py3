@@ -19,6 +19,7 @@ import re
 
 
 class parse_text_paragraph:
+
     def __init__(self, viewer, reload=False):
         self.__fmt = formatter.AbstractFormatter(viewer)
 

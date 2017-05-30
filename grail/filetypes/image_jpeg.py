@@ -8,6 +8,7 @@ from ..grailutil import close_subprocess
 _FILTERCMD = 'djpeg'
 _FILTERARG = '-gif'
 
+
 class parse_image_jpeg:
 
     """Parser for image/jpeg files.
@@ -24,8 +25,8 @@ class parse_image_jpeg:
         self.viewer.new_font((AS_IS, AS_IS, AS_IS, True))
         self.tf = tempfile.NamedTemporaryFile("wb", delete=False)
         try:
-            self.proc = subprocess.Popen((_FILTERCMD, _FILTERARG),
-                stdin=subprocess.PIPE, stdout=self.tf, bufsize=-1)
+            self.proc = subprocess.Popen(
+                (_FILTERCMD, _FILTERARG), stdin=subprocess.PIPE, stdout=self.tf, bufsize=-1)
             self.tf.close()
             self.label = Label(self.viewer.text, text=self.tf.name,
                                highlightthickness=0, borderwidth=0)

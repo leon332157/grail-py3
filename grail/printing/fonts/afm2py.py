@@ -27,8 +27,8 @@ import os
 import getopt
 
 
-
 program = sys.argv[0]
+
 
 def usage(status):
     print(__doc__.format_map(globals()))
@@ -41,7 +41,6 @@ def splitline(line):
     return keyword.lower(), rest
 
 
-
 # Mappings between character names and their ordinal equivalents.
 
 def read_unicode_mapping(filename, dict=None):
@@ -65,14 +64,13 @@ def read_unicode_mapping(filename, dict=None):
 
 LATIN_1_MAPPING = {
     'copyright': 169,
-    }
+}
 
 # TBD: when we support other character sets, we should generalize
 # this.  No need to do so now though.
 charset = LATIN_1_MAPPING
 
 
-
 TEMPLATE = """\
 # Character width information for PostScript font `{fullname}'
 # generated from the Adobe Font Metric file `{filename}'.  Adobe
@@ -92,7 +90,7 @@ def parse(filename, outdir):
     tdict = {'fontname': '',
              'fullname': '',
              'filename': filename,
-             'notice':   '',
+             'notice': '',
              }
 
     with open(filename, 'r') as infp:
@@ -132,11 +130,10 @@ def parse(filename, outdir):
         for i in range(0, 256, 8):
             if i != 0:
                 outfp.write('  ')
-            print(FORMAT.format(*cwidths[i:i+8]), file=outfp)
+            print(FORMAT.format(*cwidths[i:i + 8]), file=outfp)
         print('])', file=outfp)
 
 
-
 def main():
     help = False
     status = 0

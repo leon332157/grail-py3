@@ -19,25 +19,25 @@ from numbers import Real
 # should not include the dash.
 
 fontdefs = {
-    'Times':            (None, '-Roman', 'Bold', 'Italic'),
-    'Helvetica':        (None, '',       'Bold', 'Oblique'),
+    'Times': (None, '-Roman', 'Bold', 'Italic'),
+    'Helvetica': (None, '', 'Bold', 'Oblique'),
     'NewCenturySchlbk': (None, '-Roman', 'Bold', 'Italic'),
-    'Courier':          (None, '',       'Bold', 'Oblique'),
+    'Courier': (None, '', 'Bold', 'Oblique'),
     # The code from HTML-PSformat.c says:
     # "This is a nasty trick, I have put Times in place of Lucida,
     # because most printers don't have Lucida font"
     # Hmm...  -BAW
     #'Lucida':           ('Times', None, 'Bold', 'Italic'),
-    'Lucida':           (None, '', 'Bold', 'Italic'),
+    'Lucida': (None, '', 'Bold', 'Italic'),
     #
-    'Palatino':         (None, '-Roman', 'Bold', 'Italic'),
-    }
+    'Palatino': (None, '-Roman', 'Bold', 'Italic'),
+}
 
 # Mappings between HTML header tags and font sizes
 # Entries in the dictionary are factors used with DEFAULT_FONT_SIZE
 # The values used by Mosaic
 #DEFAULT_FONT_SIZE = 12.0
-#font_sizes = {
+# font_sizes = {
 #    None: 1.0,
 #    'h1': 3.0,
 #    'h2': 2.0,
@@ -57,9 +57,9 @@ font_sizes = {
     'h4': 1.0,
     'h5': 1.0,
     'h6': 1.0
-    }
+}
 
-
+
 class PSFont:
     """This class manages font changes and calculation of associated
     metrics for PostScript output.  It basically defines a mapping
@@ -79,6 +79,7 @@ class PSFont:
        text_width(TEXT) ==> WIDTH_IN_POINTS
        font_size(optional: (SIZE, ITALIC?, BOLD?, TT?)) ==> SZ_IN_POINTS
     """
+
     def __init__(self, varifamily='Times', fixedfamily='Courier',
                  size=DEFAULT_FONT_SIZE):
         """Create a font definition using VARIFAMILY as the variable
@@ -104,13 +105,17 @@ class PSFont:
         self.points_per_pixel = 72.0 / 72.0
 
         # calculate document fonts
-        if self.vfamily not in fontdefs: self.vfamily = 'Helvetica'
-        if self.ffamily not in fontdefs: self.ffamily = 'Courier'
+        if self.vfamily not in fontdefs:
+            self.vfamily = 'Helvetica'
+        if self.ffamily not in fontdefs:
+            self.ffamily = 'Courier'
         vrealname, vreg, vbold, vitalic = fontdefs[self.vfamily]
         frealname, freg, fbold, fitalic = fontdefs[self.ffamily]
         # fonts may be mapped to other fonts
-        if not vrealname: vrealname = self.vfamily
-        if not frealname: frealname = self.ffamily
+        if not vrealname:
+            vrealname = self.vfamily
+        if not frealname:
+            frealname = self.ffamily
 
         # calculate font names in PostScript space. Eight fonts are
         # used, naming scheme is as follows.  All PostScript font
@@ -120,15 +125,15 @@ class PSFont:
         # bold-italic version, `B' *must* preceed `I'.  See header.ps
         # for more info.
         self.docfonts = {
-            'FONTV':   '{}{}'.format(vrealname, vreg),
-            'FONTVB':  '{}-{}'.format(vrealname, vbold),
-            'FONTVI':  '{}-{}'.format(vrealname, vitalic),
+            'FONTV': '{}{}'.format(vrealname, vreg),
+            'FONTVB': '{}-{}'.format(vrealname, vbold),
+            'FONTVI': '{}-{}'.format(vrealname, vitalic),
             'FONTVBI': '{}-{}{}'.format(vrealname, vbold, vitalic),
-            'FONTF':   '{}{}'.format(frealname, freg),
-            'FONTFB':  '{}-{}'.format(frealname, fbold),
-            'FONTFI':  '{}-{}'.format(frealname, fitalic),
+            'FONTF': '{}{}'.format(frealname, freg),
+            'FONTFB': '{}-{}'.format(frealname, fbold),
+            'FONTFI': '{}-{}'.format(frealname, fitalic),
             'FONTFBI': '{}-{}{}'.format(frealname, fbold, fitalic)
-            }
+        }
         # instantiated font objects
         self.fontobjs = {}
         self.tw_func = None
@@ -149,25 +154,32 @@ class PSFont:
         PostScript layer name of the font, and the font size in
         points.  """
         # we *said* we wanted a tuple
-        if font_tuple is None: font_tuple = (None, None, None, None)
-##      utils.debug("set_font({})\n".format(font_tuple))
+        if font_tuple is None:
+            font_tuple = (None, None, None, None)
+# utils.debug("set_font({})\n".format(font_tuple))
         set_sz, set_italic, set_bold, set_tt = font_tuple
         # get the current font and break up the tuple
         cur_sz, cur_family, cur_italic, cur_bold = self.font
         # calculate size
         new_sz = self.font_size(font_tuple)
         # calculate variable vs. fixed base name
-        if set_tt: new_family = 'FONTF'
-        else: new_family = 'FONTV'
+        if set_tt:
+            new_family = 'FONTF'
+        else:
+            new_family = 'FONTV'
 
         # add modifiers.  Because of the way fonts are named, always
         # add bold modifier before italics modifier, in case both are
         # present
-        if set_bold: new_bold = 'B'
-        else: new_bold = ''
+        if set_bold:
+            new_bold = 'B'
+        else:
+            new_bold = ''
 
-        if set_italic: new_italic = 'I'
-        else: new_italic = ''
+        if set_italic:
+            new_italic = 'I'
+        else:
+            new_italic = ''
 
         # save the current font specification
         self.font = (new_sz, new_family, new_italic, new_bold)
@@ -188,10 +200,10 @@ class PSFont:
         return (fontnickname, new_sz)
 
     def text_width(self, text):
-##      width = self.tw_func(self._fontsize, text)
-##      utils.debug("{!r} @ {}pt ==> {}".format(text, self._fontsize, width),
-##                  'charsizing')
-##      return width
+        ##      width = self.tw_func(self._fontsize, text)
+        # utils.debug("{!r} @ {}pt ==> {}".format(text, self._fontsize, width),
+        # 'charsizing')
+        # return width
         return self.tw_func(self._fontsize, text)
 
     def font_size(self, font_tuple=None):

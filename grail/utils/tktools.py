@@ -3,11 +3,15 @@
 
 from tkinter import *
 
+
 def _clear_entry_widget(event):
     try:
         widget = event.widget
         widget.delete(0, INSERT)
-    except: pass
+    except:
+        pass
+
+
 def install_keybindings(root):
     root.bind_class('Entry', '<Control-u>', _clear_entry_widget)
 
@@ -35,6 +39,7 @@ def make_toplevel(master, title=None, class_=None, name=None):
         widget.iconname(title)
     return widget
 
+
 def set_transient(widget, master, relx=0.5, rely=0.3, expose=1):
     """Make an existing toplevel widget transient for a master.
 
@@ -43,9 +48,9 @@ def set_transient(widget, master, relx=0.5, rely=0.3, expose=1):
     subwidget but before letting the user interact.
     """
 
-    widget.withdraw() # Remain invisible while we figure out the geometry
+    widget.withdraw()  # Remain invisible while we figure out the geometry
     widget.transient(master)
-    widget.update_idletasks() # Actualize geometry information
+    widget.update_idletasks()  # Actualize geometry information
     if master.winfo_ismapped():
         m_width = master.winfo_width()
         m_height = master.winfo_height()
@@ -82,7 +87,6 @@ def _inTkStep(window):
 
 def make_scrollbars(parent, hbar, vbar, pack=1, class_=None, name=None,
                     takefocus=0):
-
     """Subroutine to create a frame with scrollbars.
 
     This is used by make_text_box and similar routines.
@@ -95,11 +99,15 @@ def make_scrollbars(parent, hbar, vbar, pack=1, class_=None, name=None,
 
     """
     if class_:
-        if name: frame = Frame(parent, class_=class_, name=name)
-        else: frame = Frame(parent, class_=class_)
+        if name:
+            frame = Frame(parent, class_=class_, name=name)
+        else:
+            frame = Frame(parent, class_=class_)
     else:
-        if name: frame = Frame(parent, name=name)
-        else: frame = Frame(parent)
+        if name:
+            frame = Frame(parent, name=name)
+        else:
+            frame = Frame(parent)
 
     if pack:
         frame.pack(fill=BOTH, expand=1)
@@ -136,7 +144,6 @@ def make_scrollbars(parent, hbar, vbar, pack=1, class_=None, name=None,
 
 
 def set_scroll_commands(widget, hbar, vbar):
-
     """Link a scrollable widget to its scroll bars.
 
     The scroll bars may be empty.
@@ -158,7 +165,6 @@ def set_scroll_commands(widget, hbar, vbar):
 def make_text_box(parent, width=0, height=0, hbar=0, vbar=1,
                   fill=BOTH, expand=1, wrap=WORD, pack=1, font=None,
                   class_=None, name=None, takefocus=None):
-
     """Subroutine to create a text box.
 
     Create:
@@ -175,8 +181,10 @@ def make_text_box(parent, width=0, height=0, hbar=0, vbar=1,
                                         takefocus=takefocus)
 
     widget = Text(frame, wrap=wrap, name="text", font=font)
-    if width: widget.config(width=width)
-    if height: widget.config(height=height)
+    if width:
+        widget.config(width=width)
+    if height:
+        widget.config(height=height)
     widget.pack(expand=expand, fill=fill, side=LEFT)
 
     set_scroll_commands(widget, hbar, vbar)
@@ -187,7 +195,6 @@ def make_text_box(parent, width=0, height=0, hbar=0, vbar=1,
 def make_list_box(parent, width=0, height=0, hbar=0, vbar=1,
                   fill=BOTH, expand=1, pack=1, class_=None, name=None,
                   takefocus=None):
-
     """Subroutine to create a list box.
 
     Like make_text_box().
@@ -197,8 +204,10 @@ def make_list_box(parent, width=0, height=0, hbar=0, vbar=1,
                                         takefocus=takefocus)
 
     widget = Listbox(frame, name="listbox")
-    if width: widget.config(width=width)
-    if height: widget.config(height=height)
+    if width:
+        widget.config(width=width)
+    if height:
+        widget.config(height=height)
     widget.pack(expand=expand, fill=fill, side=LEFT)
 
     set_scroll_commands(widget, hbar, vbar)
@@ -209,7 +218,6 @@ def make_list_box(parent, width=0, height=0, hbar=0, vbar=1,
 def make_canvas(parent, width=0, height=0, hbar=1, vbar=1,
                 fill=BOTH, expand=1, pack=1, class_=None, name=None,
                 takefocus=None):
-
     """Subroutine to create a canvas.
 
     Like make_text_box().
@@ -221,8 +229,10 @@ def make_canvas(parent, width=0, height=0, hbar=1, vbar=1,
                                         takefocus=takefocus)
 
     widget = Canvas(frame, scrollregion=(0, 0, width, height), name="canvas")
-    if width: widget.config(width=width)
-    if height: widget.config(height=height)
+    if width:
+        widget.config(width=width)
+    if height:
+        widget.config(height=height)
     widget.pack(expand=expand, fill=fill, side=LEFT)
 
     set_scroll_commands(widget, hbar, vbar)
@@ -231,7 +241,6 @@ def make_canvas(parent, width=0, height=0, hbar=1, vbar=1,
 
 
 def make_form_entry(parent, label, borderwidth=None, name=None):
-
     """Subroutine to create a form entry.
 
     Create:
@@ -268,6 +277,8 @@ def make_form_entry(parent, label, borderwidth=None, name=None):
 # The one annoying bug is that the text entry field should be
 # expandable while still aligning the colons.  This doesn't work yet.
 #
+
+
 def make_labeled_form_entry(parent, label, entrywidth=20, entryheight=1,
                             labelwidth=0, borderwidth=None,
                             takefocus=None, name=None, class_=None):
@@ -280,14 +291,19 @@ def make_labeled_form_entry(parent, label, entrywidth=20, entryheight=1,
 
     Return the entry widget and the frame widget.
     """
-    if label and label[-1] != ':': label = label + ':'
+    if label and label[-1] != ':':
+        label = label + ':'
 
     if class_:
-        if name: frame = Frame(parent, name=name, class_=class_)
-        else: frame = Frame(parent, class_=class_)
+        if name:
+            frame = Frame(parent, name=name, class_=class_)
+        else:
+            frame = Frame(parent, class_=class_)
     else:
-        if name: frame = Frame(parent, name=name)
-        else: frame = Frame(parent)
+        if name:
+            frame = Frame(parent, name=name)
+        else:
+            frame = Frame(parent)
 
     label = Label(frame, text=label, width=labelwidth, anchor=E, name="label")
     label.pack(side=LEFT)
@@ -313,11 +329,15 @@ def make_double_frame(master=None, class_=None, name=None, relief=RAISED,
                       borderwidth=1):
     """Create a pair of frames suitable for 'hosting' a dialog."""
     if name:
-        if class_: frame = Frame(master, class_=class_, name=name)
-        else: frame = Frame(master, name=name)
+        if class_:
+            frame = Frame(master, class_=class_, name=name)
+        else:
+            frame = Frame(master, name=name)
     else:
-        if class_: frame = Frame(master, class_=class_)
-        else: frame = Frame(master)
+        if class_:
+            frame = Frame(master, class_=class_)
+        else:
+            frame = Frame(master)
     top = Frame(frame, name="topframe", relief=relief,
                 borderwidth=borderwidth)
     bottom = Frame(frame, name="bottomframe")
@@ -377,8 +397,10 @@ def flatten(msg):
 
 def boolean(s):
     """Test whether a string is a Tk boolean, without error checking."""
-    if s.lower() in ('', '0', 'no', 'off', 'false'): return 0
-    else: return 1
+    if s.lower() in ('', '0', 'no', 'off', 'false'):
+        return 0
+    else:
+        return 1
 
 
 def test():

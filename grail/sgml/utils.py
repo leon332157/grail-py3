@@ -80,8 +80,10 @@ def conv_normstring(val):
 def conv_enumeration(val, mapping_or_list):
     val = conv_normstring(val)
     if not isinstance(mapping_or_list, Mapping):
-        if val in mapping_or_list: return val
-        else: return None
+        if val in mapping_or_list:
+            return val
+        else:
+            return None
     else:
         return mapping_or_list.get(val)
 

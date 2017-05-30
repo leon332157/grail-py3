@@ -66,7 +66,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         "verbar": "|",
         "zwj": "",                      # i18n: zero-width joiner
         "zwnj": "",                     # i18n: zero-width non-joiner
-        }
+    }
     entitydefs.update(new_entities)
 
     doctype = 'html'
@@ -191,6 +191,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         return r
 
     __object = None
+
     def get_object(self):
         return self.__object
 
@@ -232,6 +233,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             object.end()
 
     context = None
+
     def handle_object(self, attrs):
         if not self.context:            # Ugly, but we don't want to duplicate
             return None                 # this method in each subclass!
@@ -295,9 +297,11 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
     # --------- Top level elememts
 
     def start_html(self, attrs): pass
+
     def end_html(self): pass
 
     def start_head(self, attrs): pass
+
     def end_head(self):
         self.inhead = False
 
@@ -422,6 +426,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         self.formatter.pop_alignment()
 
     __dedented_numbers = 0
+
     def header_number(self, tag, level, attrs):
         if self.autonumber is None:
             if 'seqnum' in attrs or 'skip' in attrs:
@@ -648,16 +653,22 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
                 label = s
         if listtype == 'ol':
             if 'seqnum' in attrs:
-                try: top[2] = counter = int(attrs['seqnum'])
-                except: top[2] = counter = counter+1
+                try:
+                    top[2] = counter = int(attrs['seqnum'])
+                except:
+                    top[2] = counter = counter + 1
             elif 'value' in attrs:
-                try: top[2] = counter = int(attrs['value'])
-                except: top[2] = counter = counter+1
+                try:
+                    top[2] = counter = int(attrs['value'])
+                except:
+                    top[2] = counter = counter + 1
             else:
-                top[2] = counter = counter+1
+                top[2] = counter = counter + 1
             if 'skip' in attrs:
-                try: top[2] = counter = counter + int(attrs['skip'])
-                except: pass
+                try:
+                    top[2] = counter = counter + int(attrs['skip'])
+                except:
+                    pass
         self.formatter.add_label_data(label, counter)
 
     def fake_li(self, attrs):
@@ -702,11 +713,15 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             label = '1.'
         start = 0
         if 'seqnum' in attrs:
-            try: start = int(attrs['seqnum']) - 1
-            except: pass
+            try:
+                start = int(attrs['seqnum']) - 1
+            except:
+                pass
         elif 'start' in attrs:
-            try: start = int(attrs['start']) - 1
-            except: pass
+            try:
+                start = int(attrs['start']) - 1
+            except:
+                pass
         self.list_stack.append(['ol', label, start,
                                 compact or 'compact' in attrs,
                                 self.sgml_parser.get_depth() + 1])
@@ -748,7 +763,8 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
 
     def end_dl(self):
         self.ddpop(not (self.list_stack and self.list_stack[-1][3]))
-        if self.list_stack: del self.list_stack[-1]
+        if self.list_stack:
+            del self.list_stack[-1]
         self.formatter.pop_margin()
 
     def do_dt(self, attrs):
@@ -793,14 +809,17 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
     # Idiomatic Elements
 
     def start_cite(self, attrs): self.start_i(attrs)
+
     def end_cite(self): self.end_i()
 
     def start_code(self, attrs): self.start_tt(attrs)
+
     def end_code(self): self.end_tt()
 
     def start_del(self, attrs):
         self.formatter.push_font((AS_IS, True, AS_IS, AS_IS))
         self.formatter.push_style('red')
+
     def end_del(self):
         self.formatter.pop_style()
         self.formatter.pop_font()
@@ -808,57 +827,70 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
     def start_ins(self, attrs):
         self.formatter.push_font((AS_IS, True, AS_IS, AS_IS))
         self.formatter.push_style('ins')
+
     def end_ins(self):
         self.formatter.pop_style()
         self.formatter.pop_font()
 
     def start_dfn(self, attrs): self.start_i(attrs)
+
     def end_dfn(self): self.end_i()
 
     def start_em(self, attrs): self.start_i(attrs)
+
     def end_em(self): self.end_i()
 
     def start_kbd(self, attrs): self.start_tt(attrs)
+
     def end_kbd(self): self.end_tt()
 
     def start_samp(self, attrs): self.start_tt(attrs)
+
     def end_samp(self): self.end_tt()
 
     def start_strike(self, attrs):
         self.formatter.push_style('overstrike', 'red')
+
     def end_strike(self):
         self.formatter.pop_style(2)
 
     def start_strong(self, attrs): self.start_b(attrs)
+
     def end_strong(self): self.end_b()
 
     def start_var(self, attrs): self.start_i(attrs)
+
     def end_var(self): self.end_i()
 
     # Typographic Elements
 
     def start_i(self, attrs):
         self.formatter.push_font((AS_IS, True, AS_IS, AS_IS))
+
     def end_i(self):
         self.formatter.pop_font()
 
     def start_b(self, attrs):
         self.formatter.push_font((AS_IS, AS_IS, True, AS_IS))
+
     def end_b(self):
         self.formatter.pop_font()
 
     def start_tt(self, attrs):
         self.formatter.push_font((AS_IS, AS_IS, AS_IS, True))
+
     def end_tt(self):
         self.formatter.pop_font()
 
     def start_u(self, attrs):
         self.formatter.push_style('underline')
+
     def end_u(self):
         self.formatter.pop_style()
 
     def start_s(self, attrs):
         self.formatter.push_style('overstrike')
+
     def end_s(self):
         self.formatter.pop_style()
 
@@ -897,9 +929,12 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             abswidth, percentwidth = None, 1.0
         height = None
         if 'size' in attrs:
-            try: height = int(attrs['size'])
-            except: pass
-            else: height = max(1, height)
+            try:
+                height = int(attrs['size'])
+            except:
+                pass
+            else:
+                height = max(1, height)
         align = attrs.get('align', 'center').lower()
         self.formatter.add_hor_rule(abswidth, percentwidth, height, align)
 
@@ -909,17 +944,26 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             return None, None
         wid = percent = None
         if str[-1] == '%':
-            try: percent = int(str[:-1])
-            except: pass
-            else: percent = min(1.0, max(0.0, (0.01 * percent)))
+            try:
+                percent = int(str[:-1])
+            except:
+                pass
+            else:
+                percent = min(1.0, max(0.0, (0.01 * percent)))
         elif len(str) > 3 and str[-3:].lower() == "pct":
-            try: percent = int(str[:-3])
-            except: pass
-            else: percent = min(1.0, max(0.0, (0.01 * percent)))
+            try:
+                percent = int(str[:-3])
+            except:
+                pass
+            else:
+                percent = min(1.0, max(0.0, (0.01 * percent)))
         else:
-            try: wid = max(0, int(str))
-            except: pass
-            else: wid = wid or None
+            try:
+                wid = max(0, int(str))
+            except:
+                pass
+            else:
+                wid = wid or None
         if not (wid or percent):
             percent = 1.0
         return wid, percent
@@ -934,11 +978,15 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         ismap = 'ismap' in attrs
         src = attrs.get('src', '').strip()
         if 'width' in attrs:
-            try: width = int(attrs['width'])
-            except: pass
+            try:
+                width = int(attrs['width'])
+            except:
+                pass
         if 'height' in attrs:
-            try: height = int(attrs['height'])
-            except: pass
+            try:
+                height = int(attrs['height'])
+            except:
+                pass
         self.handle_image(src, alt, ismap, align, width, height)
 
     def do_image(self, attrs):
@@ -948,7 +996,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
 
     def do_plaintext(self, attrs):
         self.start_pre(attrs)
-        self.setnomoretags() # Tell SGML parser
+        self.setnomoretags()  # Tell SGML parser
 
     # --- Grail magic: processing instructions!
 
@@ -984,8 +1032,8 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
     # --- Unhandled elements:
 
     def unknown_pi(self, fields):
-##      print("Could not locate processing instruction handler:")
-##      print("   ", fields)
+        ##      print("Could not locate processing instruction handler:")
+        ##      print("   ", fields)
         pass
 
     # We don't implement these, but we want to know that they go in pairs,
@@ -999,7 +1047,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         'bq', 'caption', 'cmd', 'comment', 'credit', 'fig', 'fn', 'font',
         'frameset', 'lang', 'math', 'noembed', 'noframes', 'noscript',
         'note', 'person', 'q', 'small', 'span', 'sub', 'sup', 'webcreeper',
-        ]
+    ]
 
     def unknown_starttag(self, tag, attrs):
         self.badhtml = True
@@ -1028,8 +1076,9 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             return taginfo
 
     __tagmask = str.maketrans('-.', '__')
+
     def get_extension_taginfo(self, tag):
-        tag = tag.translate(self.__tagmask) # ??? why ???
+        tag = tag.translate(self.__tagmask)  # ??? why ???
         for dev in self.get_devicetypes():
             try:
                 loader = self.context.app.get_loader("html." + dev)
@@ -1051,7 +1100,8 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         #
         0x200C: "",                     # zero-width non-joiner
         0x200D: "",                     # zero-width joiner
-        }
+    }
+
     def unknown_charref(self, ordinal, terminator):
         if ordinal == 0x2028:           # line separator
             return self.do_br({})
@@ -1124,16 +1174,17 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
 
 
 class DummyTagInfo(SGMLHandler.TagInfo):
+
     def __init__(self, tag):
         SGMLHandler.TagInfo.__init__(self, tag, None, None, None)
 
 
 class NewlineScratcher:
     # for new version only:
-##    import re
-##    __scratch_re = re.compile(r"[ \t]*\n")
-##
-##     __buffer = ''
+    ##    import re
+    ##    __scratch_re = re.compile(r"[ \t]*\n")
+    ##
+    ##     __buffer = ''
 
     def __init__(self, parser, limit=-1):
         self.__limit = limit
@@ -1142,19 +1193,19 @@ class NewlineScratcher:
     def __call__(self, data):
         # new version that works better sometimes but can really die badly:
         # (hopefully fixable!)
-##      data = self.__buffer + data
-##      while "\n" in data and self.__limit != 0:
-##          match = self.__scratch_re.match(data)
-##          if match:
-##              data = data[match.end():]
-##              self.__limit = self.__limit - 1
-##      if data.strip() or self.__limit == 0:
-##          self.__parser.formatter.add_literal_data(data)
-##          self.__parser.set_data_handler(
-##              self.__parser.formatter.add_literal_data)
-##          self.__parser = None
-##      else:
-##          self.__buffer = data
+        ##      data = self.__buffer + data
+        # while "\n" in data and self.__limit != 0:
+        ##          match = self.__scratch_re.match(data)
+        # if match:
+        ##              data = data[match.end():]
+        ##              self.__limit = self.__limit - 1
+        # if data.strip() or self.__limit == 0:
+        # self.__parser.formatter.add_literal_data(data)
+        # self.__parser.set_data_handler(
+        # self.__parser.formatter.add_literal_data)
+        ##          self.__parser = None
+        # else:
+        ##          self.__buffer = data
         # old version:
         while data and data[0] == "\n" and self.__limit != 0:
             data = data[1:]
@@ -1188,17 +1239,22 @@ class HeaderNumber:
             i = i + 1
             numbers[i] = 0
         if 'skip' in attrs:
-            try: skip = int(attrs['skip'])
-            except: skip = 0
+            try:
+                skip = int(attrs['skip'])
+            except:
+                skip = 0
         else:
             skip = 0
         if 'seqnum' in attrs:
-            try: numbers[level] = int(attrs['seqnum'])
-            except: pass
-            else: return
+            try:
+                numbers[level] = int(attrs['seqnum'])
+            except:
+                pass
+            else:
+                return
         numbers[level] = numbers[level] + 1 + skip
 
-    def string(self, level, format = None):
+    def string(self, level, format=None):
         if format is None:
             format = self.formats[level]
         numbers = self.numbers
@@ -1226,6 +1282,7 @@ HeaderNumber.set_default_format = HeaderNumber().set_default_format
 
 
 class Embedding:
+
     def __init__(self):
         pass
 
@@ -1245,7 +1302,8 @@ class Embedding:
 def test():
     import sys
     file = 'test.html'
-    if sys.argv[1:]: file = sys.argv[1]
+    if sys.argv[1:]:
+        file = sys.argv[1]
     with open(file, 'r') as fp:
         data = fp.read()
     from formatter import NullWriter, AbstractFormatter

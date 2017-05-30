@@ -17,6 +17,7 @@ class SearchMenu:
         the bell if no hit was found.
 
     """
+
     def __init__(self, menu, rootwin, searchable):
         self._searchable = searchable
         self._root = rootwin
@@ -47,7 +48,7 @@ class SearchMenu:
             self.sdialog.pat_entry.focus_set()
             self.sdialog.pat_entry.select_range(0, END)
 
-
+
 class SearchDialog:
 
     def __init__(self, rootwin, searchable):
@@ -63,7 +64,7 @@ class SearchDialog:
         from . import tktools
         x, f, self.bot_frame = tktools.make_double_frame(self._root)
         self.pat_entry, self.pat_frame = \
-                        tktools.make_form_entry(f, None, name="entry")
+            tktools.make_form_entry(f, None, name="entry")
         self.pat_entry['exportselection'] = 0
         self.pat_entry.bind('<Return>', self.return_event)
         self.pat_entry.focus_set()
@@ -92,7 +93,7 @@ class SearchDialog:
         self.search_close_button = Button(self._root, name="searchclose",
                                           command=self.search_close_command)
         self.search_close_button.pack(side=LEFT, expand=1, padx='1m',
-                                      in_=self.bot_frame) # Center
+                                      in_=self.bot_frame)  # Center
         self.close_button = Button(self._root, name="close", width=12,
                                    command=self.close_command)
         self.close_button.pack(side=RIGHT, in_=self.bot_frame)

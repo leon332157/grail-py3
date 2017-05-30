@@ -8,9 +8,12 @@ class OutlinerNode:
 
     def __repr__(self):
         tabdepth = self._depth - 1
-        if self.leaf_p(): tag = ' '
-        elif self.expanded_p(): tag = '+'
-        else: tag = '-'
+        if self.leaf_p():
+            tag = ' '
+        elif self.expanded_p():
+            tag = '+'
+        else:
+            tag = '-'
         return (' ' * (tabdepth * 3)) + tag
 
     def clone(self):
@@ -25,7 +28,8 @@ class OutlinerNode:
 
     def close(self):
         self._parent = None
-        for child in self._children: child.close()
+        for child in self._children:
+            child.close()
 
     def _redepthify(self, node):
         depth = node.depth()
@@ -64,18 +68,22 @@ class OutlinerNode:
             return False
 
     def expand(self): self._expanded_p = True
+
     def collapse(self): self._expanded_p = False
 
     def children(self): return self._children
+
     def parent(self): return self._parent
+
     def expanded_p(self): return self._expanded_p
+
     def leaf_p(self): return not self._children
 
     def depth(self): return self._depth
 
 
-
 class OutlinerViewer:
+
     def __init__(self, root, follow_all_children=False, shared_root=False):
         """Create a new viewer for a tree of nodes.
 
@@ -97,11 +105,14 @@ class OutlinerViewer:
         if not self._shared_root:
             self._root.close()
 
-    ## Derived class specializations
+    # Derived class specializations
 
     def _insert(self, node, index=None): pass
+
     def _delete(self, start, end=None): pass
+
     def _select(self, index): pass
+
     def _clear(self): pass
 
     def _populate(self, node):
@@ -114,7 +125,7 @@ class OutlinerViewer:
             for child in node.children():
                 self._populate(child)
 
-    ## API methods
+    # API methods
 
     def populate(self, showroot=False):
         if showroot:
@@ -128,7 +139,8 @@ class OutlinerViewer:
         self._nodes = []
 
     def insert_nodes(self, at_index, node_list, before_p=False):
-        if not before_p: at_index = at_index + 1
+        if not before_p:
+            at_index = at_index + 1
         nodecount = len(node_list)
         for node in node_list:
             self._nodes.insert(at_index, node)
@@ -137,7 +149,7 @@ class OutlinerViewer:
 
     def delete_nodes(self, start, end):
         self._delete(start, end)
-        del self._nodes[start:end+1]
+        del self._nodes[start:end + 1]
 
     def update_node(self, node):
         index = self.index(node)
@@ -153,7 +165,7 @@ class OutlinerViewer:
                 self._expand(child)
 
     def expand_node(self, node):
-        self._expand(node, self.index(node)+1)
+        self._expand(node, self.index(node) + 1)
 
     def select_node(self, node):
         self._select(self.index(node))
@@ -173,41 +185,51 @@ class OutlinerViewer:
     def count(self):
         return len(self._nodes)
 
-
+
 class OutlinerController:
+
     def __init__(self, root=None, viewer=None):
         self._viewer = viewer
         self._root = root
         self._backup = root.clone()
         self._aggressive_p = None
-        if not root: self._root = OutlinerNode()
-        if not viewer: self._viewer = OutlinerViewer(self._root)
+        if not root:
+            self._root = OutlinerNode()
+        if not viewer:
+            self._viewer = OutlinerViewer(self._root)
 
     def root(self): return self._root
+
     def set_root(self, newroot):
         self._root.close()
         self._backup.close()
         self._root = newroot
         self._backup = newroot.clone()
+
     def update_backup(self):
         self._backup.close()
         self._backup = self._root.clone()
+
     def root_redisplay(self):
         self._viewer.clear()
         self._viewer.populate()
+
     def revert(self):
         self._root.close()
         self._root = self._backup.clone()
 
     def viewer(self): return self._viewer
+
     def set_viewer(self, viewer): self._viewer = viewer
 
     def set_aggressive_collapse(self, flag): self._aggressive_p = flag
+
     def aggressive_collapse_p(self): return self._aggressive_p
 
     def _sibi(self, node):
         parent = node.parent()
-        if not parent: return (None, None, [])
+        if not parent:
+            return (None, None, [])
         sibs = parent.children()
         sibi = sibs.index(node)
         return parent, sibi, sibs
@@ -215,22 +237,27 @@ class OutlinerController:
     def collapsable_p(self, node):
         # This node is only collapsable if it is an unexpanded branch
         # node, or the aggressive collapse flag is set.
-        if node.leaf_p() or not node.expanded_p(): return False
-        else: return True
+        if node.leaf_p() or not node.expanded_p():
+            return False
+        else:
+            return True
 
     def collapse_node(self, node):
         if not self.collapsable_p(node):
             if self.aggressive_collapse_p():
                 node = node.parent()
-                if not self.collapsable_p(node): return
-            else: return
+                if not self.collapsable_p(node):
+                    return
+            else:
+                return
         node.collapse()
         self.root_redisplay()
         return node
 
     def expand_node(self, node):
         # don't expand a leaf or an already expanded node
-        if node.leaf_p() or node.expanded_p(): return
+        if node.leaf_p() or node.expanded_p():
+            return
         # now toggle the expanded flag and update the listbox
         node.expand()
         self.root_redisplay()
@@ -247,13 +274,15 @@ class OutlinerController:
     def shift_left(self, node):
         # find the index of the node in the sib list.
         parent, sibi, sibs = self._sibi(node)
-        if not parent: return
+        if not parent:
+            return
         grandparent, parenti, aunts = self._sibi(parent)
-        if not grandparent: return
+        if not grandparent:
+            return
         # node now becomes a sibling of it's parent, and all of node's
         # later siblings become the node's children
         parent.del_child(node)
-        grandparent.insert_child(node, parenti+1)
+        grandparent.insert_child(node, parenti + 1)
         for sib in sibs[sibi:]:
             parent.del_child(sib)
             node.append_child(sib)
@@ -263,12 +292,14 @@ class OutlinerController:
         # find the index of the node in the sib list.
         parent, sibi, sibs = self._sibi(node)
         # cannot shift right the first child in the sib list
-        if sibi == 0: return
+        if sibi == 0:
+            return
         # reparent the node such that it is now the child of the
         # preceding sibling in the sib list
-        newparent = sibs[sibi-1]
+        newparent = sibs[sibi - 1]
         # cannot shift right if the above node is a leaf
-        if newparent.leaf_p(): return
+        if newparent.leaf_p():
+            return
         parent.del_child(node)
         newparent.append_child(node)
         newparent.expand()
@@ -280,19 +311,22 @@ class OutlinerController:
         # above it.  if it's the first visible node, it cannot be
         # shifted up.
         nodevi = self._viewer.index(node)
-        if nodevi == 0: return
-        above = self._viewer.node(nodevi-1)
+        if nodevi == 0:
+            return
+        above = self._viewer.node(nodevi - 1)
         parent, sibi, sibs = self._sibi(node)
-        if not parent: return
+        if not parent:
+            return
         # if node and above are at the same depth, just rearrange.
         if node.depth() == above.depth():
             parent.del_child(node)
-            parent.insert_child(node, sibi-1)
+            parent.insert_child(node, sibi - 1)
         # if node is deeper than above, node becomes a sibling of
         # above and move just above *it*
         elif node.depth() > above.depth():
             aparent, asibi, asibs = self._sibi(above)
-            if not aparent: return
+            if not aparent:
+                return
             parent.del_child(node)
             aparent.insert_child(node, asibi)
             aparent.expand()
@@ -300,7 +334,8 @@ class OutlinerController:
         # of node and gets appended to the end of node's sibling list.
         else:
             aparent, asibi, asibs = self._sibi(above)
-            if not aparent: return
+            if not aparent:
+                return
             parent.del_child(node)
             aparent.append_child(node)
             aparent.expand()
@@ -311,17 +346,19 @@ class OutlinerController:
         # below it.  if it's the last visible node, it cannot be
         # shifted down.
         nodevi = self._viewer.index(node)
-        if nodevi is None or nodevi >= self._viewer.count()-1: return
-        below = self._viewer.node(nodevi+1)
+        if nodevi is None or nodevi >= self._viewer.count() - 1:
+            return
+        below = self._viewer.node(nodevi + 1)
         parent, sibi, sibs = self._sibi(node)
-        if not parent: return
+        if not parent:
+            return
         # if below is really node's first child, then what we want to
         # do is try to shift into node's next sibling's child list
         if node.get_nodetype() == "Folder":
             children = node.children()
             if len(children) > 0 and below == children[0]:
-                if sibi+1 < len(sibs) and not sibs[sibi+1].leaf_p():
-                    below = sibs[sibi+1]
+                if sibi + 1 < len(sibs) and not sibs[sibi + 1].leaf_p():
+                    below = sibs[sibi + 1]
         # if node and below are at the same depth, then what happens
         # depends on the state of below.  If below is an expanded
         # branch, then node becomes it's first sibling, otherwise it
@@ -332,21 +369,22 @@ class OutlinerController:
                 below.insert_child(node, 0)
             else:
                 parent.del_child(node)
-                parent.insert_child(node, sibi+1)
+                parent.insert_child(node, sibi + 1)
         # if node is deeper than below, node becomes a sibling of it's parent
         elif node.depth() > below.depth():
             grandparent, parenti, aunts = self._sibi(parent)
-            if not grandparent: return
+            if not grandparent:
+                return
             parent.del_child(node)
-            grandparent.insert_child(node, parenti+1)
+            grandparent.insert_child(node, parenti + 1)
         # if below is deeper than node, then node actually swaps
         # places with it's next sibling
         else:
             # if it's the last of the sibling, then it actually shifts left
-            if sibi >= len(sibs)-1:
+            if sibi >= len(sibs) - 1:
                 self.shift_left(node)
                 return
             else:
                 parent.del_child(node)
-                parent.insert_child(node, sibi+1)
+                parent.insert_child(node, sibi + 1)
         self.root_redisplay()

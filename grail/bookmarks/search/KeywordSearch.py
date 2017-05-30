@@ -4,6 +4,7 @@ __version__ = '$Revision: 1.3 $'
 
 
 class KeywordEditor:
+
     def __init__(self, frame, options=None):
         if options is None:
             options = KeywordOptions()
@@ -15,6 +16,7 @@ class KeywordEditor:
 
 
 class KeywordMatcher:
+
     def __init__(self, options):
         self.__keywords = options.keywords()
         self.__case_sensitive = options.case_sensitive()
@@ -46,7 +48,7 @@ class KeywordMatcher:
             # at least one keyword must be present:
             return any(kw in words for kw in keywords)
 
-
+
 class KeywordOptions:
     __keywords = ()
     __keywords_text = ""

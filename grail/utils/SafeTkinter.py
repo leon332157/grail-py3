@@ -1,5 +1,6 @@
 from tkinter import TclError
 
+
 def _castrate(tk):
     """Remove all Tcl commands that can affect the file system.
 
@@ -9,7 +10,8 @@ def _castrate(tk):
     other subversive things.)
 
     """
-    if not hasattr(tk, 'eval'): return # For Rivet
+    if not hasattr(tk, 'eval'):
+        return  # For Rivet
     def rm(name, tk=tk):
         try:
             tk.call('rename', name, '')
@@ -19,5 +21,5 @@ def _castrate(tk):
     tk.eval("auto_load tkMenuInvoke")
     rm('exec')
     rm('cd')
-    rm('open') # This is what breaks the menu support commands
+    rm('open')  # This is what breaks the menu support commands
     rm('send')

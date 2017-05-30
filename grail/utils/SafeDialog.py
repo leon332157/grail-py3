@@ -1,10 +1,11 @@
 # A simple Dialog modeled after Tk's dialog script
-# 
+#
 # XXX Bugs:
 # - Resizing behavior is ugly
 
 from tkinter import *
 from . import tktools
+
 
 class Dialog:
 
@@ -25,7 +26,7 @@ class Dialog:
             if num == default:
                 b.config(relief='ridge', border=4)
             b.pack(side='left', fill='both', expand=1)
-            num = num+1
+            num = num + 1
         tktools.set_transient(self.root, master)
         try:
             self.root.grab_set()
@@ -41,19 +42,19 @@ class Dialog:
         self.num = num
         self.root.quit()
 
+
 def _test():
-        d = Dialog(root,  title='File Modified',
-                          text=
-                          'File "Python.h" has been modified'
-                          ' since the last time it was saved.'
-                          ' Do you want to save it before'
-                          ' exiting the application?',
-                          bitmap='questhead',
-                          default=0,
-                          strings=('Save File', 
-                                      'Discard Changes', 
-                                      'Return to Editor'))
-        print(d.num)
+    d = Dialog(root, title='File Modified',
+               text='File "Python.h" has been modified'
+               ' since the last time it was saved.'
+               ' Do you want to save it before'
+               ' exiting the application?',
+               bitmap='questhead',
+               default=0,
+               strings=('Save File',
+                        'Discard Changes',
+                        'Return to Editor'))
+    print(d.num)
 
 if __name__ == '__main__':
     root = Tk()

@@ -6,15 +6,15 @@ from .. import PrefsPanels
 from tkinter import *
 
 from ..BookmarksGUI import \
-     NEW_AT_BEG, \
-     NEW_AT_END, \
-     NEW_AS_CHILD, \
-     BMPREFGROUP, \
-     COLLAPSE_PREF, \
-     INCLUDE_PREF, \
-     ADDLOC_PREF, \
-     AUTO_DETAILS_PREF, \
-     BUTTONS_PREF
+    NEW_AT_BEG, \
+    NEW_AT_END, \
+    NEW_AS_CHILD, \
+    BMPREFGROUP, \
+    COLLAPSE_PREF, \
+    INCLUDE_PREF, \
+    ADDLOC_PREF, \
+    AUTO_DETAILS_PREF, \
+    BUTTONS_PREF
 
 
 class BookmarksPanel(PrefsPanels.Framework):

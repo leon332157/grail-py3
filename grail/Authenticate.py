@@ -9,12 +9,13 @@ import urllib.parse
 import base64
 import re
 
+
 class AuthenticationManager:
     """Handles HTTP access authorization.
 
     Keeps track of (hostname, realmname) = username:password and hands
     back a set of HTTP headers that should be included in the next
-    connection. 
+    connection.
 
     This handles only basic access authorization at the moment. However,
     the only routine called from outside the module is
@@ -36,7 +37,7 @@ class AuthenticationManager:
         if 'www-authenticate' in headers:
             # assume it's basic
             headers['realm'] = \
-                             self.basic_get_realm(headers['www-authenticate'])
+                self.basic_get_realm(headers['www-authenticate'])
             response = self.basic_credentials(headers)
         else:
             # don't know the scheme
@@ -48,7 +49,7 @@ class AuthenticationManager:
         if 'www-authenticate' in headers:
             # assume it's basic
             headers['realm'] = \
-                             self.basic_get_realm(headers['www-authenticate'])
+                self.basic_get_realm(headers['www-authenticate'])
             self.basic_invalidate_credentials(headers, credentials)
         else:
             # don't know about anything other than basic
@@ -56,7 +57,7 @@ class AuthenticationManager:
 
     basic_realm = re.compile(r'realm="(.*)"')
 
-    def basic_get_realm(self,challenge):
+    def basic_get_realm(self, challenge):
         # the actual specification allows for multiple name=value
         # entries seperated by commes, but for basic they don't
         # have any defined value. so don't bother with them.
@@ -71,7 +72,7 @@ class AuthenticationManager:
 
         if 'realm' in data and 'request-uri' in data:
             scheme, netloc, path, nil, nil, nil = \
-                    urllib.parse.urlparse(data['request-uri'])
+                urllib.parse.urlparse(data['request-uri'])
             key = (netloc, data['realm'])
             if key in self.basic_realms:
                 cookie = self.basic_cookie(self.basic_realms[key])
@@ -89,7 +90,7 @@ class AuthenticationManager:
     def basic_invalidate_credentials(self, headers, credentials):
         if 'realm' in headers and 'request-uri' in headers:
             scheme, netloc, path, nil, nil, nil = \
-                    urllib.parse.urlparse(headers['request-uri'])
+                urllib.parse.urlparse(headers['request-uri'])
             key = (netloc, headers['realm'])
             if key in self.basic_realms:
                 test = self.basic_cookie(self.basic_realms[key])
@@ -107,11 +108,11 @@ class AuthenticationManager:
 
     def basic_user_dialog(self, data):
         scheme, netloc, path, \
-                nil, nil, nil = urllib.parse.urlparse(data['request-uri'])
+            nil, nil, nil = urllib.parse.urlparse(data['request-uri'])
         login = LoginDialog(self.app.root, netloc,
                             data['realm'])
         return login.go()
-    
+
     def more_complete_challenge_parse(self):
         # this is Guido's old code from Reader.handle_auth_error
         # it's worth hanging on to in case a future authentication
@@ -123,9 +124,11 @@ class AuthenticationManager:
         parts = challenge.split(',')
         p = parts[0]
         key, sep, value = p.partition('=')
-        if not sep: return
+        if not sep:
+            return
         keyparts = key.lower().split()
-        if not(len(keyparts) == 2 and keyparts[1] == 'realm'): return
+        if not(len(keyparts) == 2 and keyparts[1] == 'realm'):
+            return
         authscheme = keyparts[0]
         value = value.strip()
         if len(value) >= 2 and value[0] == value[-1] and value[0] in '\'"':
@@ -144,7 +147,7 @@ class LoginDialog:
         self.user_entry.focus_set()
         self.user_entry.bind('<Return>', self.user_return_event)
         self.passwd_entry, dummy = \
-                           tktools.make_form_entry(self.root, "Password:")
+            tktools.make_form_entry(self.root, "Password:")
         self.passwd_entry.config(show="*")
         self.passwd_entry.bind('<Return>', self.ok_command)
         self.ok_button = Button(self.root, text="OK", command=self.ok_command)
@@ -182,4 +185,3 @@ class LoginDialog:
     def goaway(self):
         self.root.destroy()
         self.root.quit()
-

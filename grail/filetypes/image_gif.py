@@ -25,7 +25,7 @@ from io import BytesIO
 
 ERROR_FILE = os.path.join("icons", "sadsmiley.gif")
 
-
+
 class pil_interface:
     """Dummy class to keep us from having to define PILGifParser within a
     try/except construct."""
@@ -80,7 +80,7 @@ class PILGifParser(pil_interface):
         if self.broken:
             self.label.image = tkinter.PhotoImage(
                 file=grailutil.which(ERROR_FILE))
-            self.label.config(image = self.label.image)
+            self.label.config(image=self.label.image)
             self.viewer.text.insert(tkinter.END, '\nBroken Image!')
 
     def next_image(self):
@@ -112,7 +112,7 @@ class PILGifParser(pil_interface):
         self.viewer.unregister_reset_interest(self.cancel_loop)
         self.label.after_cancel(self.after_id)
 
-
+
 class TkGifParser:
     """Parser for image/gif files.
 
@@ -143,7 +143,7 @@ class TkGifParser:
                 pass
             self.tf = None
 
-
+
 def parse_image_gif(*args, **kw):
     """Create the appropriate image handler, and replace this function with
     the handler for future references (to skip the determination step)."""

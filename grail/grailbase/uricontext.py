@@ -11,6 +11,7 @@ import re
 __typematch = re.compile(r'^([^/:]+):').match
 del re
 
+
 def __splittype(url):
     match = __typematch(url)
     if match:
@@ -23,7 +24,8 @@ def _urljoin(a, b):
     if sa and (sa == sb or not sb):
         from .. import protocols
         joiner = protocols.protocol_joiner(sa)
-        if joiner: return joiner(a, b)
+        if joiner:
+            return joiner(a, b)
     return __default_joiner(a, b)
 
 
@@ -59,12 +61,12 @@ class URIContext:
         """Return the base URI for the current page, joined with relative URIs.
 
         Without arguments, return the base URI.
-        
+
         With arguments, return the base URI joined with all of the
         arguments.  Empty arguments don't contribute.
 
         """
-        
+
         url = self.__baseurl or self.__url
         for rel in relurls:
             if rel:

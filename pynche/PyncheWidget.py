@@ -13,8 +13,8 @@ import tkinter.messagebox
 KEEPALIVE_TIMER = 500
 
 
-
 class PyncheWidget:
+
     def __init__(self, version, switchboard, master=None):
         self.__sb = switchboard
         self.__version = version
@@ -150,7 +150,7 @@ class PyncheWidget:
     def __popup_about(self, event=None):
         from .Main import __version__
         tkinter.messagebox.showinfo('About Pynche ' + __version__,
-                              '''\
+                                    '''\
 Pynche {}
 The PYthonically Natural
 Color and Hue Editor
@@ -192,8 +192,8 @@ email:   bwarsaw@python.org'''.format(__version__))
         self.__root.deiconify()
 
 
-
 class Helpwin:
+
     def __init__(self, master, quitfunc):
         from .Main import __version__, docstring
         self.__root = root = Toplevel(master, class_='Pynche')

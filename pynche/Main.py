@@ -62,7 +62,6 @@ from .ChipViewer import ChipViewer
 from .TypeinViewer import TypeinViewer
 
 
-
 PROGRAM = sys.argv[0]
 
 # Default locations of rgb.txt or other textual color database
@@ -73,10 +72,9 @@ RGB_TXT = [
     # The X11R6.4 rgb.txt file
     os.path.join(__path__[0], 'X/rgb.txt'),
     # add more here
-    ]
+]
 
 
-
 def docstring():
     return __doc__.format_map(globals()).rstrip()
 
@@ -88,7 +86,6 @@ def usage(status, msg=''):
     sys.exit(status)
 
 
-
 def initial_color(s, colordb):
     # function called on every color
     def scan_color(s, colordb=colordb):
@@ -116,7 +113,6 @@ def initial_color(s, colordb):
     return r, g, b
 
 
-
 def build(master=None, initialcolor=None, initfile=None, ignore=False):
     # create the windows and go
     for f in RGB_TXT:
@@ -141,7 +137,7 @@ def build(master=None, initialcolor=None, initfile=None, ignore=False):
     s.add_view(TypeinViewer(s, w))
 
     # get the initial color as components and set the color on all views.  if
-    # there was no initial color given on the command line, use the one that's 
+    # there was no initial color given on the command line, use the one that's
     # stored in the option database
     if initialcolor is None:
         optiondb = s.optiondb()
@@ -164,7 +160,6 @@ def run(app, s):
         pass
 
 
-
 def main():
     try:
         opts, args = getopt.getopt(
@@ -206,6 +201,6 @@ Version: {}'''.format(__version__))
     run(app, sb)
     sb.save_views()
 
-
+
 if __name__ == '__main__':
     main()

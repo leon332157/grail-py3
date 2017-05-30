@@ -30,20 +30,25 @@ if _iconxbm_file:
                                   "iconmask.xbm")
     if not os.path.isfile(_iconmask_file):
         _iconmask_file = None
+
     def make_toplevel(*args, **kw):
         w = tktools_make_toplevel(*args, **kw)
         # icon set up
-        try: w.iconbitmap('@' + _iconxbm_file)
-        except TclError: pass
+        try:
+            w.iconbitmap('@' + _iconxbm_file)
+        except TclError:
+            pass
         if _iconmask_file:
-            try: w.iconmask('@' + _iconmask_file)
-            except TclError: pass
+            try:
+                w.iconmask('@' + _iconmask_file)
+            except TclError:
+                pass
         return w
     #
     tktools_make_toplevel = tktools.make_toplevel
     tktools.make_toplevel = make_toplevel
 
-
+
 class Browser:
     """The Browser class provides the top-level GUI.
 
@@ -52,6 +57,7 @@ class Browser:
     viewer area.  But then, so are all other web browsers. :-)
 
     """
+
     def __init__(self, master, app=None,
                  width=None, height=None,
                  geometry=None):
@@ -61,8 +67,10 @@ class Browser:
         prefs = app.prefs
         self.app = app
 
-        if not width: width = prefs.GetInt('browser', 'default-width')
-        if not height: height = prefs.GetInt('browser', 'default-height')
+        if not width:
+            width = prefs.GetInt('browser', 'default-width')
+        if not height:
+            height = prefs.GetInt('browser', 'default-height')
 
         self.create_widgets(width=width, height=height, geometry=geometry)
         self.root.iconname('Grail')
@@ -180,7 +188,7 @@ class Browser:
         SearchMenu.SearchMenu(menu, self.root, self)
 
     def create_menu_bookmarks(self, menu):
-        menu.grail_browser = self # Applet compatibility
+        menu.grail_browser = self  # Applet compatibility
         from . import BookmarksGUI
         self.bookmarksmenu_menu = BookmarksGUI.BookmarksMenu(menu)
 
@@ -194,15 +202,16 @@ class Browser:
         n = len(lines) - 1
         while i < n:
             label = lines[i]
-            i = i+1
+            i = i + 1
             if label == '-':
                 menu.add_separator()
             else:
                 url = lines[i]
-                i = i+1
+                i = i + 1
                 self._menucmd(menu, label, None, HelpMenuCommand(self, url))
 
     __helpspec = None
+
     def get_helpspec(self):
         if self.__helpspec is not None:
             return self.__helpspec
@@ -247,7 +256,7 @@ class Browser:
         if num:
             last = self.mbar.index(END)
             if num > 1:
-                self.mbar.delete(last-num+1, last)
+                self.mbar.delete(last - num + 1, last)
             else:
                 self.mbar.delete(last)
         for b in self.user_menus:
@@ -262,7 +271,7 @@ class Browser:
     def set_title(self, title):
         self._window_title(TITLE_PREFIX + title)
 
-    def message(self, string = ""):
+    def message(self, string=""):
         self.msg['text'] = string
 
     def messagevariable(self, variable=None):
@@ -387,8 +396,10 @@ class Browser:
 
     def quit_command(self, event=None):
         # File/Quit
-        if self.app: self.app.quit()
-        else: self.close()
+        if self.app:
+            self.app.quit()
+        else:
+            self.close()
 
     # History menu commands
 
@@ -516,6 +527,7 @@ class Browser:
 class HelpMenuCommand:
     """Encapsulate a menu item into a callable object to load the resource.
     """
+
     def __init__(self, browser, url):
         self.__browser = browser
         self.__url = url
@@ -528,10 +540,12 @@ def test():
     """Test Browser class."""
     import sys
     url = None
-    if sys.argv[1:]: url = sys.argv[1]
+    if sys.argv[1:]:
+        url = sys.argv[1]
     root = Tk()
     b = Browser(root)
-    if url: b.load(url)
+    if url:
+        b.load(url)
     root.mainloop()
 
 

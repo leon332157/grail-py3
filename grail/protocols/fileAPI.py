@@ -23,6 +23,7 @@ LISTING_PATTERN = r"""
 ^([-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z])
 ([ \t]+.*[ \t]+)([^ \t]+)$"""
 
+
 class file_access:
 
     def __init__(self, url, method, params):
@@ -55,11 +56,13 @@ class file_access:
         if os.path.isdir(self.pathname):
             self.format_directory()
         else:
-            self.fp = open(self.pathname, 'rb') # May raise IOError!
+            self.fp = open(self.pathname, 'rb')  # May raise IOError!
             app = grailutil.get_grailapp()
             ctype, cencoding = app.guess_type(self.pathname)
-            if ctype: self.headers['content-type'] = ctype
-            if cencoding: self.headers['content-encoding'] = cencoding
+            if ctype:
+                self.headers['content-type'] = ctype
+            if cencoding:
+                self.headers['content-encoding'] = cencoding
         self.state = META
 
     def pollmeta(self):
@@ -83,7 +86,7 @@ class file_access:
         if not data:
             self.state = DONE
         return data
-        
+
     def fileno(self):
         # TODO - Fix sockets under Windows.
         # We fall back to the polling method of async I/O automatically
@@ -115,7 +118,7 @@ class file_access:
             self.url = self.url + '/'
         args = ("ls", "-l", "-a", self.pathname + "/.")
         with subprocess.Popen(args, stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT, universal_newlines=True) as proc:
+                              stderr=subprocess.STDOUT, universal_newlines=True) as proc:
             lines = proc.stdout.readlines()
         import re
         from urllib.parse import quote
@@ -124,9 +127,10 @@ class file_access:
         from xml.sax import saxutils
         prog = re.compile(self.listing_pattern, re.VERBOSE)
         data = self.listing_header.format(url=self.url,
-                                      pathname=escape(self.pathname))
+                                          pathname=escape(self.pathname))
         for line in lines:
-            if line[-1] == '\n': line = line[:-1]
+            if line[-1] == '\n':
+                line = line[:-1]
             m = prog.match(line)
             if not m:
                 line = saxutils.escape(line) + '\n'

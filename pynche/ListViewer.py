@@ -18,7 +18,9 @@ given name, without selecting the color.
 from tkinter import *
 from . import ColorDB
 
+
 class ListViewer:
+
     def __init__(self, switchboard, master=None):
         self.__sb = switchboard
         optiondb = switchboard.optiondb()
@@ -53,23 +55,23 @@ class ListViewer:
         bboxes = self.__bboxes = []
         for name in colordb.unique_names():
             exactcolor = ColorDB.triplet_to_rrggbb(colordb.find_byname(name))
-            canvas.create_rectangle(5, row*20 + 5,
-                                    20, row*20 + 20,
+            canvas.create_rectangle(5, row * 20 + 5,
+                                    20, row * 20 + 20,
                                     fill=exactcolor)
-            textid = canvas.create_text(25, row*20 + 13,
+            textid = canvas.create_text(25, row * 20 + 13,
                                         text=name,
                                         anchor=W)
             x1, y1, textend, y2 = canvas.bbox(textid)
-            boxid = canvas.create_rectangle(3, row*20+3,
-                                            textend+3, row*20 + 23,
+            boxid = canvas.create_rectangle(3, row * 20 + 3,
+                                            textend + 3, row * 20 + 23,
                                             outline='',
                                             tags=(exactcolor,))
             canvas.bind('<ButtonRelease>', self.__onrelease)
             bboxes.append(boxid)
-            if textend+3 > widest:
-                widest = textend+3
+            if textend + 3 > widest:
+                widest = textend + 3
             row = row + 1
-        canvheight = (row-1)*20 + 25
+        canvheight = (row - 1) * 20 + 25
         canvas.config(scrollregion=(0, 0, 150, canvheight))
         for box in bboxes:
             x1, y1, x2, y2 = canvas.coords(box)
@@ -101,14 +103,14 @@ class ListViewer:
             if boxid in self.__bboxes:
                 break
         else:
-##            print('No box found!')
+            ##            print('No box found!')
             return
         tags = self.__canvas.gettags(boxid)
         for t in tags:
             if t[0] == '#':
                 break
         else:
-##            print('No color tag found!')
+            ##            print('No color tag found!')
             return
         red, green, blue = ColorDB.rrggbb_to_triplet(t)
         self.__dontcenter = True
@@ -159,7 +161,7 @@ class ListViewer:
             ig, ig, ig, y1 = canvas.coords(colortag)
             ig, ig, ig, y2 = canvas.coords(self.__bboxes[-1])
             h = int(canvas['height']) * 0.5
-            canvas.yview('moveto', (y1-h) / y2)
+            canvas.yview('moveto', (y1 - h) / y2)
 
     def save_options(self, optiondb):
         optiondb['UPONCLICK'] = self.__uoc.get()

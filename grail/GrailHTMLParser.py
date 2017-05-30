@@ -28,6 +28,7 @@ if hasattr(HTMLParser, 'do_link'):
 
 _inited = False
 
+
 def init_module(prefs):
     for opt in (1, 2, 3, 4, 5, 6):
         fmt = prefs.Get('parsing-html', 'format-h{}'.format(opt))
@@ -93,7 +94,7 @@ class GrailHTMLParser(HTMLParser):
         self.set_formatter(self.formatter_stack[-1])
 
     def set_formatter(self, formatter):
-        self.formatter = formatter      ## in base class
+        self.formatter = formatter  # in base class
         self.viewer = formatter.writer
         self.context = self.viewer.context
         if self.nofill:
@@ -143,9 +144,10 @@ class GrailHTMLParser(HTMLParser):
 
     def do_hr(self, attrs):
         if 'src' in attrs and self.app.load_images:
-            align = extract_keyword('align', attrs, default='center',
-                    conv=lambda s,gu=grailutil: gu.conv_enumeration(
-                        gu.conv_normstring(s), ['left', 'center', 'right']))
+            align = extract_keyword(
+                'align', attrs, default='center', conv=lambda s, gu=grailutil: gu.conv_enumeration(
+                    gu.conv_normstring(s), [
+                        'left', 'center', 'right']))
             self.implied_end_p()
             self.formatter.push_alignment(align)
             self.do_img({'border': '0', 'src': attrs['src']})
@@ -170,7 +172,7 @@ class GrailHTMLParser(HTMLParser):
             if size == 1:
                 # could not actually set it to 1 unless it was flat; do it now:
                 width = int(rule.cget('width'))
-                rule.config(borderwidth=0, height=1, width=width+2)
+                rule.config(borderwidth=0, height=1, width=width + 2)
         elif color:
             self.configcolor('background', color, widget=rule)
 
@@ -183,7 +185,8 @@ class GrailHTMLParser(HTMLParser):
         border = extract('border', attrs, 2 if self.anchor else None,
                          conv=int)
         ismap = 'ismap' in attrs
-        if ismap and border is None: border = 2
+        if ismap and border is None:
+            border = 2
         src = extract('src', attrs, '')
         width = extract('width', attrs, 0, conv=int)
         height = extract('height', attrs, 0, conv=int)
@@ -192,10 +195,12 @@ class GrailHTMLParser(HTMLParser):
         # not sure how to assert(value[0] == '#')
         usemap = extract('usemap', attrs, conv=str.strip)
         if usemap:
-            if usemap[0] == '#': value = usemap[1:].strip()
+            if usemap[0] == '#':
+                value = usemap[1:].strip()
             from .ImageMap import MapThunk
             usemap = MapThunk(self.context, usemap)
-            if border is None: border = 2
+            if border is None:
+                border = 2
         self.handle_image(src, alt, usemap, ismap,
                           align, width, height, border or 0, self.reload1,
                           hspace=hspace, vspace=vspace)
@@ -218,7 +223,7 @@ class GrailHTMLParser(HTMLParser):
             # so things like indents and centering work
             self.viewer.prepare_for_insertion()
         self.viewer.add_subwindow(w, align=align)
-##      if hspace or vspace:
+# if hspace or vspace:
 ##          self.viewer.text.window_config(w, padx=hspace, pady=vspace)
         self.formatter.assert_line_data()
 
@@ -244,7 +249,7 @@ class GrailHTMLParser(HTMLParser):
                 #  Normally not important, but ISINDEX would cause
                 #  these to be non-empty, as would all sorts of illegal stuff:
                 for hr in self.viewer.rules + self.viewer.subwindows:
-                    hr.config(highlightbackground = clr)
+                    hr.config(highlightbackground=clr)
         self.configcolor('foreground',
                          extract_keyword('text', attrs, conv=conv_normstring))
         self.configcolor('foreground',
@@ -421,7 +426,7 @@ class GrailHTMLParser(HTMLParser):
 
         Raise ValueError when bad numbers occur.
         Raise IndexError when not enough coordinates are specified.
-        
+
         """
         import re
 
@@ -503,14 +508,16 @@ class GrailHTMLParser(HTMLParser):
     def list_handle_dingbat(self, attrs):
         if attrs['dingbat']:
             img = self.load_dingbat(attrs['dingbat'])
-            if img: attrs['type'] = img
+            if img:
+                attrs['type'] = img
 
     def list_handle_src(self, attrs):
         if not self.app.prefs.GetBoolean("browser", "load-images"):
             return
         src = ''.join(attrs['src'].split())
         image = self.context.get_async_image(src, self.reload)
-        if image: attrs['type'] = image
+        if image:
+            attrs['type'] = image
 
     # Override make_format():
     # This allows disc/circle/square to be mapped to dingbats.
@@ -523,12 +530,12 @@ class GrailHTMLParser(HTMLParser):
             if listtype == 'ul':
                 img = self.load_dingbat(fmt)
                 return img or HTMLParser.make_format(self, format, default,
-                                                     listtype = listtype)
+                                                     listtype=listtype)
             else:
                 return '1.'
         else:
             return HTMLParser.make_format(self, format, default,
-                                          listtype = listtype)
+                                          listtype=listtype)
 
     def report_unbalanced(self, tag):
         self.badhtml = True
@@ -615,10 +622,12 @@ def conv_align(val):
          'absbottom': BOTTOM,           # compatibility hack...
          'absmiddle': CENTER,           # compatibility hack...
          })
-    if conv: return conv
-    else: return CENTER
+    if conv:
+        return conv
+    else:
+        return CENTER
 
-
+
 class IconicEntityLinker:
     __here = None
 
@@ -642,7 +651,7 @@ class IconicEntityLinker:
         raw = self.__viewer.text.tag_ranges(tag)
         list = []
         for i in range(0, len(raw), 2):
-            list.append((raw[i], raw[i+1]))
+            list.append((raw[i], raw[i + 1]))
         if list:
             self.__viewer._atemp = list
             for (start, end) in list:
@@ -692,8 +701,9 @@ class IconicEntityLinker:
         self.__viewer.leave_message()
         self.__viewer.remove_temp_tag()
 
-
+
 class DynamicReloader:
+
     def __init__(self, context, spec):
         self.__context = context
         self.__starting_url = context.get_baseurl()

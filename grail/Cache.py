@@ -7,12 +7,13 @@ XXX To do
   even if the cache decides against it)
 """
 
-META, DATA, DONE = 'META', 'DATA', 'DONE' # Three stages
+META, DATA, DONE = 'META', 'DATA', 'DONE'  # Three stages
 
 import os
 from . import protocols
 import time
 import copy
+
 
 class SharedItem:
 
@@ -35,7 +36,7 @@ class SharedItem:
                  api=None, reload=False, refresh=None):
         self.refcnt = 0
 
-        # store the arguments 
+        # store the arguments
         self.url = url
         self.mode = mode
         self.params = params
@@ -53,24 +54,24 @@ class SharedItem:
         # initialize in one of four states
         # some variables may be initialized in reset or refresh
 
-        if reload:               ## forced reload
+        if reload:  # forced reload
             self.api = None
             self.stage = DONE
             self.incache = False
             self.reset(reload)
 
-        elif refresh:            ## check freshness
+        elif refresh:  # check freshness
             self.cache_api = api
             self.cache_meta = api.getmeta()
             self.cache_stage = api.state
             self.incache = True
             self.refresh(refresh)
 
-        elif api == None:        ## a POST
+        elif api is None:  # a POST
             self.incache = False
             self.reset()
 
-        else:                    ## read from cache
+        else:  # read from cache
             # loading from the cache
             self.api = api
             self.meta = api.getmeta()
@@ -112,7 +113,7 @@ class SharedItem:
         if (not self.incache or self.reloading) \
            and not self.postdata and self.complete \
            and (self.meta and self.meta[0] == 200):
-            self.cache.add(self,self.reloading)
+            self.cache.add(self, self.reloading)
             self.incache = True
 
     def pollmeta(self):
@@ -158,7 +159,7 @@ class SharedItem:
                     self.data.append(buf[:maxbytes])
                     self.datamap[offset] = len(self.data) - 1
                     self.data.append(buf[maxbytes:])
-                    self.datamap[offset+maxbytes] = len(self.data) - 1
+                    self.datamap[offset + maxbytes] = len(self.data) - 1
                 else:
                     self.data.append(buf)
                     self.datamap[offset] = len(self.data) - 1
@@ -199,9 +200,9 @@ class SharedItem:
             api.close()
 
     def _getdata_search_string_list(self, offset):
-        ### WARNING: this lookup is costly, please avoid
-        ###          cost is O(k), where k is # of chunks
-        ###          if you use this a lot, you'll get O(N^2) reads
+        # WARNING: this lookup is costly, please avoid
+        # cost is O(k), where k is # of chunks
+        # if you use this a lot, you'll get O(N^2) reads
         delta = offset
         chunk_key = None
         for chunk_offset in self.datamap.keys():
@@ -212,7 +213,7 @@ class SharedItem:
                     chunk_key = chunk_offset
         return chunk_key, delta
 
-    def init_new_load(self,stage):
+    def init_new_load(self, stage):
         self.meta = None
         self.data = []
         self.datalen = 0
@@ -220,7 +221,7 @@ class SharedItem:
         self.stage = stage
         self.complete = False
 
-    def refresh(self,when):
+    def refresh(self, when):
         params = copy.copy(self.params)
         params['If-Modified-Since'] = when.get_str()
         self.api = protocols.protocol_access(self.url,
@@ -233,14 +234,14 @@ class SharedItem:
 
     def refresh_getmeta(self):
         self.meta = self.api.getmeta()
-        ### which errcode should I try to handle
+        # which errcode should I try to handle
         if self.meta[0] == 304:
             # we win! it hasn't been modified
             # but we probably need to delete the api object
             self.api.close()
             self.api = self.cache_api
             self.meta = self.api.getmeta()
-        #elif errcode == 200:
+        # elif errcode == 200:
             # there may be cases when we get an error response that
             # doesn't require us to delete the object (a server busy
             # response?). those are *not* handled.
@@ -253,13 +254,14 @@ class SharedItem:
         self.stage = DATA
         return self.meta
 
+
 class SharedAPI:
 
     """A thin interface to allow multiple threads to share a SharedItem.
 
     This has the same API as whatever protocol.protocol_access()
     returns.
-    
+
     If the last SharedAPI is closed before the SharedItem has finished
     reading the data, the SharedItem removes itself from the Cache.
 
@@ -338,7 +340,8 @@ def test():
     """Simple test program."""
     import sys
     url = "http://www.python.org/"
-    if sys.argv[1:]: url = sys.argv[1]
+    if sys.argv[1:]:
+        url = sys.argv[1]
     c = Cache()
     for i in range(3):
         api = c.open(url, 'GET', {})

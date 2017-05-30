@@ -32,7 +32,7 @@ COMMON_HEADERS = (
     (5, "content-transfer-encoding"),
     (20, "x-mailer"),
     (21, "x-url"),
-    )
+)
 
 if os.sys.platform.startswith('sco'):
     # Use MMDF instead of sendmail
@@ -40,13 +40,13 @@ if os.sys.platform.startswith('sco'):
     # submit needs a Date: field or it will not include it
     COMMON_HEADERS = COMMON_HEADERS + ((2, "date"),)
 else:
-    SENDMAIL = "/usr/lib/sendmail -t" # XXX
+    SENDMAIL = "/usr/lib/sendmail -t"  # XXX
 
 DISALLOWED_HEADERS = ['from', 'appearantly-to', 'bcc', 'content-length',
                       'content-type', 'mime-version', 'to',
                       'content-transfer-encoding', 'x-mailer', 'x-url']
 
-
+
 class MailDialog:
 
     def __init__(self, master, address, data):
@@ -75,12 +75,12 @@ class MailDialog:
         tktools.unify_button_widths(self.send_button, self.cancel_button)
         hinfo = _make_sequence_dict(COMMON_HEADERS)
         variables = {
-            'to':       address,
-            'subject':  'Form posted from Grail' if data else '',
+            'to': address,
+            'subject': 'Form posted from Grail' if data else '',
             'mime-version': '1.0',
             'x-mailer': GRAILVERSION,
-            'x-url':    LAST_CONTEXT.get_baseurl() if LAST_CONTEXT else ''
-            }
+            'x-url': LAST_CONTEXT.get_baseurl() if LAST_CONTEXT else ''
+        }
         if data:
             variables["content-type"] = "application/x-www-form-urlencoded"
         else:
@@ -147,7 +147,8 @@ class MailDialog:
             self.root['cursor'] = 'watch'
             self.text['cursor'] = 'watch'
             self.root.update_idletasks()
-            if message[-1] != '\n': message = message + '\n'
+            if message[-1] != '\n':
+                message = message + '\n'
             p = os.popen(SENDMAIL, 'w')
             p.write(message)
             sts = p.close()
@@ -164,6 +165,7 @@ def _make_sequence_dict(seq):
     for v, k in seq:
         dict[k] = v
     return dict
+
 
 def _make_dict_sequence(dict):
     stuff = []

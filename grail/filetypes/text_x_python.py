@@ -51,6 +51,7 @@ ws_width = re.compile("[{}]*".format(whitespace)).match
 
 
 class parse_text_x_python:
+
     def __init__(self, viewer, reload=False):
         self.__viewer = viewer
         self.__source = ''
@@ -88,36 +89,37 @@ class parse_text_x_python:
         steps = 0
         while nodes:
             steps = steps + 1
-            if not (steps % 2000): self.show()
+            if not (steps % 2000):
+                self.show()
             node = nodes.pop(0)
             if isinstance(node, list):
                 ntype = node[0]
                 if wanted(ntype):
-                   [ntype, nstr, lineno] = node
-                   # The parser spits out the line number the token ENDS on,
-                   # not the line it starts on!
-                   if ntype == token.STRING and "\n" in nstr:
-                       strlines = nstr.split("\n")
-                       endpos = lineno, len(strlines[-1]), sourcetext[lineno]
-                       lineno = lineno - len(strlines) + 1
-                   else:
-                       endpos = ()
-                   if prevline != lineno:
-                       start = "{}.{}".format(prevline, prevcol)
-                       end = "{}.0".format(lineno)
-                       tag_add('python:comment', start, end)
-                       prevcol = 0
-                       prevline = lineno
-                       sourceline = sourcetext[lineno]
-                   match = ws_width(sourceline, prevcol)
-                   if match:
-                       prevcol = match.end()
-                   colorize(ntype, nstr, lineno, prevcol)
-                   # point prevline/prevcol to 1st char after token:
-                   if endpos:
-                       prevline, prevcol, sourceline = endpos
-                   else:
-                       prevcol = prevcol + len(nstr)
+                    [ntype, nstr, lineno] = node
+                    # The parser spits out the line number the token ENDS on,
+                    # not the line it starts on!
+                    if ntype == token.STRING and "\n" in nstr:
+                        strlines = nstr.split("\n")
+                        endpos = lineno, len(strlines[-1]), sourcetext[lineno]
+                        lineno = lineno - len(strlines) + 1
+                    else:
+                        endpos = ()
+                    if prevline != lineno:
+                        start = "{}.{}".format(prevline, prevcol)
+                        end = "{}.0".format(lineno)
+                        tag_add('python:comment', start, end)
+                        prevcol = 0
+                        prevline = lineno
+                        sourceline = sourcetext[lineno]
+                    match = ws_width(sourceline, prevcol)
+                    if match:
+                        prevcol = match.end()
+                    colorize(ntype, nstr, lineno, prevcol)
+                    # point prevline/prevcol to 1st char after token:
+                    if endpos:
+                        prevline, prevcol, sourceline = endpos
+                    else:
+                        prevcol = prevcol + len(nstr)
                 else:
                     nodes = node[1:] + nodes
         # end of last token to EOF is a comment...
@@ -169,13 +171,14 @@ class parse_text_x_python:
         'while': ('python:control', None),
         'with': ('python:control', None),
         'yield': ('python:control', None),
-        }
+    }
     import types
     for name in dir(types):
         if name.endswith("Type"):
             __keywords[name] = ('python:special', None)
 
     __next_tag = None
+
     def colorize(self, ntype, nstr, lineno, colno):
         """Colorize a single token.
 
@@ -204,7 +207,7 @@ class parse_text_x_python:
             self.tag_add(tag, start, end)
         elif ntype == token.STRING:
             qw = 1			# number of leading/trailing quotation
-            if nstr[0] == nstr[1]:	# marks -- `quote width'
+            if nstr[0] == nstr[1]:  # marks -- `quote width'
                 qw = 3
             start = "{}.{}".format(lineno, colno + qw)
             end = "{} + {} chars".format(start, len(nstr) - (2 * qw))
@@ -221,7 +224,7 @@ class parse_text_x_python:
         'python:special': 'darkGreen',
         'python:statement': 'midnightBlue',
         'python:string': 'steelblue4',
-        }
+    }
 
     def setup_tags(self):
         """Configure the display tags associated with Python source coloring.

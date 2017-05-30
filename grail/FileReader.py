@@ -3,6 +3,7 @@
 from .BaseReader import BaseReader
 from .grailutil import close_subprocess
 
+
 class FileReader(BaseReader):
 
     """File reader class -- read from a URL to a file in the background.
@@ -32,7 +33,7 @@ class FileReader(BaseReader):
             self.stop()
             self.handle_error(-1, "EnvironmentError", {'detail': msg})
             return
- 
+
     def open_file(self):
         return open(self.filename, "wb")
 
@@ -65,7 +66,7 @@ class TempFileReader(FileReader):
             tf.close()
             os.unlink(tf.name)
             raise
-    
+
     def stop(self):
         self.tf.close()
         return FileReader.stop(self)
@@ -83,11 +84,15 @@ class TempFileReader(FileReader):
             return self.tf
         else:
             import subprocess
-            self.proc = subprocess.Popen(self.pipeline, shell=True,
-                stdin=subprocess.PIPE, stdout=self.tf, bufsize=-1)
+            self.proc = subprocess.Popen(
+                self.pipeline,
+                shell=True,
+                stdin=subprocess.PIPE,
+                stdout=self.tf,
+                bufsize=-1)
             self.tf.close()
             return self.proc.stdin
-    
+
     def handle_eof(self):
         if self.proc:
             close_subprocess(self.proc)

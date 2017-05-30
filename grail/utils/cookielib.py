@@ -11,14 +11,18 @@ import operator
 
 
 class Error(Exception):
+
     def __init__(self, message, *args):
         self.message = message
         Exception.__init__(self, (message,) + args)
 
+
 class FormatError(Error):
+
     def __init__(self, message, lineno):
         self.lineno = lineno
         Error.__init__(self, message, lineno)
+
 
 class CapacityError(Error):
     pass
@@ -38,6 +42,7 @@ BANNER = """# Netscape HTTP Cookie File
 
 """
 
+
 def is_special_domain(domain):
     """Determine if hosts in the given top-level domain are allowed to
     have fewer name parts."""
@@ -45,6 +50,7 @@ def is_special_domain(domain):
 
 
 class CookieDB:
+
     def __init__(self, filename=None, fp=None, caps=None):
         self.__cookies = {}
         self.__num_cookies = 0
@@ -391,7 +397,6 @@ def _get_value(s, start=0, value_rx=_value_rx):
         start = m.end()
     return value, start
 
-
 
 def testcgi():
     """CGI program that can be used to test a browser's cookie support.
@@ -404,7 +409,7 @@ def testcgi():
     print("<p> This is the <code>cookielib</code> module's")
     print("<code>testcgi()</code> function.")
 
-
+
 # Testing stuff.  The following things really need testing:
 #
 # - Capacity handling:

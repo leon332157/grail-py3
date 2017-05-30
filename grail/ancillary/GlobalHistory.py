@@ -36,16 +36,18 @@ EXPIRATION_SECS = GLOBAL_HISTORY_EXPIRATION_DAYS * 60 * 60 * 24
 
 
 def now():
-    return int(time.time() % (1<<31))
+    return int(time.time() % (1 << 31))
 
 
-
 class HistoryLineReader:
+
     def _error(self, line):
         sys.stderr.write('WARNING: ignoring ill-formed history file line:\n')
         sys.stderr.write('WARNING: {}\n'.format(line))
 
+
 class NetscapeHistoryReader(HistoryLineReader):
+
     def parse_line(self, line):
         try:
             fields = line.split('\t')
@@ -56,7 +58,9 @@ class NetscapeHistoryReader(HistoryLineReader):
             self._error(line)
             return None
 
+
 class GrailHistoryReader(HistoryLineReader):
+
     def parse_line(self, line):
         url = timestamp = title = ''
         try:
@@ -69,7 +73,9 @@ class GrailHistoryReader(HistoryLineReader):
             self._error(line)
             return None
 
+
 class HistoryReader:
+
     def read_file(self, fp, histobj):
         pass
         # read the first line, to determine what type of history file
@@ -92,7 +98,6 @@ class HistoryReader:
         histobj.mass_append(ghist)
 
 
-
 class GlobalHistory:
     """Global History simply remembers URLs, knows how to read and
     write history files, and can be queried to see if a particular URL
@@ -119,6 +124,7 @@ class GlobalHistory:
         urls()
                 Return a list, in order of all URLs on the GlobalHistory.
     """
+
     def __init__(self, app, readonly=False):
         self._app = app
         self._urlmap = {}               # for fast lookup
@@ -126,14 +132,18 @@ class GlobalHistory:
         # first try to load the Grail global history file
         fp = None
         try:
-            try: fp = open(DEFAULT_GRAIL_HIST_FILE)
+            try:
+                fp = open(DEFAULT_GRAIL_HIST_FILE)
             except IOError:
-                try: fp = open(DEFAULT_NETSCAPE_HIST_FILE)
-                except IOError: pass
+                try:
+                    fp = open(DEFAULT_NETSCAPE_HIST_FILE)
+                except IOError:
+                    pass
             if fp:
                 HistoryReader().read_file(fp, self)
         finally:
-            if fp: fp.close()
+            if fp:
+                fp.close()
         if not readonly:
             app.register_on_exit(self.on_app_exit)
 

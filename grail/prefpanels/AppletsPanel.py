@@ -9,6 +9,7 @@ from .. import PrefsPanels
 LABEL = "\
 Enter applet group names (host names, or domain names with leading dot):"
 
+
 class AppletsPanel(PrefsPanels.Framework):
 
     HELP_URL = "help/prefs/applets.html"        # Relative to grail-help-root

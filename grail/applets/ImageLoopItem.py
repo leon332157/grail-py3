@@ -2,6 +2,7 @@
 
 from tkinter import *
 
+
 class ImageLoopItem:
 
     def __init__(self, master, img='logo:',
@@ -28,9 +29,10 @@ class ImageLoopItem:
             self.images.append(image)
 
     def schedule(self):
-        if not self.images: return
+        if not self.images:
+            return
         delay = self.delay
-        if self.done and self.index == 1%len(self.images):
+        if self.done and self.index == 1 % len(self.images):
             delay = delay + self.pause
         self.master.after(delay, self.update)
 

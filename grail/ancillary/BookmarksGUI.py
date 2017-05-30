@@ -14,7 +14,7 @@ from tkinter import *
 from .grailutil import *
 from .Outliner import OutlinerViewer, OutlinerController
 
-
+
 DEFAULT_NETSCAPE_BM_FILE = os.path.join(gethome(), '.netscape-bookmarks.html')
 base = os.path.join(getgraildir(), 'grail-bookmarks.')
 DEFAULT_GRAIL_BM_FILE_HTML = base + "html"
@@ -31,8 +31,8 @@ BOOKMARKS_FILES = [
     DEFAULT_GRAIL_BM_FILE_XBEL,
     DEFAULT_GRAIL_BM_FILE_HTML,
     DEFAULT_NETSCAPE_BM_FILE,
-    os.path.join(gethome(), '.netscape', 'bookmarks.html'), # Netscape 2.0
-    ]
+    os.path.join(gethome(), '.netscape', 'bookmarks.html'),  # Netscape 2.0
+]
 
 # allow for a separate environment variable GRAIL_BOOKMARKS_FILE, and
 # search it first
@@ -61,7 +61,8 @@ NEW_AS_CHILD = 'as-child-or-sib'
 
 
 def username():
-    try: name = os.environ['NAME'] + "'s"
+    try:
+        name = os.environ['NAME'] + "'s"
     except KeyError:
         try:
             import pwd
@@ -71,8 +72,8 @@ def username():
     return name
 
 
-
 class FileDialogExtras:
+
     def __init__(self, frame):
         # create a small subwindow for the extra buttons
         self._controls = Frame(frame, relief=GROOVE, borderwidth=2)
@@ -99,10 +100,12 @@ class FileDialogExtras:
         self.filter_command()
 
     def set_for_grail(self): self._set_to_file(DEFAULT_GRAIL_BM_FILE)
+
     def set_for_netscape(self): self._set_to_file(DEFAULT_NETSCAPE_BM_FILE)
 
 
 class BMLoadDialog(filedialog.LoadFileDialog, FileDialogExtras):
+
     def __init__(self, master, controller):
         self._controller = controller
         filedialog.LoadFileDialog.__init__(self, master, 'Load Bookmarks File')
@@ -110,6 +113,7 @@ class BMLoadDialog(filedialog.LoadFileDialog, FileDialogExtras):
 
 
 class BMSaveDialog(filedialog.SaveFileDialog, FileDialogExtras):
+
     def __init__(self, master, controller):
         self._controller = controller
         filedialog.SaveFileDialog.__init__(self, master, 'Save Bookmarks File')
@@ -140,6 +144,7 @@ class BMSaveDialog(filedialog.SaveFileDialog, FileDialogExtras):
 
     __charmap_out = str.maketrans(" ", "-")
     __charmap_in = str.maketrans("-", " ")
+
     def get_filetype(self):
         f = self.__filetype.get()
         f = f.translate(self.__charmap_out)
@@ -172,6 +177,7 @@ class BookmarksIO:
     def filename(self):
         return self.__controller._app.prefs.Get(
             BMPREFGROUP, "bookmark-file")
+
     def set_filename(self, filename):
         self.__controller._app.prefs.Set(
             BMPREFGROUP, "bookmark-file", filename)
@@ -179,6 +185,7 @@ class BookmarksIO:
 
     def format(self):
         return self.__format
+
     def set_format(self, format):
         self.__format = format
 
@@ -229,7 +236,7 @@ class BookmarksIO:
                      + bookmarks.get_default_extension(CACHE_FORMAT))
         if (cachename != filename
             and os.path.isfile(filename)
-            and os.path.isfile(cachename)):
+                and os.path.isfile(cachename)):
             # cache exists; check it for currency:
             req_mtime = None
             mtime = 0
@@ -272,8 +279,10 @@ class BookmarksIO:
         return root, reader
 
     def __save_to_file(self, root, filename):
-        try: os.rename(filename, filename+'.bak')
-        except os.error: pass # no file to backup
+        try:
+            os.rename(filename, filename + '.bak')
+        except os.error:
+            pass  # no file to backup
         format = self.format()
         writer = bookmarks.get_writer_class(format)(root)
         with open(filename, 'wb') as fp:
@@ -292,12 +301,16 @@ class BookmarksIO:
                 with open(cachename, "wb") as fp:
                     writer.write_tree(fp)
             except IOError:
-                try: os.unlink(cachename)
-                except: pass
+                try:
+                    os.unlink(cachename)
+                except:
+                    pass
 
     def save(self, root):
-        if not self.filename(): self.saveas(root)
-        else: self.__save_to_file(root, self.filename())
+        if not self.filename():
+            self.saveas(root)
+        else:
+            self.__save_to_file(root, self.filename())
 
     def saveas(self, root, export=False):
         filename = self.filename() or DEFAULT_GRAIL_BM_FILE
@@ -319,6 +332,7 @@ class BookmarksIO:
 
 
 class IOErrorDialog:
+
     def __init__(self, master, where, errmsg):
         msg = 'Bookmark file error encountered {}:'.format(where)
         self._frame = tktools.make_toplevel(master, msg)
@@ -338,8 +352,8 @@ class IOErrorDialog:
         self._frame.destroy()
 
 
-
 class TkListboxViewer(OutlinerViewer):
+
     def __init__(self, root, listbox):
         self._listbox = listbox
         OutlinerViewer.__init__(self, root)
@@ -351,7 +365,8 @@ class TkListboxViewer(OutlinerViewer):
         self._listbox.delete(0, END)
 
     def _insert(self, node, index=None):
-        if index is None: index = END
+        if index is None:
+            index = END
         nodetype = node.get_nodetype()
         if nodetype == "Folder":
             if node.expanded_p():
@@ -370,22 +385,26 @@ class TkListboxViewer(OutlinerViewer):
             title = "  ------------------------------------"
         else:
             title = "  " + (node.title() or "")
-        self._listbox.insert(index, "  "*(node.depth() - 1) + title)
+        self._listbox.insert(index, "  " * (node.depth() - 1) + title)
 
     def _delete(self, start, end=None):
-        if not end: self._listbox.delete(start)
-        else: self._listbox.delete(start, end)
+        if not end:
+            self._listbox.delete(start)
+        else:
+            self._listbox.delete(start, end)
 
     def _select(self, index):
         last = self._listbox.index(END)
-        if index is None or not (0 <= index < last): index = 0
+        if index is None or not (0 <= index < last):
+            index = 0
         self._listbox.select_clear(0, END)
         self._listbox.select_set(index)
         self._listbox.activate(index)
         self._listbox.see(index)
 
-
+
 class BookmarksDialog:
+
     def __init__(self, master, controller):
         # create the basic controls of the dialog window
         self._frame = tktools.make_toplevel(master, class_='Bookmarks')
@@ -421,12 +440,12 @@ class BookmarksDialog:
                              underline=0, accelerator="Alt-L")
         self._frame.bind("<Alt-l>", self.load)
         self._frame.bind("<Alt-L>", self.load)
-##      filemenu.add_command(label="Merge...",
-##                           command=self._controller.merge,
-##                           underline=0, accelerator="Alt-M")
+# filemenu.add_command(label="Merge...",
+# command=self._controller.merge,
+# underline=0, accelerator="Alt-M")
 ##      self._frame.bind("<Alt-m>", self._controller.merge)
-##      # Why can't I bind <Alt-M> here???!!!  I get a TclError...
-##      # The "M" is short for the "Meta-" modifier.
+# Why can't I bind <Alt-M> here???!!!  I get a TclError...
+# The "M" is short for the "Meta-" modifier.
 ##      self._frame.bind("<Alt-Shift-m>", self._controller.merge)
         filemenu.add_command(label="Save",
                              command=self._controller.save,
@@ -519,34 +538,34 @@ class BookmarksDialog:
         arrangebtn.pack(side=LEFT)
         arrangemenu = Menu(arrangebtn, name="menu")
         arrangemenu.add_command(label="Expand",
-                            command=self._controller.expand_cmd,
-                            underline=0, accelerator="E")
+                                command=self._controller.expand_cmd,
+                                underline=0, accelerator="E")
         self._frame.bind("e", self._controller.expand_cmd)
         self._frame.bind("E", self._controller.expand_cmd)
         arrangemenu.add_command(label="Collapse",
-                            command=self._controller.collapse_cmd,
-                            underline=0, accelerator="C")
+                                command=self._controller.collapse_cmd,
+                                underline=0, accelerator="C")
         self._frame.bind("c", self._controller.collapse_cmd)
         self._frame.bind("C", self._controller.collapse_cmd)
         arrangemenu.add_separator()
         arrangemenu.add_command(label='Shift Entry Left',
-                             command=self._controller.shift_left_cmd,
-                             underline=12, accelerator='L')
+                                command=self._controller.shift_left_cmd,
+                                underline=12, accelerator='L')
         self._frame.bind('l', self._controller.shift_left_cmd)
         self._frame.bind('L', self._controller.shift_left_cmd)
         arrangemenu.add_command(label='Shift Entry Right',
-                             command=self._controller.shift_right_cmd,
-                             underline=12, accelerator='R')
+                                command=self._controller.shift_right_cmd,
+                                underline=12, accelerator='R')
         self._frame.bind('r', self._controller.shift_right_cmd)
         self._frame.bind('R', self._controller.shift_right_cmd)
         arrangemenu.add_command(label='Shift Entry Up',
-                             command=self._controller.shift_up_cmd,
-                             underline=12, accelerator='U')
+                                command=self._controller.shift_up_cmd,
+                                underline=12, accelerator='U')
         self._frame.bind('u', self._controller.shift_up_cmd)
         self._frame.bind('U', self._controller.shift_up_cmd)
         arrangemenu.add_command(label='Shift Entry Down',
-                             command=self._controller.shift_down_cmd,
-                             underline=12, accelerator='D')
+                                command=self._controller.shift_down_cmd,
+                                underline=12, accelerator='D')
         self._frame.bind('d', self._controller.shift_down_cmd)
         self._frame.bind('D', self._controller.shift_down_cmd)
         arrangebtn.config(menu=arrangemenu)
@@ -624,8 +643,10 @@ class BookmarksDialog:
         w.bind("<End>", self._controller.shift_to_bottom_cmd)
 
     def set_modflag(self, flag):
-        if flag: text = '<== Changes are unsaved!'
-        else: text = ''
+        if flag:
+            text = '<== Changes are unsaved!'
+        else:
+            text = ''
         self._controller.statusmsg.set(text)
 
     def load(self, event=None):
@@ -643,9 +664,11 @@ class BookmarksDialog:
 
     def save_cmd(self, event=None):
         self._controller.save()
+
     def okay_cmd(self, event=None):
         self._controller.save()
         self._controller.hide()
+
     def cancel_cmd(self, event=None):
         self._controller.revert()
         self._controller.hide()
@@ -667,8 +690,9 @@ class BookmarksDialog:
         self._listbox.select_clear(0, END)
         self._listbox.select_set('@{},{}'.format(event.x, event.y))
 
-
+
 class DetailsDialog:
+
     def __init__(self, master, node, controller):
         self._frame = tktools.make_toplevel(master, class_='Detail',
                                             title="Bookmark Details")
@@ -735,7 +759,7 @@ class DetailsDialog:
     def update_timestamp_fields(self):
         set_timestamp = self._set_timestamp_field
         if self._visited:
-            set_timestamp(self._visited,  self._node.last_visited())
+            set_timestamp(self._visited, self._node.last_visited())
         if self._added_on:
             set_timestamp(self._added_on, self._node.add_date())
         if self._modified:
@@ -789,7 +813,6 @@ class DetailsDialog:
         self._controller = self._node = None
 
 
-
 class BookmarksController(OutlinerController):
     _initialized_p = False
     _active = 0
@@ -807,7 +830,7 @@ class BookmarksController(OutlinerController):
         self._menus = []
         #
         self.aggressive = BooleanVar(master)
-        self.addcurloc =  StringVar(master)
+        self.addcurloc = StringVar(master)
         self.fileformat = StringVar(master)
         self.statusmsg = StringVar(master)
         self.includepulldown = BooleanVar(master)
@@ -851,7 +874,7 @@ class BookmarksController(OutlinerController):
 
     def remove_watched_menu(self, menu):
         self._menus.remove(menu)
-        
+
     def set_browser(self, browser=None):
         self._active = browser
 
@@ -863,13 +886,14 @@ class BookmarksController(OutlinerController):
                 self._active = None     # all browsers have been closed
         return self._active
 
-    ## coordinate with Application instance
+    # coordinate with Application instance
 
     def on_app_exit(self):
-        if self._modflag: self.save(exiting=True)
+        if self._modflag:
+            self.save(exiting=True)
         self._app.unregister_on_exit(self.on_app_exit)
 
-    ## Modifications updating
+    # Modifications updating
     def set_modflag(self, flag, quiet=False):
         if not quiet:
             if self._dialog:
@@ -878,7 +902,7 @@ class BookmarksController(OutlinerController):
                 menu.set_modflag(flag)
         self._modflag = flag
 
-    ## I/O
+    # I/O
 
     def initialize(self):
         if self._initialized_p:
@@ -905,14 +929,16 @@ class BookmarksController(OutlinerController):
         self._initialized_p = True
 
     def _on_new_root(self):
-        for dialog in self._details.values(): dialog.destroy()
+        for dialog in self._details.values():
+            dialog.destroy()
         self._details = {}
         self.set_viewer(TkListboxViewer(self.root(), self._listbox))
         self.root_redisplay()
         # set up new state
         node = self.viewer().node(0)
         self.set_modflag(False)
-        if node: self.viewer().select_node(node)
+        if node:
+            self.viewer().select_node(node)
         self._collection = collection.Collection(self.root())
 
     def load(self, usedefault=False):
@@ -931,7 +957,8 @@ class BookmarksController(OutlinerController):
 
     def save(self, event=None, exiting=False):
         # if it hasn't been modified, it doesn't need saving
-        if not self.set_modflag: return
+        if not self.set_modflag:
+            return
         self._iomgr.save(self._root)
         self.set_modflag(False)
         self.update_backup()
@@ -979,8 +1006,11 @@ class BookmarksController(OutlinerController):
     # Other commands
 
     def set_listbox(self, listbox): self._listbox = listbox
+
     def set_dialog(self, dialog): self._dialog = dialog
+
     def filename(self): return self._iomgr.filename()
+
     def dialog_is_visible_p(self):
         return self._dialog and self._dialog.visible_p()
 
@@ -1018,20 +1048,24 @@ class BookmarksController(OutlinerController):
                 # Workaround for Bug 869780, "curselection() in Tkinter.py
                 # should return ints", http://bugs.python.org/issue869780
                 selection = int(list[0])
-                
+
                 return self.viewer().node(selection), selection
-        except AttributeError: pass
+        except AttributeError:
+            pass
         return node, selection
 
     def toggle_node_expansion(self, node):
-        if node.expanded_p(): self.collapse_node(node)
-        else: self.expand_node(node)
+        if node.expanded_p():
+            self.collapse_node(node)
+        else:
+            self.expand_node(node)
         self.viewer().select_node(node)
         self.set_modflag(True, quiet=True)
 
     def goto(self, event=None):
         node, selection = self._get_selected_node()
-        if not node: return
+        if not node:
+            return
         if node.leaf_p():
             self.goto_node(node)
         else:
@@ -1039,7 +1073,8 @@ class BookmarksController(OutlinerController):
 
     def goto_new(self, event=None):
         node, selection = self._get_selected_node()
-        if not node: return
+        if not node:
+            return
         if node.leaf_p():
             from .Browser import Browser
             self.goto_node(node, Browser(self._app.root, self._app))
@@ -1174,7 +1209,8 @@ class BookmarksController(OutlinerController):
         self.show_details(node)
 
     def show_details(self, node):
-        if not node or node.get_nodetype() == "Separator": return
+        if not node or node.get_nodetype() == "Separator":
+            return
         if node.get_nodetype() == "Alias":
             node = node.get_refnode()
             if node is None:
@@ -1201,21 +1237,25 @@ class BookmarksController(OutlinerController):
         # placement, the user will see a zero-sized widget
         if not self._dialog:
             self._dialog = BookmarksDialog(self._master, self)
-            self._listbox = self._dialog._listbox # TBD: gross
+            self._listbox = self._dialog._listbox  # TBD: gross
             viewer = TkListboxViewer(self.root(), self._listbox)
             self.set_viewer(viewer)
             viewer.populate()
-            if viewer.count() > 0: viewer.select_node(viewer.node(0))
-        else: self._dialog.show()
+            if viewer.count() > 0:
+                viewer.select_node(viewer.node(0))
+        else:
+            self._dialog.show()
 
     def hide(self, event=None): self._dialog.hide()
+
     def quit(self, event=None): sys.exit(0)
 
     def _insert_at_node(self, node, newnode):
         if node.leaf_p() or not node.expanded_p():
             parent, sibi, sibs = self._sibi(node)
-            if not parent: return
-            parent.insert_child(newnode, sibi+1)
+            if not parent:
+                return
+            parent.insert_child(newnode, sibi + 1)
         else:
             # Mimic Netscape behavior: when a separator is added to a
             # header, the node is added as the header's first child.
@@ -1228,13 +1268,15 @@ class BookmarksController(OutlinerController):
 
     def insert_separator(self, event=None):
         node, selection = self._get_selected_node()
-        if not node: return
+        if not node:
+            return
         newnode = nodes.Separator()
         self._insert_at_node(node, newnode)
 
     def insert_header(self, event=None):
         node, selection = self._get_selected_node()
-        if not node: return
+        if not node:
+            return
         newnode = nodes.Folder()
         newnode.set_title('<Category>')
         newnode.set_add_date(int(time.time()))
@@ -1245,7 +1287,8 @@ class BookmarksController(OutlinerController):
 
     def insert_entry(self, event=None):
         node, selection = self._get_selected_node()
-        if not node: return
+        if not node:
+            return
         newnode = nodes.Bookmark()
         newnode.set_title('<Entry>')
         newnode.set_add_date(int(time.time()))
@@ -1255,12 +1298,15 @@ class BookmarksController(OutlinerController):
 
     def remove_entry(self, event=None):
         node, selection = self._get_selected_node()
-        if not node: return
+        if not node:
+            return
         parent = node.parent()
-        if not parent: return
+        if not parent:
+            return
         # which node gets selected?
         selection = self.viewer().index(node) - 1
-        if selection < 0: selection = 0
+        if selection < 0:
+            selection = 0
         parent.del_child(node)
         self.root_redisplay()
         self.viewer().select_node(self.viewer().node(selection))
@@ -1271,33 +1317,44 @@ class BookmarksController(OutlinerController):
         # remove it from the URI and ID maps
         self._collection.del_node(node)
 
-    ## OutlinerController overloads
+    # OutlinerController overloads
 
     def set_aggressive_collapse(self, flag):
-        if flag: self.aggressive.set(1)
-        else: self.aggressive.set(0)
+        if flag:
+            self.aggressive.set(1)
+        else:
+            self.aggressive.set(0)
+
     def aggressive_collapse_p(self): return self.aggressive.get()
 
     def collapsable_p(self, node):
-        if node == self.root(): return False
-        else: return OutlinerController.collapsable_p(self, node)
+        if node == self.root():
+            return False
+        else:
+            return OutlinerController.collapsable_p(self, node)
 
-    ## Commands
+    # Commands
 
     def _cmd(self, method, quiet=False):
         node, selection = self._get_selected_node()
         if node:
             selected_node = method(node)
-            if not selected_node: selected_node = node
+            if not selected_node:
+                selected_node = node
             self.viewer().select_node(selected_node)
             self.set_modflag(True, quiet=quiet)
 
-    def shift_left_cmd(self, event=None):  self._cmd(self.shift_left)
+    def shift_left_cmd(self, event=None): self._cmd(self.shift_left)
+
     def shift_right_cmd(self, event=None): self._cmd(self.shift_right)
-    def shift_up_cmd(self, event=None):    self._cmd(self.shift_up)
-    def shift_down_cmd(self, event=None):  self._cmd(self.shift_down)
+
+    def shift_up_cmd(self, event=None): self._cmd(self.shift_up)
+
+    def shift_down_cmd(self, event=None): self._cmd(self.shift_down)
+
     def collapse_cmd(self, event=None):
         self._cmd(self.collapse_node, quiet=True)
+
     def expand_cmd(self, event=None):
         self._cmd(self.expand_node, quiet=True)
 
@@ -1319,8 +1376,11 @@ class BookmarksController(OutlinerController):
         node, selection = self._get_selected_node()
         if node:
             node = self.viewer().node(selection + delta)
-            if node: self.viewer().select_node(node)
+            if node:
+                self.viewer().select_node(node)
+
     def previous_cmd(self, event=None): self._prevnext(-1)
+
     def next_cmd(self, event=None): self._prevnext(1)
 
     # interface for searching
@@ -1367,7 +1427,7 @@ class BookmarksController(OutlinerController):
                 text = '{}\n{}\n'.format(node.title(), node.description())
             elif nodetype == "Bookmark":
                 text = '{}\n{}\n{}\n'.format(node.title(), node.uri(),
-                                         node.description())
+                                             node.description())
             else:
                 continue
             if not regex_flag and not case_flag:
@@ -1389,8 +1449,9 @@ class BookmarksController(OutlinerController):
         self.set_modflag(True, quiet=True)
         return True
 
-
+
 class BookmarksFormatter:
+
     def __init__(self, browser, root):
         import formatter
         self.__app = get_grailapp()
@@ -1497,14 +1558,18 @@ class BookmarksFormatter:
             self.formatter.add_line_break()
             self.formatter.pop_margin()
 
-
+
 class BookmarksMenuLeaf:
+
     def __init__(self, node, controller):
         self._node = node
         self._controller = controller
+
     def goto(self): self._controller.goto_node(self._node)
 
+
 class BookmarksMenuViewer(OutlinerViewer):
+
     def __init__(self, controller, parentmenu):
         self._controller = controller
         self._depth = 0
@@ -1518,7 +1583,7 @@ class BookmarksMenuViewer(OutlinerViewer):
         # this is the best way to pop the stack.  kinda kludgy...
         del self._menustack[depth:]
         # get the current menu we're building
-        menu = self._menustack[depth-1]
+        menu = self._menustack[depth - 1]
         nodetype = node.get_nodetype()
         if nodetype == "Alias" \
            and node.get_refnode().get_nodetype() == "Bookmark":
@@ -1536,6 +1601,7 @@ class BookmarksMenuViewer(OutlinerViewer):
 
 
 MAX_TITLE_WIDTH = 50
+
 
 def _node_title(node):
     """Return an abbreviated version of the node title."""
@@ -1555,6 +1621,7 @@ class BookmarksMenu:
     Bookmarks subdialogs.  When invoked from within Grail, all
     functionality falls from this entry point.
     """
+
     def __init__(self, menu):
         self._menu = menu
         self._browser = menu.grail_browser
@@ -1567,7 +1634,7 @@ class BookmarksMenu:
             self._controller = self._app.bookmarks_controller
         except AttributeError:
             self._controller = self._app.bookmarks_controller = \
-                               BookmarksController(self._app)
+                BookmarksController(self._app)
         self._controller.add_watched_menu(self)
         # currently, too difficult to coordinate edits to bookmarks
         # with tear-off menus, so just disable these for now and

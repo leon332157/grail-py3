@@ -11,6 +11,7 @@ from collections import MutableSequence
 URLENCODED = "application/x-www-form-urlencoded"
 FORM_DATA = "multipart/form-data"
 
+
 def start_form(parser, attrs):
     action = attrs.get('action', '')
     method = attrs.get('method', '')
@@ -18,12 +19,15 @@ def start_form(parser, attrs):
     target = attrs.get('target', '')
     form_bgn(parser, action, method, enctype, target)
 
+
 def end_form(parser):
     form_end(parser)
+
 
 def do_input(parser, attrs):
     type = attrs.pop('type', '').lower()
     handle_input(parser, type, attrs)
+
 
 def start_select(parser, attrs):
     name = attrs.get('name', '')
@@ -34,13 +38,16 @@ def start_select(parser, attrs):
     multiple = 'multiple' in attrs
     select_bgn(parser, name, size, multiple)
 
+
 def end_select(parser):
     select_end(parser)
+
 
 def do_option(parser, attrs):
     value = attrs.get('value', '')
     selected = 'selected' in attrs
     handle_option(parser, value, selected)
+
 
 def start_textarea(parser, attrs):
     name = attrs.get('name', '')
@@ -54,10 +61,12 @@ def start_textarea(parser, attrs):
         cols = 0
     textarea_bgn(parser, name, rows, cols)
 
+
 def end_textarea(parser):
     textarea_end(parser)
 
 # --- Hooks for forms
+
 
 def form_bgn(parser, action, method, enctype, target):
     if not hasattr(parser, 'form_stack'):
@@ -65,6 +74,7 @@ def form_bgn(parser, action, method, enctype, target):
         parser.forms = []
     fi = FormInfo(parser, action, method, enctype, target)
     parser.form_stack.append(fi)
+
 
 def form_end(parser):
     fi = get_forminfo(parser)
@@ -76,36 +86,50 @@ def form_end(parser):
         parser.context.forms.append(fi)
         fi.done()
 
+
 def handle_input(parser, type, options):
     fi = get_forminfo(parser)
-    if fi: fi.do_input(type, options, parser.viewer.text['background'])
+    if fi:
+        fi.do_input(type, options, parser.viewer.text['background'])
+
 
 def select_bgn(parser, name, size, multiple):
     fi = get_forminfo(parser)
-    if fi: fi.start_select(name, size, multiple)
+    if fi:
+        fi.start_select(name, size, multiple)
+
 
 def select_end(parser):
     fi = get_forminfo(parser)
-    if fi: fi.end_select()
+    if fi:
+        fi.end_select()
+
 
 def handle_option(parser, value, selected):
     fi = get_forminfo(parser)
-    if fi: fi.do_option(value, selected)
+    if fi:
+        fi.do_option(value, selected)
+
 
 def textarea_bgn(parser, name, rows, cols):
     fi = get_forminfo(parser)
-    if fi: fi.start_textarea(name, rows, cols)
+    if fi:
+        fi.start_textarea(name, rows, cols)
+
 
 def textarea_end(parser):
     fi = get_forminfo(parser)
-    if fi: fi.end_textarea()
+    if fi:
+        fi.end_textarea()
 
 # --- Form state tacked on the parser
+
 
 def get_forminfo(parser):
     if getattr(parser, 'form_stack', None):
         return parser.form_stack[-1]
     return None
+
 
 class FormInfo:
 
@@ -205,14 +229,16 @@ class FormInfo:
     def make_urlencoded_data(self):
         data = ''
         for i in self.inputs:
-            if not i.name: continue
+            if not i.name:
+                continue
             v = i.get()
             if v:
-                ### images need to return two different values
-                ### there doesn't seem to be an easy & elegant way to
-                ###do this
+                # images need to return two different values
+                # there doesn't seem to be an easy & elegant way to
+                # do this
                 if isinstance(v, tuple):
-                    if None in v: continue
+                    if None in v:
+                        continue
                     data = data + '&' + urllib.parse.urlencode((
                         (i.name + '.x', v[0]),
                         (i.name + '.y', v[1]),
@@ -229,16 +255,19 @@ class FormInfo:
         import email.generator
         msg = MIMEMultipart("form-data")
         for i in self.inputs:
-            if not i.name: continue
+            if not i.name:
+                continue
             v = i.get()
-            if not v: continue
+            if not v:
+                continue
             if isinstance(v, tuple):
                 # XXX Argh!  Have to do it twice, for each coordinate
-                if None in v: continue
+                if None in v:
+                    continue
                 for sym, vv in zip("xy", v):
                     part = MIMENonMultipart("text", "plain")
                     part.add_header("Content-Disposition", "form-data",
-                        name="{}.{}".format(i.name, sym))
+                                    name="{}.{}".format(i.name, sym))
                     part.set_payload(str(vv))
                     msg.attach(part)
                 continue
@@ -253,7 +282,7 @@ class FormInfo:
                     print("IOError:", msg)
                 else:
                     part.set_param("filename", v,
-                        header="Content-Disposition")
+                                   header="Content-Disposition")
             if data is not None:
                 part.add_header("Content-Length", str(len(data)))
                 part.set_payload(str(data, "ascii", "surrogateescape"))
@@ -262,7 +291,7 @@ class FormInfo:
             msg.attach(part)
         msg.as_string()  # Force multipart boundary string to be generated
         ctype = msg['content-type']
-        ctype = ' '.join(ctype.split()) # Get rid of newlines
+        ctype = ' '.join(ctype.split())  # Get rid of newlines
         fp = io.BytesIO()
         gen = email.generator.BytesGenerator(fp, mangle_from_=False)
         boundary = msg.get_boundary().encode("ascii")
@@ -479,7 +508,7 @@ class FormInfo:
         height = 0
         border = 2
         align = ''
-        value = (None,None)
+        value = (None, None)
 
         def setup(self):
             self.getopt('alt')
@@ -587,15 +616,18 @@ class Select:
         any = False
         wid = 0
         for v, s, t in self.options:
-            if s: any = True
+            if s:
+                any = True
             wid = max(wid, len(t))
         if not any and not self.multiple:
             v, s, t = self.options[0]
             self.options[0] = v, True, t
         size = self.size
         if size <= 0:
-            if self.multiple: size = 4
-            else: size = 1
+            if self.multiple:
+                size = 4
+            else:
+                size = 1
         #size = min(len(self.options), size)
         if size == 1 and not self.multiple:
             self.make_menu(wid)
@@ -605,7 +637,7 @@ class Select:
     def make_menu(self, width):
         self.v = StringVar(self.viewer.text)
         self.v.set(self.name)
-        values = (t for v,s,t in self.options)
+        values = (t for v, s, t in self.options)
         self.w = OptionMenu(self.viewer.text, self.v, *values)
         self.w["width"] = width
         self.w["highlightbackground"] = self.bgcolor
@@ -632,7 +664,8 @@ class Select:
         self.parser.add_subwindow(self.frame)
 
     def reset(self):
-        if not self.w: return
+        if not self.w:
+            return
         if self.v:
             self.reset_menu()
         else:
@@ -652,9 +685,12 @@ class Select:
 
     def get(self):
         # debugging
-        if not self.w: return None
-        if self.v: return self.get_menu()
-        else: return self.get_list()
+        if not self.w:
+            return None
+        if self.v:
+            return self.get_menu()
+        else:
+            return self.get_list()
 
     def getstate(self):
         return self.get()
@@ -662,7 +698,8 @@ class Select:
     def get_menu(self):
         text = self.v.get()
         for v, s, t in self.options:
-            if text == t: return v or t
+            if text == t:
+                return v or t
         return None
 
     def get_list(self):
@@ -674,9 +711,12 @@ class Select:
 
     def set(self, value):
         # debugging
-        if not self.w: return
-        if self.v: self.set_menu(value)
-        else: self.set_list(value)
+        if not self.w:
+            return
+        if self.v:
+            self.set_menu(value)
+        else:
+            self.set_list(value)
 
     def set_menu(self, value):
         for v, s, t in self.options:
@@ -718,8 +758,10 @@ class Textarea:
     def done(self):
         data = self.parser.save_end()
         self.parser.pop_nofill()
-        if data[:1] == '\n': data = data[1:]
-        if data[-1:] == '\n': data = data[:-1]
+        if data[:1] == '\n':
+            data = data[1:]
+        if data[-1:] == '\n':
+            data = data[:-1]
         self.w, self.frame = tktools.make_text_box(self.viewer.text,
                                                    width=self.cols,
                                                    height=self.rows,
@@ -743,7 +785,8 @@ class Textarea:
     def set(self, value):
         # TBD: Tk text widget `feature' can cause an extra newline to
         # be inserted each time the text is set.
-        if value[-1] == '\n': value = value[:-1]
+        if value[-1] == '\n':
+            value = value[:-1]
         self.w.delete("1.0", END)
         self.w.insert(END, value)
 
@@ -753,7 +796,7 @@ class InputImageWindow(Frame):
 
     This is mostly a stripped-down version of ImageWindow used for the
     <IMG> tag. I'm assuming that class can't be gotten at here. Am I
-    right? 
+    right?
 
     The last argument is a function to bind ButtonRelease-{1,3} to.
     """
@@ -769,13 +812,13 @@ class InputImageWindow(Frame):
                        background=bg)
         self.label = Label(self, text=self.alt, background=bg)
         self.label.pack(fill=BOTH, expand=1)
-##      self.pack()
+# self.pack()
         height = int(height) if height else 0
         width = int(width) if width else 0
         if width > 0 and height > 0:
             self.propagate(0)
-            self.config(width=width + 2*borderwidth,
-                        height=height + 2*borderwidth)
+            self.config(width=width + 2 * borderwidth,
+                        height=height + 2 * borderwidth)
         self.label.bind('<ButtonRelease-1>', bind_func)
         self.label.bind('<ButtonRelease-3>', bind_func)
         self.image = self.context.get_async_image(self.src)

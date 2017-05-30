@@ -10,6 +10,7 @@ from . import ProtocolAPI
 
 
 class urn_access(nullAPI.null_access):
+
     def __init__(self, resturl, method, params):
         self.__resturl = resturl
         nullAPI.null_access.__init__(self, resturl, method, params)

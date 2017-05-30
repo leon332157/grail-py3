@@ -41,7 +41,7 @@ class GeneralPanel(PrefsPanels.Framework):
         f.pack(fill=X, side=TOP, pady='1m')
 
         self.PrefsEntry(frame, 'Max. connections:', 'sockets', 'number', 'int',
-                        entry_width=3) 
+                        entry_width=3)
 
         self.PrefsCheckButton(frame, "Image loading:", "Load inline images",
                               'browser', 'load-images')
@@ -65,7 +65,7 @@ class GeneralPanel(PrefsPanels.Framework):
                               'security', 'enable-ilu')
 
         frame.pack()
- 
+
         # History preference
 
         from ..History import VIEW_BY_TITLES, VIEW_BY_URLS

@@ -26,6 +26,7 @@ profiling = 0
 class ParserWrapper:
     """Provides re-entrance protection around an arbitrary parser object.
     """
+
     def __init__(self, parser, viewer):
         self.__parser = parser
         self.__viewer = viewer
@@ -56,7 +57,7 @@ class ParserWrapper:
             self.__viewer.freeze()
             self.__closed = True
 
-
+
 class DecoderWrapper:
     """Feed data through an IncrementalDecoder() object before feeding it to
     a parser."""
@@ -77,12 +78,13 @@ class DecoderWrapper:
             self.__parser.feed(data)
         self.__parser.close()
 
-
+
 # Cannot use the incremental decoder from the codec registry because it
 # does not store any state between calls
 class QuotedPrintableWrapper:
     """Wrap a parser object with a quoted-printable decoder.  Conforms to
     parser protocol."""
+
     def __init__(self, parser):
         """Initialize the decoder.  Pass in the real parser as a parameter."""
         self.__parser = parser
@@ -135,7 +137,7 @@ class QuotedPrintableWrapper:
         wrapped parser."""
         self.__parser.close()
 
-
+
 # Cannot use the base-64 decoder in the codec registry because it seems to
 # raise an exception for incomplete data rather than saving state
 class Base64Wrapper:
@@ -176,7 +178,7 @@ class Base64Wrapper:
                 self.__parser.feed(bin)
         self.__parser.close()
 
-
+
 # Cannot use built-in "gzip" module because it only provides a file reader
 # interface with blocking reads
 class GzipWrapper:
@@ -290,7 +292,7 @@ class GzipWrapper:
                 self.__parser.feed(data)
         self.__parser.close()
 
-
+
 # This table maps content-transfer-encoding values to the appropriate
 # decoding wrappers.  It should not be needed with HTTP (1.1 explicitly
 # forbids it), but it's never a good idea to ignore the possibility.
@@ -300,7 +302,7 @@ transfer_decoding_wrappers = {
     "8bit": None,
     "binary": None,
     "quoted-printable": QuotedPrintableWrapper,
-    }
+}
 
 try:
     import binascii
@@ -345,8 +347,10 @@ def get_encodings(headers):
 
 def wrap_parser(parser, ctype, content_encoding=None, transfer_encoding=None):
     if ctype.startswith("text/"):
-        decoder = partial(IncrementalNewlineDecoder,
-            decoder=getincrementaldecoder("latin-1")(), translate=True)
+        decoder = partial(
+            IncrementalNewlineDecoder,
+            decoder=getincrementaldecoder("latin-1")(),
+            translate=True)
         parser = DecoderWrapper(decoder, parser)
     if content_encoding:
         parser = content_decoding_wrappers[content_encoding](parser)
@@ -355,7 +359,7 @@ def wrap_parser(parser, ctype, content_encoding=None, transfer_encoding=None):
         if decoder:
             parser = decoder(parser)
     return parser
-    
+
 
 def get_content_encodings():
     """Return a list of supported content-encoding values."""
@@ -409,7 +413,8 @@ class Reader(BaseReader):
         self.maxrestarts = 10
         self.url = ''
 
-        if url: self.restart(url)
+        if url:
+            self.restart(url)
 
     def restart(self, url):
         self.maxrestarts = self.maxrestarts - 1
@@ -516,8 +521,10 @@ class Reader(BaseReader):
         else:
             last_modified = None
             if "last-modified" in headers:
-                try: last_modified = ht_time.parse(headers["last-modified"])
-                except ValueError: pass
+                try:
+                    last_modified = ht_time.parse(headers["last-modified"])
+                except ValueError:
+                    pass
             bkmks.record_visit(self.url, last_modified)
 
         content_encoding, transfer_encoding = get_encodings(headers)
@@ -538,10 +545,10 @@ class Reader(BaseReader):
             transfer_encoding = None
             content_encoding = None
         if not content_type:
-            content_type = "text/plain" # Last resort guess only
+            content_type = "text/plain"  # Last resort guess only
 
         istext = content_type and content_type.startswith('text/') \
-                 and not (content_encoding or transfer_encoding)
+            and not (content_encoding or transfer_encoding)
         if self.show_source and istext:
             content_type = 'text/plain'
         parserclass = self.find_parser_extension(content_type)
@@ -560,7 +567,7 @@ class Reader(BaseReader):
             if not caps:
                 caps = mailcap.getcaps()
             if caps:
-                plist = [] # XXX Should be taken from Content-type header
+                plist = []  # XXX Should be taken from Content-type header
                 command, entry = mailcap.findmatch(
                     caps, content_type, 'view', "/dev/null", plist)
                 if command:
@@ -568,7 +575,7 @@ class Reader(BaseReader):
                     import tempfile
                     self.save_mailcap = command
                     self.save_file = tempfile.NamedTemporaryFile("wb",
-                        delete=False)
+                                                                 delete=False)
                     self.save_filename = self.save_file.name
                     self.save_content_type = content_type
                     self.save_plist = plist
@@ -636,7 +643,6 @@ class Reader(BaseReader):
         # protect from re-entrance
         self.parser = ParserWrapper(parser, self.viewer)
 
-
     def handle_auth_error(self, errcode, errmsg, headers):
         # Return True if handle_error() should return now
         if 'www-authenticate' not in headers \
@@ -644,7 +650,7 @@ class Reader(BaseReader):
             return False
 
         cred_headers = {}
-        for k,v in headers.items():
+        for k, v in headers.items():
             cred_headers[k.lower()] = v
         cred_headers['request-uri'] = self.url
 
@@ -656,7 +662,7 @@ class Reader(BaseReader):
         self.stop()
         credentials = self.app.auth.request_credentials(cred_headers)
         if 'Authorization' in credentials:
-            for k,v in credentials.items():
+            for k, v in credentials.items():
                 self.params[k] = v
             self.restart(self.url)
             return True
@@ -680,11 +686,13 @@ class Reader(BaseReader):
             self.handle_error(errno, errmsg, [])
 
     if profiling:
-        bufsize = 8*1024
+        bufsize = 8 * 1024
         _handle_data = handle_data
+
         def handle_data(self, data):
             n = profiling
-            import profile, pstats
+            import profile
+            import pstats
             prof = profile.Profile()
             prof.runcall(self._handle_data, data)
             stats = pstats.Stats(prof)
@@ -740,7 +748,7 @@ class TextParser:
     def close(self):
         pass
 
-
+
 # This constant is the minimum interval between the times we force the
 # display to be updated during an asynchronous download.  This makes the
 # display update less "choppy" over fast links, where the display might
@@ -773,7 +781,7 @@ class TransferDisplay:
         reader.save_file = self
         if filename:
             self.root.title("Grail: Downloading "
-                           + os.path.basename(filename))
+                            + os.path.basename(filename))
         else:
             self.root.title("Grail Download")
         self.root.iconname("Download")
@@ -816,6 +824,7 @@ class TransferDisplay:
 
     __boldpat = re.compile(r'-([a-z]*bold)-', re.IGNORECASE)
     __datafont = None
+
     def make_labeled_field(self, master, labeltext, valuetext='', side=TOP):
         frame = Frame(master)
         frame.pack(pady='1m', side=side, anchor=W)
@@ -827,12 +836,14 @@ class TransferDisplay:
             font = label['font']
             match = self.__boldpat.search(font)
             if match:
-                pos = match.start()+1
+                pos = match.start() + 1
                 end = match.end()
                 self.__datafont = "{}medium{}".format(font[:pos], font[end:])
         if self.__datafont:
-            try: value['font'] = self.__datafont
-            except TclError: self.__datafont = ''
+            try:
+                value['font'] = self.__datafont
+            except TclError:
+                self.__datafont = ''
         value.pack(side=RIGHT, fill=X, expand=1)
         return value
 
@@ -841,6 +852,7 @@ class TransferDisplay:
 
     __progbar = None
     __bytespat = "{:.1f}%"
+
     def make_progress_bar(self, size, frame):
         self.__bytespat = "{:.1f}% of " + grailutil.nicebytes(size)
         self.__maxsize = size
@@ -850,20 +862,23 @@ class TransferDisplay:
 
         self.__progbar = Frame(f, width=1, background=DARK_BLUE,
                                height=f.cget('height')
-                               - 2*f.cget('borderwidth'))
+                               - 2 * f.cget('borderwidth'))
         self.__progbar.place(x=0, y=0)
 
     def stop(self):
         self.close()
         if os.path.isfile(self.__filename):
-            try: os.unlink(self.__filename)
-            except IOError as msg: self.context.error_dialog(IOError, msg)
+            try:
+                os.unlink(self.__filename)
+            except IOError as msg:
+                self.context.error_dialog(IOError, msg)
 
     # file-like methods; these allow us to intercept the close() method
     # on the reader's save file object
 
     __datasize = 0
     __prevtime = 0.0
+
     def write(self, data):
         self.__save_file.write(data)
         datasize = self.__datasize = self.__datasize + len(data)

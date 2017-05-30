@@ -170,7 +170,7 @@ class Writer(walker.TreeWalker):
         space = " "
         for attr, value in element.items():
             append('{}{}={}'.format(space, attr, saxutils.quoteattr(value)))
-            space = "\n{}{}".format(tab, " "*len(tag))
+            space = "\n{}{}".format(tab, " " * len(tag))
         if not element.text and not len(element):
             append("/>")
             return
@@ -220,4 +220,4 @@ def _wrap_lines(s, width, indentation=0):
         lines.append(buffer)
     if len(lines) > 1:
         lines.insert(0, '')
-    return ("\n" + " "*indentation).join(lines)
+    return ("\n" + " " * indentation).join(lines)

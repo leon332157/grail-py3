@@ -17,7 +17,7 @@ import re
 
 import ftplib
 from urllib.parse import unquote, splithost, splitport, splituser, \
-     splitpasswd, splitattr, splitvalue, quote
+    splitpasswd, splitattr, splitvalue, quote
 from urllib.parse import urljoin
 from .. import grailutil
 import socket
@@ -63,7 +63,7 @@ LISTING_PATTERN = r"""
         ([^-]|-[^>])+              # lots of chars, but not symlink
     )                                # end group 3
     (                                # optional group 5
-        [ \t]+->.*                    # spaces followed by symlink 
+        [ \t]+->.*                    # spaces followed by symlink
     )?                               # end optional group 5
     $                                 # end of string
     """
@@ -77,11 +77,14 @@ class ftp_access:
     def __init__(self, url, method, params):
         assert method == 'GET'
         netloc, path = splithost(url)
-        if not netloc: raise IOError('ftp error', 'no host given')
+        if not netloc:
+            raise IOError('ftp error', 'no host given')
         host, port = splitport(netloc)
         user, host = splituser(host)
-        if user: user, passwd = splitpasswd(user)
-        else: passwd = None
+        if user:
+            user, passwd = splitpasswd(user)
+        else:
+            passwd = None
         host = socket.gethostbyname(host)
         if port:
             try:
@@ -108,7 +111,8 @@ class ftp_access:
                 type = 'd'
             else:
                 type = 'i'
-        if dirs and not dirs[0]: dirs = dirs[1:]
+        if dirs and not dirs[0]:
+            dirs = dirs[1:]
         key = (user, host, port, '/'.join(dirs))
         self.debuglevel = 0
         try:
@@ -170,7 +174,8 @@ class ftp_access:
             return b""
         assert self.state == DATA
         data = self.sock.recv(maxbytes)
-        if self.debuglevel > 4: print("*data*", repr(data))
+        if self.debuglevel > 4:
+            print("*data*", repr(data))
         if not data:
             self.state = DONE
         if self.isdir:
@@ -185,11 +190,12 @@ class ftp_access:
             if self.lines:
                 while self.lines and self.lines[-1] == "":
                     del self.lines[-1]
-                self.lines.append(None) # Mark the end
+                self.lines.append(None)  # Mark the end
         else:
             lines = data.decode('latin-1').split('\n')
             if self.debuglevel > 3:
-                for line in lines: print("*addl*", repr(line))
+                for line in lines:
+                    print("*addl*", repr(line))
             if self.lines:
                 lines[0] = self.lines[-1] + lines[0]
                 self.lines[-1:] = lines
@@ -207,11 +213,12 @@ class ftp_access:
             if self.debuglevel > 2:
                 print("*getl*", repr(line))
             if line is None:
-                data = data + self.listing_header.format(url=
-                                                     html.escape(self.url))
+                data = data + \
+                    self.listing_header.format(url=html.escape(self.url))
                 continue
-            if line[-1:] == '\r': line = line[:-1]
-            m = prog.match(line) 
+            if line[-1:] == '\r':
+                line = line[:-1]
+            m = prog.match(line)
             if not m:
                 line = saxutils.escape(line) + '\n'
                 data = data + line
@@ -297,8 +304,10 @@ class ftpwrapper:
 
     def retrfile(self, file, type):
         isdir = type == 'd'
-        if isdir: cmd = 'TYPE A'
-        else: cmd = 'TYPE ' + type.upper()
+        if isdir:
+            cmd = 'TYPE A'
+        else:
+            cmd = 'TYPE ' + type.upper()
         try:
             self.ftp.voidcmd(cmd)
         except ftplib.all_errors:
@@ -315,8 +324,10 @@ class ftpwrapper:
         if not conn:
             # Try a directory listing
             isdir = True
-            if file: cmd = 'LIST ' + file
-            else: cmd = 'LIST'
+            if file:
+                cmd = 'LIST ' + file
+            else:
+                cmd = 'LIST'
             conn = self.ftp.transfercmd(cmd)
         self.conn = conn
         return conn, isdir

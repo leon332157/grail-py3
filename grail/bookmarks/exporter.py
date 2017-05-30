@@ -7,7 +7,9 @@ __version__ = '$Revision: 1.3 $'
 
 from . import walker
 
+
 class ExportWalker(walker.TreeWalker):
+
     def __init__(self, root, options=None):
         if options is None:
             options = ExportOptions()

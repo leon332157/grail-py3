@@ -7,6 +7,7 @@ import os
 
 
 class ExtensionLoader:
+
     def __init__(self, package):
         self.__package = package
         self.__extensions = {}

@@ -72,10 +72,12 @@ except RemoteControl.ClashError:
 
 """
 
-
+
 # errors
 class InitError(Exception):
     pass
+
+
 class ClashError(Exception):
     pass
 
@@ -83,26 +85,32 @@ _controller = None
 _filename = None
 _loads_registered = False
 
+
 def _create():
     global _controller
     if not _controller:
         _controller = Controller()
 
+
 def start():
     _create()
     _controller.start()
+
 
 def stop():
     if _controller:
         _controller.stop()
 
+
 def register(cmdstr, callback):
     _create()
     _controller.register(cmdstr, callback)
 
+
 def unregister(cmdstr, callback):
     _create()
     _controller.unregister(cmdstr, callback)
+
 
 def register_loads():
     _create()
@@ -112,6 +120,7 @@ def register_loads():
         _controller.register('LOADNEW', _controller.load_new_cmd)
         _loads_registered = True
 
+
 def unregister_loads():
     global _loads_registered
     if _loads_registered:
@@ -120,7 +129,6 @@ def unregister_loads():
         _loads_registered = False
 
 
-
 import tempfile
 import os
 import socket
@@ -149,8 +157,9 @@ if not _filename:
                              os.path.join('.grail-unix',
                                           '{}-{}'.format(USER, XDISPLAY)))
 
-
+
 class Controller:
+
     def __init__(self, path=_filename):
         # register a destruction handler with the Grail Application object
         app = get_grailapp()

@@ -27,6 +27,7 @@ from .protocols import ProtocolAPI
 
 
 class BaseApplication(app.Application):
+
     def __init__(self, prefs=None):
         app.Application.__init__(self, prefs)
         loader = extloader.TagExtensionLoader(html)

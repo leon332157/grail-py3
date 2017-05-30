@@ -92,7 +92,7 @@ class PrintingHTMLParser(HTMLParser):
     def register_id(self, name):
         """Add page number of element start to internal database."""
         (scheme, netloc, path, params, query, fragment) = \
-                 urllib.parse.urlparse(self.context.get_url())
+            urllib.parse.urlparse(self.context.get_url())
         netloc = netloc.lower()
         url = urllib.parse.urlunparse(
             (scheme, netloc, path, params, query, name))
@@ -151,6 +151,7 @@ class PrintingHTMLParser(HTMLParser):
         self.end_div()
 
     _inanchor = False
+
     def start_a(self, attrs):
         href = extract_keyword('href', attrs)
         if href:
@@ -162,7 +163,8 @@ class PrintingHTMLParser(HTMLParser):
                 self._inanchor = True
             if href not in self._anchors:
                 href = self.anchor = self.__footnote_anchor(href, attrs)
-                if href in self._anchors: return
+                if href in self._anchors:
+                    return
                 self._anchors[href] = len(self._anchor_sequence) + 1
                 title = extract_keyword('title', attrs, '')
                 title = ' '.join(title.split())
@@ -317,6 +319,7 @@ class PrintingHTMLParser(HTMLParser):
         HTMLParser.end_pre(self)
 
     __docinfo = None
+
     def _set_docinfo(self, url, pageno, title):
         if self.__docinfo is None:
             self.__docinfo = {}
@@ -475,19 +478,20 @@ class PrintingHTMLParser(HTMLParser):
     def list_check_dingbat(self, attrs):
         if attrs.get('dingbat'):
             img = self.load_dingbat(attrs['dingbat'])
-            if img: attrs['type'] = img
+            if img:
+                attrs['type'] = img
 
     # Override make_format():
     # This allows disc/circle/square to be mapped to images.
 
-    def make_format(self, format, default='disc', listtype = None):
+    def make_format(self, format, default='disc', listtype=None):
         fmt = format or default
         if fmt in ('disc', 'circle', 'square') and listtype == 'ul':
             img = self.load_dingbat(fmt)
             return img or HTMLParser.make_format(self, format, default)
         else:
             return HTMLParser.make_format(self, format, default,
-                                          listtype = listtype)
+                                          listtype=listtype)
 
     def unknown_entityref(self, entname, terminator):
         dingbat = self.load_dingbat(entname)
@@ -502,10 +506,9 @@ class PrintingHTMLParser(HTMLParser):
         else:
             HTMLParser.unknown_entityref(self, entname, terminator)
 
-
     dingbats = {}                       # (name, cog) ==> EPSImage
-                                        #                 | (string, font)
-                                        #                 | None
+    #                 | (string, font)
+    #                 | None
 
     fontdingbats = {'disc': ('\x6c', 'ZapfDingbats'),
                     'circle': ('\x6d', 'ZapfDingbats'),
@@ -590,7 +593,7 @@ class PrintingHTMLParser(HTMLParser):
                     'Failed to write image to external file.')
         return epstools.load_image_file(fp.name, self.settings.greyscale)
 
-
+
 # These functions and classes are "filters" which can be used as anchor
 # transforms with the PrintingHTMLParser class.
 
@@ -609,6 +612,7 @@ def disallow_anchor_footnotes(href, attrs):
 
 class disallow_self_reference:
     """Cancel all anchor footnotes which refer to the current document."""
+
     def __init__(self, baseurl):
         self.__baseref = urllib.parse.urlparse(baseurl)[:-1] + ('',)
 

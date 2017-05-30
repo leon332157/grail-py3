@@ -12,5 +12,6 @@
 
 from .. import pil_interface
 
+
 class parse_image_tiff(pil_interface.pil_interface):
     pass

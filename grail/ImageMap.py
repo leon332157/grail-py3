@@ -1,5 +1,6 @@
 """Support for client-side image maps."""
 
+
 class Shape:
     """shaped regions for client-side image maps."""
 
@@ -19,9 +20,9 @@ class Shape:
 
         elif self.kind == 'circle':
             # is the distance from the point to the center of the
-            # circle less than the radius? 
+            # circle less than the radius?
             distance_squared = pow((self.coords[0][0] - x), 2) + \
-                               pow((self.coords[0][1] - y), 2)  
+                pow((self.coords[0][1] - y), 2)
             if distance_squared <= pow(self.coords[1], 2):
                 isin = True
 
@@ -50,15 +51,16 @@ class Shape:
         for i, p2 in enumerate(self.coords[1:], 1):
             if y > min(p1[1], p2[1]):
                 if y <= max(p1[1], p2[1]):
-                    if x <= max (p1[0], p2[0]):
+                    if x <= max(p1[0], p2[0]):
                         if p1[1] != p2[1]:
-                            xintersect = \
-                              (y-p1[1])*(p2[0]-p1[0])/(p2[1]-p1[1])+p1[0]
+                            xintersect = (
+                                y - p1[1]) * (p2[0] - p1[0]) / (p2[1] - p1[1]) + p1[0]
                             if p1[0] == p2[0] or x <= xintersect:
                                 counter = counter + 1
             p1 = p2
-    
+
         return counter % 2
+
 
 class MapInfo:
     """Holds shapes during parsing.
@@ -108,7 +110,7 @@ class MapThunk:
         else:
             self.shapes = map.shapes
             self.waiting = False
-    
+
     def url(self, x, y):
         """Get url associated with shape at (x,y)."""
 
@@ -129,13 +131,12 @@ class MapThunk:
         """Get shape at coords (x,y)."""
         try:
             # memoize good for lots of shapes
-            return self.memo[(x,y)]
+            return self.memo[(x, y)]
         except KeyError:
             # does this iterate through in order?
             # it should so that overlapping shapes are handled properly
             for shape in self.shapes:
                 if shape.pointin(x, y):
-                    self.memo[(x,y)] = shape
+                    self.memo[(x, y)] = shape
                     return shape
             return None
-

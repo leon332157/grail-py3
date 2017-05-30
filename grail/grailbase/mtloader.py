@@ -12,6 +12,7 @@ from . import extloader
 
 
 class MIMEExtensionLoader(extloader.ExtensionLoader):
+
     def find(self, name):
         new_name = name.replace("-", "_")
         major, minor = new_name.split("/")
@@ -29,6 +30,7 @@ class MIMEExtensionLoader(extloader.ExtensionLoader):
 
 
 class MIMETypeExtension:
+
     def __init__(self, type, mod, modname):
         self.type = type
         self.__load_attr(mod, "parse_" + modname, "parse")

@@ -27,6 +27,7 @@ class PrintingTextParser(Reader.TextParser):
             self.__buffer = strings[-1]
 
     __first = True
+
     def write_page(self, data):
         data = data.rstrip()
         if self.__strip_blanks:

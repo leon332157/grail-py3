@@ -17,6 +17,7 @@ from collections import defaultdict
 USERPREFSFILENAME = 'grail-preferences'
 SYSPREFSFILENAME = os.path.join('data', 'grail-defaults')
 
+
 class Preferences:
     """Get and set fields in a customization-values file."""
 
@@ -69,7 +70,7 @@ class Preferences:
         for g, comps in list(self.saved.items()) + list(self.mods.items()):
             for c, v in comps.items():
                 if c not in deleted.get(g, ()):
-                    got[(g,c)] = v
+                    got[(g, c)] = v
         return got.items()
 
     def Editable(self):
@@ -88,8 +89,10 @@ class Preferences:
 
     def Save(self):
         """Write the preferences out to file, if possible."""
-        try: os.rename(self.filename, self.filename + '.bak')
-        except os.error: pass           # No file to backup.
+        try:
+            os.rename(self.filename, self.filename + '.bak')
+        except os.error:
+            pass           # No file to backup.
 
         with open(self.filename, 'w') as fp:
             prevgroup = None
@@ -111,8 +114,10 @@ class Preferences:
         self.mods.clear()
         self.deleted.clear()
 
+
 class AllPreferences:
     """Maintain the combination of user and system preferences."""
+
     def __init__(self):
         self.load()
         self.callbacks = {}
@@ -172,12 +177,14 @@ class AllPreferences:
             return typify(val, type_name)
         except TypeError:
             raise TypeError('{} should be {}: {!r}'.format(
-                               (group, cmpnt), type_name, val))
+                (group, cmpnt), type_name, val))
 
     def GetInt(self, group, cmpnt, factory=False):
         return self.GetTyped(group, cmpnt, "int", factory)
+
     def GetFloat(self, group, cmpnt, factory=False):
         return self.GetTyped(group, cmpnt, "float", factory)
+
     def GetBoolean(self, group, cmpnt, factory=False):
         return self.GetTyped(group, cmpnt, "Boolean", factory)
 
@@ -241,10 +248,11 @@ class AllPreferences:
                     did_callbacks.add(callback)
                     callback()
 
+
 def make_key(group, cmpnt):
     """Produce a key from preference GROUP, COMPONENT strings."""
     return (group + '--' + cmpnt).lower()
-                    
+
 
 def typify(val, type_name):
     """Convert string value to specific type, or raise type err if impossible.
@@ -263,19 +271,20 @@ def typify(val, type_name):
                 raise TypeError('{!r} should be Boolean'.format(val))
             return bool(i)
     except ValueError:
-            raise TypeError('{!r} should be {}'.format(val, type_name))
-    
+        raise TypeError('{!r} should be {}'.format(val, type_name))
+
     raise ValueError('{!r} not supported - must be one of {}'.format(
-                       type_name, ['string', 'int', 'float', 'Boolean']))
-    
+        type_name, ['string', 'int', 'float', 'Boolean']))
+
 
 class Test(unittest.TestCase):
+
     def runTest(self):
         """Exercise preferences mechanisms.
 
         Note that this test alters and then restores a setting in the user's
         prefs  file."""
-        
+
         # Reading the db:
         prefs = AllPreferences()  # Suck in the prefs
 
@@ -301,7 +310,7 @@ class Test(unittest.TestCase):
         prefs.Set("browser", "default-height", origheight + 1)
         # Get the new value.
         self.assertEqual(origheight + 1,
-            prefs.GetInt("browser", "default-height"))
+                         prefs.GetInt("browser", "default-height"))
         prefs.Save()
 
         # Restore simple value

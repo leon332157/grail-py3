@@ -56,7 +56,7 @@ def get_scaling_adjustments(w):
 ##     print("scaling adjustments:", result)
     return result
 
-
+
 def PrintDialog(context, url, title):
     try:
         infp = context.app.open_url_simple(url)
@@ -84,11 +84,11 @@ def PrintDialog(context, url, title):
         return
     RealPrintDialog(context, url, title, infp, ctype)
 
-
+
 class MaybePrintDialog:
 
     UNKNOWN_TYPE_MESSAGE = \
-"""No MIME type is known for this
+        """No MIME type is known for this
 document.  It will be printed as
 plain text if you elect to continue."""
 
@@ -136,7 +136,7 @@ plain text if you elect to continue."""
         self.__infp.close()
         self.__infp = None
 
-
+
 class RealPrintDialog:
 
     def __init__(self, context, url, title, infp, ctype):
@@ -177,9 +177,9 @@ class RealPrintDialog:
         self.printtofile.set(settings.fileflag)
         fr = Frame(generalfr)
         fr.pack(fill=X)
-        self.file_check = Checkbutton(fr, text = "Print to file:",
-                                      command = self.check_command,
-                                      variable = self.printtofile)
+        self.file_check = Checkbutton(fr, text="Print to file:",
+                                      command=self.check_command,
+                                      variable=self.printtofile)
         self.file_check.pack(side=LEFT)
         self.file_entry = Entry(fr)
         self.file_entry.pack(side=RIGHT, fill=X)
@@ -285,7 +285,7 @@ class RealPrintDialog:
                 else:
                     import subprocess
                     proc = subprocess.Popen(cmd, shell=True,
-                        stdin=subprocess.PIPE, bufsize=-1)
+                                            stdin=subprocess.PIPE, bufsize=-1)
                     fp = proc.stdin
             except IOError as msg:
                 self.context.error_dialog(IOError, str(msg))
@@ -298,7 +298,8 @@ class RealPrintDialog:
         except:
             # don't want a try/finally since we don't need this to
             # execute unless we received an error
-            for e in self.cursor_widgets: e['cursor'] = ''
+            for e in self.cursor_widgets:
+                e['cursor'] = ''
             raise
         fp.close()
         sts = None
@@ -370,6 +371,7 @@ class RealPrintDialog:
 
 
 class FileOutputParser:
+
     def __init__(self, fp):
         self.__fp = fp
 

@@ -1,6 +1,7 @@
 from tkinter import *
 from . import tktools
 
+
 class IOStatusPanel:
 
     def __init__(self, app):
@@ -62,7 +63,7 @@ class IOStatusPanel:
         count = 0
         self.infobox.delete(0, END)
         for browser in self.app.browsers:
-            count = count+1
+            count = count + 1
             headline = "<Browser {}>".format(count)
             self.infobox.insert(END, headline)
             self.add_context_info(browser.context)
@@ -74,11 +75,11 @@ class IOStatusPanel:
             headline = "{}: {}".format(context.viewer.name, headline)
         self.infobox.insert(END, indent + headline)
         for reader in context.readers:
-            self.add_reader_info(reader, level+1)
+            self.add_reader_info(reader, level + 1)
         for viewer in context.viewer.subviewers:
             subcontext = viewer.context
             if subcontext is not context:
-                self.add_context_info(subcontext, level+1)
+                self.add_context_info(subcontext, level + 1)
 
     def add_reader_info(self, reader, level):
         indent = "   " * level

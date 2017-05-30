@@ -58,29 +58,29 @@ class EPSImage:
         self.__yscale = height / self.__height
         self.__xscale = self.__yscale * aspect
 
-
+
 #  Dictionary of image converters from key ==> EPS.
 #  The values need to be formatted against the keyword arguments
 #  `i' for the input filename and `o' for the output filename.
 image_converters = {
-    ('gif', 'color') : 'giftopnm {i} | pnmtops -noturn >{o}',
-    ('gif', 'grey') : 'giftopnm {i} | ppmtopgm | pnmtops -noturn >{o}',
-    ('jpeg', 'color') : 'djpeg -pnm {i} | pnmtops -noturn >{o}',
-    ('jpeg', 'grey') : 'djpeg -grayscale -pnm {i} | pnmtops -noturn >{o}',
-    ('pbm', 'grey') : 'pbmtoepsi {i} >{o}',
-    ('pgm', 'grey') : 'pnmtops -noturn {i} >{o}',
-    ('ppm', 'color') : 'pnmtops -noturn {i} >{o}',
-    ('ppm', 'grey') : 'ppmtopgm {i} | pnmtops -noturn >{o}',
-    ('rast', 'color') : 'rasttopnm {i} | pnmtops -noturn >{o}',
-    ('rast', 'grey') : 'rasttopnm {i} | ppmtopgm | pnmtops -noturn >{o}',
-    ('rgb', 'color') : 'rgb3toppm {i} | pnmtops -noturn >{o}',
-    ('rgb', 'grey') : 'rgb3toppm {i} | ppmtopgm | pnmtops -noturn >{o}',
-    ('tiff', 'color') : 'tifftopnm {i} | pnmtops -noturn >{o}',
-    ('tiff', 'grey') : 'tifftopnm {i} | ppmtopgm | pnmtops -noturn >{o}',
-    ('xbm', 'grey') : 'xbmtopbm {i} | pbmtoepsi >{o}',
-    ('xpm', 'color') : 'xpmtoppm {i} | pnmtops -noturn >{o}',
-    ('xpm', 'grey') : 'xpmtoppm {i} | ppmtopgm | pnmtops -noturn >{o}'
-    }
+    ('gif', 'color'): 'giftopnm {i} | pnmtops -noturn >{o}',
+    ('gif', 'grey'): 'giftopnm {i} | ppmtopgm | pnmtops -noturn >{o}',
+    ('jpeg', 'color'): 'djpeg -pnm {i} | pnmtops -noturn >{o}',
+    ('jpeg', 'grey'): 'djpeg -grayscale -pnm {i} | pnmtops -noturn >{o}',
+    ('pbm', 'grey'): 'pbmtoepsi {i} >{o}',
+    ('pgm', 'grey'): 'pnmtops -noturn {i} >{o}',
+    ('ppm', 'color'): 'pnmtops -noturn {i} >{o}',
+    ('ppm', 'grey'): 'ppmtopgm {i} | pnmtops -noturn >{o}',
+    ('rast', 'color'): 'rasttopnm {i} | pnmtops -noturn >{o}',
+    ('rast', 'grey'): 'rasttopnm {i} | ppmtopgm | pnmtops -noturn >{o}',
+    ('rgb', 'color'): 'rgb3toppm {i} | pnmtops -noturn >{o}',
+    ('rgb', 'grey'): 'rgb3toppm {i} | ppmtopgm | pnmtops -noturn >{o}',
+    ('tiff', 'color'): 'tifftopnm {i} | pnmtops -noturn >{o}',
+    ('tiff', 'grey'): 'tifftopnm {i} | ppmtopgm | pnmtops -noturn >{o}',
+    ('xbm', 'grey'): 'xbmtopbm {i} | pbmtoepsi >{o}',
+    ('xpm', 'color'): 'xpmtoppm {i} | pnmtops -noturn >{o}',
+    ('xpm', 'grey'): 'xpmtoppm {i} | ppmtopgm | pnmtops -noturn >{o}'
+}
 
 
 def load_image_file(img_fn, greyscale):
@@ -149,7 +149,7 @@ def load_image_pil(img_fn, greyscale, eps_fn):
     except:
         traceback.print_exc()
         print("Exception printed from printing.epstools.load_image_pil()",
-            file=sys.stderr)
+              file=sys.stderr)
         raise
 
 
@@ -162,8 +162,10 @@ def load_eps(eps_fn):
     """
     with open(eps_fn) as fp:
         lines = fp.readlines()
-    try: lines.remove('showpage\n')
-    except: pass                        # o.k. if not found
+    try:
+        lines.remove('showpage\n')
+    except:
+        pass                        # o.k. if not found
     bbox = load_bounding_box(lines)
     return EPSImage(''.join(lines), bbox)
 

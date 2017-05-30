@@ -13,6 +13,7 @@ MAX_TEXT_FIELD_LINES = 10
 
 
 class DocumentInfoDialog:
+
     def __init__(self, master, context, class_="DocumentInfo"):
         root = tktools.make_toplevel(master, class_=class_,
                                      title="Document Info")
@@ -50,12 +51,12 @@ class DocumentInfoDialog:
         if query:
             query = query.translate(FIELD_BREAKER)
             stretch = stretch or \
-                      self.add_text_field("Query fields", query, "query")
+                self.add_text_field("Query fields", query, "query")
         postdata = context.get_postdata()
         if postdata:
             postdata = postdata.decode().translate(FIELD_BREAKER)
             stretch = stretch or \
-                      self.add_text_field("POST fields", postdata, "postdata")
+                self.add_text_field("POST fields", postdata, "postdata")
         #
         # Bottom button
         #
@@ -81,13 +82,15 @@ class DocumentInfoDialog:
     def add_field(self, label, name):
         fr = tkinter.Frame(self.__topfr, name=name, class_="Dataitem")
         fr.pack(fill=tkinter.X)
-        if label: label = label + ": "
+        if label:
+            label = label + ": "
         tkinter.Label(fr, text=label, width=17, anchor=tkinter.E, name="label"
                       ).pack(anchor=tkinter.NE, side=tkinter.LEFT)
         return fr
 
     __boldpat = re.compile(r'-([a-z]*bold|demi)-', re.IGNORECASE)
     __datafont = None
+
     def add_label_field(self, label, value, name):
         fr = self.add_field(label, name)
         label = tkinter.Label(fr, text=value, anchor=tkinter.W, name="value")
@@ -105,8 +108,10 @@ class DocumentInfoDialog:
                 # don't try again:
                 DocumentInfoDialog.__datafont = ''
         if datafont:
-            try: label['font'] = datafont
-            except TclError: DocumentInfoDialog.__datafont = ''
+            try:
+                label['font'] = datafont
+            except TclError:
+                DocumentInfoDialog.__datafont = ''
         label.pack(anchor=tkinter.W, fill=tkinter.X, expand=1)
         return label
 
@@ -127,6 +132,7 @@ class DocumentInfoDialog:
 
 
 class DocumentInfoCommand:
+
     def __init__(self, obj):
         self.__viewer = getattr(obj, "viewer", obj)
 

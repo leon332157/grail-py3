@@ -8,14 +8,16 @@ conform to the following interface:
 
     - When a Viewer selects a color and wishes to update all other Views, it
       should call update_views() on the Switchboard object.  Not that the
-      Viewer typically does *not* update itself before calling update_views(), 
+      Viewer typically does *not* update itself before calling update_views(),
       since this would cause it to get updated twice.
 """
 
 import sys
 import marshal
 
+
 class Switchboard:
+
     def __init__(self, colordb, initfile):
         self.__initfile = initfile
         self.__colordb = colordb
@@ -33,7 +35,7 @@ class Switchboard:
                     if not isinstance(self.__optiondb, dict):
                         sys.stderr.write(
                             'Problem reading options from file: {}\n'.format(
-                            initfile))
+                                initfile))
                         self.__optiondb = {}
             except (IOError, EOFError):
                 pass

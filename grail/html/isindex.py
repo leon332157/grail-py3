@@ -2,6 +2,7 @@ from tkinter import Entry
 from ..grailutil import extract_keyword
 import urllib.parse
 
+
 def do_isindex(parser, attrs):
     prompt = extract_keyword(
         'prompt', attrs,

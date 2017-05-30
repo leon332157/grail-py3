@@ -20,7 +20,7 @@ LAST_CONTEXT = None
 class Context(URIContext):
 
     """Context for browsing operations.
-    
+
     RATIONALE: After much thinking we uncovered the need for a
     separate object to hold the browsing context.  This contains items
     like the history stack (for the back/forward commands), the loaded
@@ -117,7 +117,7 @@ class Context(URIContext):
                 self.history.append_page(self.page)
             else:
                 self.page.set_url(url)
-                self.page.set_title("") # Will be reset from fresh HTML
+                self.page.set_title("")  # Will be reset from fresh HTML
                 self.history.refresh()
         else:
             if self.future >= 0:
@@ -175,7 +175,7 @@ class Context(URIContext):
         self.viewer.remove_temp_tag(histify=True)
         baseurl = self.get_baseurl(url)
         page = self.page
-        self.page = None # triggers set_url() to update history
+        self.page = None  # triggers set_url() to update history
         self.set_url(baseurl, histify=histify)
         if self.future >= 0:
             self.page = self.history.page(self.future)
@@ -208,7 +208,7 @@ class Context(URIContext):
             if self.next_status_update:
                 return
             self.next_status_update = self.browser.root.after(
-                1000 - int(1000*(now%1.0)),
+                1000 - int(1000 * (now % 1.0)),
                 self.new_reader_status)
             return
         self.last_status_update = seconds
@@ -233,7 +233,7 @@ class Context(URIContext):
                     if reader.api.iscached():
                         cached = cached + 1
                 if maxbytes > 0:
-                    percent = nbytes*100//maxbytes
+                    percent = nbytes * 100 // maxbytes
                     message = "{}% of {} read".format(
                         percent, grailutil.nicebytes(maxbytes))
                 else:
@@ -280,10 +280,13 @@ class Context(URIContext):
 
     def get_async_image(self, src, reload=False, width=0, height=0):
         # check out the request
-        if not src: return None
+        if not src:
+            return None
         url = self.get_baseurl(src)
-        if not url: return None
-        if not self.app.load_images: return None
+        if not url:
+            return None
+        if not self.app.load_images:
+            return None
 
         # try loading from the cache
         image = self.app.get_cached_image((url, width, height))
@@ -353,7 +356,8 @@ class Context(URIContext):
     # Internals handle loading pages
 
     def save_page_state(self, reload=False):
-        if not self.page: return
+        if not self.page:
+            return
         # Save page scroll position
         self.page.set_scrollpos(self.viewer.scrollpos())
         # Save form contents even if reloading
@@ -377,7 +381,7 @@ class Context(URIContext):
         Reader(self, url, method, params, show_source, reload, data, scrollpos)
 
     # Applet Protocol Handler interface
-    
+
     def set_local_api(self, name, klass):
         """Install a local protocol handler"""
         if not name.endswith("API"):
@@ -390,23 +394,22 @@ class Context(URIContext):
         scheme, resturl = urllib.parse.splittype(url)
         if not scheme:
             raise IOError("protocol error",
-                            "no scheme identifier in URL", url)
+                          "no scheme identifier in URL", url)
         scheme = scheme.lower()
         sanitized = re.sub(r"[^a-zA-Z0-9]", "_", scheme)
         modname = sanitized + "API"
         try:
-            klass  = self.local_api_handlers[modname]
+            klass = self.local_api_handlers[modname]
         except KeyError:
             return None
         handler = klass(resturl, method, params)
-        handler._url_ = url # To keep BaseReader happy
+        handler._url_ = url  # To keep BaseReader happy
         return handler
 
     def remove_local_api_handlers(self):
         """Remove any local handlers from the current context"""
         if self.local_api_handlers:
             self.local_api_handlers = {}
-
 
     # External user commands
 
@@ -417,7 +420,8 @@ class Context(URIContext):
         """
         # File/Save As...
         url = self.get_baseurl(*relurls)
-        if url == self.get_url() and self.busycheck(): return False
+        if url == self.get_url() and self.busycheck():
+            return False
         from tkinter import filedialog
         fd = filedialog.SaveFileDialog(self.root)
         # give it a default filename on which save within the
@@ -432,9 +436,11 @@ class Context(URIContext):
             # strip trailing fragment
             default = default.rsplit('#', 1)[0]
             # maybe bogus assumption?
-            if not default: default = 'index.html'
+            if not default:
+                default = 'index.html'
         file = fd.go(default=default, key="save")
-        if not file: return False
+        if not file:
+            return False
         #
         SavingReader(self, url, 'GET', {}, 0, 0, filename=file)
         self.message_clear()
@@ -442,7 +448,8 @@ class Context(URIContext):
 
     def print_document(self):
         # File/Print...
-        if self.busycheck(): return
+        if self.busycheck():
+            return
         from . import PrintDialog
         PrintDialog.PrintDialog(self,
                                 self.get_url(),
@@ -522,7 +529,8 @@ class Context(URIContext):
                 if not viewer:
                     # Try to find a frame inside other browsers
                     for browser in self.app.browsers:
-                        if browser is self.browser: continue
+                        if browser is self.browser:
+                            continue
                         viewer = browser.context.viewer.find_subviewer(target)
                         if viewer:
                             break
@@ -530,7 +538,7 @@ class Context(URIContext):
                     # Create a new browser with this name
                     newbrowser = self.browser.new_command()
                     viewer = newbrowser.context.viewer
-                    viewer.name = target # XXX Naughty ;-)
+                    viewer.name = target  # XXX Naughty ;-)
                 context = viewer.context
         if context and context is not self:
             context.source = self.source
@@ -579,8 +587,8 @@ class Context(URIContext):
 
     def busycheck(self):
         if self.readers:
-            self.error_dialog('Busy',
-                "Please wait until the transfer is done (or stop it)")
+            self.error_dialog(
+                'Busy', "Please wait until the transfer is done (or stop it)")
             return True
         return False
 
@@ -598,16 +606,16 @@ class Context(URIContext):
         return title
 
 
-
-
 class SimpleContext(Context):
     # this can be used when interactive updates are not desired
+
     def new_reader_status(self): pass
+
     def on_top(self): return False
 
 
-
 class SavingReader(Reader.Reader):
+
     def __init__(self, context, url, *args, **kw):
         self.__filename = kw.pop('filename')
         Reader.Reader.__init__(self, context, '', *args, **kw)

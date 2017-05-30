@@ -36,8 +36,6 @@ from ..grailbase.uricontext import URIContext
 MULTI_DO_PAGE_BREAK = True                 # changing this breaks stuff
 
 
-
-
 #  The main program.  Really needs to be broken up a bit!
 
 
@@ -149,8 +147,10 @@ def run(app):
     # crack open log file if given
     stderr = sys.stderr
     if logfile:
-        try: sys.stderr = open(logfile, 'a')
-        except IOError: sys.stderr = stderr
+        try:
+            sys.stderr = open(logfile, 'a')
+        except IOError:
+            sys.stderr = stderr
     utils.debug("Using Python version " + sys.version)
     # crack open the input file, or stdin
     outfp = None
@@ -179,7 +179,7 @@ def run(app):
             cmd = outfile[1:].strip()
             outfile = '|' + cmd
             proc = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
-                bufsize=-1)
+                                    bufsize=-1)
             outfp = proc.stdin
         elif outfile == '-':
             outfp = sys.stdout.buffer
@@ -207,7 +207,7 @@ def run(app):
         # create the writer & parser
         fontsize, leading = settings.get_fontsize()
         w = PSWriter.PSWriter(outfp, title or None, url or '',
-                              #varifamily='Palatino',
+                              # varifamily='Palatino',
                               paper=paper, settings=settings)
         ctype = "text/html"
         mod = app.find_type_extension("printing.filetypes", ctype)
@@ -275,7 +275,6 @@ def run(app):
             proc.wait()
 
 
-
 #  Lots of helper functions....
 
 
@@ -289,7 +288,7 @@ def load_tag_handler(app, arg):
         if ext != ".py":
             sys.stdout = sys.stderr
             print("Extra tags must be defined in a"
-                   " Python source file with '.py' extension.")
+                  " Python source file with '.py' extension.")
             print()
             return False
         dirname, modname = os.path.split(basename)
@@ -355,6 +354,7 @@ def open_source(infile):
 
 
 class multi_transform:
+
     def __init__(self, context, levels=None):
         self.__app = context.app
         baseurl = context.get_baseurl()
@@ -393,6 +393,7 @@ class multi_transform:
         return self.__subdocs
 
     __base_index = None
+
     def set_basedoc(self, url):
         level = self.__docs.get(url, 1)
         self.__level = level
@@ -423,6 +424,7 @@ class multi_transform:
 
 
 class explicit_multi_transform:
+
     def __init__(self, subdocs):
         self.__subdocs = list(subdocs)
 
@@ -469,7 +471,7 @@ def usage(settings):
 def _onoff(bool):
     return "ON" if bool else "OFF"
 
-
+
 #  main() & relations....
 
 
@@ -477,6 +479,7 @@ from .. import BaseApplication
 
 
 class Application(BaseApplication.BaseApplication):
+
     def __init__(self, prefs=None):
         BaseApplication.BaseApplication.__init__(self, prefs)
         from .. import GlobalHistory
@@ -500,7 +503,8 @@ def main():
 
 
 def profile_main(n=18):
-    import profile, pstats
+    import profile
+    import pstats
     print("Running under profiler....")
     profiler = profile.Profile()
     try:

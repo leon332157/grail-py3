@@ -8,7 +8,9 @@ Usage:  pinfo.py [profile-file] [callees | callers | stats]
 __version__ = '$Revision: 2.8 $'
 
 
-import os, pstats, sys
+import os
+import pstats
+import sys
 
 legal_sorts = 'calls', 'cumulative', 'file', 'module', 'pcalls', 'line', \
               'name', 'nfl', 'stdname', 'time'
@@ -33,8 +35,10 @@ if sys.argv[1:]:
         if new_sorts:
             sorts = tuple(new_sorts)
         for i, arg in enumerate(args):
-            try: args[i] = int(arg)
-            except: pass
+            try:
+                args[i] = int(arg)
+            except:
+                pass
         restrictions = filter(None, args)
 
 
@@ -47,4 +51,4 @@ if not os.path.exists(fileName):
 
 p = pstats.Stats(fileName).strip_dirs()
 p.sort_stats(*sorts)
-getattr(p, 'print_'+report)(*restrictions)
+getattr(p, 'print_' + report)(*restrictions)

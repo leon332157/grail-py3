@@ -4,7 +4,6 @@ from tkinter import *
 from . import tktools
 
 
-
 class OpenURIDialog:
     __lasturi = ''
 

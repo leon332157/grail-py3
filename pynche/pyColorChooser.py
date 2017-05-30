@@ -5,14 +5,16 @@ import os
 from . import Main
 from . import ColorDB
 
+
 class Chooser:
     """Ask for a color"""
+
     def __init__(self,
-                 master = None,
-                 databasefile = None,
-                 initfile = None,
-                 ignore = False,
-                 wantspec = False):
+                 master=None,
+                 databasefile=None,
+                 initfile=None,
+                 ignore=False,
+                 wantspec=False):
         self.__master = master
         self.__databasefile = databasefile
         self.__initfile = initfile or os.path.expanduser('~/.pynche')
@@ -26,9 +28,9 @@ class Chooser:
             self.__master = Tk()
         if not self.__pw:
             self.__pw, self.__sb = \
-                       Main.build(master = self.__master,
-                                  initfile = self.__initfile,
-                                  ignore = self.__ignore)
+                Main.build(master=self.__master,
+                           initfile=self.__initfile,
+                           ignore=self.__ignore)
         else:
             self.__pw.deiconify()
         # convert color
@@ -61,26 +63,29 @@ class Chooser:
         if self.__sb:
             self.__sb.save_views()
 
-
+
 # convenience stuff
 _chooser = None
 
-def askcolor(color = None, **options):
+
+def askcolor(color=None, **options):
     """Ask for a color"""
     global _chooser
     if not _chooser:
         _chooser = Chooser(**options)
     return _chooser.show(color)
 
+
 def save():
     global _chooser
     if _chooser:
         _chooser.save()
 
-
+
 # test stuff
 if __name__ == '__main__':
     class Tester:
+
         def __init__(self):
             from tkinter import Tk, Button, Label
             self.__root = tk = Tk()

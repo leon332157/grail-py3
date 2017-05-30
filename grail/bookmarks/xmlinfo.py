@@ -30,9 +30,9 @@ class Record:
             self.encoding = encoding
         if standalone >= 0:
             self.standalone = "yes" if standalone else "no"
-    
+
     def StartDoctypeDeclHandler(self, doctypeName, systemId, publicId,
-    has_internal_subset):
+                                has_internal_subset):
         self.doc_elem = doctypeName
         if publicId is not None:
             self.public_id = publicId
@@ -47,7 +47,7 @@ FieldLabels = dict(
     standalone="Standalone",
     xml_version="XML Version",
     encoding="Encoding",
-    )
+)
 
 
 FieldNames = sorted(FieldLabels.keys())

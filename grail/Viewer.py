@@ -20,17 +20,18 @@ font_dingbats = {
     'disc': ('\x6c', '_ding'),
     'circle': ('\x6d', '_ding'),
     'square': ('\x6f', '_ding'),
-    }
+}
 
-
+
 class WidthMagic:
+
     def __init__(self, viewer, abswidth, percentwidth):
         self.__abswidth = abswidth
         self.__percentwidth = percentwidth
         self.__text = viewer.text
         dents = viewer.marginlevel + viewer.rightmarginlevel
         self.__removable = (dents * INDENTATION_WIDTH) \
-                           + viewer.RULE_WIDTH_MAGIC
+            + viewer.RULE_WIDTH_MAGIC
 
     def close(self):
         self.__text = None              # free reference
@@ -46,6 +47,7 @@ class WidthMagic:
 
 
 class HRule(Canvas):
+
     def __init__(self, viewer, abswidth, percentwidth, height=2, **kw):
         self.__magic = viewer.width_magic(abswidth, percentwidth)
         kw["borderwidth"] = 1
@@ -70,7 +72,7 @@ class HRule(Canvas):
         self.__magic.close()
         Canvas.destroy(self)
 
-
+
 class Viewer(formatter.AbstractWriter):
 
     """A viewer is mostly a fancy text widget with scroll bars.
@@ -198,15 +200,15 @@ class Viewer(formatter.AbstractWriter):
         if self.smoothscroll:
             from .supertextbox import make_super_text_box
             self.text, self.frame = make_super_text_box(self.master,
-                                                      width=width,
-                                                      height=height,
-                                                      hbar=bars, vbar=bars)
+                                                        width=width,
+                                                        height=height,
+                                                        hbar=bars, vbar=bars)
         else:
             self.text, self.frame = tktools.make_text_box(self.master,
-                                                      width=width,
-                                                      height=height,
-                                                      hbar=bars, vbar=bars,
-                                                      class_="Viewer")
+                                                          width=width,
+                                                          height=height,
+                                                          hbar=bars, vbar=bars,
+                                                          class_="Viewer")
         if self.parent:
             self.text.config(background=self.parent.text['background'],
                              foreground=self.parent.text['foreground'])
@@ -240,7 +242,7 @@ class Viewer(formatter.AbstractWriter):
 
     def init_presentation(self):
         self.SHOW_TITLES = self.prefs.GetBoolean(
-            'presentation',  'show-link-titles')
+            'presentation', 'show-link-titles')
         self.hovering_enabled = self.prefs.GetBoolean(
             'presentation', 'hover-on-links')
 
@@ -336,9 +338,12 @@ class Viewer(formatter.AbstractWriter):
                                     lmargin1=pix, lmargin2=pix)
             tag = 'rightmargin_{}'.format(level)
             self.text.tag_configure(tag, rmargin=pix)
-            tabs = "{} right {} left".format(pix-5, pix)
-            self.text.tag_configure('label_{}'.format(level),
-                                    lmargin1=pix-INDENTATION_WIDTH, tabs=tabs)
+            tabs = "{} right {} left".format(pix - 5, pix)
+            self.text.tag_configure(
+                'label_{}'.format(level),
+                lmargin1=pix -
+                INDENTATION_WIDTH,
+                tabs=tabs)
         # Configure anchor tags
         for tag in 'a', 'ahist':
             self.text.tag_bind(tag, '<ButtonPress-1>', self.anchor_press)
@@ -425,10 +430,10 @@ class Viewer(formatter.AbstractWriter):
 
     def button_1_event(self, event):
         self.context.viewer.text.focus_set()
-        self.current_index = self.text.index(CURRENT) # For anchor_click
+        self.current_index = self.text.index(CURRENT)  # For anchor_click
 
     def button_2_event(self, event):
-        self.current_index = self.text.index(CURRENT) # For anchor_click_new
+        self.current_index = self.text.index(CURRENT)  # For anchor_click_new
 
     def button_3_event(self, event):
         url = self.find_tag_url()
@@ -495,13 +500,14 @@ class Viewer(formatter.AbstractWriter):
     # AbstractWriter methods
 
     def new_alignment(self, align):
-##      print("New alignment:", align)
-        if align == 'left': align = None
+        ##      print("New alignment:", align)
+        if align == 'left':
+            align = None
         self.align = align
         self.new_tags()
 
     def new_font(self, font):
-##      print("New font:", font)
+        ##      print("New font:", font)
         if font:
             tag = self.make_fonttag(font)
         else:
@@ -514,9 +520,12 @@ class Viewer(formatter.AbstractWriter):
     def make_fonttag(self, font):
         tag, i, b, tt = font
         tag = tag or ''
-        if tt: tag = tag + '_tt'
-        if b: tag = tag + '_b'
-        if i: tag = tag + '_i'
+        if tt:
+            tag = tag + '_tt'
+        if b:
+            tag = tag + '_b'
+        if i:
+            tag = tag + '_i'
         if tag:
             if self.__fonttags_built and tag in self.__fonttags_built:
                 return tag
@@ -534,7 +543,7 @@ class Viewer(formatter.AbstractWriter):
         return font
 
     def new_margin(self, margin, level):
-##      print("New margin:", margin, level)
+        ##      print("New margin:", margin, level)
         self.marginlevel = level
         self.margintag = level and ('margin_{}'.format(level))
         self.new_tags()
@@ -544,7 +553,7 @@ class Viewer(formatter.AbstractWriter):
         self.new_tags()
 
     def new_styles(self, styles):
-##      print('New styles:', styles)
+        ##      print('New styles:', styles)
         self.addtags = styles
         if self.pendingdata:
             self.text.insert(END, self.pendingdata, self.flowingtags)
@@ -558,11 +567,11 @@ class Viewer(formatter.AbstractWriter):
 
     def send_paragraph(self, blankline):
         self.pendingdata = self.pendingdata + ('\n' * blankline)
-##      self.text.update_idletasks()
+# self.text.update_idletasks()
 
     def send_line_break(self):
         self.pendingdata = self.pendingdata + '\n'
-##      self.text.update_idletasks()
+# self.text.update_idletasks()
 
     def width_magic(self, abswidth, percentwidth):
         return WidthMagic(self, abswidth, percentwidth)
@@ -575,12 +584,12 @@ class Viewer(formatter.AbstractWriter):
         self.add_subwindow(window)
         self.subwindows.pop()
         self.send_line_break()
-##      self.text.update_idletasks()
+# self.text.update_idletasks()
 
     RULE_WIDTH_MAGIC = 10
 
     def send_label_data(self, data):
-##      print("Label data:", repr(data))
+        ##      print("Label data:", repr(data))
         tags = self.flowingtags + ('label_{}'.format(self.marginlevel),)
         if isinstance(data, str):
             self.text.insert(END, self.pendingdata, self.flowingtags,
@@ -604,18 +613,18 @@ class Viewer(formatter.AbstractWriter):
             self.text.insert(END, self.pendingdata, self.flowingtags,
                              '\t', tags)
             self.pendingdata = ''
-            window = Label(self.text, image = data,
-                           background = self.text['background'],
-                           borderwidth = 0)
+            window = Label(self.text, image=data,
+                           background=self.text['background'],
+                           borderwidth=0)
             self.add_subwindow(window, align=BASELINE)
             self.pendingdata = '\t'
 
     def send_flowing_data(self, data):
-##      print("Flowing data:", repr(data), self.flowingtags)
+        ##      print("Flowing data:", repr(data), self.flowingtags)
         self.pendingdata = self.pendingdata + data
 
     def send_literal_data(self, data):
-##      print("Literal data:", repr(data), self.flowingtags + ('pre',))
+        ##      print("Literal data:", repr(data), self.flowingtags + ('pre',))
         self.text.insert(END, self.pendingdata, self.flowingtags,
                          data, self.flowingtags + ('pre',))
         self.pendingdata = ''
@@ -623,6 +632,7 @@ class Viewer(formatter.AbstractWriter):
     # Viewer's own methods
 
     SHOW_TITLES = False
+
     def anchor_enter(self, event):
         tagurl = self.find_tag_url()
         url, target = self.split_target(tagurl)
@@ -670,7 +680,7 @@ class Viewer(formatter.AbstractWriter):
     def anchor_press(self, event):
         self._shifted = False
         self.context.viewer.text.focus_set()
-        self.current_index = self.text.index(CURRENT) # For anchor_click
+        self.current_index = self.text.index(CURRENT)  # For anchor_click
         url = self.find_tag_url()
         if url:
             self.add_temp_tag()
@@ -733,7 +743,7 @@ class Viewer(formatter.AbstractWriter):
                 raw = self.text.tag_ranges(tag)
                 list = []
                 for i in range(0, len(raw), 2):
-                    list.append((raw[i].string, raw[i+1].string))
+                    list.append((raw[i].string, raw[i + 1].string))
                 return list
         return ()
 
@@ -757,6 +767,7 @@ class Viewer(formatter.AbstractWriter):
                 self.text.update_idletasks()
 
     def scrollpos(self): return self.text.index('@0,0')
+
     def scroll_to_position(self, pos): self.text.yview(pos)
 
     def clear_targets(self):
@@ -864,7 +875,7 @@ class Viewer(formatter.AbstractWriter):
     def find_parentviewer(self):
         return self.parent
 
-
+
 class ViewerMenu:
     __have_link = False
     __have_image = False
@@ -924,7 +935,7 @@ class ViewerMenu:
         need_image = bool(self.__image_url)
         if (need_link != self.__have_link
             or need_image != self.__have_image
-            or self.__image_prev != self.__image_file):
+                or self.__image_prev != self.__image_file):
             if self.__have_link or self.__have_image:
                 self.__menu.delete(self.__last_standard_index + 1, END)
                 self.__have_link = self.__have_image = False
@@ -955,8 +966,9 @@ class ViewerMenu:
                                 command=self.__open_image)
         label = "Save Image {}...".format(self.__image_file)
         self.__menu.add_command(label=label, command=self.__save_image)
-        self.__menu.add_command(label="Copy Image Location",
-            command=partial(self.__select_image_url, viewer))
+        self.__menu.add_command(
+            label="Copy Image Location", command=partial(
+                self.__select_image_url, viewer))
 
     def __add_link_items(self, viewer):
         self.__have_link = True
@@ -967,10 +979,12 @@ class ViewerMenu:
                                 command=self.__print_link)
         self.__menu.add_command(label="Save Link As...",
                                 command=partial(self.__save_link, viewer))
-        self.__menu.add_command(label="Copy Link Location",
-            command=partial(self.__select_link_url, viewer))
+        self.__menu.add_command(
+            label="Copy Link Location", command=partial(
+                self.__select_link_url, viewer))
 
     __selection = ''
+
     def __select_image_url(self, viewer, event=None):
         self.__select(viewer, self.__context.get_baseurl(self.__image_url))
 
@@ -1021,11 +1035,11 @@ class ViewerMenu:
             self.root = browser.root
             self.master = browser.master
             # this is the really evil part:
-            #app.browsers.append(self)
+            # app.browsers.append(self)
 
         def remove(self):
             # remove faked out connections to other objects
-            #self.app.browsers.remove(self)
+            # self.app.browsers.remove(self)
             self.context = self.app = self.root = None
 
         def message(self): pass
@@ -1053,7 +1067,8 @@ def test():
     """Test the Viewer class."""
     import sys
     file = "Viewer.py"
-    if sys.argv[1:]: file = sys.argv[1]
+    if sys.argv[1:]:
+        file = sys.argv[1]
     with open(file, "rb") as f:
         data = f.read()
     root = Tk()

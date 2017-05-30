@@ -18,7 +18,9 @@ in the text window (which only has a background).
 from tkinter import *
 from . import ColorDB
 
+
 class TextViewer:
+
     def __init__(self, switchboard, master=None):
         self.__sb = switchboard
         optiondb = switchboard.optiondb()
@@ -102,10 +104,10 @@ and choosing a color.'''))
         for col in (1, 2):
             for row in (2, 3, 4):
                 # there is no insertforeground option
-                if row==4 and col==1:
+                if row == 4 and col == 1:
                     continue
                 r = Radiobutton(frame, variable=self.__which,
-                                value=(row-2)*2 + col-1)
+                                value=(row - 2) * 2 + col - 1)
                 r.grid(row=row, column=col)
                 self.__radios.append(r)
         self.__toggletrack()

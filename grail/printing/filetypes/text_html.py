@@ -11,14 +11,14 @@ def add_options(dialog, settings, top):
     htmlfr = tktools.make_group_frame(top, "html", "HTML options:", fill=X)
     #  Image printing controls:
     dialog.__imgchecked = dialog.new_checkbox(
-	htmlfr, "Print images", settings.imageflag)
+        htmlfr, "Print images", settings.imageflag)
     dialog.__greychecked = dialog.new_checkbox(
-	htmlfr, "Reduce images to greyscale", settings.greyscale)
+        htmlfr, "Reduce images to greyscale", settings.greyscale)
     #  Anchor-handling selections:
     dialog.__footnotechecked = dialog.new_checkbox(
-	htmlfr, "Footnotes for anchors", settings.footnoteflag)
+        htmlfr, "Footnotes for anchors", settings.footnoteflag)
     dialog.__underchecked = dialog.new_checkbox(
-	htmlfr, "Underline anchors", settings.underflag)
+        htmlfr, "Underline anchors", settings.underflag)
 
 
 def update_settings(dialog, settings):

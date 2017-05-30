@@ -14,10 +14,12 @@ def start_frameset(parser, attrs):
     parent = getattr(parser, "frameset", None)
     parser.frameset = FrameSet(parser, rows, cols, parent)
 
+
 def end_frameset(parser):
     if parser.frameset:
         parser.frameset.done()
         parser.frameset = parser.frameset.parent
+
 
 def do_frame(parser, attrs):
     if not getattr(parser, "frameset", None):
@@ -37,10 +39,12 @@ def do_frame(parser, attrs):
     parser.frameset.add_frame(src, name, marginwidth, marginheight,
                               scrolling, noresize)
 
+
 def start_noframes(parser, attrs):
     if parser.push_object("noframes"):
         return
     parser.set_suppress()
+
 
 def end_noframes(parser):
     parser.pop_object()
@@ -110,7 +114,7 @@ class FrameSet:
             x = 0
             for width in self.colsizes:
                 frame = self.frames[i]
-                i = i+1
+                i = i + 1
                 frame.place(x=x, y=y, width=width, height=height)
                 x = x + width
             y = y + height
@@ -197,7 +201,8 @@ class FrameSet:
         except ValueError:
             pass
         else:
-            if mw >= 0: viewer.text[attr] = mw
+            if mw >= 0:
+                viewer.text[attr] = mw
 
     def done(self):
         while self.make_next_viewer():

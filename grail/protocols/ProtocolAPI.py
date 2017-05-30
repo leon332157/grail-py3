@@ -28,6 +28,7 @@ from .. import grailutil
 # list of valid scheme environment variables for proxies
 VALID_PROXIES = ('http_proxy', 'ftp_proxy')
 
+
 def protocol_joiner(scheme):
     scheme = scheme.lower()
     sanitized = re.sub(r"[^a-zA-Z0-9]", "_", scheme)
@@ -37,6 +38,7 @@ def protocol_joiner(scheme):
     if m:
         return m.join
     return None
+
 
 def protocol_access(url, mode, params, data=None):
     scheme, resturl = splittype(url)
@@ -62,13 +64,13 @@ def protocol_access(url, mode, params, data=None):
             proxy = None
             for next_proxy_name in VALID_PROXIES:
                 next_proxy = grailutil.pref_or_getenv(next_proxy_name,
-                                              check_ok=VALID_PROXIES)
+                                                      check_ok=VALID_PROXIES)
                 if next_proxy:
                     app.prefs.Set('proxies', 'manual_proxy_enabled', 1)
-                    
+
                 if next_proxy_name == proxy_name:
                     proxy = next_proxy
-                    
+
             no_proxy_enabled = grailutil.pref_or_getenv('no_proxy_enabled',
                                                         type_name='int')
             if no_proxy_enabled == -1:
@@ -77,12 +79,12 @@ def protocol_access(url, mode, params, data=None):
                 app.prefs.Set('proxies', 'no_proxy_enabled', 1)
             else:
                 app.prefs.Set('proxies', 'no_proxy_enabled', 0)
-        else:   
+        else:
             proxy = grailutil.pref_or_getenv(proxy_name,
                                              check_ok=VALID_PROXIES)
     else:
         proxy = None
-        
+
     if proxy:
         if not valid_proxy(proxy):
             error = 'Invalid proxy: ' + proxy
@@ -93,7 +95,7 @@ def protocol_access(url, mode, params, data=None):
             no_proxy = grailutil.pref_or_getenv('no_proxy')
         else:
             no_proxy = None
-            
+
         do_proxy = True
         if no_proxy:
             no_proxy = list(map(str.strip, no_proxy.split(",")))
@@ -133,8 +135,11 @@ def protocol_access(url, mode, params, data=None):
 
 from ..grailbase import extloader
 
+
 class ProtocolLoader(extloader.ExtensionLoader):
+
     class ProtocolInfo:
+
         def __init__(self, scheme, access, join):
             self.scheme = scheme
             self.access = access
@@ -155,9 +160,10 @@ class ProtocolLoader(extloader.ExtensionLoader):
         return ext
 
 
-def test(url = "http://www.python.org/"):
+def test(url="http://www.python.org/"):
     import sys
-    if sys.argv[1:]: url = sys.argv[1]
+    if sys.argv[1:]:
+        url = sys.argv[1]
     api = protocol_access(url, 'GET', {})
     while True:
         message, ready = api.pollmeta()
@@ -176,6 +182,7 @@ def test(url = "http://www.python.org/"):
                 break
     api.close()
 
+
 def proxy_exception(host, list):
     """Return True if host is contained in list or host's suffix matches
     an entry in list that begins with a leading dot."""
@@ -186,6 +193,7 @@ def proxy_exception(host, list):
             return True
     return False
 
+
 def valid_proxy(proxy):
     """Return True if the proxy string looks like a valid proxy URL, else
     return False."""
@@ -195,6 +203,6 @@ def valid_proxy(proxy):
     if scheme != 'http' or params or query or fragment:
         return False
     return True
-    
+
 if __name__ == '__main__':
     test()

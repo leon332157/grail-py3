@@ -144,7 +144,7 @@ class SGMLParser(SGMLLexer.SGMLLexer):
                 tag = self.doctype
                 if not tag:
                     raise SGMLError(
-                          'Cannot start the document with an empty tag.')
+                        'Cannot start the document with an empty tag.')
         if tag in self.__taginfo:
             taginfo = self.__taginfo[tag]
         else:
@@ -190,10 +190,9 @@ class SGMLParser(SGMLLexer.SGMLLexer):
             self.__taginfo = ticache
             del stack[-1]
 
-
-    named_characters = {'re' : '\r',
-                        'rs' : '\n',
-                        'space' : ' '}
+    named_characters = {'re': '\r',
+                        'rs': '\n',
+                        'space': ' '}
 
     def lex_namedcharref(self, name, terminator):
         if name in self.named_characters:

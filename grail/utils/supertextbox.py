@@ -2,8 +2,7 @@ from .tktools import *
 
 
 def make_super_text_box(parent, width=0, height=0, hbar=0, vbar=1,
-                  fill=BOTH, expand=1, wrap=WORD, pack=1):
-
+                        fill=BOTH, expand=1, wrap=WORD, pack=1):
     """Create a text box with smooth scrolling."""
 
     hbar, vbar, frame = make_scrollbars(parent, hbar, vbar, pack)

@@ -49,7 +49,7 @@ class Writer(walker.TreeWalker):
             last_visit = ' LAST_VISIT="{}"'.format(last_visit)
         print('{}<DT><A HREF="{}"{}{}{}{}>{}</A>'.format(
               self.__tab(), node.uri(), alias, add_date,
-               last_visit, modified, saxutils.escape(node.title())),
+              last_visit, modified, saxutils.escape(node.title())),
               file=self.__fp)
         self.__write_description(node.description())
 
@@ -72,8 +72,10 @@ class Writer(walker.TreeWalker):
             print("<DL><p>", file=self.__fp)
             return
         tab = self.__tab()
-        if node.expanded_p(): folded = ''
-        else: folded = ' FOLDED'
+        if node.expanded_p():
+            folded = ''
+        else:
+            folded = ' FOLDED'
         add_date = node.add_date() or ''
         if add_date:
             add_date = ' ADD_DATE="{}"'.format(add_date)
@@ -105,7 +107,8 @@ class Writer(walker.TreeWalker):
         return "    " * self.__depth
 
     def __write_description(self, desc):
-        if not desc: return
+        if not desc:
+            return
         # write the description, sans leading and trailing whitespace
         print('<DD>{}'.format(saxutils.escape(desc).strip()), file=self.__fp)
 

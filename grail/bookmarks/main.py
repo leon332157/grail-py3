@@ -54,7 +54,7 @@ class Options:
         "modified": "last_modified",
         "visited": "last_visited",
         "added": "add_date",
-        }
+    }
 
     def __init__(self, args):
         s, _ = os.path.splitext(os.path.basename(sys.argv[0]))
@@ -87,7 +87,7 @@ class Options:
                 print(fields)
                 for f in fields:
                     fname = self.__export_field_map[f]
-                    if not fname in self.export_fields:
+                    if fname not in self.export_fields:
                         self.export_fields.append(fname)
             elif opt == "--search":
                 self.keywords.extend(arg.split(","))

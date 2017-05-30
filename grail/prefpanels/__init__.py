@@ -7,7 +7,7 @@ grail_root = grailutil.get_grailroot()
 
 # User's panels dir should come first, so it takes precedence.
 panels_dirs = [
-               os.path.expanduser("~/.grail/prefpanels"),
+    os.path.expanduser("~/.grail/prefpanels"),
 ]
 
 __path__[:0] = panels_dirs  # Insert at beginning

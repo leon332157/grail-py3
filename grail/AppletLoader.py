@@ -48,7 +48,7 @@ class AppletLoader:
         self.align = align
         self.menu = menu
         self.reload = reload
-        
+
         self.params = {}
 
         self.modname = None
@@ -146,9 +146,12 @@ class AppletLoader:
             self.klass = getattr(self.module, self.classname)
             self.parent = self.make_parent()
             self.instance = self.klass(self.parent, **self.params)
-            try: cleanup = getattr(self.instance, CLEANUP_HANDLER_NAME)
-            except AttributeError: pass
-            else: CleanupHandler(self.parser.viewer, cleanup)
+            try:
+                cleanup = getattr(self.instance, CLEANUP_HANDLER_NAME)
+            except AttributeError:
+                pass
+            else:
+                CleanupHandler(self.parser.viewer, cleanup)
         else:
             # Asynchronous loading
             self.parent = self.make_parent()
@@ -170,12 +173,14 @@ class AppletLoader:
             text = self.viewer.text
             bg = text['background']
             frame = AppletFrame(text, self, background=bg)
-            if self.width: frame.config(width=self.width)
-            if self.height: frame.config(height=self.height)
+            if self.width:
+                frame.config(width=self.width)
+            if self.height:
+                frame.config(height=self.height)
             self.parser.add_subwindow(frame,
                                       hspace=self.hspace, vspace=self.vspace)
             parent = frame
-        return parent                   #  FLD:  made to work in either case
+        return parent  # FLD:  made to work in either case
 
     def load_it_now(self):
         """Invoked by ModuleReader when it is done, to create the applet."""
@@ -199,9 +204,12 @@ class AppletLoader:
         self.parser.loaded.append(mod)
         self.klass = getattr(self.module, self.classname)
         self.instance = self.klass(self.parent, **self.params)
-        try: cleanup = getattr(self.instance, CLEANUP_HANDLER_NAME)
-        except AttributeError: pass
-        else: CleanupHandler(self.parser.viewer, cleanup)
+        try:
+            cleanup = getattr(self.instance, CLEANUP_HANDLER_NAME)
+        except AttributeError:
+            pass
+        else:
+            CleanupHandler(self.parser.viewer, cleanup)
 
     def get_defaults(self):
         """Internal -- calculate defaults for applet parameters."""
@@ -210,14 +218,14 @@ class AppletLoader:
             if match:
                 self.modname = match.group(2)
             else:
-                self.modname = "?" # Shouldn't happen
+                self.modname = "?"  # Shouldn't happen
             if self.name:
                 self.classname = self.name
             else:
                 self.classname = self.modname
             self.codeurl = self.context.get_baseurl(
                 self.codebase, self.code)
-        elif self.classid or self.codebase: # <OBJECT>
+        elif self.classid or self.codebase:  # <OBJECT>
             if self.classid:
                 match = codeprog.match(self.classid)
                 if match:
@@ -239,7 +247,6 @@ class AppletLoader:
             if match is None:
                 self.codeurl = self.context.get_baseurl(self.codebase,
                                                         self.codeurl)
-            
 
     def get_easy_module(self, mod):
         """Internal -- import a module if it can be done locally."""
@@ -318,7 +325,7 @@ class ModuleReader(BaseReader):
         self.apploader.context.error_dialog(
             ImportError,
             "Applet code at URL {} not loaded ({}: {})".format(
-            self.apploader.codeurl, errno, errmsg))
+                self.apploader.codeurl, errno, errmsg))
         self.apploader.close()
         self.apploader = None
         BaseReader.handle_error(self, errno, errmsg, headers)
@@ -329,12 +336,11 @@ class ModuleReader(BaseReader):
         apploader.load_it_now()
 
 
-
 class AppletMagic:
 
     def __init__(self, loader):
         self.grail_parser = self.grail_viewer = self.grail_context = \
-                            self.grail_browser = self.grail_app = None
+            self.grail_browser = self.grail_app = None
         if loader:
             context = loader.context
             if context:
@@ -369,9 +375,10 @@ def get_key(context):
     context.applet_group = key
     return key
 
+
 def _get_key(context):
     """Get the key to be used in the rexec cache for this context.
-    
+
     For now, we have a separate rexec environment per page.
     In the future, the user will be able to specify the granularity.
 
@@ -395,8 +402,9 @@ def _get_key(context):
     if scheme and netloc and scheme in urllib.parse.uses_netloc:
         netloc = netloc.lower()
         user, host = urllib.parse.splituser(netloc)
-        if user: return netloc          # User:passwd present -- don't mess
-        netloc, port = urllib.parse.splitport(netloc) # Port is ignored
+        if user:
+            return netloc          # User:passwd present -- don't mess
+        netloc, port = urllib.parse.splitport(netloc)  # Port is ignored
         if netloc in groups:
             return netloc               # Exact match
         for group in groups:            # Look for longest match
@@ -407,10 +415,12 @@ def _get_key(context):
         return netloc                   # No match, return full netloc
     return url
 
+
 def get_rexec(context):
     """Get the rexec object for this context, if one already exists."""
     get_key(context)
     return None
+
 
 def set_reload(context):
     """If there's a rexec object for this context, prepare it for reloading."""
@@ -444,9 +454,11 @@ class ReloadHelper:
                 self.rexec.clear_reload()
                 self.rexec = None
 
+
 class CleanupHandler:
     """Helper to run an applet's __cleanup__ discipline.
     """
+
     def __init__(self, viewer, handler):
         self._viewer = viewer
         self._handler = handler
@@ -454,8 +466,10 @@ class CleanupHandler:
 
     def __call__(self, *args):
         import sys
-        try: self._handler()
-        except: pass ## Pulling in show_tb from the loader
-        del self._handler                ## doesn't work; not sure why.
+        try:
+            self._handler()
+        except:
+            pass  # Pulling in show_tb from the loader
+        del self._handler  # doesn't work; not sure why.
         self._viewer.unregister_reset_interest(self)
         del self._viewer

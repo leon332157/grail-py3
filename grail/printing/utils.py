@@ -28,6 +28,7 @@ def find_word_breaks(data):
 
 _subsystems = {}
 
+
 def debug(text, subsystem=None):
     if get_debugging(subsystem):
         if text[-1] != '\n':
@@ -52,6 +53,8 @@ def get_debugging(subsystem=None):
 
 # unit conversions:
 def inch_to_pt(inches): return inches * 72.0
+
+
 def pt_to_inch(points): return points / 72.0
 
 

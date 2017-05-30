@@ -26,6 +26,7 @@ modname_matcher = re.compile(r'^(.*)Panel$')
 
 # Framework
 
+
 class Framework:
     """Skeleton for building preference panels via inheritance.
 
@@ -46,7 +47,7 @@ class Framework:
        - Within .CreateLayout, use the self.RegisterUI() to couple the
          widget (or whatever user interface element) with the corresponding
          preference.  (.widget_set_func() is useful for producing the uiset
-         func for many tkinter widgets.) 
+         func for many tkinter widgets.)
        - There are also some convenient routines for making widgets, eg
          self.PrefsCheckButton().
      - Override .UpdateLayout() for actions, if any, that need to be done
@@ -112,7 +113,7 @@ class Framework:
         longer than 25 chars by embedding \n newlines at suitable points.)
 
         The label is returned, in the unlikely case more than the frame is
-        needed. 
+        needed.
 
         Useful so your widgets line up."""
 
@@ -163,7 +164,7 @@ class Framework:
         else:
             if variable:
                 raise ValueError(
-                      "multi-line entry fields may not specify a variable")
+                    "multi-line entry fields may not specify a variable")
             entry, garbage = tktools.make_text_box(frame,
                                                    width=entry_width,
                                                    height=entry_height,
@@ -204,14 +205,14 @@ class Framework:
             b.pack(side=LEFT)
 
         if composite:
-            use_side=LEFT
-            use_fill=NONE
-            use_expand=1
+            use_side = LEFT
+            use_fill = NONE
+            use_expand = 1
         else:
-            use_side=TOP
-            use_fill=X
-            use_expand=0
-            
+            use_side = TOP
+            use_fill = X
+            use_expand = 0
+
         f.pack(fill=use_fill, side=use_side, pady='1m', expand=use_expand)
 
         self.RegisterUI(group, component, typename, variable.get, variable.set)
@@ -266,7 +267,7 @@ class Framework:
 
     def widget_set_func(self, widget):
         """Return routine to be used to set widget.
-            
+
             The returned routine takes a single argument, the new setting."""
         v = StringVar(widget)
         widget.config(textvariable=v)
@@ -298,11 +299,11 @@ class Framework:
         widget.bind("<Alt-W>", self.cancel_cmd)
         widget.bind("<Alt-Control-r>", self.reload_panel_cmd)
         widget.bind("<Alt-Control-d>", self.toggle_debugging)
-        widget.bind('<ButtonPress>', self.poll_modified) # same as <Button>
+        widget.bind('<ButtonPress>', self.poll_modified)  # same as <Button>
         widget.bind('<ButtonRelease>', self.poll_modified)
         widget.protocol('WM_DELETE_WINDOW', self.cancel_cmd)
 
-        width=80                        # Of the settings frame.
+        width = 80                        # Of the settings frame.
 
         fr, container, self.dispose_bar = tktools.make_double_frame(widget)
 
@@ -311,7 +312,7 @@ class Framework:
 
         # Frame for the user to build within:
         self.framework_widget = container
-        container.pack(side=TOP, fill=BOTH, expand=1, padx='2m', pady='2m') 
+        container.pack(side=TOP, fill=BOTH, expand=1, padx='2m', pady='2m')
 
         # Do the user's setup:
         self.CreateLayout(self.name, container)
@@ -435,7 +436,7 @@ class Framework:
         self.set_widgets()
         self.poll_modified()
         self.UpdateLayout()
-        
+
     def cancel_cmd(self, event=None):
         self.hide()
         self.revert_cmd()
@@ -511,6 +512,7 @@ class Framework:
 
 # Setup
 
+
 class PrefsPanelsMenu:
     """Setup prefs panels and populate the browser menu."""
 
@@ -561,7 +563,7 @@ class PrefsPanelsMenu:
                 modname = "{}.{}".format(prefpanels.__name__, modname)
                 got[name] = ((name.strip(), modname, finder))
         return got.values()
-                    
+
     def do_post(self, name):
         """Expose the panel, creating it if necessary."""
         _, _, inst = self.panels[name]
@@ -599,9 +601,11 @@ class PrefsPanelsMenu:
 
 # Testing.
 
+
 def standalone():
     """Provide standins for Grail objs so we can run outside of Grail."""
     class fake_browser:
+
         def __init__(self, root):
             self.app = self
             self.app.browsers = []
@@ -619,7 +623,8 @@ def standalone():
 
     quitbutton = Button(root, text='quit')
     quitbutton.pack(side=LEFT)
-    def quit(root=root): root.destroy(); sys.exit(0)
+    def quit(root=root): root.destroy()
+    sys.exit(0)
     quitbutton.config(command=quit)
 
     prefsbut = Menubutton(root, text="Preferences")

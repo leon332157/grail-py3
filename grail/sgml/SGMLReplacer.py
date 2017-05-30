@@ -8,9 +8,9 @@ from .SGMLLexer import *
 
 _entref_exp = re.compile(r'&((#|)[a-zA-Z0-9][-.a-zA-Z0-9]*)(;|)')
 
-_named_chars = {'#re' : '\r',
-                '#rs' : '\n',
-                '#space' : ' '}
+_named_chars = {'#re': '\r',
+                '#rs': '\n',
+                '#space': ' '}
 
 for i in range(256):
     _named_chars["#{}".format(i)] = chr(i)
@@ -18,7 +18,7 @@ for i in range(256):
 _chartable = str.maketrans(string.whitespace, " " * len(string.whitespace))
 
 
-def replace(data, entities = None):
+def replace(data, entities=None):
     """Perform general entity replacement on a string.
     """
     data = data.translate(_chartable)
@@ -36,7 +36,8 @@ def replace(data, entities = None):
             else:
                 value = _named_chars.get(ref.lower())
             if value is not None:
-                data = data[:pos] + value + data[pos+len(ref)+len(term)+1:]
+                data = data[:pos] + value + \
+                    data[pos + len(ref) + len(term) + 1:]
                 pos = pos + len(value)
             else:
                 pos = pos + len(ref) + len(term) + 1

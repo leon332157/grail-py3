@@ -13,6 +13,7 @@ LABEL_WIDTH = 16
 
 class FontSizeVar(tkinter.StringVar):
     _default = "10.0 / 10.7"
+
     def get(self):
         sizes = grailutil.conv_fontsize(tkinter.StringVar.get(self))
         return "{} / {}".format(*sizes)
@@ -23,6 +24,7 @@ class FontSizeVar(tkinter.StringVar):
 
 
 class StringSetVar(tkinter.StringVar):
+
     def get(self):
         return tkinter.StringVar.get(self).lower()
 

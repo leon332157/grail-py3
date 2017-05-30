@@ -36,6 +36,8 @@ USERHEADER_INFO = """\
 %"""
 
 # Allow the user to provide supplemental prologue material:
+
+
 def get_userheader():
     options = settings.get_settings()
     templates = []
@@ -50,6 +52,7 @@ def get_userheader():
 
 # Regular expressions.
 QUOTE_re = r'(\(|\)|\\)'
+
 
 def cook(string):
     return re.sub(QUOTE_re, r'\\\1', string)
@@ -110,6 +113,7 @@ class PSStream:
         self._line_start_font = self._font.get_font()
 
     __pageno = 1
+
     def get_pageno(self):
         return self.__pageno
 
@@ -118,6 +122,7 @@ class PSStream:
         self.__pageno = pageno
 
     __titles = None
+
     def set_title(self, title):
         # replace all whitespace sequences with a single space
         title = ' '.join(title.split())
@@ -145,7 +150,8 @@ class PSStream:
         print("%%DocumentPaperSizes:", self._paper.PaperName, file=self._ofp)
         self._ofp.write("%%DocumentFonts: Symbol ZapfDingbats")
         docfonts = self._font.docfonts
-        for dfv in docfonts.values(): self._ofp.write(" " + dfv)
+        for dfv in docfonts.values():
+            self._ofp.write(" " + dfv)
         self._ofp.write("\n")
         # spew out the contents of the header PostScript file
         print(get_systemheader(), file=self._ofp)
@@ -153,7 +159,7 @@ class PSStream:
         print("/scalfac", self._font.points_per_pixel, "D", file=self._ofp)
         for key, value in docfonts.items():
             print("/{} /{} dup reencodeISO D findfont D".format(key, value),
-                file=self._ofp)
+                  file=self._ofp)
         # finish out the prolog with paper information:
         for name, value in vars(self._paper).items():
             if isinstance(value, str):
@@ -165,7 +171,7 @@ class PSStream:
         # the last-modified time of the document from the context headers,
         # but these are not available to us at this point.
         print("%%\n%% time values for use by page decorating functions:",
-            file=self._ofp)
+              file=self._ofp)
         names = ("Year", "Month", "Day", "Hour", "Minute", "Second",
                  "Weekday", "Julian", "DST")
         t = time.time()
@@ -173,7 +179,7 @@ class PSStream:
         utc = time.gmtime(t)
         for name, local, utc in zip(names, local, utc):
             print("/Gr{} {} D /GrUTC{} {} D".format(name, local, name, utc),
-                file=self._ofp)
+                  file=self._ofp)
         # add per-user customization:
         user_template = get_userheader()
         if user_template:
@@ -329,7 +335,7 @@ class PSStream:
             self.close_string()
         if self._baseline is None and self._xpos != 0.0:
             self._baseline = self.get_fontsize() \
-                             + max(0.0, self._yshift[-1][0])
+                + max(0.0, self._yshift[-1][0])
         psfontname, size = self._font.set_font(font)
         self._linefp.write('{} {} SF\n'.format(psfontname, size))
         self._space_width = self._font.text_width(' ')
@@ -370,7 +376,7 @@ class PSStream:
             start = 0.0
         elif self._align is ALIGN_CENTER:
             start = (pagewidth - width) / 2
-        else:   #  ALIGN = right
+        else:  # ALIGN = right
             start = pagewidth - width
         self._linefp.write('{} {} {} HR\n'.format(
                            height, start + self._margin, width))
@@ -432,7 +438,7 @@ class PSStream:
             vshift = (self.get_fontsize() - height) / 2.0
             self._linefp.write("gsave\n CR -{} {} R currentpoint translate "
                                "{} {} scale\n".format(
-                               distance, vshift, xscale, yscale))
+                                   distance, vshift, xscale, yscale))
             ll_x, ll_y, ur_x, ur_y = bullet.bbox
             if ll_x or ll_y:
                 #  Have to translate again to make image happy:
@@ -487,9 +493,9 @@ class PSStream:
             # unnecessary; data is de-tabbed before this method is
             # called.)
             elif linestr and linestr[-1] and \
-                 linestr[-1][-1] == ' ' and \
-                 xpos > allowed_width * 0.75 and \
-                 width < allowed_width:
+                    linestr[-1][-1] == ' ' and \
+                    xpos > allowed_width * 0.75 and \
+                    width < allowed_width:
                 #
                 # output the current line data (removes trailing space)
                 #
@@ -572,14 +578,14 @@ class PSStream:
         print('%%BeginPageProlog', file=self._ofp)
         psfontname, size = self._line_start_font
         print("save", self._margin, psfontname, size, pageno, "NP",
-            file=self._ofp)
+              file=self._ofp)
         print('%%EndPageProlog', file=self._ofp)
         if RECT_DEBUG:
             print('gsave', 0, 0, "M", file=self._ofp)
             print(self._paper.ImageWidth, 0, "RL", file=self._ofp)
             print(0, -self._paper.ImageHeight, "RL", file=self._ofp)
             print(-self._paper.ImageWidth, 0, "RL closepath stroke newpath",
-                file=self._ofp)
+                  file=self._ofp)
             print('grestore', file=self._ofp)
 
     def print_page_postamble(self):
@@ -625,9 +631,9 @@ class PSStream:
         # do we need to break the page?
         # will the line we're about to write fit on the current page?
         linesz = self._baseline + self._descender + self._vtab
-##      utils.debug('ypos= {:f}, linesz= {:f}, diff= {:f}, PH= {:f}'.format(
+# utils.debug('ypos= {:f}, linesz= {:f}, diff= {:f}, PH= {:f}'.format(
 ##                  self._ypos, linesz, (self._ypos - linesz),
-##                   -self._paper.ImageHeight))
+# -self._paper.ImageHeight))
         self._ypos = self._ypos - linesz
         if self._ypos <= -self._paper.ImageHeight:
             self.push_page_break()
@@ -652,6 +658,7 @@ class PSStream:
         self._baseline = None
 
     _prev_render = _render
+
     def close_string(self, linestr=None):
         if linestr is None:
             linestr = self._linestr
@@ -660,7 +667,7 @@ class PSStream:
         if not cooked:
             return
         # TBD: handle ISO encodings
-        #pass
+        # pass
         render = self._render
         # This only works if 'S' and 'U' are the only values for render:
         if self._prev_render != render and cooked[0] == ' ':

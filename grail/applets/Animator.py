@@ -1,3 +1,5 @@
 from ImageLoopItem import ImageLoopItem
 
-class Animator(ImageLoopItem): pass
+
+class Animator(ImageLoopItem):
+    pass

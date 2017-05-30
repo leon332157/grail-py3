@@ -8,7 +8,7 @@ import time
 from .grailutil import *
 from urllib.parse import urldefrag
 
-
+
 class PageInfo:
     """This is the data structure used to represent a page in the
     History stack.  Each Browser object has it's own unique History
@@ -34,35 +34,46 @@ class PageInfo:
     resolution of relative urls on this page.  Currently the base URL
     information is kept with the context object.
     """
+
     def __init__(self, url='', title='', scrollpos=1.0, formdata=None):
         self._url = url
         self._title = title
         self._scrollpos = scrollpos
-        if formdata is None: formdata = []
+        if formdata is None:
+            formdata = []
         self._formdata = formdata
 
     def set_url(self, url): self._url = url
+
     def set_title(self, title): self._title = title
+
     def set_scrollpos(self, scrollpos): self._scrollpos = scrollpos
+
     def set_formdata(self, formdata): self._formdata = formdata
 
     def url(self): return self._url
+
     def title(self): return self._title
+
     def scrollpos(self): return self._scrollpos
+
     def formdata(self): return self._formdata
 
     def clone(self):
         return type(self)(self._url, self._title,
-                              self._scrollpos, self._formdata[:])
+                          self._scrollpos, self._formdata[:])
 
 
-
 class DummyHistoryDialog:
     """Dummy so History can avoid testing for self._dialog != None."""
+
     def refresh(self): pass
+
     def select(self, index): pass
 
+
 class History:
+
     def __init__(self):
         self._history = []
         self._dialog = DummyHistoryDialog()
@@ -83,21 +94,23 @@ class History:
     def append_page(self, pageinfo):
         # Discard alternative futures.  Someday we might have `Cactus
         # History' or we might expose the Global History to the user.
-        del self._history[self._current+1:]
+        del self._history[self._current + 1:]
         # We no longer check to see if the page has the same URL as
         # the previous page, because this introduced problems with
         # CGI scripts that produced different output for the same URL
         self._history.append(pageinfo)
-        self._current = len(self._history)-1
+        self._current = len(self._history) - 1
         self._dialog.refresh()
 
     def page(self, index=None):
-        if index is None: index = self._current
+        if index is None:
+            index = self._current
         if 0 <= index < len(self._history):
             self._current = index
             self._dialog.select(self._current)
             return self._history[self._current]
-        else: return None
+        else:
+            return None
 
     def peek(self, offset=0, pos=None):
         if pos is None:
@@ -109,13 +122,16 @@ class History:
             return -1, None
 
     def current(self): return self._current
-    def forward(self): return self.page(self._current+1)
-    def back(self): return self.page(self._current-1)
+
+    def forward(self): return self.page(self._current + 1)
+
+    def back(self): return self.page(self._current - 1)
+
     def pages(self): return self._history
+
     def refresh(self): self._dialog.refresh()
 
 
-
 HISTORY_PREFGROUP = 'history'
 VIEW_BY_PREF = 'view-by'
 VIEW_BY_TITLES = 'titles'
@@ -123,6 +139,7 @@ VIEW_BY_URLS = 'urls'
 
 
 class HistoryDialog:
+
     def __init__(self, context, historyobj=None):
         if not historyobj:
             # XXX I guess this is here for testing?  (It's used nowhere.)
@@ -224,15 +241,21 @@ class HistoryDialog:
         self.select(self._history.current())
 
     def previous_cmd(self, event=None):
-        if self._history.back(): self._goto()
-        else: self._frame.bell()
+        if self._history.back():
+            self._goto()
+        else:
+            self._frame.bell()
+
     def next_cmd(self, event=None):
-        if self._history.forward(): self._goto()
-        else: self._frame.bell()
+        if self._history.forward():
+            self._goto()
+        else:
+            self._frame.bell()
 
     def up_cmd(self, event=None):
         if not self._history.forward():
             self._frame.bell()
+
     def down_cmd(self, event=None):
         if not self._history.back():
             self._frame.bell()
@@ -241,7 +264,7 @@ class HistoryDialog:
         # Workaround for Bug 869780, "curselection() in Tkinter.py should
         # return ints", http://bugs.python.org/issue869780
         selection = int(which)
-        
+
         last = self._listbox.index(END)
         pos = last - selection - 1
         context.load_from_history(self._history.peek(pos=pos))
@@ -271,8 +294,8 @@ class HistoryDialog:
     def select(self, index):
         last = self._listbox.index(END)
         self._listbox.select_clear(0, END)
-        self._listbox.select_set(last-index-1)
-        self._listbox.activate(last-index-1)
+        self._listbox.select_set(last - index - 1)
+        self._listbox.activate(last - index - 1)
 
     def show(self):
         self._frame.deiconify()

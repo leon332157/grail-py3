@@ -5,6 +5,7 @@ AHISTPREF = 'history-ahist-foreground'
 APREF = 'history-a-foreground'
 ATEMPPREF = 'history-atemp-foreground'
 
+
 class ImageWindow(Frame):
 
     def __init__(self, viewer, url, src, alt, usemap, ismap, align,
@@ -13,7 +14,7 @@ class ImageWindow(Frame):
         self.context = self.viewer.context
         self.src, self.alt, self.align = src, alt, align
         self.target = target
-        ### set up mapping is either and server map or a client map
+        # set up mapping is either and server map or a client map
         if usemap:
             self.map = usemap
             self.url = None
@@ -34,8 +35,8 @@ class ImageWindow(Frame):
         label.pack(fill=BOTH, expand=1)
         if width > 0 or height > 0:
             self.propagate(0)
-            self.config(width=width + 2*borderwidth,
-                        height=height + 2*borderwidth)
+            self.config(width=width + 2 * borderwidth,
+                        height=height + 2 * borderwidth)
         if self.url or self.map:
             self.bind('<Enter>', self.enter)
             self.bind('<Leave>', self.leave)
@@ -70,7 +71,8 @@ class ImageWindow(Frame):
     def enter(self, event):
         url, target = self.whichurl(event)
         if url:
-            if target: url = url + " in " + target
+            if target:
+                url = url + " in " + target
             self.context.viewer.enter_message(url)
 
     def leave(self, event):
@@ -79,7 +81,8 @@ class ImageWindow(Frame):
     def motion(self, event):
         url, target = self.whichurl(event)
         if url:
-            if target: url = url + " in " + target
+            if target:
+                url = url + " in " + target
             self.context.viewer.enter_message(url)
         else:
             self.context.viewer.leave_message()
@@ -107,12 +110,12 @@ class ImageWindow(Frame):
 
     def whichurl(self, event):
         # perhaps having a usemap and an ismap is a bad idea
-        # because we now need *two* tests for maps when the 
+        # because we now need *two* tests for maps when the
         # common case might be no map
         if self.ismap:
             return self.url + "?{},{}".format(event.x, event.y), ""
         elif self.map:
-            return self.map.url(event.x,event.y)
+            return self.map.url(event.x, event.y)
         return self.url, self.target
 
     # table width calculation interface
@@ -126,7 +129,7 @@ class ImageWindow(Frame):
             w = h = 2 * bw
         x = self.winfo_x()
         y = self.winfo_y()
-        return x+w, x+w, y+h
+        return x + w, x + w, y + h
 
     def button_3_event(self, event):
         url, target = self.whichurl(event)
