@@ -1,19 +1,11 @@
 [Desktop Entry]
-Comment=
-Encoding=UTF-8
-Exec=python3 -m grail
-GenericName=Python web browser
-Icon=grail_logo.png
-MimeType=
 Name=Grail
-Path=
-StartupNotify=false
-Terminal=false
-TerminalOptions=
+GenericName=Web Browser
+Icon=grail
 Type=Application
-Version=1.0
-X-DBUS-ServiceName=
-X-DBUS-StartupType=
-X-KDE-SubstituteUID=false
-X-KDE-Username=
-Categories=Application;Network
+Categories=Network;WebBrowser;
+Exec=grail %u
+Terminal=false
+StartupNotify=false
+MimeType=text/html;text/xml;application/xhtml+xml;application/xml;application/rdf+xml;image/gif;image/jpeg;image/png;x-scheme-handler/http;x-scheme-handler/https;
+Keywords=Browser
