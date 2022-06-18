@@ -9,7 +9,7 @@ from . import SGMLHandler
 from . import SGMLLexer
 from . import SGMLParser
 
-from formatter import AS_IS
+from ..formatter import AS_IS
 from .utils import *
 
 

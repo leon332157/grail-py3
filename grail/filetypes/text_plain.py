@@ -1,7 +1,7 @@
 """Grail parser for text/plain."""
 __version__ = '$Revision: 2.8 $'
 
-import formatter
+from .. import formatter
 from .. import grailutil
 from .. import Reader
 

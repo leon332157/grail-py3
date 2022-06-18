@@ -7,6 +7,7 @@ __license__ = "Custom"
 __maintainer__ = "None"
 __version__ = "0.6f0"
 __description__ = """An extensible web browser written in pure Python."""
+GRAILVERSION = __version__
 
 script_dir = os.path.dirname(__file__)
 grail_root = script_dir

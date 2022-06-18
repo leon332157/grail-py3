@@ -4,7 +4,8 @@ to do the right thing."""
 __version__ = '$Revision: 1.2 $'
 
 import os
-
+import importlib
+import traceback
 
 class ExtensionLoader:
 
@@ -25,9 +26,15 @@ class ExtensionLoader:
         return self.find_module(name)
 
     def find_module(self, name):
+        #print('find',name)
+        #print(self.__package)
+        if 'APIAPI' in name:
+            name = name.replace('APIAPI', 'API')
         try:
-            mod = __import__(name, vars(self.__package), level=1)
+            mod = importlib.import_module(self.__package.__name__+'.'+name)
+            #mod = __import__(name, vars(self.__package), level=1)
         except ImportError:
+            traceback.print_exc()
             mod = None
         return mod
 

@@ -9,7 +9,7 @@ from tkinter import *
 import os
 import urllib.parse
 from . import tktools
-import formatter
+from . import formatter
 from . import Viewer
 from . import grailutil
 
