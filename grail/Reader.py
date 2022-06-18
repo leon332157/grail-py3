@@ -731,7 +731,7 @@ class Reader(BaseReader):
         return None
 
 
-from formatter import AS_IS
+from .formatter import AS_IS
 
 
 class TextParser:

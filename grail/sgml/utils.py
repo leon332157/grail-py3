@@ -12,7 +12,7 @@ __all__ = (
 
 
 import string
-from collections import Mapping
+from collections.abc import Mapping
 
 
 def extract_attribute(key, dict, default=None, conv=None, delete=True):

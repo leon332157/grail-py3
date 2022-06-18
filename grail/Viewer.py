@@ -2,10 +2,10 @@
 
 from tkinter import *
 from . import tktools
-import formatter
+from . import formatter
 from .Context import Context, SimpleContext
 from .Cursors import *
-from collections import Iterable
+from collections.abc import Iterable
 from urllib.parse import urljoin, urlparse
 from .Stylesheet import UndefinedStyle
 from functools import partial
